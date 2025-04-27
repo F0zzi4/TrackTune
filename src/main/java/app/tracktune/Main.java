@@ -26,8 +26,8 @@ public class Main extends Application {
         dbManager = new DatabaseManager();
         if(!dbManager.isConnected()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(Strings.CONN_FAILED);
-            alert.setHeaderText(Strings.ERROR);
+            alert.setTitle(Strings.ERROR);
+            alert.setHeaderText(Strings.CONN_FAILED);
             alert.setContentText(Strings.DB_CONN_FAILED);
             alert.showAndWait();
             Platform.exit();
