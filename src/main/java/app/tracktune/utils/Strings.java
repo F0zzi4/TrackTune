@@ -13,4 +13,5 @@ public class Strings {
     public static final String MAIN_ICON_PATH = "file:src/resources/icon.png";
     public static final String ERR_EXEC_STMT = "Error executing statement: ";
     public static final String ERR_INIT_DB = "Error initializing database: ";
+    public static final String ERR_USER_ALREADY_EXISTS = "User already exists";
 }
