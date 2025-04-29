@@ -18,7 +18,12 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>17.0.6</version>
+            <version>21</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.palexdev</groupId>
+            <artifactId>materialfx</artifactId>
+            <version>11.13.6</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
