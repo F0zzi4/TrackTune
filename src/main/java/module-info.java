@@ -6,6 +6,7 @@ module app.tracktune {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
+    requires java.desktop;
 
     opens app.tracktune to javafx.fxml;
     exports app.tracktune;
