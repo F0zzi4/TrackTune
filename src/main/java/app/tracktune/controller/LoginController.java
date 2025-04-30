@@ -6,6 +6,7 @@ import app.tracktune.model.user.UserDAO;
 import app.tracktune.utils.Strings;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class LoginController {
@@ -19,7 +20,7 @@ public class LoginController {
     @FXML
     private TextField TxtEmail;
     @FXML
-    private TextField TxtPassword;
+    private PasswordField TxtPassword;
     @FXML
     private void handleLogin() {
         try{
