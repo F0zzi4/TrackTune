@@ -1,5 +1,7 @@
 package app.tracktune.exceptions;
 
-public class UserAlreadyExistsException extends RuntimeException {
-    public UserAlreadyExistsException(String message) {}
+public class UserAlreadyExistsException extends TrackTuneException {
+    public UserAlreadyExistsException(String message) {
+        super(message);
+    }
 }
