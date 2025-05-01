@@ -1,6 +1,7 @@
 package app.tracktune.controller;
 
-import app.tracktune.exceptions.UserAlreadyExistsException;
+import app.tracktune.Main;
+import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.user.User;
 import app.tracktune.model.user.UserDAO;
 import app.tracktune.utils.Strings;
@@ -11,8 +12,10 @@ import javafx.scene.control.TextField;
 
 public class LoginController {
     private final UserDAO userDAO;
-    private Alert errorAlert;
 
+    /**
+     * Default constructor to instance the user data access object
+     */
     public LoginController() {
         userDAO = new UserDAO();
     }
@@ -21,6 +24,10 @@ public class LoginController {
     private TextField TxtEmail;
     @FXML
     private PasswordField TxtPassword;
+
+    /**
+     * Access button handler for login
+     */
     @FXML
     private void handleLogin() {
         try{
@@ -30,29 +37,29 @@ public class LoginController {
             if(isInputValid(username, password)){
                 User user = userDAO.getUser(username);
                 if(user != null){
-                    userDAO.saveUser(User.create(username, password));
-                }
-                throw new UserAlreadyExistsException(Strings.ERR_USER_ALREADY_EXISTS);
-            }
-        }catch(RuntimeException e){
-            setAlert(Strings.LOGIN_FAILED, Strings.ERROR, e.getMessage());
+                    System.out.println("Access successful!");
+                }else
+                    throw new TrackTuneException(Strings.ERR_USER_NOT_FOUND);
+            }else
+                throw new TrackTuneException(Strings.USER_PWD_EMPTY);
+        }catch(TrackTuneException e){
+            Main.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR, Main.root);
+        }catch(Exception e){
+            System.err.println(e.getMessage());
         }
     }
 
+    /**
+     * Check input fields from the user
+     * @param username : Username input from the user
+     * @param password : Password input from the user
+     * @return true or false
+     */
     private boolean isInputValid(String username, String password){
         boolean result = true;
         if (username.isEmpty() || password.isEmpty()) {
-            setAlert(Strings.LOGIN_FAILED, Strings.ERROR, Strings.USER_PWD_EMPTY);
             result = false;
         }
         return result;
-    }
-
-    private void setAlert(String title, String header, String content){
-        errorAlert = new Alert(Alert.AlertType.ERROR);
-        errorAlert.setTitle(title);
-        errorAlert.setHeaderText(header);
-        errorAlert.setContentText(content);
-        errorAlert.showAndWait();
     }
 }
