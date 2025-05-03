@@ -1,0 +1,56 @@
+/* Root settings */
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #4a280f, #6b3b1a);
+}
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, #ffb74d, #ff9800);
+    -fx-padding: 30 10;
+    -fx-spacing: 10;
+}
+
+.sidebar-title {
+    -fx-text-fill: #4a280f;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4a280f;
+    -fx-font-size: 14px;
+    -fx-font-weight: semibold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 6;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: linear-gradient(to right, #ffcc80, #ffa726);
+    -fx-text-fill: #2e1509;
+    -fx-cursor: hand;
+}
+
+/* Logout button */
+.logout-button {
+    -fx-background-color: #ffa726;
+    -fx-text-fill: #4a280f;
+}
+
+.logout-button:hover {
+    -fx-background-color: #fb8c00;
+    -fx-text-fill: white;
+}
+
+/* Main content */
+.main-content {
+    -fx-background-color: linear-gradient(to bottom right, #ffe0b2, #ffcc80);
+    -fx-padding: 40;
+}
+
+.main-title {
+    -fx-font-size: 24px;
+    -fx-text-fill: #4a280f;
+    -fx-font-weight: bold;
+}

@@ -11,11 +11,12 @@ public class Strings {
     public static final String USER_PWD_EMPTY = "Username or password is empty";
     public static final String CONN_FAILED = "Connection failed";
     public static final String DB_CONN_FAILED = "Connection with database failed";
-    public static final String MAIN_FRAME_VIEW = "/fxml/LoginView.fxml";
-    public static final String DASHBOARD_VIEW = "/fxml/DashboardView.fxml";
+    public static final String LOGIN_VIEW_PATH = "/fxml/LoginView.fxml";
+    public static final String DASHBOARD_VIEW_PATH = "/fxml/DashboardView.fxml";
     public static final String MAIN_ICON_PATH = "/assets/icon.png";
     public static final String ERR_EXEC_STMT = "Error executing statement: ";
     public static final String ERR_INIT_DB = "Error initializing database: ";
     public static final String ERR_USER_ALREADY_EXISTS = "User already exists";
     public static final String ERR_USER_NOT_FOUND = "User not found";
+    public static final String SOMETHING_WENT_WRONG = "Something went wrong";
 }

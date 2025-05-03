@@ -22,9 +22,9 @@ public class Main extends Application {
         try{
             Main.root = root;
             initDatabase();
-            ViewManager.loadView(Strings.MAIN_FRAME_VIEW);
+            ViewManager.initView(Strings.LOGIN_VIEW_PATH);
         }catch(TrackTuneException e){
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR);
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.SOMETHING_WENT_WRONG, e.getMessage(), Alert.AlertType.ERROR);
         }
         catch(Exception e){
             System.err.println(e.getMessage());

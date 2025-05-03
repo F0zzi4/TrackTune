@@ -2,6 +2,7 @@ package app.tracktune.view;
 
 import app.tracktune.Main;
 import app.tracktune.config.AppConfig;
+import app.tracktune.utils.ScreenSize;
 import app.tracktune.utils.Strings;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
@@ -20,57 +21,21 @@ import java.io.IOException;
 import static app.tracktune.Main.root;
 
 public class ViewManager {
-    private static final int APP_WIDTH = 700;
-    private static final int APP_HEIGHT = 560;
-
     /**
      * Load basic configuration for the given root
+     * @param viewPath : path to the desired view
      * @throws IOException : Input / Output Exception
      */
-    public static void loadView(String viewPath) throws IOException{
+    public static void initView(String viewPath) throws IOException{
         FXMLLoader viewLoader = new FXMLLoader(Main.class.getResource(viewPath));
         Scene scene = new Scene(viewLoader.load(), 700, 550);
+        Image icon = new Image(Main.class.getResource(Strings.MAIN_ICON_PATH).toExternalForm());
+        setStageOnCurrentScreen(root, ScreenSize.LOGIN_FRAME_WIDTH, ScreenSize.LOGIN_FRAME_HEIGHT);
         root.setTitle(AppConfig.APP_TITLE);
         root.setResizable(false);
-        Image icon = new Image(Main.class.getResource(Strings.MAIN_ICON_PATH).toExternalForm());
         root.getIcons().add(icon);
         root.setScene(scene);
-        setStageOnCurrentScreen(root);
         root.show();
-    }
-
-    /**
-     * Set the given stage on the current screen
-     * @param stage : Frame that will be set
-     */
-    private static void setStageOnCurrentScreen(Stage stage){
-        // get current mouse position
-        Point mousePoint = MouseInfo.getPointerInfo().getLocation();
-        // get the mouse containing screen
-        Screen targetScreen = Screen.getScreens()
-                .stream()
-                .filter(screen -> screen.getBounds().contains(mousePoint.x, mousePoint.y))
-                .findFirst()
-                .orElse(Screen.getPrimary());
-        // set the root window at the exact center of the screen
-        Rectangle2D bounds = targetScreen.getVisualBounds();
-        stage.setX(bounds.getMinX() + (bounds.getWidth() - APP_WIDTH) / 2);
-        stage.setY(bounds.getMinY() + (bounds.getHeight() - APP_HEIGHT) / 2);
-    }
-
-    /**
-     * Set and show a specific alert
-     * @param title : Title to be shown
-     * @param header : Header to be shown
-     * @param content : Content to be shown
-     */
-    public static void setAndShowAlert(String title, String header, String content, Alert.AlertType type){
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.initOwner(root);
-        alert.showAndWait();
     }
 
     /**
@@ -97,6 +62,7 @@ public class ViewManager {
                 // Set up the new scene
                 Scene newScene = new Scene(newRoot);
                 root.setScene(newScene);
+                setStageOnCurrentScreen(root, ScreenSize.DASHBOARD_FRAME_WIDTH, ScreenSize.DASHBOARD_FRAME_HEIGHT);
                 fadeIn.play();
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
@@ -104,5 +70,50 @@ public class ViewManager {
         });
 
         fadeOut.play();
+    }
+
+    /**
+     * Set the given stage on the current screen
+     * @param stage : Frame that will be set
+     * @param width : Frame width
+     * @param height : Frame height
+     */
+    private static void setStageOnCurrentScreen(Stage stage, double width, double height){
+        // get current mouse position
+        Point mousePoint = MouseInfo.getPointerInfo().getLocation();
+        // get the mouse containing screen
+        Screen targetScreen = Screen.getScreens()
+                .stream()
+                .filter(screen -> screen.getBounds().contains(mousePoint.x, mousePoint.y))
+                .findFirst()
+                .orElse(Screen.getPrimary());
+        // set the root window at the exact center of the screen
+        Rectangle2D bounds = targetScreen.getVisualBounds();
+        stage.setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
+        stage.setY(bounds.getMinY() + (bounds.getHeight() - height) / 2);
+    }
+
+    /**
+     * Set and show a specific alert
+     * @param title : Title to be shown
+     * @param header : Header to be shown
+     * @param content : Content to be shown
+     * @param type : Type of alert
+     */
+    public static void setAndShowAlert(String title, String header, String content, Alert.AlertType type){
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.initOwner(root);
+        alert.showAndWait();
+    }
+
+    public static void navigateToLogin(){
+        redirectView(Strings.LOGIN_VIEW_PATH);
+    }
+
+    public static void navigateToDashboard(){
+        redirectView(Strings.DASHBOARD_VIEW_PATH);
     }
 }
