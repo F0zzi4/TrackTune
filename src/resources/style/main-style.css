@@ -29,7 +29,7 @@
 /* Subtitle */
 .label-subtitle {
     -fx-font-size: 18px;
-    -fx-font-weight: semi-bold;
+    -fx-font-weight: bold;
     -fx-text-fill: #ffcc80;
     -fx-background-color: linear-gradient(to right, #3b1d0e, #b34700);
     -fx-background-radius: 10;

@@ -5,6 +5,7 @@ import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.user.User;
 import app.tracktune.model.user.UserDAO;
 import app.tracktune.utils.Strings;
+import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
@@ -37,13 +38,13 @@ public class LoginController {
             if(isInputValid(username, password)){
                 User user = userDAO.getUser(username);
                 if(user != null){
-                    System.out.println("Access successful!");
+                    ViewManager.redirectView(Strings.DASHBOARD_VIEW);
                 }else
                     throw new TrackTuneException(Strings.ERR_USER_NOT_FOUND);
             }else
                 throw new TrackTuneException(Strings.USER_PWD_EMPTY);
         }catch(TrackTuneException e){
-            Main.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR, Main.root);
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, e.getMessage(), Alert.AlertType.ERROR);
         }catch(Exception e){
             System.err.println(e.getMessage());
         }
