@@ -1,30 +1,31 @@
 package app.tracktune.controller;
 
-import app.tracktune.Main;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.user.User;
 import app.tracktune.model.user.UserDAO;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 
 public class LoginController {
     private final UserDAO userDAO;
-
-    /**
-     * Default constructor to instance the user data access object
-     */
-    public LoginController() {
-        userDAO = new UserDAO();
-    }
-
     @FXML
     private TextField TxtEmail;
     @FXML
     private PasswordField TxtPassword;
+    @FXML
+    private Button BtnAccess;
+
+    /**
+     * Default constructor to instance the user data access object
+     */
+    public LoginController() {userDAO = new UserDAO();}
 
     /**
      * Access button handler for login
@@ -38,7 +39,7 @@ public class LoginController {
             if(isInputValid(username, password)){
                 User user = userDAO.getUser(username);
                 if(user != null){
-                    ViewManager.redirectView(Strings.DASHBOARD_VIEW);
+                    ViewManager.navigateToDashboard();
                 }else
                     throw new TrackTuneException(Strings.ERR_USER_NOT_FOUND);
             }else
@@ -57,10 +58,6 @@ public class LoginController {
      * @return true or false
      */
     private boolean isInputValid(String username, String password){
-        boolean result = true;
-        if (username.isEmpty() || password.isEmpty()) {
-            result = false;
-        }
-        return result;
+        return !username.isEmpty() && !password.isEmpty();
     }
 }
