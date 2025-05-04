@@ -40,11 +40,12 @@
 
 /* Input Fields */
 .text-field, .password-field {
-    -fx-font-size: 14px;
+    -fx-font-size: 15px;
     -fx-background-color: #e89c56;
     -fx-border-color: #bf6e34;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
+    -fx-font-weight: bold;
     -fx-padding: 10 12;
     -fx-prompt-text-fill: #ffcc80;
     -fx-text-fill: #ffe0b2;
@@ -54,7 +55,7 @@
 /* Primary Button */
 .button {
     -fx-background-color: linear-gradient(to right, #ff6f00, #ffa726);
-    -fx-text-fill: white;
+    -fx-text-fill: #fde4be;
     -fx-font-size: 15px;
     -fx-background-radius: 8;
     -fx-cursor: hand;
