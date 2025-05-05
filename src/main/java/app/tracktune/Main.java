@@ -2,6 +2,7 @@ package app.tracktune;
 
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.application.Application;
@@ -22,7 +23,7 @@ public class Main extends Application {
         try{
             Main.root = root;
             initDatabase();
-            ViewManager.initView(Strings.LOGIN_VIEW_PATH);
+            ViewManager.initView(Frames.LOGIN_VIEW_PATH);
         }catch(TrackTuneException e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.SOMETHING_WENT_WRONG, e.getMessage(), Alert.AlertType.ERROR);
         }

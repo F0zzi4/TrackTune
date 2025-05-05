@@ -42,7 +42,7 @@
         </GridPane>
         <HBox prefHeight="133.0" prefWidth="631.0" style="-fx-alignment: center;">
             <children>
-                <Button fx:id="BtnAccess" defaultButton="true" mnemonicParsing="false" onMouseClicked="#handleLogin" prefHeight="39.0" prefWidth="83.0" style="-fx-font-weight: bold;" text="Accedi" />
+                <Button defaultButton="true" mnemonicParsing="false" onMouseClicked="#handleLogin" prefHeight="39.0" prefWidth="83.0" style="-fx-font-weight: bold;" text="Accedi" />
             </children>
         </HBox>
         <HBox prefHeight="167.0" prefWidth="626.0" style="-fx-alignment: center;">
