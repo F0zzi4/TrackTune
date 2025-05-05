@@ -4,6 +4,8 @@ import app.tracktune.config.AppConfig;
 
 import java.io.File;
 import java.sql.*;
+
+import app.tracktune.utils.SetupDB;
 import app.tracktune.utils.Strings;
 
 /**
@@ -12,16 +14,6 @@ import app.tracktune.utils.Strings;
 public class DatabaseManager {
     private Connection dbConnection;
     private String dbUrl;
-    // QUERIES
-    private final String CREATE_USERS_TABLE_STMT = "CREATE TABLE IF NOT EXISTS users (" +
-            "username TEXT PRIMARY KEY, " +
-            "password TEXT, " +
-            "is_admin INTEGER" +
-            ")";
-    private final String CHECK_ADMIN_USER_STMT = "SELECT * FROM users WHERE username = 'admin'";
-    private final String INSERT_ADMIN_USER_STMT = "INSERT INTO users (username, password, is_admin) VALUES (?, ?, ?)";
-    private final String ADMIN_USERNAME = "admin";
-    private final String ADMIN_PASSWORD = "admin";
 
     public DatabaseManager() {
         this(AppConfig.DATABASE_PATH);
@@ -48,15 +40,15 @@ public class DatabaseManager {
             Statement statement = dbConnection.createStatement();
 
             // Create users table if it doesn't exist
-            statement.execute(CREATE_USERS_TABLE_STMT);
+            statement.execute(SetupDB.CREATE_USERS_TABLE_STMT);
             
             // Check if admin user exists, create if it doesn't
-            ResultSet rs = statement.executeQuery(CHECK_ADMIN_USER_STMT);
+            ResultSet rs = statement.executeQuery(SetupDB.CHECK_ADMIN_USER_STMT);
             if (!rs.next()) {
                 // Admin user doesn't exist, create it
-                PreparedStatement prepStatement = dbConnection.prepareStatement(INSERT_ADMIN_USER_STMT);
-                prepStatement.setString(1, ADMIN_USERNAME);
-                prepStatement.setString(2, ADMIN_PASSWORD);
+                PreparedStatement prepStatement = dbConnection.prepareStatement(SetupDB.INSERT_ADMIN_USER_STMT);
+                prepStatement.setString(1, SetupDB.ADMIN_USERNAME);
+                prepStatement.setString(2, SetupDB.ADMIN_PASSWORD);
                 prepStatement.setInt(3, 1);
                 prepStatement.executeUpdate();
             }
