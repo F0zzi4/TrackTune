@@ -19,8 +19,6 @@ public class LoginController {
     private TextField TxtEmail;
     @FXML
     private PasswordField TxtPassword;
-    @FXML
-    private Button BtnAccess;
 
     /**
      * Default constructor to instance the user data access object

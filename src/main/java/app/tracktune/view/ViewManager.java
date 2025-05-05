@@ -2,7 +2,7 @@ package app.tracktune.view;
 
 import app.tracktune.Main;
 import app.tracktune.config.AppConfig;
-import app.tracktune.utils.ScreenSize;
+import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
@@ -29,8 +29,8 @@ public class ViewManager {
     public static void initView(String viewPath) throws IOException{
         FXMLLoader viewLoader = new FXMLLoader(Main.class.getResource(viewPath));
         Scene scene = new Scene(viewLoader.load(), 700, 550);
-        Image icon = new Image(Main.class.getResource(Strings.MAIN_ICON_PATH).toExternalForm());
-        setStageOnCurrentScreen(root, ScreenSize.LOGIN_FRAME_WIDTH, ScreenSize.LOGIN_FRAME_HEIGHT);
+        Image icon = new Image(Main.class.getResource(Frames.MAIN_ICON_PATH).toExternalForm());
+        setStageOnCurrentScreen(root, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);
         root.setTitle(AppConfig.APP_TITLE);
         root.setResizable(false);
         root.getIcons().add(icon);
@@ -62,7 +62,7 @@ public class ViewManager {
                 // Set up the new scene
                 Scene newScene = new Scene(newRoot);
                 root.setScene(newScene);
-                setStageOnCurrentScreen(root, ScreenSize.DASHBOARD_FRAME_WIDTH, ScreenSize.DASHBOARD_FRAME_HEIGHT);
+                setStageOnCurrentScreen(root, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
                 fadeIn.play();
             } catch (IOException ex) {
                 System.err.println(ex.getMessage());
@@ -74,20 +74,20 @@ public class ViewManager {
 
     /**
      * Set the given stage on the current screen
-     * @param stage : Frame that will be set
+     * @param stage : Stage that will be set
      * @param width : Frame width
      * @param height : Frame height
      */
     private static void setStageOnCurrentScreen(Stage stage, double width, double height){
-        // get current mouse position
+        // Get current mouse position
         Point mousePoint = MouseInfo.getPointerInfo().getLocation();
-        // get the mouse containing screen
+        // Get the mouse containing screen
         Screen targetScreen = Screen.getScreens()
                 .stream()
                 .filter(screen -> screen.getBounds().contains(mousePoint.x, mousePoint.y))
                 .findFirst()
                 .orElse(Screen.getPrimary());
-        // set the root window at the exact center of the screen
+        // Set the root window at the exact center of the screen
         Rectangle2D bounds = targetScreen.getVisualBounds();
         stage.setX(bounds.getMinX() + (bounds.getWidth() - width) / 2);
         stage.setY(bounds.getMinY() + (bounds.getHeight() - height) / 2);
@@ -110,10 +110,10 @@ public class ViewManager {
     }
 
     public static void navigateToLogin(){
-        redirectView(Strings.LOGIN_VIEW_PATH);
+        redirectView(Frames.LOGIN_VIEW_PATH);
     }
 
     public static void navigateToDashboard(){
-        redirectView(Strings.DASHBOARD_VIEW_PATH);
+        redirectView(Frames.DASHBOARD_VIEW_PATH);
     }
 }
