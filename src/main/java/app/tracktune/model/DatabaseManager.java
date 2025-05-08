@@ -5,11 +5,11 @@ import app.tracktune.config.AppConfig;
 import java.io.File;
 import java.sql.*;
 
-import app.tracktune.utils.SetupDB;
+import app.tracktune.utils.DBInit;
 import app.tracktune.utils.Strings;
 
 /**
- * Dedicated class for managing database manipulation
+ * Dedicated class for data manipulation
  */
 public class DatabaseManager {
     private Connection dbConnection;
@@ -40,16 +40,16 @@ public class DatabaseManager {
             Statement statement = dbConnection.createStatement();
 
             // Create users table if it doesn't exist
-            statement.execute(SetupDB.CREATE_USERS_TABLE_STMT);
-            
+            statement.execute(DBInit.getDBInitStatement());
+
             // Check if admin user exists, create if it doesn't
-            ResultSet rs = statement.executeQuery(SetupDB.CHECK_ADMIN_USER_STMT);
+            ResultSet rs = statement.executeQuery(DBInit.CHECK_ADMIN_USER_STMT);
             if (!rs.next()) {
                 // Admin user doesn't exist, create it
-                PreparedStatement prepStatement = dbConnection.prepareStatement(SetupDB.INSERT_ADMIN_USER_STMT);
-                prepStatement.setString(1, SetupDB.ADMIN_USERNAME);
-                prepStatement.setString(2, SetupDB.ADMIN_PASSWORD);
-                prepStatement.setInt(3, 1);
+                PreparedStatement prepStatement = dbConnection.prepareStatement(DBInit.INSERT_ADMIN_USER_STMT);
+                for(int i = 1;i <= DBInit.ADMIN_PARAMS.length;i++){
+                    prepStatement.setObject(i, DBInit.ADMIN_PARAMS[i]);
+                }
                 prepStatement.executeUpdate();
             }
             
@@ -64,12 +64,39 @@ public class DatabaseManager {
     public boolean isConnected() {
         return dbConnection != null;
     }
+
+    /**
+     * Check if the given sql statement contains sql keyword (avoiding SQL injection)
+     * @param sql : Given sql statement
+     */
+    private boolean isValidSQL(String sql) {
+        boolean result = true;
+
+        if(sql.isBlank())
+            return false;
+
+        String[] forbiddenPatterns = {
+                "('--|;|--|\\bDROP\\b|\\bSELECT\\b|\\bINSERT\\b|\\bUPDATE\\b|\\bDELETE\\b|\\bTRUNCATE\\b|\\bALTER\\b|\\bCREATE\\b|\\bEXEC\\b|\\bUNION\\b|\\bFROM\\b|\\bWHERE\\b|\\bJOIN\\b)"
+        };
+
+        for (String pattern : forbiddenPatterns) {
+            if (sql.toUpperCase().matches(".*" + pattern + ".*")) {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
     
     /**
      * Execute an update query (INSERT, UPDATE, DELETE)
      */
     public boolean executeUpdate(String sql, Object... params) {
+        boolean result = false;
         try{
+            if(!isValidSQL(sql))
+                return result;
+
             PreparedStatement prepStatement = dbConnection.prepareStatement(sql);
 
             // Set parameters
@@ -79,19 +106,22 @@ public class DatabaseManager {
             
             // Execute the query
             prepStatement.executeUpdate();
-            return true;
-            
+            result = true;
         } catch (SQLException e) {
             System.err.println(Strings.ERR_EXEC_STMT + e.getMessage());
-            return false;
         }
+        return result;
     }
     
     /**
      * Execute a query and process the results with a ResultSetProcessor
      */
     public <T> T executeQuery(String sql, ResultSetProcessor<T> processor, Object... params) {
+        T result = null;
         try{
+            if(isValidSQL(sql))
+                return result;
+
             PreparedStatement prepStatement = dbConnection.prepareStatement(sql);
             // Set parameters
             for (int i = 0; i < params.length; i++) {
@@ -100,13 +130,13 @@ public class DatabaseManager {
             
             // Execute the query and process results
             try (ResultSet rs = prepStatement.executeQuery()) {
-                return processor.process(rs);
+                result = processor.process(rs);
             }
             
         } catch (SQLException e) {
             System.err.println(Strings.ERR_EXEC_STMT + e.getMessage());
-            return null;
         }
+        return result;
     }
     
     /**
