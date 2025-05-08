@@ -1,22 +1,24 @@
 package app.tracktune.model.user;
 
 import app.tracktune.Main;
+import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.sql.Timestamp;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
-public class UserDAO {
-    private Map<String, User> userCache = new HashMap<>();
+public class UserDAO implements DAO<User> {
+    private SortedSet<User> userCache = new TreeSet<>();
     private DatabaseManager dbManager;
-    // TABLE FIELDS
+    // FIELDS
     private final String USERNAME = "username";
     private final String PASSWORD = "password";
-    private final String IS_ADMIN = "is_admin";
-    // QUERIES
-    private final String SELECT_USER_STMT = "SELECT username, password, is_admin FROM users";
-    private final String INSERT_USER_STMT = "INSERT OR REPLACE INTO users (username, password, is_admin) VALUES (?, ?, ?)";
-    private final String DELETE_USER_STMT = "DELETE FROM users WHERE username = ?";
+    private final String NAME = "name";
+    private final String SURNAME = "surname";
+    private final String STATUS = "status";
+    private final String CREATION_DATE = "creationDate";
+    private final String IS_ADMIN = "isAdmin";
 
     public UserDAO() {
         dbManager = Main.dbManager;
@@ -28,75 +30,95 @@ public class UserDAO {
      */
     private void refreshUserCache() {
         userCache.clear();
-
-        Main.dbManager.executeQuery(SELECT_USER_STMT,
+        Main.dbManager.executeQuery("",
             rs -> {
                 while (rs.next()) {
                     String username = rs.getString(USERNAME);
                     String password = rs.getString(PASSWORD);
+                    String name = rs.getString(NAME);
+                    String surname = rs.getString(SURNAME);
+                    UserStatusEnum status = UserStatusEnum.fromInt(rs.getInt(STATUS));
+                    Timestamp creationDate = rs.getTimestamp(CREATION_DATE);
                     boolean isAdmin = rs.getInt(IS_ADMIN) == 1;
-                    
-                    User user = new User(username, password, isAdmin);
-                    userCache.put(username, user);
+
+                    if (isAdmin){
+                        userCache.add(new AuthenticatedUser(username, password, name, surname, status, creationDate));
+                    }else{
+                        userCache.add(new Administrator(username, password, name, surname, status, creationDate));
+                    }
                 }
                 return null;
             }
         );
     }
-    
-    /**
-     * Save a user to the repository
-     */
-    public void saveUser(User user) {
-        boolean success = dbManager.executeUpdate(
-            INSERT_USER_STMT,
-            user.getUsername(),
-            user.getPassword(),
-            user.isAdmin() ? 1 : 0
-        );
+
+    @Override
+    public void insert(User data) {
+
+    }
+
+    @Override
+    public void update(User user) {
+        boolean success = false;
+
+        if(user instanceof Administrator admin){
+            success = dbManager.executeUpdate(
+                    "",
+                    admin.getUsername(),
+                    admin.getPassword(),
+                    admin.getName(),
+                    admin.getSurname(),
+                    admin.getStatus(),
+                    admin.getCreationDate(),
+                    1
+                    );
+        }else if(user instanceof AuthenticatedUser authUser){
+            success = dbManager.executeUpdate(
+                    "",
+                    authUser.getUsername(),
+                    authUser.getPassword(),
+                    authUser.getName(),
+                    authUser.getSurname(),
+                    authUser.getCreationDate(),
+                    0
+            );
+        }
         
         if (success) {
-            userCache.put(user.getUsername(), user);
+            userCache.add(user);
         }
     }
     
-    /**
-     * Delete a user from the repository
-     */
-    public void deleteUser(String username) {
-        User user = userCache.get(username);
-        
-        // Never delete admin users as a safety measure
-        if (user != null && !user.isAdmin()) {
-            boolean success = dbManager.executeUpdate(
-                DELETE_USER_STMT,
-                username
-            );
-            
-            if (success) {
-                userCache.remove(username);
-            }
+    @Override
+    public void delete(User user) {
+        boolean success = false;
+        success = dbManager.executeUpdate(
+                "",
+                ""
+        );
+
+        if (success) {
+            userCache.remove(user);
         }
     }
-    
-    /**
-     * Get a user by username
-     */
-    public User getUser(String username) {
-        return userCache.get(username);
+
+    @Override
+    public User getByKey(String username) {
+        return userCache.stream()
+                .filter(user -> user.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
     }
     
+    @Override
+    public SortedSet<User> getAll() {
+        return userCache;
+    }
+
     /**
      * Check if a username exists
      */
     public boolean usernameExists(String username) {
-        return userCache.containsKey(username);
-    }
-    
-    /**
-     * Get all users
-     */
-    public Map<String, User> getAllUsers() {
-        return new HashMap<>(userCache);
+        return true;
     }
 }

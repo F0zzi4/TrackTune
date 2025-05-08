@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS tracks (
     title TEXT NOT NULL,
     creation_date TIMESTAMP NOT NULL ,
 
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE IF NOT EXISTS comments (
@@ -37,8 +37,8 @@ CREATE TABLE IF NOT EXISTS comments (
     end_track_interval INTEGER,
     creation_date TIMESTAMP NOT NULL ,
 
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (track_id) REFERENCES tracks(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (track_id) REFERENCES tracks(id)
 );
 
 CREATE TABLE IF NOT EXISTS interactions (
@@ -46,8 +46,8 @@ CREATE TABLE IF NOT EXISTS interactions (
     comment_id INTEGER NOT NULL,
     reply_id INTEGER NOT NULL,
 
-    FOREIGN KEY (comment_id) REFERENCES comments(id) ON DELETE CASCADE,
-    FOREIGN KEY (reply_id) REFERENCES comments(id) ON DELETE CASCADE
+    FOREIGN KEY (comment_id) REFERENCES comments(id),
+    FOREIGN KEY (reply_id) REFERENCES comments(id)
 );
 
 CREATE TABLE IF NOT EXISTS musical_instruments(
@@ -62,8 +62,8 @@ CREATE TABLE IF NOT EXISTS tracks_instruments(
     track_id INTEGER NOT NULL ,
     unique (instrument_id, track_id),
 
-    FOREIGN KEY (instrument_id) REFERENCES musical_instruments(id) ON DELETE CASCADE,
-    FOREIGN KEY (track_id) REFERENCES tracks(id) ON DELETE CASCADE
+    FOREIGN KEY (instrument_id) REFERENCES musical_instruments(id),
+    FOREIGN KEY (track_id) REFERENCES tracks(id)
 );
 
 CREATE TABLE IF NOT EXISTS resources(
@@ -71,11 +71,11 @@ CREATE TABLE IF NOT EXISTS resources(
     type TEXT NOT NULL,
     data BLOB NOT NULL,
     creation_date TIMESTAMP NOT NULL,
-    is_multimedial INTEGER CHECK (is_multimedial IN (0, 1)) NOT NULL,
+    is_multimedia INTEGER CHECK (is_multimedia IN (0, 1)) NOT NULL,
     resource_date TIMESTAMP NOT NULL,
     track_id INTEGER,
 
-    FOREIGN KEY (track_id) REFERENCES tracks(id) ON DELETE CASCADE
+    FOREIGN KEY (track_id) REFERENCES tracks(id)
 );
 
 CREATE TABLE IF NOT EXISTS authors(
@@ -88,8 +88,8 @@ CREATE TABLE IF NOT EXISTS track_author(
     track_id INTEGER NOT NULL,
     author_id INTEGER NOT NULL,
     UNIQUE (track_id, author_id),
-    FOREIGN KEY (track_id) REFERENCES tracks(id) ON DELETE CASCADE,
-    FOREIGN KEY (author_id) REFERENCES authors(id) ON DELETE CASCADE
+    FOREIGN KEY (track_id) REFERENCES tracks(id),
+    FOREIGN KEY (author_id) REFERENCES authors(id)
 );
 
 CREATE TABLE IF NOT EXISTS resource_author(
@@ -97,8 +97,8 @@ CREATE TABLE IF NOT EXISTS resource_author(
     resource_id INTEGER NOT NULL,
     author_id INTEGER NOT NULL,
     UNIQUE (resource_id, author_id),
-    FOREIGN KEY (resource_id) REFERENCES resources(id) ON DELETE CASCADE,
-    FOREIGN KEY (author_id) REFERENCES authors(id) ON DELETE CASCADE
+    FOREIGN KEY (resource_id) REFERENCES resources(id),
+    FOREIGN KEY (author_id) REFERENCES authors(id)
 )
 
 
