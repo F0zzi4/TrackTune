@@ -35,7 +35,7 @@ public class LoginController {
             String password = TxtPassword.getText();
 
             if(isInputValid(username, password)){
-                User user = userDAO.getUser(username);
+                User user = userDAO.getByKey(username);
                 if(user != null){
                     ViewManager.navigateToDashboard();
                 }else
