@@ -19,14 +19,6 @@ public abstract class User implements Comparable<User>{
         this.name = name;
         this.surname = surname;
     }
-
-    /**
-     * Verify if the provided password matches the stored password
-     * 
-     * @param password The password to check
-     * @return true if the password matches, false otherwise
-     */
-    public boolean checkPassword(String password) { return this.password.equals(password); }
     
     /**
      * Get the user's username
@@ -56,17 +48,27 @@ public abstract class User implements Comparable<User>{
      */
     public String getSurname() { return surname; }
 
+    /**
+     * Two users are equal if their username are equal
+     * @param other the other user object
+     * @return true if their username are equal, false otherwise or if 'other' is not an instance of User
+     */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object other) {
         boolean result = false;
-        if (obj instanceof User user) {
+        if (other instanceof User user) {
             result = this.getUsername().equals(user.getUsername());
         }
         return result;
     }
 
+    /**
+     * Two user are comparable by their username
+     * @param other the object to be compared
+     * @return an int value based on alphabetic sort of the two users
+     */
     @Override
-    public int compareTo(User o) {
-        return this.getUsername().compareToIgnoreCase(o.getUsername());
+    public int compareTo(User other) {
+        return this.getUsername().compareToIgnoreCase(other.getUsername());
     }
 }
