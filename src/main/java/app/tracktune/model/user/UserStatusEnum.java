@@ -1,9 +1,7 @@
 package app.tracktune.model.user;
 
-import javafx.fxml.FXML;
-
 public enum UserStatusEnum{
-    CREATED(0),
+    ACTIVE(0),
     REMOVED(1),
     SUSPENDED(2);
 
