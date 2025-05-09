@@ -16,7 +16,7 @@ import javafx.scene.input.KeyCode;
 public class LoginController {
     private final UserDAO userDAO;
     @FXML
-    private TextField TxtEmail;
+    private TextField TxtUsername;
     @FXML
     private PasswordField TxtPassword;
 
@@ -31,7 +31,7 @@ public class LoginController {
     @FXML
     private void handleLogin() {
         try{
-            String username = TxtEmail.getText();
+            String username = TxtUsername.getText();
             String password = TxtPassword.getText();
 
             if(isInputValid(username, password)){
@@ -47,6 +47,14 @@ public class LoginController {
         }catch(Exception e){
             System.err.println(e.getMessage());
         }
+    }
+
+    /**
+     * Access button handler for Acccount Request
+     */
+    @FXML
+    private void handleAccountRequest(){
+        ViewManager.navigateToAccountRequest();
     }
 
     /**
