@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS Users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
@@ -9,14 +9,14 @@ CREATE TABLE IF NOT EXISTS users (
     is_admin INTEGER CHECK (is_admin IN (0, 1)) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS pending_users (
+CREATE TABLE IF NOT EXISTS PendingUsers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
     name TEXT NOT NULL,
     surname TEXT NOT NULL,
     status INTEGER NOT NULL,
-    request_date TIMESTAMP NOT NULL
+    requestDate TIMESTAMP NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS tracks (
