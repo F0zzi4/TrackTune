@@ -134,7 +134,7 @@ public class DBInit {
         WHERE username = 'admin'
     """;
     public static final String INSERT_ADMIN_USER_STMT = """
-        INSERT INTO Users (username, password, name, surname, userStatus, creationDate, isAdmin)
+        INSERT INTO Users (username, password, name, surname, status, creationDate, isAdmin)
         VALUES (?, ?, ?, ?, ?, ?, ?)
     """;
     public static final Object[] ADMIN_PARAMS = {
@@ -142,22 +142,22 @@ public class DBInit {
             "admin12345",                 // password
             "admin",                      // name
             "",                           // surname
-            "",                           // userStatus
+            0,                            // status
             currTimestamp,                // creationDate
             1                             // isAdmin
     };
 
     public static String getDBInitStatement() {
-        return CREATE_USERS_TABLE_STMT +
-                CREATE_PENDING_USERS_TABLE_STMT +
-                CREATE_TRACKS_TABLE_STMT +
-                CREATE_COMMENTS_TABLE_STMT +
-                CREATE_INTERACTIONS_TABLE_STMT +
-                CREATE_INSTRUMENTS_TABLE_STMT +
-                CREATE_TRACKS_INSTRUMENTS_TABLE_STMT +
-                CREATE_RESOURCES_TABLE_STMT +
-                CREATE_AUTHORS_TABLE_STMT +
-                CREATE_TRACK_AUTHOR_TABLE_STMT +
+        return CREATE_USERS_TABLE_STMT + ";" +
+                CREATE_PENDING_USERS_TABLE_STMT + ";" +
+                CREATE_TRACKS_TABLE_STMT + ";" +
+                CREATE_COMMENTS_TABLE_STMT + ";" +
+                CREATE_INTERACTIONS_TABLE_STMT + ";" +
+                CREATE_INSTRUMENTS_TABLE_STMT + ";" +
+                CREATE_TRACKS_INSTRUMENTS_TABLE_STMT + ";" +
+                CREATE_RESOURCES_TABLE_STMT + ";" +
+                CREATE_AUTHORS_TABLE_STMT + ";" +
+                CREATE_TRACK_AUTHOR_TABLE_STMT + ";" +
                 CREATE_RESOURCE_AUTHOR_TABLE_STMT;
     }
 }
