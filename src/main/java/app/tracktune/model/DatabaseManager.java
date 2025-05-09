@@ -39,16 +39,22 @@ public class DatabaseManager {
             dbConnection = DriverManager.getConnection(dbUrl);
             Statement statement = dbConnection.createStatement();
 
-            // Create users table if it doesn't exist
-            statement.execute(DBInit.getDBInitStatement());
+            String sqlStatements = DBInit.getDBInitStatement();
+            String[] queries = sqlStatements.split(";");
+            for (String query : queries) {
+                String trimmedQuery = query.trim();
+                if (!trimmedQuery.isEmpty()) {
+                    statement.executeUpdate(trimmedQuery + ";");
+                }
+            }
 
             // Check if admin user exists, create if it doesn't
             ResultSet rs = statement.executeQuery(DBInit.CHECK_ADMIN_USER_STMT);
             if (!rs.next()) {
                 // Admin user doesn't exist, create it
                 PreparedStatement prepStatement = dbConnection.prepareStatement(DBInit.INSERT_ADMIN_USER_STMT);
-                for(int i = 1;i <= DBInit.ADMIN_PARAMS.length;i++){
-                    prepStatement.setObject(i, DBInit.ADMIN_PARAMS[i]);
+                for(int i = 0;i < DBInit.ADMIN_PARAMS.length;i++){
+                    prepStatement.setObject(i+1, DBInit.ADMIN_PARAMS[i]);
                 }
                 prepStatement.executeUpdate();
             }

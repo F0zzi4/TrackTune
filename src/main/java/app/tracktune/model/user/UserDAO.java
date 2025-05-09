@@ -21,12 +21,12 @@ public class UserDAO implements DAO<User> {
     private final String IS_ADMIN = "isAdmin";
     // CRUD STATEMENTS
     private static final String INSERT_USER_STMT = """
-                INSERT INTO Users (ID, username, password, name, surname, status, creationDate, isAdmin)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO Users (username, password, name, surname, status, creationDate, isAdmin)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
     private static final String UPDATE_USER_STMT = """
                 UPDATE Users
-                SET username = ?, pa = ?, PASSWORD = ?
+                SET name = ?, surname = ?, status = ?
                 WHERE username = ?
             """;
     private static final String DELETE_USER_STMT = """
@@ -52,6 +52,7 @@ public class UserDAO implements DAO<User> {
         dbManager.executeQuery(GET_ALL_USERS_STMT,
             rs -> {
                 while (rs.next()) {
+                    //int id = rs.getInt("ID");
                     String username = rs.getString(USERNAME);
                     String password = rs.getString(PASSWORD);
                     String name = rs.getString(NAME);
@@ -102,6 +103,7 @@ public class UserDAO implements DAO<User> {
                     authUser.getPassword(),
                     authUser.getName(),
                     authUser.getSurname(),
+                    authUser.getStatus(),
                     authUser.getCreationDate(),
                     0
             );
@@ -124,22 +126,18 @@ public class UserDAO implements DAO<User> {
         if(data instanceof Administrator admin){
             success = dbManager.executeUpdate(
                     UPDATE_USER_STMT,
-                    admin.getUsername(),
-                    admin.getPassword(),
                     admin.getName(),
                     admin.getSurname(),
                     admin.getStatus(),
-                    admin.getCreationDate()
+                    admin.getUsername()
                     );
         }else if(data instanceof AuthenticatedUser authUser){
             success = dbManager.executeUpdate(
                     UPDATE_USER_STMT,
-                    authUser.getUsername(),
-                    authUser.getPassword(),
                     authUser.getName(),
                     authUser.getSurname(),
                     authUser.getStatus(),
-                    authUser.getCreationDate()
+                    authUser.getUsername()
             );
         }
         
