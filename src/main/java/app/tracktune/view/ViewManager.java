@@ -116,4 +116,6 @@ public class ViewManager {
     public static void navigateToDashboard(){
         redirectView(Frames.DASHBOARD_VIEW_PATH);
     }
+
+    public static void navigateToAccountRequest(){redirectView(Frames.REQUEST_VIEW_PATH);}
 }
