@@ -2,6 +2,7 @@ package app.tracktune.view;
 
 import app.tracktune.Main;
 import app.tracktune.config.AppConfig;
+import app.tracktune.model.user.User;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
 import javafx.animation.FadeTransition;
@@ -21,6 +22,8 @@ import java.io.IOException;
 import static app.tracktune.Main.root;
 
 public class ViewManager {
+    private static User staticUser;
+
     /**
      * Load basic configuration for the given root
      * @param viewPath : path to the desired view
@@ -117,5 +120,23 @@ public class ViewManager {
         redirectView(Frames.DASHBOARD_VIEW_PATH);
     }
 
+    public static User getUser() {
+        return staticUser;
+    }
+
+    public static void setUser(User user) {
+        staticUser = user;
+    }
+
     public static void navigateToAccountRequest(){redirectView(Frames.REQUEST_VIEW_PATH);}
+
+    public static void navigateToPendingDashboard(){
+        try{
+            redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+
+    }
 }
