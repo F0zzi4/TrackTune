@@ -1,6 +1,6 @@
-package app.tracktune.controller.administrator;
+package app.tracktune.controller.authenticatedUser;
 
-import app.tracktune.model.user.PendingUser;
+import app.tracktune.model.user.AuthenticatedUser;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -15,7 +15,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class DashboardController implements Initializable {
+public class AuthenticatedUserDashboardController implements Initializable {
     @FXML
     private MediaPlayer mediaPlayer;
     @FXML
@@ -55,20 +55,17 @@ public class DashboardController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Object user = ViewManager.getUser();
-
-        if (user instanceof PendingUser) {
-            PendingUser pendingUser = (PendingUser) user;
-            int status = pendingUser.getStatus().ordinal();
+        if (ViewManager.getSessionUser() instanceof AuthenticatedUser authUser) {
+            int status = authUser.getStatus().ordinal();
             switch (status) {
-                case 0 -> LbStatusValue.setStyle("-fx-text-fill: orange;");
+                case 0 -> LbStatusValue.setStyle("-fx-text-fill: #784d14;");
                 case 2 -> LbStatusValue.setStyle("-fx-text-fill: #870505;");
             }
 
-            LbStatusValue.setText(pendingUser.getStatus().toString());
+            LbStatusValue.setText(authUser.getStatus().toString());
         } else {
-            LbStatusValue.setText("Utente non valido");
-            LbStatusValue.setStyle("-fx-text-fill: gray;");
+            LbStatusValue.setText(Strings.ERR_USER_NOT_ALLOWED);
+            LbStatusValue.setStyle("-fx-text-fill: #504645;");
         }
     }
 }

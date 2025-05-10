@@ -10,10 +10,12 @@ module app.tracktune {
     requires javafx.media;
 
     opens app.tracktune to javafx.fxml;
+    opens app.tracktune.controller to javafx.fxml;
+    opens app.tracktune.controller.admin to javafx.fxml;
+
     exports app.tracktune;
     exports app.tracktune.controller;
+    exports app.tracktune.controller.admin;
     exports app.tracktune.model;
-    opens app.tracktune.controller to javafx.fxml;
-    exports app.tracktune.controller.administrator;
-    opens app.tracktune.controller.administrator to javafx.fxml;
+    exports app.tracktune.model.user;
 }

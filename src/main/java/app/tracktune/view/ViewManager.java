@@ -2,9 +2,9 @@ package app.tracktune.view;
 
 import app.tracktune.Main;
 import app.tracktune.config.AppConfig;
+import app.tracktune.controller.SessionManager;
 import app.tracktune.model.user.User;
 import app.tracktune.utils.Frames;
-import app.tracktune.utils.Strings;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -21,8 +21,11 @@ import java.io.IOException;
 
 import static app.tracktune.Main.root;
 
+/**
+ * Dedicated class to manage view section in MVC pattern
+ */
 public class ViewManager {
-    private static User staticUser;
+    private static SessionManager sessionManager;
 
     /**
      * Load basic configuration for the given root
@@ -116,27 +119,25 @@ public class ViewManager {
         redirectView(Frames.LOGIN_VIEW_PATH);
     }
 
-    public static void navigateToDashboard(){
-        redirectView(Frames.DASHBOARD_VIEW_PATH);
+    public static void navigateToAdminDashboard(){
+        redirectView(Frames.ADMIN_DASHBOARD_VIEW_PATH);
     }
 
-    public static User getUser() {
-        return staticUser;
-    }
-
-    public static void setUser(User user) {
-        staticUser = user;
+    public static void navigateToUserDashboard(){
+        redirectView(Frames.USER_DASHBOARD_VIEW_PATH);
     }
 
     public static void navigateToAccountRequest(){redirectView(Frames.REQUEST_VIEW_PATH);}
 
-    public static void navigateToPendingDashboard(){
-        try{
-            redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH);
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
+    public static void navigateToPendingUserDashboard(){redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH);}
 
-
+    public static void initSessionManager(User sessionUser){
+        SessionManager.initialize(sessionUser);
+    }
+    public static User getSessionUser(){
+        User sessionUser = null;
+        if(sessionManager != null)
+            sessionUser = sessionManager.getUser();
+        return sessionUser;
     }
 }

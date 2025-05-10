@@ -36,7 +36,7 @@ public class Main extends Application {
      * Initialize connection with database
      */
     public void initDatabase(){
-        dbManager = new DatabaseManager();
+        dbManager = DatabaseManager.getInstance();
         if(!dbManager.isConnected()){
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(Strings.ERROR);
