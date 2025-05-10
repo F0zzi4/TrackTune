@@ -18,5 +18,7 @@ public class Strings {
     public static final String SOMETHING_WENT_WRONG = "Something went wrong";
     public static final String MEDIA_ERROR = "Media error";
     public static final String MEDIA_NOT_SUPPORTED = "Media type not supported";
-    public static final String ERR_PENDING_USER_ALREADY_EXISTS = "Pending User already exists";
+    public static final String ERR_ACCOUNT_REQUEST = "Account request error:";
+    public static final String ERR_PENDING_USER_ALREADY_EXISTS = "There is already a pending request for this user";
+    public static final String ERR_USER_NOT_ALLOWED = "User not allowed";
 }

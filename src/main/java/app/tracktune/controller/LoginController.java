@@ -1,16 +1,14 @@
 package app.tracktune.controller;
 
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.exceptions.UserNotFoundException;
 import app.tracktune.model.user.*;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 
 public class LoginController {
     private final UserDAO userDAO;
@@ -40,29 +38,33 @@ public class LoginController {
                 throw new TrackTuneException(Strings.USER_PWD_EMPTY);
             }
 
-            // Check administrator / user
+            // Check if it's an admin or not
             User user = userDAO.getByKey(username);
             if (user != null && user.getPassword().equals(password)) {
-                ViewManager.setUser(user);
-                ViewManager.navigateToDashboard();
+                if(user instanceof Administrator admin){
+                    ViewManager.initSessionManager(admin);
+                    ViewManager.navigateToAdminDashboard();
+                }else if(user instanceof  AuthenticatedUser authUser){
+                    ViewManager.initSessionManager(authUser);
+                    ViewManager.navigateToUserDashboard();
+                }
                 return;
             }
 
-            // Check pending user
+            // Check if it's a pending user
             PendingUser pendingUser = pendingUserDAO.getByKey(username);
             if (pendingUser != null && pendingUser.getPassword().equals(password)) {
-                ViewManager.setUser(pendingUser);
-                ViewManager.navigateToPendingDashboard();
+                ViewManager.initSessionManager(pendingUser);
+                ViewManager.navigateToPendingUserDashboard();
                 return;
             }
 
             // No user found
-            throw new TrackTuneException(Strings.ERR_USER_NOT_FOUND);
-
+            throw new UserNotFoundException(Strings.ERR_USER_NOT_FOUND);
         } catch (TrackTuneException e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, "Error", Alert.AlertType.ERROR);
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, Strings.ERROR, Alert.AlertType.ERROR);
         }
     }
 

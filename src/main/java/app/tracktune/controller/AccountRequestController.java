@@ -9,9 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import java.awt.*;
-import java.io.IOException;
-import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 
 public class AccountRequestController {
@@ -31,7 +28,7 @@ public class AccountRequestController {
     }
 
     /**
-     * Access button handler for Account Request
+     * Access button handler for account request
      */
     @FXML
     private void handleRequest(){
@@ -40,33 +37,32 @@ public class AccountRequestController {
         String name = TxtName.getText();
         String surname = TxtSurname.getText();
 
+        try{
             // Check if the username has already requested an account
-            try{
-                if(isInputValid(username, password, name, surname)){
-                    PendingUser existingUser = pendingUserDAO.getByKey(username);
-                    if (existingUser == null) {
-                        PendingUser newUser = new PendingUser(
-                                username,
-                                password,
-                                name,
-                                surname,
-                                new Timestamp(System.currentTimeMillis()),
-                                AuthRequestStatusEnum.CREATED
-                        );
-                        pendingUserDAO.insert(newUser);
-                        ViewManager.setUser(newUser);
-                        ViewManager.navigateToPendingDashboard();
-                    }else
-                        throw new PendingUserAlreadyExistsException(Strings.ERR_PENDING_USER_ALREADY_EXISTS);
-                }
-                else
-                    throw new PendingUserAlreadyExistsException(Strings.FIELD_EMPTY);
-            }catch(PendingUserAlreadyExistsException e) {
-                ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, e.getMessage(), Alert.AlertType.ERROR);
+            if(isInputValid(username, password, name, surname)){
+                if (pendingUserDAO.getByKey(username) == null) {
+                    PendingUser pendingUser = new PendingUser(
+                            username,
+                            password,
+                            name,
+                            surname,
+                            new Timestamp(System.currentTimeMillis()),
+                            AuthRequestStatusEnum.CREATED
+                    );
+                    pendingUserDAO.insert(pendingUser);
+                    ViewManager.initSessionManager(pendingUser);
+                    ViewManager.navigateToPendingUserDashboard();
+                }else
+                    throw new PendingUserAlreadyExistsException(Strings.ERR_PENDING_USER_ALREADY_EXISTS);
             }
-            catch(Exception e){
-                System.err.println(e.getMessage());
-            }
+            else
+                throw new PendingUserAlreadyExistsException(Strings.FIELD_EMPTY);
+        }catch(TrackTuneException e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_ACCOUNT_REQUEST, e.getMessage(), Alert.AlertType.ERROR);
+        }
+        catch(Exception e){
+            System.err.println(e.getMessage());
+        }
     }
 
     @FXML
@@ -78,7 +74,9 @@ public class AccountRequestController {
      * Check input fields from the user
      * @param username : Username input from the user
      * @param password : Password input from the user
-     * @return true or false
+     * @param name : Name input from the user
+     * @param surname : Surname input from the user
+     * @return true if all the fields are not blank, false otherwise
      */
     private boolean isInputValid(String username, String password, String name, String surname){
         return !username.isEmpty() && !password.isEmpty() && !name.isEmpty() && !surname.isEmpty();
