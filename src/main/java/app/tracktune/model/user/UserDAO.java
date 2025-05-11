@@ -1,15 +1,17 @@
 package app.tracktune.model.user;
 
 import app.tracktune.Main;
+import app.tracktune.exceptions.UserAlreadyExistsException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.Strings;
 
 import java.sql.Timestamp;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class UserDAO implements DAO<User> {
-    private final SortedSet<User> userCache = new TreeSet<>();
+    private final SortedSet<User> cache = new TreeSet<>();
     private final DatabaseManager dbManager;
     // FIELDS
     private final String USERNAME = "username";
@@ -21,19 +23,22 @@ public class UserDAO implements DAO<User> {
     private final String IS_ADMIN = "isAdmin";
     // CRUD STATEMENTS
     private static final String INSERT_USER_STMT = """
-                INSERT INTO Users (username, password, name, surname, status, creationDate, isAdmin)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """;
+        INSERT INTO Users (username, password, name, surname, status, creationDate, isAdmin)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    """;
     private static final String UPDATE_USER_STMT = """
-                UPDATE Users
-                SET name = ?, surname = ?, status = ?
-                WHERE username = ?
-            """;
+        UPDATE Users
+        SET name = ?, surname = ?, status = ?
+        WHERE username = ?
+    """;
     private static final String DELETE_USER_STMT = """
-                DELETE FROM Users
-                WHERE username = ?
-            """;
-    private static final String GET_ALL_USERS_STMT = "SELECT * FROM Users";
+        DELETE FROM Users
+        WHERE username = ?
+    """;
+    private static final String GET_ALL_USERS_STMT = """
+        SELECT *
+        FROM Users
+    """;
 
     /**
      * Constructor to initialize a dao that manages 'User' entity
@@ -41,18 +46,18 @@ public class UserDAO implements DAO<User> {
      */
     public UserDAO() {
         dbManager = Main.dbManager;
-        refreshUserCache();
+        refreshCache();
     }
     
     /**
      * Refresh the user cache from the database
      */
-    private void refreshUserCache() {
-        userCache.clear();
+    @Override
+    public void refreshCache() {
+        cache.clear();
         dbManager.executeQuery(GET_ALL_USERS_STMT,
             rs -> {
                 while (rs.next()) {
-                    //int id = rs.getInt("ID");
                     String username = rs.getString(USERNAME);
                     String password = rs.getString(PASSWORD);
                     String name = rs.getString(NAME);
@@ -62,9 +67,9 @@ public class UserDAO implements DAO<User> {
                     boolean isAdmin = rs.getInt(IS_ADMIN) == 1;
 
                     if (isAdmin){
-                        userCache.add(new AuthenticatedUser(username, password, name, surname, status, creationDate));
+                        cache.add(new Administrator(username, password, name, surname, status, creationDate));
                     }else{
-                        userCache.add(new Administrator(username, password, name, surname, status, creationDate));
+                        cache.add(new AuthenticatedUser(username, password, name, surname, status, creationDate));
                     }
                 }
                 return null;
@@ -75,17 +80,17 @@ public class UserDAO implements DAO<User> {
     /**
      * Inserts a new user into the database
      *
-     * @param data the user to be inserted into the data source
+     * @param user the user to be inserted into the data source
      */
     @Override
-    public void insert(User data) {
+    public void insert(User user) {
         boolean success = false;
 
-        if(userAlreadyExists(data)){
-            return;
+        if(alreadyExists(user)){
+            throw new UserAlreadyExistsException(Strings.ERR_USER_ALREADY_EXISTS);
         }
 
-        if(data instanceof Administrator admin){
+        if(user instanceof Administrator admin){
             success = dbManager.executeUpdate(
                     INSERT_USER_STMT,
                     admin.getUsername(),
@@ -96,7 +101,7 @@ public class UserDAO implements DAO<User> {
                     admin.getCreationDate(),
                     1
             );
-        }else if(data instanceof AuthenticatedUser authUser){
+        }else if(user instanceof AuthenticatedUser authUser){
             success = dbManager.executeUpdate(
                     INSERT_USER_STMT,
                     authUser.getUsername(),
@@ -110,20 +115,20 @@ public class UserDAO implements DAO<User> {
         }
 
         if (success) {
-            userCache.add(data);
+            cache.add(user);
         }
     }
 
     /**
      * Updates a user into the database
      *
-     * @param data the user to be updated on database
+     * @param user the user to be updated on database
      */
     @Override
-    public void update(User data) {
+    public void update(User user) {
         boolean success = false;
 
-        if(data instanceof Administrator admin){
+        if(user instanceof Administrator admin){
             success = dbManager.executeUpdate(
                     UPDATE_USER_STMT,
                     admin.getName(),
@@ -131,7 +136,7 @@ public class UserDAO implements DAO<User> {
                     admin.getStatus(),
                     admin.getUsername()
                     );
-        }else if(data instanceof AuthenticatedUser authUser){
+        }else if(user instanceof AuthenticatedUser authUser){
             success = dbManager.executeUpdate(
                     UPDATE_USER_STMT,
                     authUser.getName(),
@@ -142,25 +147,25 @@ public class UserDAO implements DAO<User> {
         }
         
         if (success) {
-            userCache.remove(data);
-            userCache.add(data);
+            cache.remove(user);
+            cache.add(user);
         }
     }
 
     /**
      * Deletes a user record on database
      *
-     * @param data the user to be deleted on database
+     * @param user the user to be deleted on database
      */
     @Override
-    public void delete(User data) {
+    public void delete(User user) {
         boolean success = dbManager.executeUpdate(
                 DELETE_USER_STMT,
-                data.getUsername()
+                user.getUsername()
         );
 
         if (success) {
-            userCache.remove(data);
+            cache.remove(user);
         }
     }
 
@@ -171,7 +176,7 @@ public class UserDAO implements DAO<User> {
      */
     @Override
     public User getByKey(Object key) {
-        return userCache.stream()
+        return cache.stream()
                 .filter(user -> user.getUsername().equals(key))
                 .findFirst()
                 .orElse(null);
@@ -183,7 +188,7 @@ public class UserDAO implements DAO<User> {
      */
     @Override
     public SortedSet<User> getAll() {
-        return userCache;
+        return cache;
     }
 
     /**
@@ -207,7 +212,8 @@ public class UserDAO implements DAO<User> {
      * @param user user to check if exists
      * @return true if exists, false otherwise
      */
-    public boolean userAlreadyExists(User user) {
+    @Override
+    public boolean alreadyExists(User user) {
         return getByKey(user.getUsername()) != null;
     }
 }

@@ -1,8 +1,10 @@
 package app.tracktune.controller;
 
 import app.tracktune.exceptions.PendingUserAlreadyExistsException;
+import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.user.*;
+import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -32,31 +34,29 @@ public class AccountRequestController {
      */
     @FXML
     private void handleRequest(){
-        String username = TxtUsername.getText();
-        String password = TxtPassword.getText();
-        String name = TxtName.getText();
-        String surname = TxtSurname.getText();
-
         try{
-            // Check if the username has already requested an account
-            if(isInputValid(username, password, name, surname)){
-                if (pendingUserDAO.getByKey(username) == null) {
-                    PendingUser pendingUser = new PendingUser(
-                            username,
-                            password,
-                            name,
-                            surname,
-                            new Timestamp(System.currentTimeMillis()),
-                            AuthRequestStatusEnum.CREATED
-                    );
-                    pendingUserDAO.insert(pendingUser);
-                    ViewManager.initSessionManager(pendingUser);
-                    ViewManager.navigateToPendingUserDashboard();
-                }else
-                    throw new PendingUserAlreadyExistsException(Strings.ERR_PENDING_USER_ALREADY_EXISTS);
-            }
-            else
-                throw new PendingUserAlreadyExistsException(Strings.FIELD_EMPTY);
+            String username = TxtUsername.getText();
+            String password = TxtPassword.getText();
+            String name = TxtName.getText();
+            String surname = TxtSurname.getText();
+
+            if(!isInputValid(username, password, name, surname))
+                throw new TrackTuneException(Strings.FIELD_EMPTY);
+
+            if(SQLiteScripts.checkForSQLInjection(username, password, name, surname))
+                throw new SQLInjectionException(Strings.ERR_SQL_INJECTION);
+
+            PendingUser pendingUser = new PendingUser(
+                    username,
+                    password,
+                    name,
+                    surname,
+                    new Timestamp(System.currentTimeMillis()),
+                    AuthRequestStatusEnum.CREATED
+            );
+            pendingUserDAO.insert(pendingUser);
+            ViewManager.initSessionManager(pendingUser);
+            ViewManager.navigateToPendingUserDashboard();
         }catch(TrackTuneException e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_ACCOUNT_REQUEST, e.getMessage(), Alert.AlertType.ERROR);
         }

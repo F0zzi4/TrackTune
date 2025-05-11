@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="TrackTuneDB" uuid="f5b71805-c067-47af-92d0-7525ac195876">
+    <data-source source="LOCAL" name="database.db" uuid="9845e995-b134-472b-81a6-e411797b8bf4">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

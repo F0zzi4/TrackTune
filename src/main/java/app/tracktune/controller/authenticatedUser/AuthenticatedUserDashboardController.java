@@ -20,6 +20,23 @@ public class AuthenticatedUserDashboardController implements Initializable {
     private MediaPlayer mediaPlayer;
     @FXML
     private MediaView mediaPlayerView;
+    private AuthenticatedUser authUser;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        if (ViewManager.getSessionUser() instanceof AuthenticatedUser authenticatedUser) {
+            this.authUser = authenticatedUser;
+        }
+    }
+
+    @FXML
+    public void handleLogout() {
+        try{
+            ViewManager.logout();
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+        }
+    }
 
     private void initMediaPlayer() {
         try{
@@ -39,33 +56,9 @@ public class AuthenticatedUserDashboardController implements Initializable {
         initMediaPlayer();
     }
 
-    @FXML
-    public void handleLogout() {
-        ViewManager.navigateToLogin();
-    }
-
     public void disposeMediaPlayer() {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
-        }
-    }
-
-    @FXML
-    private Label LbStatusValue;
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        if (ViewManager.getSessionUser() instanceof AuthenticatedUser authUser) {
-            int status = authUser.getStatus().ordinal();
-            switch (status) {
-                case 0 -> LbStatusValue.setStyle("-fx-text-fill: #784d14;");
-                case 2 -> LbStatusValue.setStyle("-fx-text-fill: #870505;");
-            }
-
-            LbStatusValue.setText(authUser.getStatus().toString());
-        } else {
-            LbStatusValue.setText(Strings.ERR_USER_NOT_ALLOWED);
-            LbStatusValue.setStyle("-fx-text-fill: #504645;");
         }
     }
 }

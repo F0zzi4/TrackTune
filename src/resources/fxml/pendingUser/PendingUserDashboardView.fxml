@@ -4,50 +4,53 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@../../style/pending_dash-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.admin.AdminDashboardController">
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<BorderPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@../../style/pending_dash-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.pendingUser.PendingUserDashboardController">
     <left>
         <VBox alignment="TOP_CENTER" prefWidth="220.0" spacing="12.0" styleClass="sidebar">
             <children>
                 <Label styleClass="sidebar-title" text="TRACKTUNE" />
+                <ProgressBar id="custom-progress" prefWidth="200.0" progress="0.0" />
                 <Button disable="true" prefHeight="38.0" prefWidth="648.0" styleClass="sidebar-button" text="Dashboard">
-<!--                    <graphic>-->
-<!--                        <FontIcon iconLiteral="mdi2v-view-dashboard" />-->
-<!--                    </graphic>-->
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2v-view-dashboard" iconSize="20" />
+                    </graphic>
                 </Button>
-            <Separator prefWidth="200.0" />
+                <Separator prefWidth="200.0" />
                 <Button disable="true" prefHeight="38.0" prefWidth="385.0" styleClass="sidebar-button" text="Users">
-<!--                    <graphic>-->
-<!--                        <FontIcon iconLiteral="mdi2a-account-circle" />-->
-<!--                    </graphic>-->
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2a-account-circle" iconSize="20" />
+                    </graphic>
                 </Button>
-            <Separator prefWidth="200.0" />
+                <Separator prefWidth="200.0" />
                 <Button disable="true" prefHeight="38.0" prefWidth="271.0" styleClass="sidebar-button" text="Tracks">
-<!--                    <graphic>-->
-<!--                        <FontIcon iconLiteral="mdi2m-music-clef-treble" />-->
-<!--                    </graphic>-->
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2m-music-clef-treble" iconSize="21" />
+                    </graphic>
                 </Button>
-            <Separator prefWidth="200.0" />
+                <Separator prefWidth="200.0" />
                 <Button disable="true" prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Authors">
-<!--                    <graphic>-->
-<!--                        <FontIcon iconLiteral="mdi2a-account-music" />-->
-<!--                    </graphic>-->
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2a-account-music" iconSize="20" />
+                    </graphic>
                 </Button>
-            <Separator prefWidth="200.0" />
+                <Separator prefWidth="200.0" />
                 <Button disable="true" prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Genres">
-<!--                    <graphic>-->
-<!--                        <FontIcon iconLiteral="mdi2b-book-play" />-->
-<!--                    </graphic>-->
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2b-book-play" iconSize="20" />
+                    </graphic>
                 </Button>
-            <Separator prefWidth="200.0" />
+                <Separator prefWidth="200.0" />
                 <Region prefHeight="336.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                 <Button onMouseClicked="#handleLogout" prefHeight="44.0" prefWidth="110.0" styleClass="logout-button" text="Logout">
-<!--                    <graphic>-->
-<!--                        <FontIcon iconLiteral="fas-sign-out-alt" />-->
-<!--                    </graphic>-->
+                    <graphic>
+                        <FontIcon iconLiteral="fas-sign-out-alt" />
+                    </graphic>
                 </Button>
             </children>
         </VBox>

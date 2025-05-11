@@ -25,7 +25,7 @@ public class Main extends Application {
             initDatabase();
             ViewManager.initView(Frames.LOGIN_VIEW_PATH);
         }catch(TrackTuneException e){
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.SOMETHING_WENT_WRONG, e.getMessage(), Alert.AlertType.ERROR);
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, e.getMessage(), Alert.AlertType.ERROR);
         }
         catch(Exception e){
             System.err.println(e.getMessage());
