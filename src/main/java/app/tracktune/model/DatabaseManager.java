@@ -9,13 +9,16 @@ import java.sql.*;
 
 /**
  * Dedicated class for data manipulation
- * Classic example of singleton pattern
+ * Using singleton pattern
  */
 public class DatabaseManager {
     private static DatabaseManager instance;
     private Connection dbConnection;
     private String dbUrl;
 
+    /**
+     * Create the instance of the database manager following singleton pattern
+     */
     private DatabaseManager() {
         String dbPath = AppConfig.DATABASE_PATH;
         File dbFile = new File(dbPath);
@@ -28,6 +31,10 @@ public class DatabaseManager {
         initializeDatabase();
     }
 
+    /**
+     * Get the instance of database manager, following singleton pattern
+     * @return the instance of database manager
+     */
     public static synchronized DatabaseManager getInstance() {
         if (instance == null) {
             instance = new DatabaseManager();
@@ -35,6 +42,9 @@ public class DatabaseManager {
         return instance;
     }
 
+    /**
+     * Initialize database with DDL statements if tables don't exist, also creating an admin user to manage system
+     */
     private void initializeDatabase() {
         try {
             dbConnection = DriverManager.getConnection(dbUrl);
@@ -57,41 +67,28 @@ public class DatabaseManager {
                 }
                 prepStatement.executeUpdate();
             }
-
         } catch (SQLException e) {
             System.err.println(Strings.ERR_INIT_DB + e.getMessage());
         }
     }
 
+    /**
+     * Check if the database is connected
+     * @return true if it's connected, false otherwise
+     */
     public boolean isConnected() {
         return dbConnection != null;
     }
 
-    private boolean isValidSQL(String sql) {
-        boolean result = true;
-
-        if (sql.isBlank())
-            return false;
-
-        String[] forbiddenPatterns = {
-                "('--|;|--|\\bDROP\\b|\\bSELECT\\b|\\bINSERT\\b|\\bUPDATE\\b|\\bDELETE\\b|\\bTRUNCATE\\b|\\bALTER\\b|\\bCREATE\\b|\\bEXEC\\b|\\bUNION\\b|\\bFROM\\b|\\bWHERE\\b|\\bJOIN\\b)"
-        };
-
-        for (String pattern : forbiddenPatterns) {
-            if (sql.toUpperCase().matches(".*" + pattern + ".*")) {
-                result = false;
-                break;
-            }
-        }
-        return result;
-    }
-
+    /**
+     * Method to execute a statement that updates or create tables
+     * @param sql statement converted in string
+     * @param params statement parameters
+     * @return true if the statement ran without problems, false otherwise
+     */
     public boolean executeUpdate(String sql, Object... params) {
         boolean result = false;
         try {
-            if (!isValidSQL(sql))
-                return result;
-
             PreparedStatement prepStatement = dbConnection.prepareStatement(sql);
             for (int i = 0; i < params.length; i++) {
                 prepStatement.setObject(i + 1, params[i]);
@@ -105,12 +102,16 @@ public class DatabaseManager {
         return result;
     }
 
+    /**
+     * Method to execute a query that returns a result set
+     * @param sql sql statement converted in string
+     * @param processor lambda expression (processor type) that contains the result set management
+     * @param params statement parameters
+     * @return type of the object returned from the processor
+     */
     public <T> T executeQuery(String sql, ResultSetProcessor<T> processor, Object... params) {
         T result = null;
         try {
-            if (!isValidSQL(sql))
-                return result;
-
             PreparedStatement prepStatement = dbConnection.prepareStatement(sql);
             for (int i = 0; i < params.length; i++) {
                 prepStatement.setObject(i + 1, params[i]);
@@ -126,6 +127,10 @@ public class DatabaseManager {
         return result;
     }
 
+    /**
+     * lambda expression (processor type) that contains the result set management
+     * @param <T> type of the object returned from the processor
+     */
     public interface ResultSetProcessor<T> {
         T process(ResultSet rs) throws SQLException;
     }

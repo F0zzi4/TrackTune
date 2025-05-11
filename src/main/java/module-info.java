@@ -16,6 +16,7 @@ module app.tracktune {
     exports app.tracktune;
     exports app.tracktune.controller;
     exports app.tracktune.controller.admin;
+    exports app.tracktune.controller.pendingUser;
     exports app.tracktune.model;
     exports app.tracktune.model.user;
 }

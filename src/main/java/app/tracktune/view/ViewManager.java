@@ -18,6 +18,7 @@ import javafx.util.Duration;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static app.tracktune.Main.root;
 
@@ -48,7 +49,7 @@ public class ViewManager {
      * Redirect the current view to a new one with a fade transition
      * @param viewPath : view path to be redirected
      */
-    public static void redirectView(String viewPath) {
+    public static void redirectView(String viewPath, double frameWidth, double frameHeight) {
         // Fade out current scene
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), root.getScene().getRoot());
         fadeOut.setFromValue(1.0);
@@ -68,10 +69,10 @@ public class ViewManager {
                 // Set up the new scene
                 Scene newScene = new Scene(newRoot);
                 root.setScene(newScene);
-                setStageOnCurrentScreen(root, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
+                setStageOnCurrentScreen(root, frameWidth, frameHeight);
                 fadeIn.play();
             } catch (IOException ex) {
-                System.err.println(ex.getMessage());
+                System.err.println(ex.getMessage()+"\n"+ Arrays.toString(ex.getStackTrace()));
             }
         });
 
@@ -116,28 +117,35 @@ public class ViewManager {
     }
 
     public static void navigateToLogin(){
-        redirectView(Frames.LOGIN_VIEW_PATH);
+        redirectView(Frames.LOGIN_VIEW_PATH, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);
     }
 
     public static void navigateToAdminDashboard(){
-        redirectView(Frames.ADMIN_DASHBOARD_VIEW_PATH);
+        redirectView(Frames.ADMIN_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
     }
 
     public static void navigateToUserDashboard(){
-        redirectView(Frames.USER_DASHBOARD_VIEW_PATH);
+        redirectView(Frames.USER_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
     }
 
-    public static void navigateToAccountRequest(){redirectView(Frames.REQUEST_VIEW_PATH);}
+    public static void navigateToAccountRequest(){redirectView(Frames.ACCOUNT_REQUEST_VIEW_PATH, Frames.ACCOUNT_REQUEST_FRAME_WIDTH, Frames.ACCOUNT_REQUEST_FRAME_HEIGHT);}
 
-    public static void navigateToPendingUserDashboard(){redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH);}
+    public static void navigateToPendingUserDashboard(){redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);}
 
     public static void initSessionManager(User sessionUser){
         SessionManager.initialize(sessionUser);
+        sessionManager = SessionManager.getInstance();
     }
+
     public static User getSessionUser(){
         User sessionUser = null;
         if(sessionManager != null)
             sessionUser = sessionManager.getUser();
         return sessionUser;
+    }
+
+    public static void logout(){
+        SessionManager.reset();
+        navigateToLogin();
     }
 }

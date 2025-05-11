@@ -1,5 +1,7 @@
 package app.tracktune.controller.admin;
 
+import app.tracktune.controller.SessionManager;
+import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.user.Administrator;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
@@ -20,13 +22,21 @@ public class AdminDashboardController implements Initializable {
     private MediaPlayer mediaPlayer;
     @FXML
     private MediaView mediaPlayerView;
+    private Administrator admin;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        if (ViewManager.getSessionUser() instanceof Administrator admin) {
-            // TODO
-        } else {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.SOMETHING_WENT_WRONG, Strings.ERR_USER_NOT_ALLOWED, Alert.AlertType.ERROR);
+        if (ViewManager.getSessionUser() instanceof Administrator administrator) {
+            admin = administrator;
+        }
+    }
+
+    @FXML
+    public void handleLogout() {
+        try{
+            ViewManager.logout();
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
         }
     }
 
@@ -46,11 +56,6 @@ public class AdminDashboardController implements Initializable {
     @FXML
     public void viewTracks(){
         initMediaPlayer();
-    }
-
-    @FXML
-    public void handleLogout() {
-        ViewManager.navigateToLogin();
     }
 
     public void disposeMediaPlayer() {

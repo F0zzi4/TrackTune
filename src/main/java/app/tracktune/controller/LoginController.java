@@ -1,8 +1,10 @@
 package app.tracktune.controller;
 
+import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.exceptions.UserNotFoundException;
 import app.tracktune.model.user.*;
+import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -23,22 +25,27 @@ public class LoginController {
      */
     public LoginController() {
         pendingUserDAO = new PendingUserDAO();
-        userDAO = new UserDAO();}
+        userDAO = new UserDAO();
+    }
 
     /**
      * Access button handler for login
      */
     @FXML
     private void handleLogin() {
-        String username = TxtUsername.getText();
-        String password = TxtPassword.getText();
-
         try {
+            String username = TxtUsername.getText();
+            String password = TxtPassword.getText();
+
             if (!isInputValid(username, password)) {
                 throw new TrackTuneException(Strings.USER_PWD_EMPTY);
             }
 
-            // Check if it's an admin or not
+            if(SQLiteScripts.checkForSQLInjection(username, password)){
+                throw new SQLInjectionException(Strings.ERR_SQL_INJECTION);
+            }
+
+            // Check if it's an admin or authenticated user
             User user = userDAO.getByKey(username);
             if (user != null && user.getPassword().equals(password)) {
                 if(user instanceof Administrator admin){
@@ -64,12 +71,12 @@ public class LoginController {
         } catch (TrackTuneException e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, Strings.ERROR, Alert.AlertType.ERROR);
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
         }
     }
 
     /**
-     * Access button handler for Acccount Request
+     * Access button handler for the account request
      */
     @FXML
     private void handleAccountRequest(){
