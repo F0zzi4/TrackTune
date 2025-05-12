@@ -90,6 +90,14 @@ public class AdminDashboardController implements Initializable {
     }
 
     /**
+     * Loads and displays the Genre view by updating the main content area of the dashboard.
+     */
+    @FXML
+    private void handleGenre(){
+        setMainContent(Frames.GENRE_VIEW_PATH_VIEW_PATH);
+    }
+
+    /**
      * Loads and displays the requests view by updating the main content area of the dashboard.
      */
     @FXML
