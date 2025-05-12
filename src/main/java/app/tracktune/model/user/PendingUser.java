@@ -1,10 +1,14 @@
 package app.tracktune.model.user;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PendingUser extends User {
     private final Timestamp requestDate;
-    private final AuthRequestStatusEnum status;
+    private AuthRequestStatusEnum status;
 
     /**
      * Constructor for creating a pending user object
@@ -34,5 +38,23 @@ public class PendingUser extends User {
      */
     public AuthRequestStatusEnum getStatus() {
         return status;
+    }
+
+    /**
+     * Set the status of request
+     * @param status
+     */
+    public void setStatus(AuthRequestStatusEnum status) {
+        this.status = status;
+    }
+
+    /**
+     * Get the formatted request date, showing only up to minutes.
+     * @return Formatted request date
+     */
+    public String getFormattedRequestDate() {
+        if (requestDate == null) return "";
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy, HH:mm");
+        return formatter.format(new Date(requestDate.getTime()));
     }
 }
