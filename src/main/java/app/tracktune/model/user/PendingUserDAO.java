@@ -31,7 +31,7 @@ public class PendingUserDAO implements DAO<PendingUser> {
     """;
     private static final String UPDATE_PENDING_USER_STMT = """
         UPDATE PendingUsers
-        SET password = ?, name = ?, surname = ?, status = ?, requestDate = ?
+        SET password = ?, name = ?, surname = ?, status = ?
         WHERE username = ?
     """;
 
@@ -90,8 +90,24 @@ public class PendingUserDAO implements DAO<PendingUser> {
     }
 
     @Override
-    public void update(PendingUser data) {
+    public void update(PendingUser user) {
+        boolean success = dbManager.executeUpdate(
+                UPDATE_PENDING_USER_STMT,
+                user.getPassword(),
+                user.getName(),
+                user.getSurname(),
+                user.getStatus().ordinal(),
+                user.getUsername()
+        );
 
+        if (success) {
+            cache.remove(user);
+            cache.add(user);
+            System.out.println("success");
+        }
+        else{
+            System.out.println("errore");
+        }
     }
 
     @Override

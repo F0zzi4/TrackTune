@@ -36,11 +36,11 @@ public class ViewManager {
     public static void initView(String viewPath) throws IOException{
         FXMLLoader viewLoader = new FXMLLoader(Main.class.getResource(viewPath));
         Scene scene = new Scene(viewLoader.load(), 700, 550);
-        Image icon = new Image(Main.class.getResource(Frames.MAIN_ICON_PATH).toExternalForm());
+        //Image icon = new Image(Main.class.getResource(Frames.MAIN_ICON_PATH).toExternalForm());
         setStageOnCurrentScreen(root, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);
         root.setTitle(AppConfig.APP_TITLE);
         root.setResizable(false);
-        root.getIcons().add(icon);
+        //root.getIcons().add(icon);
         root.setScene(scene);
         root.show();
     }
@@ -147,5 +147,9 @@ public class ViewManager {
     public static void logout(){
         SessionManager.reset();
         navigateToLogin();
+    }
+
+    public static void navigateToRequests() {
+        redirectView(Frames.REQUESTS_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
     }
 }
