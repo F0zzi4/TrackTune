@@ -17,7 +17,7 @@
     -fx-font-style: italic;
 }
 
-.analyze-button {
+.switch-button {
     -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
     -fx-text-fill: #4a280f;
     -fx-font-size: 14px;
@@ -27,7 +27,13 @@
     -fx-font-weight: bold;
 }
 
-.analyze-button:hover {
+.label-title {
+    -fx-text-fill: #3c200b;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.switch-button:hover {
     -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
     -fx-text-fill: #3e2609;
 }
@@ -43,7 +49,7 @@
 }
 .accept-button:hover {
     -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
-    -fx-text-fill: #3e2609;
+    -fx-text-fill: #885116;
 }
 
 .reject-button {

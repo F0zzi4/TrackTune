@@ -24,7 +24,7 @@ public class RequestsController {
     @FXML private Button prevButton;
     @FXML private Button nextButton;
 
-    private SortedSet<PendingUser> allRequests = new TreeSet<>();
+    private SortedSet<PendingUser> pendingRequests = new TreeSet<>();
     private int currentPage = 0;
     private final int itemsPerPage = 5;
     private final PendingUserDAO pendingUserDAO = new PendingUserDAO();
@@ -36,7 +36,7 @@ public class RequestsController {
      */
     @FXML
     public void initialize() {
-        allRequests = pendingUserDAO.getAll().stream()
+        pendingRequests = pendingUserDAO.getAll().stream()
                 .filter(r -> r.getStatus() == AuthRequestStatusEnum.CREATED)
                 .sorted(Comparator.comparing(PendingUser::getRequestDate))
                 .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PendingUser::getRequestDate))));
@@ -49,7 +49,7 @@ public class RequestsController {
         });
 
         nextButton.setOnAction(e -> {
-            if ((currentPage + 1) * itemsPerPage < allRequests.size()) {
+            if ((currentPage + 1) * itemsPerPage < pendingRequests.size()) {
                 currentPage++;
                 updateRequests();
             }
@@ -66,14 +66,14 @@ public class RequestsController {
     private void updateRequests() {
         requestsContainer.getChildren().clear();
 
-        int totalRequests = allRequests.size();
+        int totalRequests = pendingRequests.size();
         int start = currentPage * itemsPerPage;
         int end = Math.min(start + itemsPerPage, totalRequests);
 
         prevButton.setDisable(currentPage == 0);
         nextButton.setDisable(end >= totalRequests);
 
-        List<PendingUser> pageItems = new ArrayList<>(allRequests).subList(start, end);
+        List<PendingUser> pageItems = new ArrayList<>(pendingRequests).subList(start, end);
 
         for (PendingUser request : pageItems) {
             HBox requestBox = createRequestItem(request);
@@ -182,8 +182,8 @@ public class RequestsController {
      * @param request the {@link PendingUser} to remove from the displayed list
      */
     private void removeRequestAndUpdate(PendingUser request) {
-        allRequests.remove(request);
-        int maxPage = (int) Math.ceil((double) allRequests.size() / itemsPerPage);
+        pendingRequests.remove(request);
+        int maxPage = (int) Math.ceil((double) pendingRequests.size() / itemsPerPage);
         if (currentPage >= maxPage && currentPage > 0) {
             currentPage--;
         }
