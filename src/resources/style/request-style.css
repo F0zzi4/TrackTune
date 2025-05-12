@@ -1,0 +1,61 @@
+.request-item {
+    -fx-background-color: #fff3e0;
+    -fx-padding: 12;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0.2, 0, 2);
+}
+
+.request-item-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #4a280f;
+    -fx-font-weight: bold;
+}
+
+.request-item-date {
+    -fx-font-size: 14px;
+    -fx-text-fill: #4a280f;
+    -fx-font-style: italic;
+}
+
+.analyze-button {
+    -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
+    -fx-text-fill: #4a280f;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.analyze-button:hover {
+    -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
+    -fx-text-fill: #3e2609;
+}
+
+.accept-button {
+    -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
+    -fx-text-fill: #4a280f;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+.accept-button:hover {
+    -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
+    -fx-text-fill: #3e2609;
+}
+
+.reject-button {
+    -fx-background-color: linear-gradient(to right, #ff944d, #f16f15);
+    -fx-text-fill: #653817;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+}
+
+.reject-button:hover {
+    -fx-background-color: linear-gradient(to right, #ff8e40, #ff814f);
+    -fx-text-fill: red;
+}
