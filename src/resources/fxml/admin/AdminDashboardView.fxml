@@ -10,6 +10,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
 
+<!--<?import org.kordamp.ikonli.javafx.FontIcon?>-->
+
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <BorderPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@../../style/dashboard-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.admin.AdminDashboardController">
     <left>
@@ -47,7 +49,7 @@
                     </graphic>
                 </Button>
             <Separator prefWidth="200.0" />
-            <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Requests">
+            <Button prefHeight="38.0" onMouseClicked="#handleRequests" prefWidth="356.0" styleClass="sidebar-button" text="Requests">
                 <graphic>
                     <FontIcon iconLiteral="mdi2a-account-plus" iconSize="20" />
                 </graphic>
@@ -64,7 +66,7 @@
     </left>
 
     <center>
-        <StackPane styleClass="main-content">
+        <StackPane fx:id="mainContent" styleClass="main-content">
              <children>
                 <MediaView fx:id="mediaPlayerView" fitHeight="600.0" fitWidth="800.0" />
              </children>

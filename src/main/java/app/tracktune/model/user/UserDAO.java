@@ -97,7 +97,7 @@ public class UserDAO implements DAO<User> {
                     admin.getPassword(),
                     admin.getName(),
                     admin.getSurname(),
-                    admin.getStatus(),
+                    admin.getStatus().ordinal(),
                     admin.getCreationDate(),
                     1
             );
@@ -108,7 +108,7 @@ public class UserDAO implements DAO<User> {
                     authUser.getPassword(),
                     authUser.getName(),
                     authUser.getSurname(),
-                    authUser.getStatus(),
+                    authUser.getStatus().ordinal(),
                     authUser.getCreationDate(),
                     0
             );
@@ -133,7 +133,7 @@ public class UserDAO implements DAO<User> {
                     UPDATE_USER_STMT,
                     admin.getName(),
                     admin.getSurname(),
-                    admin.getStatus(),
+                    admin.getStatus().ordinal(),
                     admin.getUsername()
                     );
         }else if(user instanceof AuthenticatedUser authUser){
@@ -141,7 +141,7 @@ public class UserDAO implements DAO<User> {
                     UPDATE_USER_STMT,
                     authUser.getName(),
                     authUser.getSurname(),
-                    authUser.getStatus(),
+                    authUser.getStatus().ordinal(),
                     authUser.getUsername()
             );
         }
