@@ -1,7 +1,5 @@
 package app.tracktune.controller.admin;
 
-import app.tracktune.controller.SessionManager;
-import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.user.Administrator;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
@@ -22,11 +20,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 /**
- * Controller for managing the admin dashboard, including handling video playback
- * and changing views such as user requests.
- *
+ * Controller for managing the admin dashboard and their related functionalities.
  * The dashboard includes a media player to display a video, handles user logout,
- * and supports switching between different views in the admin panel.
+ * and supports switching between different views in the main content
  */
 public class AdminDashboardController implements Initializable {
 
@@ -105,11 +101,10 @@ public class AdminDashboardController implements Initializable {
      * Sets the main content area of the dashboard to display a new view.
      * The new view is loaded from the specified FXML file path.
      *
-     * @param contentPath The path to the FXML file to be loaded and displayed in the main content area.
+     * @param contentPath Path to the FXML file to load and display in the main content area.
      */
     private void setMainContent(String contentPath) {
         try {
-            // Change scene of mainContent
             FXMLLoader loader = new FXMLLoader(getClass().getResource(contentPath));
             Parent view = loader.load();
             mainContent.getChildren().setAll(view);
