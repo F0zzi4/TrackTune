@@ -128,6 +128,24 @@ public class DBInit {
         );
     """;
 
+    private static final String CREATE_GENRES_TABLE_STMT = """  
+        CREATE TABLE IF NOT EXISTS Genres (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            description TEXT NOT NULL
+        );
+    """;
+
+    private static final String CREATE_RESOURCE_GENRE_TABLE_STMT = """  
+        CREATE TABLE IF NOT EXISTS ResourcesGenres (
+            ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            genreID INTEGER NOT NULL,
+            resourceID INTEGER NOT NULL,
+            FOREIGN KEY (genreID) REFERENCES Genres(ID),
+            FOREIGN KEY (resourceID) REFERENCES resources(ID)
+        );
+    """;
+
     public static final String CHECK_ADMIN_USER_STMT = """
         SELECT *
         FROM Users
@@ -158,6 +176,8 @@ public class DBInit {
                 CREATE_RESOURCES_TABLE_STMT + ";" +
                 CREATE_AUTHORS_TABLE_STMT + ";" +
                 CREATE_TRACK_AUTHOR_TABLE_STMT + ";" +
+                CREATE_GENRES_TABLE_STMT + ";"+
+                CREATE_RESOURCE_GENRE_TABLE_STMT + ";" +
                 CREATE_RESOURCE_AUTHOR_TABLE_STMT;
     }
 }
