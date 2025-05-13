@@ -35,8 +35,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Label contentDisplay="CENTER" prefHeight="66.0" prefWidth="613.0" style="-fx-alignment: center; -fx-font-size: 17; -fx-font-weight: bold;" text="Username:" underline="true" GridPane.rowIndex="2" />
-                <Label contentDisplay="CENTER" prefHeight="66.0" prefWidth="365.0" style="-fx-alignment: center; -fx-font-size: 17; -fx-font-weight: bold;" text="Password:" underline="true" GridPane.rowIndex="3" />
+                <Label contentDisplay="CENTER" prefHeight="66.0" prefWidth="613.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Username:" underline="true" GridPane.rowIndex="2" />
+                <Label contentDisplay="CENTER" prefHeight="66.0" prefWidth="365.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Password:" underline="true" GridPane.rowIndex="3" />
                 <TextField fx:id="TxtUsername" prefHeight="50.0" prefWidth="300.0" style="-fx-max-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 <PasswordField fx:id="TxtPassword" prefHeight="48.0" prefWidth="200.0" style="-fx-max-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             </children>
@@ -45,14 +45,14 @@
             <children>
                 <Button defaultButton="true" mnemonicParsing="false" onMouseClicked="#handleLogin" prefHeight="42.0" prefWidth="112.0" style="-fx-font-weight: bold;" text="Accedi">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-plus" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2l-login" iconSize="20" />
                     </graphic>
                 </Button>
             </children>
         </HBox>
         <HBox prefHeight="167.0" prefWidth="626.0" style="-fx-alignment: center;">
             <children>
-                <Label contentDisplay="CENTER" prefHeight="64.0" prefWidth="307.0" style="-fx-alignment: center; -fx-font-size: 15;" text="Se non possiedi un account, richiedine uno:" underline="true" />
+                <Label contentDisplay="CENTER" prefHeight="64.0" prefWidth="307.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 15;" text="Se non possiedi un account, richiedine uno:" underline="true" />
                 <Button mnemonicParsing="false" onMouseClicked="#handleAccountRequest" prefHeight="42.0" prefWidth="114.0" style="-fx-font-weight: bold;" text="Richiedi">
                     <graphic>
                         <FontIcon iconLiteral="mdi2a-account-plus" iconSize="20" />

@@ -1,5 +1,5 @@
 .request-item {
-    -fx-background-color: #f5f5f5;
+    -fx-background-color: #ffebc8;
     -fx-background-radius: 10;
     -fx-padding: 15;
     -fx-spacing: 10;
@@ -18,6 +18,7 @@
 
 .switch-button {
     -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
     -fx-text-fill: #4a280f;
     -fx-font-size: 14px;
     -fx-padding: 8 16;
@@ -33,6 +34,7 @@
 
 .accept-button {
     -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
     -fx-text-fill: #4a280f;
     -fx-font-size: 14px;
     -fx-padding: 8 16;
@@ -48,6 +50,7 @@
 
 .reject-button {
     -fx-background-color: linear-gradient(to right, #ff944d, #f16f15);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
     -fx-text-fill: #653817;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
@@ -60,41 +63,40 @@
     -fx-text-fill: red;
 }
 
+.label-title {
+    -fx-text-fill: #3c200b;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
 .nameField {
     -fx-font-size: 15px;
-    -fx-background-color: #d37f49;
-    -fx-border-color: #a65229;
+    -fx-background-color: #ffebc8;
+    -fx-border-color: #ff9159;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
     -fx-font-weight: bold;
     -fx-padding: 10 12;
-    -fx-prompt-text-fill: #ffc470;
-    -fx-text-fill: #ffe0b2;
+    -fx-prompt-text-fill: #4a280f;
+    -fx-text-fill: #4a280f;
     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
 }
 
 .descriptionField {
     -fx-font-size: 15px;
-    -fx-background-color: transparent;
-    -fx-border-color: #a65229;
+    -fx-border-color: #ff9159;
     -fx-border-radius: 8;
-    -fx-background-radius: 8;
     -fx-font-weight: bold;
-    -fx-padding: 0;
-    -fx-prompt-text-fill: #ffc470;
-    -fx-text-fill: #ffe0b2;
+    -fx-background-radius: 8;
+    -fx-prompt-text-fill: #4a280f;
+    -fx-text-fill: #4a280f;
     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
 }
 
 .descriptionField .content {
-    -fx-background-color: #d37f49;
+    -fx-background-color: #ffebc8;
     -fx-background-radius: 8;
     -fx-padding: 10 12;
-}
-
-.descriptionField .scroll-pane {
-    -fx-background-color: transparent;
-    -fx-background-radius: 8;
 }
 
 .descriptionField .viewport {
@@ -109,4 +111,22 @@
     -fx-font-size: 12px;
     -fx-text-fill: #666;
     -fx-alignment: center-right;
+}
+
+.split-pane-divider {
+    -fx-background-color: linear-gradient(to bottom, #ffd38a, #f3b766);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.3, 0, 2);
+    -fx-padding: 30;
+    -fx-border-radius: 5px;
+}
+
+.section-title-label {
+    -fx-alignment: center;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a280f;
+    -fx-background-color: linear-gradient(to right, #ec9763, #ff9f40);
+    -fx-background-radius: 10;
+    -fx-padding: 3;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 6, 0.4, 0, 3);
 }
