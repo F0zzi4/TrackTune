@@ -39,7 +39,7 @@ public class GenresController implements Serializable {
 
     private SortedSet<Genre> genreList = new TreeSet<>();
     private int currentPage = 0;
-    private final int itemsPerPage = 5;
+    private final int itemsPerPage = 4;
     private final GenreDAO genreDAO = new GenreDAO();
 
     /**
