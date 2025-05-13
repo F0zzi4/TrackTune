@@ -1,13 +1,12 @@
 /* Root settings */
 .root {
-    -fx-background-color: linear-gradient(to bottom right, #d6894a, #aa5c2b);
+    -fx-background-color: linear-gradient(to bottom right, #fddca8, #ff7d24);
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-padding: 40;
 }
 
 /* Login Pane */
 .login-pane {
-    -fx-background-color: linear-gradient(to bottom, #36190a, #512713, #703816);
     -fx-background-radius: 14;
     -fx-padding: 30;
     -fx-effect: dropshadow(gaussian, rgba(255, 140, 0, 0.15), 18, 0.4, 0, 3);
@@ -21,7 +20,7 @@
     -fx-font-size: 26px;
     -fx-font-weight: bold;
     -fx-text-fill: #ffdab3;
-    -fx-background-color: linear-gradient(to right, #e26500, #ff9f40);
+    -fx-background-color: linear-gradient(to right, #e26500, #f39f4e);
     -fx-background-radius: 10;
     -fx-padding: 10 20;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 6, 0.4, 0, 3);
@@ -32,7 +31,7 @@
     -fx-font-size: 18px;
     -fx-font-weight: bold;
     -fx-text-fill: #ffc470;
-    -fx-background-color: linear-gradient(to right, #993d00, #e26500);
+    -fx-background-color: linear-gradient(to right, #e26500, #f39f4e);
     -fx-background-radius: 10;
     -fx-padding: 8 18;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0.4, 0, 2);
@@ -41,7 +40,7 @@
 /* Input Fields */
 .text-field, .password-field {
     -fx-font-size: 15px;
-    -fx-background-color: #d37f49;
+    -fx-background-color: #fb9d5c;
     -fx-border-color: #a65229;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
@@ -54,7 +53,7 @@
 
 /* Primary Button */
 .button {
-    -fx-background-color: linear-gradient(to right, #e26500, #ff9f40);
+    -fx-background-color: linear-gradient(to right, #ff7200, #ffb461);
     -fx-text-fill: #fde4be;
     -fx-font-size: 15px;
     -fx-background-radius: 8;
@@ -64,7 +63,7 @@
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(to right, #cc6a00, #f08a00);
+    -fx-background-color: #ff7200;
 }
 
 /* Generic Labels */
