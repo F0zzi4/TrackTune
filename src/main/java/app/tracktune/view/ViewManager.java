@@ -72,7 +72,7 @@ public class ViewManager {
                 setStageOnCurrentScreen(root, frameWidth, frameHeight);
                 fadeIn.play();
             } catch (IOException ex) {
-                System.err.println(ex.getMessage()+"\n"+ Arrays.toString(ex.getStackTrace()));
+                System.err.println(ex.getMessage()+"\n"+ Arrays.toString(ex.getCause().getStackTrace()));
             }
         });
 

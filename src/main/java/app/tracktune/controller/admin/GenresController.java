@@ -22,7 +22,7 @@ import java.util.*;
  * Allows the admin to add new genres, view them with pagination,
  * and delete them through a JavaFX interface.
  */
-public class GenreController implements Serializable {
+public class GenresController implements Serializable {
     @FXML
     private VBox requestsContainer;
     @FXML

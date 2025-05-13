@@ -1,8 +1,11 @@
 package app.tracktune.controller.admin;
 
 import app.tracktune.model.user.*;
+import app.tracktune.utils.Strings;
+import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -85,7 +88,7 @@ public class RequestsController {
      * Creates the GUI element (HBox) for a single user request.
      * Includes user info, request date, and accept/reject buttons.
      *
-     * @param request the {@link PendingUser} to display
+     * @param request done by the pending user to display
      * @return an {@link HBox} containing request information and actions
      */
     private HBox createRequestItem(PendingUser request) {
@@ -100,13 +103,13 @@ public class RequestsController {
         VBox textBox = new VBox(5, infoLabel, dateLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
 
-        Button acceptBtn = new Button("Accetta");
-        acceptBtn.getStyleClass().add("accept-button");
+        Button acceptBtn = new Button(Strings.ACCEPT);
+        acceptBtn.getStyleClass().add(Strings.REJECT);
         acceptBtn.setOnAction(e -> {
             acceptRequest(request);
         });
 
-        Button rejectBtn = new Button("Rifiuta");
+        Button rejectBtn = new Button(Strings.REJECT);
         rejectBtn.getStyleClass().add("reject-button");
         rejectBtn.setOnAction(e -> {
             rejectRequest(request);
@@ -150,6 +153,7 @@ public class RequestsController {
 
             removeRequestAndUpdate(request);
         } catch (Exception ex) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(ex.getMessage());
         }
     }
@@ -167,6 +171,7 @@ public class RequestsController {
 
             removeRequestAndUpdate(request);
         } catch (Exception ex) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(ex.getMessage());
         }
     }
@@ -175,7 +180,6 @@ public class RequestsController {
      * Removes the specified {@link PendingUser} request from the current list,
      * recalculates the maximum number of pages, adjusts the current page index
      * if necessary, and updates the view accordingly.
-     *
      * This method is used after a request has been either accepted or rejected
      * to ensure the pagination and user interface remain consistent.
      *

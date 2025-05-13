@@ -24,4 +24,6 @@ public class Strings {
     public static final String ERR_USER_NOT_ALLOWED = "User not allowed";
     public static final String ERR_SQL_INJECTION = "SQL injection detected";
     public static final String ERR_GENRE_ALREADY_EXISTS = "Genre already exists";
+    public static final String ACCEPT = "Accept";
+    public static final String REJECT = "Reject";
 }
