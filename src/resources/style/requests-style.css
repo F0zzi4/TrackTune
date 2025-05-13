@@ -19,6 +19,7 @@
 
 .switch-button {
     -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
     -fx-text-fill: #4a280f;
     -fx-font-size: 14px;
     -fx-padding: 8 16;
@@ -46,7 +47,9 @@
     -fx-background-radius: 6;
     -fx-cursor: hand;
     -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
 }
+
 .accept-button:hover {
     -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
     -fx-text-fill: #885116;
@@ -59,9 +62,28 @@
     -fx-font-size: 14px;
     -fx-padding: 8 16;
     -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
 }
 
 .reject-button:hover {
     -fx-background-color: linear-gradient(to right, #ff8e40, #ff814f);
     -fx-text-fill: red;
+}
+
+.split-pane-divider {
+    -fx-background-color: linear-gradient(to bottom, #ffd38a, #f3b766);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 4, 0.3, 0, 2);
+    -fx-padding: 30;
+    -fx-border-radius: 5px;
+}
+
+.section-title-label {
+    -fx-alignment: center;
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a280f;
+    -fx-background-color: linear-gradient(to right, #ec9763, #ff9f40);
+    -fx-background-radius: 10;
+    -fx-padding: 3;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 6, 0.4, 0, 3);
 }

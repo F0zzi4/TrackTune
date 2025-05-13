@@ -4,13 +4,16 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.media.MediaView?>
-
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+
 <BorderPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@../../style/dashboard-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController">
     <left>
         <VBox alignment="TOP_CENTER" prefWidth="220.0" spacing="12.0" styleClass="sidebar">
@@ -23,27 +26,27 @@
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button prefHeight="38.0" prefWidth="385.0" styleClass="sidebar-button" text="Users">
+                <Button onMouseClicked="#handleDiscover" prefHeight="38.0" prefWidth="385.0" styleClass="sidebar-button" text="Discover">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-circle" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2l-lumx" iconSize="21" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button onMouseClicked="#viewTracks" prefHeight="38.0" prefWidth="271.0" styleClass="sidebar-button" text="Tracks">
+                <Button onMouseClicked="#viewTracks" prefHeight="38.0" prefWidth="271.0" styleClass="sidebar-button" text="Resources">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2m-music-clef-treble" iconSize="21" />
+                        <FontIcon iconLiteral="mdi2m-music-box-multiple" iconSize="21" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Authors">
+                <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Activities">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-music" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2c-content-paste" iconSize="20" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Genres">
+                <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Me">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2b-book-play" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2f-folder-account" iconSize="22" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
@@ -58,10 +61,45 @@
     </left>
 
     <center>
-        <StackPane styleClass="main-content">
-             <children>
-                <MediaView fx:id="mediaPlayerView" fitHeight="600.0" fitWidth="800.0" />
-             </children>
+        <StackPane fx:id="mainContent" styleClass="main-content">
+         <children>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <AnchorPane layoutX="638.0" layoutY="-1.0" prefHeight="741.0" prefWidth="282.0" styleClass="split-pane-divider">
+                     <children>
+                        <Label layoutX="20.0" layoutY="21.0" prefHeight="27.0" prefWidth="242.0" styleClass="section-title-label" text="Community">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi2a-account-group" iconSize="26" />
+                            </graphic>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutX="1.0" prefHeight="446.0" prefWidth="626.0" styleClass="split-pane-divider">
+                     <children>
+                        <Label fx:id="LblWelcome" layoutX="32.0" layoutY="22.0" prefHeight="52.0" prefWidth="571.0" styleClass="section-title-label" text="Welcome" underline="true">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi2g-google-street-view" iconSize="28" />
+                            </graphic>
+                        </Label>
+                        <ImageView fitHeight="360.0" fitWidth="434.0" layoutX="101.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../assets/dashboard.png" />
+                           </image></ImageView>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane layoutY="456.0" prefHeight="284.0" prefWidth="627.0" styleClass="split-pane-divider">
+                     <children>
+                        <Label layoutX="32.0" layoutY="27.0" prefHeight="52.0" prefWidth="574.0" styleClass="section-title-label" text="News">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi2c-calendar-clock" iconSize="25" />
+                            </graphic>
+                        </Label>
+                        <TextArea layoutX="32.0" layoutY="99.0" prefHeight="70.0" prefWidth="574.0" styleClass="news-textbox" text="No current news" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </children>
         </StackPane>
     </center>
 </BorderPane>

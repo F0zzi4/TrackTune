@@ -73,7 +73,7 @@ public class ViewManager {
                 setStageOnCurrentScreen(root, frameWidth, frameHeight);
                 fadeIn.play();
             } catch (IOException ex) {
-                System.err.println(ex.getMessage()+"\n"+ Arrays.toString(ex.getStackTrace()));
+                System.err.println(ex.getMessage()+"\n"+ Arrays.toString(ex.getCause().getStackTrace()));
             }
         });
 
@@ -122,17 +122,11 @@ public class ViewManager {
         alert.showAndWait();
     }
 
-    public static void navigateToLogin(){
-        redirectView(Frames.LOGIN_VIEW_PATH, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);
-    }
+    public static void navigateToLogin(){redirectView(Frames.LOGIN_VIEW_PATH, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);}
 
-    public static void navigateToAdminDashboard(){
-        redirectView(Frames.ADMIN_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
-    }
+    public static void navigateToAdminDashboard(){redirectView(Frames.ADMIN_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);}
 
-    public static void navigateToUserDashboard(){
-        redirectView(Frames.USER_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
-    }
+    public static void navigateToUserDashboard(){redirectView(Frames.USER_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);}
 
     public static void navigateToAccountRequest(){redirectView(Frames.ACCOUNT_REQUEST_VIEW_PATH, Frames.ACCOUNT_REQUEST_FRAME_WIDTH, Frames.ACCOUNT_REQUEST_FRAME_HEIGHT);}
 

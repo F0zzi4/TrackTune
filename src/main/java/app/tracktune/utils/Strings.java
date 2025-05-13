@@ -17,7 +17,6 @@ public class Strings {
     public static final String ERR_USER_NOT_FOUND = "User not found";
     public static final String GENRE_FAILED = "Genre failed";
     public static final String ERR_GENERAL = "Something went wrong";
-    public static final String ERR_GENRE_DELETE_ERROR = "Error on genre delete";
     public static final String MEDIA_ERROR = "Media error";
     public static final String MEDIA_NOT_SUPPORTED = "Media type not supported";
     public static final String ERR_ACCOUNT_REQUEST = "Account request error";
@@ -25,4 +24,7 @@ public class Strings {
     public static final String ERR_USER_NOT_ALLOWED = "User not allowed";
     public static final String ERR_SQL_INJECTION = "SQL injection detected";
     public static final String ERR_GENRE_ALREADY_EXISTS = "Genre already exists";
+    public static final String ACCEPT = "Accept";
+    public static final String REJECT = "Reject";
+    public static final String DELETE = "Delete";
 }
