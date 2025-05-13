@@ -27,4 +27,5 @@ public class Strings {
     public static final String ACCEPT = "Accept";
     public static final String REJECT = "Reject";
     public static final String DELETE = "Delete";
+    public static final String EMPTY_LIST = "No elements found";
 }
