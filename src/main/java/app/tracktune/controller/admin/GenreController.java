@@ -89,7 +89,7 @@ public class GenreController implements Serializable {
                 else
                     throw new TrackTuneException(Strings.FIELD_EMPTY);
             }catch (TrackTuneException exception){
-                ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, exception.getMessage(), Alert.AlertType.ERROR);
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.GENRE_FAILED, exception.getMessage(), Alert.AlertType.ERROR);
             }
         });
 

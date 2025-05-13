@@ -15,6 +15,7 @@ public class Strings {
     public static final String ERR_INIT_DB = "Error initializing database";
     public static final String ERR_USER_ALREADY_EXISTS = "User already exists";
     public static final String ERR_USER_NOT_FOUND = "User not found";
+    public static final String GENRE_FAILED = "Genre failed";
     public static final String ERR_GENERAL = "Something went wrong";
     public static final String ERR_GENRE_DELETE_ERROR = "Error on genre delete";
     public static final String MEDIA_ERROR = "Media error";
