@@ -19,7 +19,10 @@ public class Frames {
     public static final String ADMIN_DASHBOARD_VIEW_PATH = "/fxml/admin/AdminDashboardView.fxml";
     public static final String USER_DASHBOARD_VIEW_PATH = "/fxml/admin/AdminDashboardView.fxml";
     public static final String PENDING_DASHBOARD_VIEW_PATH = "/fxml/pendingUser/PendingUserDashboardView.fxml";
+    public static final String GENRE_VIEW_PATH_VIEW_PATH = "/fxml/admin/GenreView.fxml";
+    public static final String REQUESTS_VIEW_PATH = "/fxml/admin/RequestsView.fxml";
     // FRAME ICONS
     public static final String MAIN_ICON_PATH = "/assets/appIcon.png";
-    public static final String REQUESTS_VIEW_PATH = "/fxml/admin/RequestsView.fxml";
+
+
 }

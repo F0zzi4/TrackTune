@@ -43,7 +43,7 @@
                     </graphic>
                 </Button>
             <Separator prefWidth="200.0" />
-                <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Genres">
+                <Button prefHeight="38.0" onMouseClicked="#handleGenre" prefWidth="356.0" styleClass="sidebar-button" text="Genres">
                     <graphic>
                         <FontIcon iconLiteral="mdi2b-book-play" iconSize="20" />
                     </graphic>
