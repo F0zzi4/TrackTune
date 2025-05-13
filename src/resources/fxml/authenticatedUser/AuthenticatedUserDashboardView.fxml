@@ -58,7 +58,7 @@
     </left>
 
     <center>
-        <StackPane styleClass="main-content">
+        <StackPane fx:id="mainContent" styleClass="main-content">
              <children>
                 <MediaView fx:id="mediaPlayerView" fitHeight="600.0" fitWidth="800.0" />
              </children>

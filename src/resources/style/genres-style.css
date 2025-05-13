@@ -1,5 +1,5 @@
 .request-item {
-    -fx-background-color: #f5f5f5;
+    -fx-background-color: #fff3e0;
     -fx-background-radius: 10;
     -fx-padding: 15;
     -fx-spacing: 10;
@@ -60,6 +60,12 @@
     -fx-text-fill: red;
 }
 
+.label-title {
+    -fx-text-fill: #3c200b;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
 .nameField {
     -fx-font-size: 15px;
     -fx-background-color: #d37f49;
@@ -78,8 +84,8 @@
     -fx-background-color: transparent;
     -fx-border-color: #a65229;
     -fx-border-radius: 8;
-    -fx-background-radius: 8;
     -fx-font-weight: bold;
+    -fx-background-radius: 8;
     -fx-padding: 0;
     -fx-prompt-text-fill: #ffc470;
     -fx-text-fill: #ffe0b2;

@@ -1,8 +1,8 @@
 package app.tracktune.model.genre;
 
 public class Genre implements Comparable<Genre>{
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
 
     public Genre(String name, String description) {
         this.name = name;
@@ -20,13 +20,5 @@ public class Genre implements Comparable<Genre>{
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

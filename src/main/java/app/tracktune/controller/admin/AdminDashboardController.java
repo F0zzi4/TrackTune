@@ -26,10 +26,10 @@ import java.util.ResourceBundle;
  */
 public class AdminDashboardController implements Initializable {
 
-    @FXML private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
     @FXML private MediaView mediaPlayerView;
-    private Administrator admin;
     @FXML private StackPane mainContent;
+    private Administrator admin;
 
     /**
      * Initializes the controller by checking if the logged-in user is an {@link Administrator}
@@ -52,6 +52,7 @@ public class AdminDashboardController implements Initializable {
             ViewManager.logout();
         } catch(Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
         }
     }
 
@@ -68,6 +69,7 @@ public class AdminDashboardController implements Initializable {
             mediaPlayer.play();
         } catch(Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.MEDIA_NOT_SUPPORTED, Strings.MEDIA_NOT_SUPPORTED, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
             disposeMediaPlayer();
         }
     }
@@ -94,7 +96,7 @@ public class AdminDashboardController implements Initializable {
      */
     @FXML
     private void handleGenre(){
-        setMainContent(Frames.GENRE_VIEW_PATH_VIEW_PATH);
+        setMainContent(Frames.GENRES_VIEW_PATH_VIEW_PATH);
     }
 
     /**
@@ -117,7 +119,8 @@ public class AdminDashboardController implements Initializable {
             Parent view = loader.load();
             mainContent.getChildren().setAll(view);
         } catch (IOException e) {
-            e.printStackTrace();
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.MEDIA_NOT_SUPPORTED, Strings.MEDIA_NOT_SUPPORTED, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
         }
     }
 }
