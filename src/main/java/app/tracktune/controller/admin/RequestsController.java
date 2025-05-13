@@ -104,7 +104,7 @@ public class RequestsController {
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         Button acceptBtn = new Button(Strings.ACCEPT);
-        acceptBtn.getStyleClass().add(Strings.REJECT);
+        acceptBtn.getStyleClass().add("accept-button");
         acceptBtn.setOnAction(e -> {
             acceptRequest(request);
         });

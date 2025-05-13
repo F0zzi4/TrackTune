@@ -71,7 +71,8 @@
 }
 
 .dashboard-panel{
-    -fx-background-color: linear-gradient(to bottom right, #f4c06f, #ec9a40);
+    /*-fx-background-color: linear-gradient(to bottom right, #f4c06f, #ec9a40);*/
+    -fx-background-color: linear-gradient(to bottom right, #ffe0b2, #ffcc80);
     -fx-border-style: solid ;
     -fx-border-color: linear-gradient(to bottom, #ffd38a, #f3b766);
     -fx-border-width: 5px;
