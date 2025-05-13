@@ -21,6 +21,7 @@ public class Frames {
     public static final String PENDING_DASHBOARD_VIEW_PATH = "/fxml/pendingUser/PendingUserDashboardView.fxml";
     public static final String GENRES_VIEW_PATH_VIEW_PATH = "/fxml/admin/GenresView.fxml";
     public static final String REQUESTS_VIEW_PATH = "/fxml/admin/RequestsView.fxml";
+    public static final String DISCOVER_VIEW_PATH = "/fxml/authenticatedUser/DiscoverView.fxml";
     // FRAME ICONS
     public static final String MAIN_ICON_PATH = "/assets/appIcon.png";
 }

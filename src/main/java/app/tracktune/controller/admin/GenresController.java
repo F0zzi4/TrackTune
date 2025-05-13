@@ -19,24 +19,23 @@ import java.util.*;
 
 /**
  * Controller for managing musical genres in the admin panel.
- * Allows the admin to add new genres, view them with pagination,
- * and delete them through a JavaFX interface.
+ * Allows the admin to add new genres, view them with pagination and delete them.
  */
 public class GenresController implements Serializable {
     @FXML
     private VBox requestsContainer;
     @FXML
-    private Button prevButton;
+    private Button BtnPrev;
     @FXML
-    private Button nextButton;
+    private Button BtnNext;
     @FXML
-    private Button addGenreButton;
+    private Button BtnAddGenre;
     @FXML
-    private TextField nameField;
+    private TextField TxtName;
     @FXML
-    private TextArea descriptionField;
+    private TextArea TxtDescription;
     @FXML
-    private Label charCountLabel;
+    private Label LblCharCount;
 
     private SortedSet<Genre> genreList = new TreeSet<>();
     private int currentPage = 0;
@@ -51,23 +50,23 @@ public class GenresController implements Serializable {
     public void initialize() {
         genreList = genreDAO.getAll();
 
-        prevButton.setOnAction(e -> {
+        BtnPrev.setOnAction(e -> {
             if (currentPage > 0) {
                 currentPage--;
                 updateRequests();
             }
         });
 
-        nextButton.setOnAction(e -> {
+        BtnNext.setOnAction(e -> {
             if ((currentPage + 1) * itemsPerPage < genreList.size()) {
                 currentPage++;
                 updateRequests();
             }
         });
 
-        addGenreButton.setOnAction(e -> {
-            String name = nameField.getText().trim();
-            String description = descriptionField.getText().trim();
+        BtnAddGenre.setOnAction(e -> {
+            String name = TxtName.getText().trim();
+            String description = TxtDescription.getText().trim();
 
             try{
                 if (!name.isEmpty() && !description.isEmpty()) {
@@ -78,9 +77,9 @@ public class GenresController implements Serializable {
                         Genre newGenre = new Genre(name, description);
                         genreDAO.insert(newGenre);
                         genreList.add(newGenre);
-                        nameField.clear();
-                        descriptionField.clear();
-                        charCountLabel.setText("0/300");
+                        TxtName.clear();
+                        TxtDescription.clear();
+                        LblCharCount.setText("0/300");
                         updateRequests();
                     } else {
                         throw new TrackTuneException(Strings.ERR_GENRE_ALREADY_EXISTS);
@@ -93,11 +92,11 @@ public class GenresController implements Serializable {
             }
         });
 
-        descriptionField.textProperty().addListener((observable, oldValue, newValue) -> {
+        TxtDescription.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() > 300) {
-                descriptionField.setText(oldValue);
+                TxtDescription.setText(oldValue);
             } else {
-                charCountLabel.setText(newValue.length() + "/300");
+                LblCharCount.setText(newValue.length() + "/300");
             }
         });
 
@@ -115,8 +114,8 @@ public class GenresController implements Serializable {
         int start = currentPage * itemsPerPage;
         int end = Math.min(start + itemsPerPage, totalRequests);
 
-        prevButton.setDisable(currentPage == 0);
-        nextButton.setDisable(end >= totalRequests);
+        BtnPrev.setDisable(currentPage == 0);
+        BtnNext.setDisable(end >= totalRequests);
 
         List<Genre> pageItems = new ArrayList<>(genreList).subList(start, end);
 
@@ -144,7 +143,7 @@ public class GenresController implements Serializable {
         VBox textBox = new VBox(5, nameLabel, descLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
 
-        Button deleteBtn = new Button("Delete");
+        Button deleteBtn = new Button(Strings.DELETE);
         deleteBtn.getStyleClass().add("reject-button");
         deleteBtn.setOnAction(e -> deleteGenre(genre));
         deleteBtn.setMinWidth(80);
@@ -174,10 +173,9 @@ public class GenresController implements Serializable {
     private void deleteGenre(Genre genre){
         try {
             genreDAO.delete(genre);
-
             removeGenreAndUpdate(genre);
         } catch (Exception ex) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENRE_DELETE_ERROR, ex.getMessage(), Alert.AlertType.ERROR);
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
