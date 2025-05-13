@@ -5,9 +5,7 @@ import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -17,32 +15,27 @@ import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Controller for handling pending user requests in the admin panel.
- * Displays paginated user requests with options to accept or reject each request.
- */
 public class RequestsController {
 
     @FXML private VBox requestsContainer;
     @FXML private Button prevButton;
     @FXML private Button nextButton;
+    @FXML private TabPane filterTabPane;
 
-    private SortedSet<PendingUser> pendingRequests = new TreeSet<>();
+    private AuthRequestStatusEnum currentFilter = AuthRequestStatusEnum.CREATED;
+
+    private SortedSet<PendingUser> pendingRequests = new TreeSet<>(Comparator.comparing(PendingUser::getRequestDate));
+    private List<PendingUser> filteredRequests = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 5;
+
     private final PendingUserDAO pendingUserDAO = new PendingUserDAO();
 
-    /**
-     * Initializes the controller by loading pending requests
-     * with status {@code CREATED}, sorted by request date.
-     * Also sets up pagination buttons.
-     */
     @FXML
     public void initialize() {
-        pendingRequests = pendingUserDAO.getAll().stream()
-                .filter(r -> r.getStatus() == AuthRequestStatusEnum.CREATED)
-                .sorted(Comparator.comparing(PendingUser::getRequestDate))
-                .collect(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PendingUser::getRequestDate))));
+        pendingRequests.addAll(pendingUserDAO.getAll());
+
+        createTabsFromEnum();
 
         prevButton.setOnAction(e -> {
             if (currentPage > 0) {
@@ -52,49 +45,69 @@ public class RequestsController {
         });
 
         nextButton.setOnAction(e -> {
-            if ((currentPage + 1) * itemsPerPage < pendingRequests.size()) {
+            if ((currentPage + 1) * itemsPerPage < filteredRequests.size()) {
                 currentPage++;
                 updateRequests();
             }
         });
-
         updateRequests();
     }
 
-    /**
-     * Updates the request view by displaying only the requests
-     * belonging to the current page.
-     * Also enables or disables pagination buttons accordingly.
-     */
+    private void createTabsFromEnum() {
+        for (AuthRequestStatusEnum status : AuthRequestStatusEnum.values()) {
+            Tab tab = new Tab(status.toString());
+            tab.setUserData(status);
+            filterTabPane.getTabs().add(tab);
+        }
+
+        filterTabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+            if (newTab != null) {
+                currentFilter = (AuthRequestStatusEnum) newTab.getUserData();
+                currentPage = 0;
+                updateRequests();
+            }
+        });
+
+        filterTabPane.getSelectionModel().selectFirst();
+    }
+
+    private void filterRequests() {
+        filteredRequests = pendingRequests.stream()
+                .filter(r -> r.getStatus() == currentFilter)
+                .sorted(Comparator.comparing(PendingUser::getRequestDate))
+                .collect(Collectors.toList());
+    }
+
     private void updateRequests() {
+        filterRequests();
         requestsContainer.getChildren().clear();
 
-        int totalRequests = pendingRequests.size();
+        int totalRequests = filteredRequests.size();
         int start = currentPage * itemsPerPage;
         int end = Math.min(start + itemsPerPage, totalRequests);
 
         prevButton.setDisable(currentPage == 0);
         nextButton.setDisable(end >= totalRequests);
 
-        List<PendingUser> pageItems = new ArrayList<>(pendingRequests).subList(start, end);
+        if(filteredRequests.isEmpty()) {
+            Label emptyLabel = new Label(Strings.EMPTY_LIST);
+            emptyLabel.getStyleClass().add("empty-list-label");
 
-        for (PendingUser request : pageItems) {
-            HBox requestBox = createRequestItem(request);
-            requestsContainer.getChildren().add(requestBox);
+            HBox emptyBox = new HBox(emptyLabel);
+            emptyBox.setAlignment(Pos.CENTER);
+            requestsContainer.getChildren().add(emptyBox);
+        }
+        else{
+            List<PendingUser> pageItems = filteredRequests.subList(start, end);
+
+            for (PendingUser request : pageItems) {
+                requestsContainer.getChildren().add(createRequestItem(request));
+            }
         }
     }
 
-    /**
-     * Creates the GUI element (HBox) for a single user request.
-     * Includes user info, request date, and accept/reject buttons.
-     *
-     * @param request done by the pending user to display
-     * @return an {@link HBox} containing request information and actions
-     */
     private HBox createRequestItem(PendingUser request) {
-        Label infoLabel = new Label(
-                request.getUsername() + " - " + request.getName() + " " + request.getSurname()
-        );
+        Label infoLabel = new Label(request.getUsername() + " - " + request.getName() + " " + request.getSurname());
         infoLabel.getStyleClass().add("request-item-title");
 
         Label dateLabel = new Label(request.getFormattedRequestDate());
@@ -105,18 +118,21 @@ public class RequestsController {
 
         Button acceptBtn = new Button(Strings.ACCEPT);
         acceptBtn.getStyleClass().add("accept-button");
-        acceptBtn.setOnAction(e -> {
-            acceptRequest(request);
-        });
+        acceptBtn.setOnAction(e -> acceptRequest(request));
 
         Button rejectBtn = new Button(Strings.REJECT);
         rejectBtn.getStyleClass().add("reject-button");
-        rejectBtn.setOnAction(e -> {
-            rejectRequest(request);
-        });
+        rejectBtn.setOnAction(e -> rejectRequest(request));
 
-        HBox buttonBox = new HBox(10, rejectBtn, acceptBtn);
+        HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
+
+        switch (request.getStatus()) {
+            case CREATED -> buttonBox.getChildren().addAll(rejectBtn, acceptBtn);
+            case REJECTED -> buttonBox.getChildren().add(acceptBtn);
+            case ACCEPTED -> {
+            }
+        }
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -128,14 +144,7 @@ public class RequestsController {
         return box;
     }
 
-    /**
-     * Accepts a pending user request, updates its status,
-     * persists the update to the database, and inserts the new user
-     * into the authenticated users table.
-     *
-     * @param request the {@link PendingUser} to accept
-     */
-    private void acceptRequest(PendingUser request){
+    private void acceptRequest(PendingUser request) {
         try {
             request.setStatus(AuthRequestStatusEnum.ACCEPTED);
             pendingUserDAO.update(request);
@@ -148,23 +157,16 @@ public class RequestsController {
                     UserStatusEnum.ACTIVE,
                     new Timestamp(System.currentTimeMillis())
             );
-            UserDAO userDAO = new UserDAO();
-            userDAO.insert(au);
+            new UserDAO().insert(au);
 
             removeRequestAndUpdate(request);
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
-    /**
-     * Rejects a pending user request, updates its status,
-     * and removes it from the request view.
-     *
-     * @param request the {@link PendingUser} to reject
-     */
-    private void rejectRequest(PendingUser request){
+    private void rejectRequest(PendingUser request) {
         try {
             request.setStatus(AuthRequestStatusEnum.REJECTED);
             pendingUserDAO.update(request);
@@ -172,22 +174,12 @@ public class RequestsController {
             removeRequestAndUpdate(request);
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
-    /**
-     * Removes the specified {@link PendingUser} request from the current list,
-     * recalculates the maximum number of pages, adjusts the current page index
-     * if necessary, and updates the view accordingly.
-     * This method is used after a request has been either accepted or rejected
-     * to ensure the pagination and user interface remain consistent.
-     *
-     * @param request the {@link PendingUser} to remove from the displayed list
-     */
     private void removeRequestAndUpdate(PendingUser request) {
-        pendingRequests.remove(request);
-        int maxPage = (int) Math.ceil((double) pendingRequests.size() / itemsPerPage);
+        int maxPage = (int) Math.ceil((double) filteredRequests.size() / itemsPerPage);
         if (currentPage >= maxPage && currentPage > 0) {
             currentPage--;
         }
