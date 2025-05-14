@@ -22,4 +22,5 @@ module app.tracktune {
     exports app.tracktune.model;
     exports app.tracktune.model.user;
     exports app.tracktune.model.genre;
+    exports app.tracktune.model.author;
 }

@@ -14,13 +14,13 @@ public class UserDAO implements DAO<User> {
     private final SortedSet<User> cache = new TreeSet<>();
     private final DatabaseManager dbManager;
     // FIELDS
-    private final String USERNAME = "username";
-    private final String PASSWORD = "password";
-    private final String NAME = "name";
-    private final String SURNAME = "surname";
-    private final String STATUS = "status";
-    private final String CREATION_DATE = "creationDate";
-    private final String IS_ADMIN = "isAdmin";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String NAME = "name";
+    private static final String SURNAME = "surname";
+    private static final String STATUS = "status";
+    private static final String CREATION_DATE = "creationDate";
+    private static final String IS_ADMIN = "isAdmin";
     // CRUD STATEMENTS
     private static final String INSERT_USER_STMT = """
         INSERT INTO Users (username, password, name, surname, status, creationDate, isAdmin)

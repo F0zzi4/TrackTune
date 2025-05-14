@@ -102,7 +102,8 @@ public class DBInit {
     private static final String CREATE_AUTHORS_TABLE_STMT = """
         CREATE TABLE IF NOT EXISTS Authors (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            authorshipName TEXT NOT NULL
+            authorshipName TEXT NOT NULL,
+            status INTEGER NOT NULL
         );
     """;
 
