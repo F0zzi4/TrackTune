@@ -17,13 +17,16 @@ import java.util.stream.Collectors;
 
 public class RequestsController {
 
-    @FXML private VBox requestsContainer;
-    @FXML private Button prevButton;
-    @FXML private Button nextButton;
-    @FXML private TabPane filterTabPane;
+    @FXML
+    private VBox requestsContainer;
+    @FXML
+    private Button prevButton;
+    @FXML
+    private Button nextButton;
+    @FXML
+    private TabPane filterTabPane;
 
     private AuthRequestStatusEnum currentFilter = AuthRequestStatusEnum.CREATED;
-
     private SortedSet<PendingUser> pendingRequests = new TreeSet<>(Comparator.comparing(PendingUser::getRequestDate));
     private List<PendingUser> filteredRequests = new ArrayList<>();
     private int currentPage = 0;

@@ -87,6 +87,11 @@ public class AdminDashboardController implements Initializable {
         setMainContent(Frames.REQUESTS_VIEW_PATH);
     }
 
+    @FXML
+    public void handleAuthors() {
+        setMainContent(Frames.REQUESTS_AUTHORS_PATH);
+    }
+
     /**
      * Sets the main content area of the dashboard to display a new view.
      * The new view is loaded from the specified FXML file path.

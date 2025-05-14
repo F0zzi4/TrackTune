@@ -37,11 +37,14 @@ public class ViewManager {
     public static void initView(String viewPath) throws IOException{
         FXMLLoader viewLoader = new FXMLLoader(Main.class.getResource(viewPath));
         Scene scene = new Scene(viewLoader.load(), 700, 550);
-        Image icon = new Image(Main.class.getResource(Frames.MAIN_ICON_PATH).toExternalForm());
         setStageOnCurrentScreen(root, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);
         root.setTitle(AppConfig.APP_TITLE);
         root.setResizable(false);
-        root.getIcons().add(icon);
+        root.getIcons().addAll(
+                new Image(Main.class.getResource(Frames.MAIN_ICON_192_PATH ).toExternalForm()),
+                new Image(Main.class.getResource(Frames.MAIN_ICON_256_PATH ).toExternalForm()),
+                new Image(Main.class.getResource(Frames.MAIN_ICON_PATH).toExternalForm())
+        );
         root.setScene(scene);
         root.show();
     }

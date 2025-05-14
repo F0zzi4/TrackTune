@@ -12,8 +12,8 @@ public class GenreDAO implements DAO<Genre> {
     private final SortedSet<Genre> cache = new TreeSet<>();
     private final DatabaseManager dbManager;
     //FIELDS
-    private final String NAME = "name";
-    private final String DESCRIPTION = "description";
+    private static final String NAME = "name";
+    private static final String DESCRIPTION = "description";
     // CRUD STATEMENTS
     private static final String INSERT_GENRE_STMT = """
         INSERT INTO Genres (name, description)
