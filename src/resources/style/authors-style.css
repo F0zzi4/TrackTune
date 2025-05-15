@@ -51,7 +51,7 @@
     -fx-text-fill: #3e2609;
 }
 
-.accept-button {
+.search-button {
     -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
     -fx-text-fill: #4a280f;
     -fx-font-size: 14px;
@@ -62,12 +62,12 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
 }
 
-.accept-button:hover {
+.search-button:hover {
     -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
     -fx-text-fill: #885116;
 }
 
-.reject-button {
+.delete-button {
     -fx-background-color: linear-gradient(to right, #ff944d, #f16f15);
     -fx-text-fill: #653817;
     -fx-font-weight: bold;
@@ -77,7 +77,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
 }
 
-.reject-button:hover {
+.delete-button:hover {
     -fx-background-color: linear-gradient(to right, #ff8e40, #ff814f);
     -fx-text-fill: red;
 }
@@ -115,11 +115,10 @@
 
 .tab-pane .tab-header-area {
     -fx-alignment: center;
-    /*-fx-background-color: linear-gradient(to right, #ffd38a, #f3b766);*/
     -fx-background-color: transparent;
     -fx-background-radius: 10 10 0 0;
     -fx-padding: 5 10 5 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0.3, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 6, 0.3, 0, 2);
 }
 
 .tab-pane .tab-header-background {
@@ -130,7 +129,6 @@
     -fx-alignment: center;
     -fx-background-insets: 0;
     -fx-padding: 8 20 8 20;
-    /*-fx-background-color: linear-gradient(to top, #fff3e0, #ffe0b2);*/
     -fx-background-color: transparent;
     -fx-border-radius: 5 5 0 0;
     -fx-background-radius: 10 10 0 0;
@@ -163,6 +161,11 @@
 .tab-pane .tab:hover {
     -fx-background-color: linear-gradient(to top, #ffe0b2, #ffcc80);
     -fx-cursor: hand;
+}
+
+.tab-pane .tab:selected:hover {
+    -fx-background-color: linear-gradient(to right, #ec9763, #ff9f40);
+    -fx-cursor: default;
 }
 
 .empty-list-label{

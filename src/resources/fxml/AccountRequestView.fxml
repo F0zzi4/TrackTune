@@ -61,7 +61,7 @@
             <children>
                 <Button defaultButton="true" mnemonicParsing="false" onMouseClicked="#handleRequest" prefHeight="40.0" prefWidth="120.0" style="-fx-font-weight: bold;" text="Richiedi">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-plus" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2a-account-multiple-plus" iconSize="20" />
                     </graphic>
                 </Button>
             </children>

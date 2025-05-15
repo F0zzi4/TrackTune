@@ -19,12 +19,12 @@
             </Label>
 
             <VBox alignment="CENTER" maxWidth="500" spacing="8">
-                <TextField fx:id="TxtName" promptText="Genre name" styleClass="nameField" />
-                <TextArea fx:id="TxtDescription" prefRowCount="4" promptText="Description (max 300 characters)" styleClass="descriptionField" wrapText="true" />
-                <Label fx:id="LblCharCount" styleClass="char-count-label" text="0/300" />
-                <Button fx:id="BtnAddGenre" styleClass="accept-button" text="Add">
+                <TextField fx:id="txtName" promptText="Genre name" styleClass="nameField" />
+                <TextArea fx:id="txtDescription" prefRowCount="4" promptText="Description (max 300 characters)" styleClass="descriptionField" wrapText="true" />
+                <Label fx:id="lblCharCount" styleClass="char-count-label" text="0/300" />
+                <Button fx:id="btnAddGenre" styleClass="search-button" text="Add">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-plus" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2b-book-plus" iconSize="20" />
                     </graphic>
                 </Button>
             </VBox>
@@ -32,12 +32,12 @@
             <VBox fx:id="requestsContainer" spacing="10.0" />
 
             <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 20 0 0 0;">
-                <Button fx:id="BtnPrev" styleClass="switch-button" text="Previous">
+                <Button fx:id="btnPrev" styleClass="switch-button" text="Previous">
                     <graphic>
                         <FontIcon iconLiteral="mdi2a-arrow-left-drop-circle" iconSize="20" />
                     </graphic>
                 </Button>
-                <Button fx:id="BtnNext" styleClass="switch-button" text="Next">
+                <Button fx:id="btnNext" styleClass="switch-button" text="Next">
                     <graphic>
                         <FontIcon iconLiteral="mdi2a-arrow-right-drop-circle" iconSize="20" />
                     </graphic>

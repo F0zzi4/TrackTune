@@ -7,6 +7,7 @@ import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -26,15 +27,33 @@ public class AuthenticatedUserDashboardController implements Initializable {
     @FXML private StackPane mainContent;
     @FXML private Label LblWelcome;
     private AuthenticatedUser authUser;
+    private Node dashboardContent;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        dashboardContent = mainContent.getChildren().getFirst();
         if (ViewManager.getSessionUser() instanceof AuthenticatedUser authenticatedUser) {
             this.authUser = authenticatedUser;
             LblWelcome.setText(LblWelcome.getText() + " " + authenticatedUser.getName()+" "+authenticatedUser.getSurname());
         }
     }
 
+    /**
+     * Loads and displays the dashboard view by updating the main content area by initial content
+     */
+    @FXML
+    private void handleDashboard(){
+        try{
+            mainContent.getChildren().setAll(dashboardContent);
+        } catch(Exception e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Loads and displays the discover view by updating the main content area
+     */
     @FXML
     public void handleDiscover() {
         try{
@@ -45,6 +64,10 @@ public class AuthenticatedUserDashboardController implements Initializable {
         }
     }
 
+    /**
+     * Logs out the current user by calling the {@link ViewManager#logout()} method.
+     * Displays an error alert if the logout process fails.
+     */
     @FXML
     public void handleLogout() {
         try{

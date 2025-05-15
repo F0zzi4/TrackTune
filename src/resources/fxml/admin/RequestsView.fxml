@@ -12,7 +12,7 @@
         <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="split-pane-divider">
             <Label prefHeight="19.0" prefWidth="240.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Requests">
                 <graphic>
-                    <FontIcon iconLiteral="mdi2a-account-plus" iconSize="30" />
+                    <FontIcon iconLiteral="mdi2a-account-multiple-plus" iconSize="30" />
                 </graphic>
             </Label>
 

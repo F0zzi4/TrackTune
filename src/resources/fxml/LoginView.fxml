@@ -55,7 +55,7 @@
                 <Label contentDisplay="CENTER" prefHeight="64.0" prefWidth="307.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 15;" text="Se non possiedi un account, richiedine uno:" underline="true" />
                 <Button mnemonicParsing="false" onMouseClicked="#handleAccountRequest" prefHeight="42.0" prefWidth="114.0" style="-fx-font-weight: bold;" text="Richiedi">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-plus" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2a-account-multiple-plus" iconSize="20" />
                     </graphic>
                 </Button>
             </children>

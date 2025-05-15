@@ -29,20 +29,13 @@ import java.util.*;
  */
 public class GenresController implements Serializable {
 
-    @FXML
-    private VBox requestsContainer;
-    @FXML
-    private Button BtnPrev;
-    @FXML
-    private Button BtnNext;
-    @FXML
-    private Button BtnAddGenre;
-    @FXML
-    private TextField TxtName;
-    @FXML
-    private TextArea TxtDescription;
-    @FXML
-    private Label LblCharCount;
+    @FXML private VBox requestsContainer;
+    @FXML private Button btnPrev;
+    @FXML private Button btnNext;
+    @FXML private Button btnAddGenre;
+    @FXML private TextField txtName;
+    @FXML private TextArea txtDescription;
+    @FXML private Label lblCharCount;
 
     private SortedSet<Genre> genreList = new TreeSet<>();
     private int currentPage = 0;
@@ -61,23 +54,23 @@ public class GenresController implements Serializable {
     public void initialize() {
         genreList = genreDAO.getAll();
 
-        BtnPrev.setOnAction(e -> {
+        btnPrev.setOnAction(e -> {
             if (currentPage > 0) {
                 currentPage--;
                 updateRequests();
             }
         });
 
-        BtnNext.setOnAction(e -> {
+        btnNext.setOnAction(e -> {
             if ((currentPage + 1) * itemsPerPage < genreList.size()) {
                 currentPage++;
                 updateRequests();
             }
         });
 
-        BtnAddGenre.setOnAction(e -> {
-            String name = TxtName.getText().trim();
-            String description = TxtDescription.getText().trim();
+        btnAddGenre.setOnAction(e -> {
+            String name = txtName.getText().trim();
+            String description = txtDescription.getText().trim();
 
             try{
                 if (!name.isEmpty() && !description.isEmpty()) {
@@ -88,9 +81,9 @@ public class GenresController implements Serializable {
                         Genre newGenre = new Genre(name, description);
                         genreDAO.insert(newGenre);
                         genreList.add(newGenre);
-                        TxtName.clear();
-                        TxtDescription.clear();
-                        LblCharCount.setText("0/300");
+                        txtName.clear();
+                        txtDescription.clear();
+                        lblCharCount.setText("0/300");
                         updateRequests();
                     } else {
                         throw new TrackTuneException(Strings.ERR_GENRE_ALREADY_EXISTS);
@@ -103,11 +96,11 @@ public class GenresController implements Serializable {
             }
         });
 
-        TxtDescription.textProperty().addListener((observable, oldValue, newValue) -> {
+        txtDescription.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() > 300) {
-                TxtDescription.setText(oldValue);
+                txtDescription.setText(oldValue);
             } else {
-                LblCharCount.setText(newValue.length() + "/300");
+                lblCharCount.setText(newValue.length() + "/300");
             }
         });
 
@@ -129,8 +122,8 @@ public class GenresController implements Serializable {
         int start = currentPage * itemsPerPage;
         int end = Math.min(start + itemsPerPage, totalRequests);
 
-        BtnPrev.setDisable(currentPage == 0);
-        BtnNext.setDisable(end >= totalRequests);
+        btnPrev.setDisable(currentPage == 0);
+        btnNext.setDisable(end >= totalRequests);
 
         List<Genre> pageItems = new ArrayList<>(genreList).subList(start, end);
 
