@@ -7,15 +7,27 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import javafx.scene.control.TabPane?>
-<StackPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../style/requests-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.admin.RequestsController">
+<?import javafx.scene.control.TextField?>
+<StackPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../style/authors-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.admin.AuthorsController">
     <children>
         <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="split-pane-divider">
-            <Label prefHeight="19.0" prefWidth="240.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Requests">
+
+            <Label prefHeight="19.0" prefWidth="240.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Authors">
                 <graphic>
                     <FontIcon iconLiteral="mdi2a-account-plus" iconSize="30" />
                 </graphic>
             </Label>
 
+            <VBox alignment="CENTER" maxWidth="500" spacing="8">
+                <TextField fx:id="TxtName" promptText="Authorship name" styleClass="nameField" />
+                <Button onMouseClicked="#addAuthor" styleClass="accept-button" text="Add">
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2a-account-plus" iconSize="20" />
+                    </graphic>
+                </Button>
+            </VBox>
+
+            <!-- Modifica l'allineamento dell'HBox per centrare il TabPane -->
             <HBox alignment="CENTER" style="-fx-padding: 10;">
                 <TabPane fx:id="filterTabPane"
                          tabClosingPolicy="UNAVAILABLE"
@@ -24,7 +36,7 @@
                          style="-fx-background-color: transparent;"/>
             </HBox>
 
-            <VBox fx:id="requestsContainer" spacing="10.0" />
+            <VBox fx:id="authorsContainer" spacing="10.0" />
 
             <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 20 0 0 0;">
                 <Button fx:id="prevButton" styleClass="switch-button" text="Previous">

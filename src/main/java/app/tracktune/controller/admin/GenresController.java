@@ -19,9 +19,16 @@ import java.util.*;
 
 /**
  * Controller for managing musical genres in the admin panel.
- * Allows the admin to add new genres, view them with pagination and delete them.
+ * Provides functionality for the admin to add, view, and delete genres,
+ * as well as manage pagination for the genres list.
+ * <p>
+ * The controller handles genre creation, input validation,
+ * and interaction with the genre database through {@link GenreDAO}.
+ * Pagination is handled to display genres in a manageable way.
+ * </p>
  */
 public class GenresController implements Serializable {
+
     @FXML
     private VBox requestsContainer;
     @FXML
@@ -39,12 +46,16 @@ public class GenresController implements Serializable {
 
     private SortedSet<Genre> genreList = new TreeSet<>();
     private int currentPage = 0;
-    private final int itemsPerPage = 5;
+    private final int itemsPerPage = 4;
     private final GenreDAO genreDAO = new GenreDAO();
 
     /**
      * Initializes the controller by loading all genres from the database,
      * setting up pagination buttons, and configuring the genre creation form.
+     * <p>
+     * This method sets up listeners for pagination buttons, handles genre creation,
+     * and tracks changes in the genre description field to ensure that it does not exceed 300 characters.
+     * </p>
      */
     @FXML
     public void initialize() {
@@ -88,7 +99,7 @@ public class GenresController implements Serializable {
                 else
                     throw new TrackTuneException(Strings.FIELD_EMPTY);
             }catch (TrackTuneException exception){
-                ViewManager.setAndShowAlert(Strings.ERROR, Strings.LOGIN_FAILED, exception.getMessage(), Alert.AlertType.ERROR);
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.GENRE_FAILED, exception.getMessage(), Alert.AlertType.ERROR);
             }
         });
 
@@ -105,7 +116,11 @@ public class GenresController implements Serializable {
 
     /**
      * Updates the displayed genres by showing only those on the current page.
-     * Also enables or disables the pagination buttons accordingly.
+     * <p>
+     * This method is responsible for clearing the current list of displayed genres,
+     * calculating which genres to show based on the current page, and updating the view.
+     * It also enables or disables the pagination buttons based on the current page and total number of genres.
+     * </p>
      */
     private void updateRequests() {
         requestsContainer.getChildren().clear();
@@ -127,7 +142,10 @@ public class GenresController implements Serializable {
 
     /**
      * Creates an HBox representing a single genre item.
-     * Includes the genre name, description, and a delete button.
+     * <p>
+     * This method creates an HBox containing a label with the genre name, a label with the description,
+     * and a button for deleting the genre. The HBox is then returned for display in the pagination list.
+     * </p>
      *
      * @param genre the {@link Genre} to display
      * @return an {@link HBox} containing the genre's details and actions
@@ -164,9 +182,13 @@ public class GenresController implements Serializable {
         return box;
     }
 
-
     /**
      * Deletes a genre from the database and updates the displayed list.
+     * <p>
+     * This method handles the deletion of a genre from the database,
+     * and then updates the list of displayed genres to reflect the removal.
+     * It also handles errors that may occur during the deletion process.
+     * </p>
      *
      * @param genre the {@link Genre} to delete
      */
@@ -182,6 +204,10 @@ public class GenresController implements Serializable {
     /**
      * Removes the specified genre from the local list,
      * adjusts pagination if necessary, and refreshes the view.
+     * <p>
+     * After a genre is removed, this method checks if the current page needs to be adjusted based on
+     * the number of genres remaining, and then updates the view accordingly.
+     * </p>
      *
      * @param genre the {@link Genre} to remove
      */
