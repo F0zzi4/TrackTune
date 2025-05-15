@@ -59,7 +59,7 @@ public class AdminDashboardController implements Initializable {
     }
 
     /**
-     * Starts the media player to play a video when the "View Tracks" button is clicked.
+     * Starts the media player to play a video when the "View Tracks" button is clicked
      */
     @FXML
     public void handleTracks() {
@@ -72,7 +72,7 @@ public class AdminDashboardController implements Initializable {
     }
 
     /**
-     * Loads and displays the Genre view by updating the main content area of the dashboard.
+     * Loads and displays the Genre view by updating the main content area of the dashboard
      */
     @FXML
     private void handleGenre(){
@@ -80,13 +80,16 @@ public class AdminDashboardController implements Initializable {
     }
 
     /**
-     * Loads and displays the requests view by updating the main content area of the dashboard.
+     * Loads and displays the requests view by updating the main content area of the dashboard
      */
     @FXML
     public void handleRequests() {
         setMainContent(Frames.REQUESTS_VIEW_PATH);
     }
 
+    /**
+     * Loads and displays the authors view by updating the main content area of the dashboard
+     */
     @FXML
     public void handleAuthors() {
         setMainContent(Frames.REQUESTS_AUTHORS_PATH);
@@ -96,7 +99,7 @@ public class AdminDashboardController implements Initializable {
      * Sets the main content area of the dashboard to display a new view.
      * The new view is loaded from the specified FXML file path.
      *
-     * @param contentPath Path to the FXML file to load and display in the main content area.
+     * @param contentPath Path to the FXML file to load and display in the main content area
      */
     private void setMainContent(String contentPath) {
         try {
@@ -111,7 +114,7 @@ public class AdminDashboardController implements Initializable {
 
     /**
      * Logs out the current user by calling the {@link ViewManager#logout()} method.
-     * Displays an error alert if the logout process fails.
+     * Displays an error alert if the logout process fails
      */
     @FXML
     public void handleLogout() {

@@ -20,7 +20,7 @@
             <children>
                 <Label styleClass="sidebar-title" text="TRACKTUNE" />
                 <ProgressBar id="custom-progress" prefWidth="200.0" progress="0.0" />
-                <Button prefHeight="38.0" prefWidth="648.0" styleClass="sidebar-button" text="Dashboard">
+                <Button onMouseClicked="#handleDiscover" prefHeight="38.0" prefWidth="648.0" styleClass="sidebar-button" text="Dashboard">
                     <graphic>
                         <FontIcon iconLiteral="mdi2v-view-dashboard" iconSize="20" />
                     </graphic>

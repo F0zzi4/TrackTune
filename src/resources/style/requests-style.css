@@ -39,7 +39,7 @@
     -fx-text-fill: #3e2609;
 }
 
-.accept-button {
+.search-button {
     -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
     -fx-text-fill: #4a280f;
     -fx-font-size: 14px;
@@ -50,7 +50,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
 }
 
-.accept-button:hover {
+.search-button:hover {
     -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
     -fx-text-fill: #885116;
 }

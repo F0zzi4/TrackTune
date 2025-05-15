@@ -25,17 +25,11 @@ import java.util.stream.Collectors;
  * as well as apply filters to view active or removed authors, with pagination support.
  */
 public class AuthorsController {
-
-    @FXML
-    private VBox authorsContainer;
-    @FXML
-    private Button prevButton;
-    @FXML
-    private Button nextButton;
-    @FXML
-    private TabPane filterTabPane;
-    @FXML
-    private TextField TxtName;
+    @FXML private VBox authorsContainer;
+    @FXML private Button prevButton;
+    @FXML private Button nextButton;
+    @FXML private TabPane filterTabPane;
+    @FXML private TextField TxtName;
 
     private AuthorStatusEnum currentFilter = AuthorStatusEnum.ACTIVE;
     private final SortedSet<Author> author = new TreeSet<>();
@@ -156,8 +150,8 @@ public class AuthorsController {
         acceptBtn.getStyleClass().add("accept-button");
         acceptBtn.setOnAction(e -> activeAuthor(author));
 
-        Button rejectBtn = new Button(Strings.REJECT);
-        rejectBtn.getStyleClass().add("reject-button");
+        Button rejectBtn = new Button(Strings.DELETE);
+        rejectBtn.getStyleClass().add("delete-button");
         rejectBtn.setOnAction(e -> removeAuthor(author));
 
         HBox buttonBox = new HBox(10);

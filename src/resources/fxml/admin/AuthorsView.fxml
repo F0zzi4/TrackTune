@@ -14,20 +14,19 @@
 
             <Label prefHeight="19.0" prefWidth="240.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Authors">
                 <graphic>
-                    <FontIcon iconLiteral="mdi2a-account-plus" iconSize="30" />
+                    <FontIcon iconLiteral="mdi2a-account-music" iconSize="30" />
                 </graphic>
             </Label>
 
             <VBox alignment="CENTER" maxWidth="500" spacing="8">
                 <TextField fx:id="TxtName" promptText="Authorship name" styleClass="nameField" />
-                <Button onMouseClicked="#addAuthor" styleClass="accept-button" text="Add">
+                <Button onMouseClicked="#addAuthor" styleClass="search-button" text="Add">
                     <graphic>
                         <FontIcon iconLiteral="mdi2a-account-plus" iconSize="20" />
                     </graphic>
                 </Button>
             </VBox>
 
-            <!-- Modifica l'allineamento dell'HBox per centrare il TabPane -->
             <HBox alignment="CENTER" style="-fx-padding: 10;">
                 <TabPane fx:id="filterTabPane"
                          tabClosingPolicy="UNAVAILABLE"

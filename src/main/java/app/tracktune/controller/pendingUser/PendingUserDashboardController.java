@@ -31,6 +31,10 @@ public class PendingUserDashboardController implements Initializable {
         }
     }
 
+    /**
+     * Logs out the current user by calling the {@link ViewManager#logout()} method.
+     * Displays an error alert if the logout process fails.
+     */
     @FXML
     public void handleLogout() {
         try{
