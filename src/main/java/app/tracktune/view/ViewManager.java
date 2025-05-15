@@ -11,6 +11,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -36,11 +37,14 @@ public class ViewManager {
     public static void initView(String viewPath) throws IOException{
         FXMLLoader viewLoader = new FXMLLoader(Main.class.getResource(viewPath));
         Scene scene = new Scene(viewLoader.load(), 700, 550);
-        Image icon = new Image(Main.class.getResource(Frames.MAIN_ICON_PATH).toExternalForm());
         setStageOnCurrentScreen(root, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);
         root.setTitle(AppConfig.APP_TITLE);
         root.setResizable(false);
-        root.getIcons().add(icon);
+        root.getIcons().addAll(
+                new Image(Main.class.getResource(Frames.MAIN_ICON_192_PATH ).toExternalForm()),
+                new Image(Main.class.getResource(Frames.MAIN_ICON_256_PATH ).toExternalForm()),
+                new Image(Main.class.getResource(Frames.MAIN_ICON_PATH).toExternalForm())
+        );
         root.setScene(scene);
         root.show();
     }
@@ -107,12 +111,17 @@ public class ViewManager {
      * @param content : Content to be shown
      * @param type : Type of alert
      */
-    public static void setAndShowAlert(String title, String header, String content, Alert.AlertType type){
+    public static void setAndShowAlert(String title, String header, String content, Alert.AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.initOwner(root);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.getStylesheets().add(Main.class.getResource("/style/alert-style.css").toExternalForm());
+        dialogPane.getStyleClass().add("custom-alert");
+
         alert.showAndWait();
     }
 
