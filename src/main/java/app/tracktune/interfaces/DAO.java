@@ -1,8 +1,7 @@
 package app.tracktune.interfaces;
 
-import app.tracktune.model.user.User;
 
-import java.util.SortedSet;
+import java.util.Set;
 
 public interface DAO<T> {
     /**
@@ -42,7 +41,7 @@ public interface DAO<T> {
      * Get all the elements stored in the cache
      * @return sorted list of stored elements
      */
-    SortedSet<T> getAll();
+    Set<T> getAll();
 
     boolean alreadyExists(T data);
 }

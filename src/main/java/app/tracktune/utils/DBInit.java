@@ -93,7 +93,9 @@ public class DBInit {
             data BLOB NOT NULL,
             creationDate TIMESTAMP NOT NULL,
             isMultimedia INTEGER CHECK (isMultimedia IN (0, 1)) NOT NULL,
-            resourceDate TIMESTAMP NOT NULL,
+            duration INTEGER,
+            location TEXT,
+            resourceDate TIMESTAMP,
             trackID INTEGER,
             FOREIGN KEY (trackID) REFERENCES Tracks(ID)
         );

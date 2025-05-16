@@ -23,6 +23,7 @@ public class Frames {
     public static final String REQUESTS_VIEW_PATH = "/fxml/admin/RequestsView.fxml";
     public static final String REQUESTS_AUTHORS_PATH = "/fxml/admin/AuthorsView.fxml";
     public static final String DISCOVER_VIEW_PATH = "/fxml/authenticatedUser/DiscoverView.fxml";
+    public static final String RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/ResourcesView.fxml";
     // FRAME ICONS
     public static final String MAIN_ICON_PATH = "/assets/icon/appIcon.png";
     public static final String MAIN_ICON_192_PATH = "/assets/icon/app_icon192x192.png";

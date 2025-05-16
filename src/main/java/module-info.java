@@ -1,6 +1,4 @@
 module app.tracktune {
-    requires javafx.controls;
-    requires javafx.fxml;
     requires javafx.swing;
 
     requires org.controlsfx.controls;
@@ -8,6 +6,7 @@ module app.tracktune {
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
     requires javafx.media;
+    requires MaterialFX;
 
     opens app.tracktune to javafx.fxml;
     opens app.tracktune.controller to javafx.fxml;
@@ -23,4 +22,5 @@ module app.tracktune {
     exports app.tracktune.model.user;
     exports app.tracktune.model.genre;
     exports app.tracktune.model.author;
+    exports app.tracktune.model.resource;
 }

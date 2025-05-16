@@ -2,7 +2,7 @@ package app.tracktune.model.author;
 
 public class Author implements Comparable<Author>{
     private final String authorshipName;
-    private AuthorStatusEnum status;
+    private final AuthorStatusEnum status;
 
     public Author(String authorshipName) {
         this.authorshipName = authorshipName;
@@ -17,16 +17,12 @@ public class Author implements Comparable<Author>{
         return authorshipName;
     }
 
-    @Override
-    public int compareTo(Author other) {
-        return authorshipName.compareToIgnoreCase(other.authorshipName);
-    }
-
     public AuthorStatusEnum getStatus() {
         return status;
     }
 
-    public void setStatus(AuthorStatusEnum status) {
-        this.status = status;
+    @Override
+    public int compareTo(Author other) {
+        return authorshipName.compareToIgnoreCase(other.authorshipName);
     }
 }
