@@ -1,5 +1,6 @@
 package app.tracktune.controller.pendingUser;
 
+import app.tracktune.controller.Controller;
 import app.tracktune.model.user.PendingUser;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
@@ -11,7 +12,7 @@ import javafx.scene.control.Label;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class PendingUserDashboardController implements Initializable {
+public class PendingUserDashboardController extends Controller implements Initializable {
     @FXML
     public Label LblStatusValue;
 

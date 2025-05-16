@@ -2,9 +2,11 @@ package app.tracktune.view;
 
 import app.tracktune.Main;
 import app.tracktune.config.AppConfig;
+import app.tracktune.controller.Controller;
 import app.tracktune.controller.SessionManager;
 import app.tracktune.model.user.User;
 import app.tracktune.utils.Frames;
+import app.tracktune.utils.Strings;
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
@@ -13,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -135,6 +138,29 @@ public class ViewManager {
 
     public static void navigateToPendingUserDashboard(){redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);}
 
+    /**
+     * Sets the main content area of the dashboard to display a new view.
+     * The new view is loaded from the specified FXML file path.
+     *
+     * @param contentPath Path to the FXML file to load and display in the main content area
+     * @param mainContent The main content node from the entrypoint of the view (dashboard or something like that)
+     * @param parentController If there is a child controller loaded by a parent, the parent has to be passed as parameter to the child
+     */
+    public static void setMainContent(String contentPath, StackPane mainContent, Controller parentController) {
+        try {
+            FXMLLoader loader = new FXMLLoader(ViewManager.class.getResource(contentPath));
+            Parent view = loader.load();
+
+            Controller controller = loader.getController();
+            controller.setParentController(parentController);
+
+            mainContent.getChildren().setAll(view);
+        } catch (IOException e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
     public static void initSessionManager(User sessionUser){
         SessionManager.initialize(sessionUser);
         sessionManager = SessionManager.getInstance();
@@ -150,9 +176,5 @@ public class ViewManager {
     public static void logout(){
         SessionManager.reset();
         navigateToLogin();
-    }
-
-    public static void navigateToRequests() {
-        redirectView(Frames.REQUESTS_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
     }
 }

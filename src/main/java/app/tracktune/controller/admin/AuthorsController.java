@@ -1,5 +1,6 @@
 package app.tracktune.controller.admin;
 
+import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.author.Author;
@@ -9,6 +10,7 @@ import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -16,6 +18,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,7 +27,7 @@ import java.util.stream.Collectors;
  * This class allows the admin to view, add, activate, and remove authors,
  * as well as apply filters to view active or removed authors, with pagination support.
  */
-public class AuthorsController {
+public class AuthorsController extends Controller implements Initializable {
     @FXML private VBox authorsContainer;
     @FXML private Button prevButton;
     @FXML private Button nextButton;
@@ -43,7 +46,7 @@ public class AuthorsController {
      * setting up the filter tabs, and configuring pagination.
      */
     @FXML
-    public void initialize() {
+    public void initialize(URL location, ResourceBundle resources) {
         author.addAll(authorDAO.getAll());
 
         createTabsFromEnum();

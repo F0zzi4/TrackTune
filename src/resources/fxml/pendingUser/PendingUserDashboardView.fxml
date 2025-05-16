@@ -16,33 +16,33 @@
             <children>
                 <Label styleClass="sidebar-title" text="TRACKTUNE" />
                 <ProgressBar id="custom-progress" prefWidth="200.0" progress="0.0" />
-                <Button disable="true" prefHeight="38.0" prefWidth="648.0" styleClass="sidebar-button" text="Dashboard">
+                <Button prefHeight="38.0" prefWidth="648.0" styleClass="sidebar-button" text="Dashboard">
                     <graphic>
                         <FontIcon iconLiteral="mdi2v-view-dashboard" iconSize="20" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button disable="true" prefHeight="38.0" prefWidth="385.0" styleClass="sidebar-button" text="Users">
+                <Button prefHeight="38.0" prefWidth="385.0" styleClass="sidebar-button" text="Discover">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-circle" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2l-lumx" iconSize="21" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button disable="true" prefHeight="38.0" prefWidth="271.0" styleClass="sidebar-button" text="Tracks">
+                <Button prefHeight="38.0" prefWidth="271.0" styleClass="sidebar-button" text="Resources">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2m-music-clef-treble" iconSize="21" />
+                        <FontIcon iconLiteral="mdi2m-music-box-multiple" iconSize="21" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button disable="true" prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Authors">
+                <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Activities">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-music" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2c-content-paste" iconSize="20" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button disable="true" prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Genres">
+                <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Me">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2b-book-play" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2f-folder-account" iconSize="22" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />

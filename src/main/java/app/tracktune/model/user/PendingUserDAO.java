@@ -1,11 +1,9 @@
 package app.tracktune.model.user;
 
 import app.tracktune.Main;
-import app.tracktune.exceptions.PendingUserAlreadyExistsException;
-import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.exceptions.EntityAlreadyExistsException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
-import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 
 import java.sql.Timestamp;
@@ -74,7 +72,7 @@ public class PendingUserDAO implements DAO<PendingUser> {
     @Override
     public void insert(PendingUser pendingUser) {
         if(alreadyExists(pendingUser)){
-            throw new PendingUserAlreadyExistsException(Strings.ERR_PENDING_USER_ALREADY_EXISTS);
+            throw new EntityAlreadyExistsException(Strings.ERR_ENTITY_ALREADY_EXISTS);
         }
 
         boolean success = dbManager.executeUpdate(INSERT_PENDING_USER_STMT,
@@ -107,8 +105,15 @@ public class PendingUserDAO implements DAO<PendingUser> {
     }
 
     @Override
-    public void delete(PendingUser data) {
+    public void delete(PendingUser pendingUser) {
+        boolean success = dbManager.executeUpdate(
+                DELETE_PENDING_USER_STMT,
+                pendingUser.getUsername()
+        );
 
+        if (success) {
+            cache.remove(pendingUser);
+        }
     }
 
     @Override

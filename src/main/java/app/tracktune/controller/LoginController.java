@@ -12,7 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class LoginController {
+public class LoginController extends Controller{
     private final UserDAO userDAO;
     private final PendingUserDAO pendingUserDAO;
     @FXML

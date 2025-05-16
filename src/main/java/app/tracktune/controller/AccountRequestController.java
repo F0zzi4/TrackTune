@@ -1,6 +1,5 @@
 package app.tracktune.controller;
 
-import app.tracktune.exceptions.PendingUserAlreadyExistsException;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.user.*;
@@ -13,7 +12,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import java.sql.Timestamp;
 
-public class AccountRequestController {
+public class AccountRequestController extends Controller {
     private final PendingUserDAO pendingUserDAO;
 
     @FXML

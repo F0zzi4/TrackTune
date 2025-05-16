@@ -1,7 +1,7 @@
 package app.tracktune.model.author;
 
 import app.tracktune.Main;
-import app.tracktune.exceptions.PendingUserAlreadyExistsException;
+import app.tracktune.exceptions.EntityAlreadyExistsException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.utils.Strings;
@@ -59,7 +59,7 @@ public class AuthorDAO implements DAO<Author> {
     @Override
     public void insert(Author author) {
         if(alreadyExists(author)){
-            throw new PendingUserAlreadyExistsException(Strings.ERR_PENDING_USER_ALREADY_EXISTS);
+            throw new EntityAlreadyExistsException(Strings.ERR_ENTITY_ALREADY_EXISTS);
         }
 
         boolean success = dbManager.executeUpdate(INSERT_AUTHOR_STMT,

@@ -1,5 +1,6 @@
 package app.tracktune.controller.admin;
 
+import app.tracktune.controller.Controller;
 import app.tracktune.model.user.Administrator;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
@@ -26,8 +27,8 @@ import java.util.ResourceBundle;
  * The dashboard includes a media player to display a video, handles user logout,
  * and supports switching between different views in the main content
  */
-public class AdminDashboardController implements Initializable {
-    @FXML private StackPane mainContent;
+public class AdminDashboardController extends Controller implements Initializable {
+    @FXML public StackPane mainContent;
     @FXML private MediaView mediaPlayerView;
     private MediaPlayer mediaPlayer;
     private Administrator admin;
@@ -76,7 +77,7 @@ public class AdminDashboardController implements Initializable {
      */
     @FXML
     private void handleGenre(){
-        setMainContent(Frames.GENRES_VIEW_PATH_VIEW_PATH);
+        ViewManager.setMainContent(Frames.GENRES_VIEW_PATH_VIEW_PATH, mainContent, this);
     }
 
     /**
@@ -84,7 +85,7 @@ public class AdminDashboardController implements Initializable {
      */
     @FXML
     public void handleRequests() {
-        setMainContent(Frames.REQUESTS_VIEW_PATH);
+        ViewManager.setMainContent(Frames.REQUESTS_VIEW_PATH, mainContent, this);
     }
 
     /**
@@ -92,24 +93,7 @@ public class AdminDashboardController implements Initializable {
      */
     @FXML
     public void handleAuthors() {
-        setMainContent(Frames.REQUESTS_AUTHORS_PATH);
-    }
-
-    /**
-     * Sets the main content area of the dashboard to display a new view.
-     * The new view is loaded from the specified FXML file path.
-     *
-     * @param contentPath Path to the FXML file to load and display in the main content area
-     */
-    private void setMainContent(String contentPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(contentPath));
-            Parent view = loader.load();
-            mainContent.getChildren().setAll(view);
-        } catch (IOException e) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.MEDIA_NOT_SUPPORTED, Strings.MEDIA_NOT_SUPPORTED, Alert.AlertType.ERROR);
-            System.err.println(e.getMessage());
-        }
+        ViewManager.setMainContent(Frames.REQUESTS_AUTHORS_PATH, mainContent, this);
     }
 
     /**
