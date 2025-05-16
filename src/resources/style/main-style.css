@@ -1,11 +1,9 @@
-/* Root settings */
 .root {
     -fx-background-color: linear-gradient(to bottom right, #fddca8, #ff7d24);
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-padding: 40;
 }
 
-/* Login Pane */
 .login-pane {
     -fx-background-radius: 14;
     -fx-padding: 30;
@@ -15,29 +13,28 @@
     -fx-border-radius: 14;
 }
 
-/* Title */
 .label-title {
+    -fx-alignment: center;
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a280f;
+    -fx-background-color: linear-gradient(to right, #ec9763, #ff9f40);
+    -fx-background-radius: 10;
+    -fx-padding: 3;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 6, 0.4, 0, 3);
+}
+
+.label-subtitle {
+    -fx-alignment: center;
     -fx-font-size: 26px;
     -fx-font-weight: bold;
-    -fx-text-fill: #ffdab3;
-    -fx-background-color: linear-gradient(to right, #e26500, #f39f4e);
+    -fx-text-fill: #4a280f;
+    -fx-background-color: linear-gradient(to right, #f3a97d, #fdb162);
     -fx-background-radius: 10;
-    -fx-padding: 10 20;
+    -fx-padding: 3;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 6, 0.4, 0, 3);
 }
 
-/* Subtitle */
-.label-subtitle {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #ffc470;
-    -fx-background-color: linear-gradient(to right, #e26500, #f39f4e);
-    -fx-background-radius: 10;
-    -fx-padding: 8 18;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0.4, 0, 2);
-}
-
-/* Input Fields */
 .text-field, .password-field {
     -fx-font-size: 15px;
     -fx-background-color: #fb9d5c;
@@ -51,23 +48,18 @@
     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
 }
 
-/* Primary Button */
 .button {
-    -fx-background-color: linear-gradient(to right, #ff7200, #ffb461);
-    -fx-text-fill: #fde4be;
-    -fx-font-size: 15px;
-    -fx-background-radius: 8;
+    -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
+    -fx-text-fill: #4a280f;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
     -fx-cursor: hand;
-    -fx-padding: 10 16;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.5, 0, 3);
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
 }
 
 .button:hover {
-    -fx-background-color: #ff7200;
-}
-
-/* Generic Labels */
-.label {
-    -fx-text-fill: #ffd8a8;
-    -fx-font-size: 13px;
+    -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
+    -fx-text-fill: #885116;
 }

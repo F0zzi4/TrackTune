@@ -13,14 +13,18 @@
 
 <VBox prefHeight="560.0" prefWidth="700.0" stylesheets="@../style/main-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.LoginController">
     <children>
-        <HBox prefHeight="74.0" prefWidth="626.0" spacing="20.0" style="-fx-padding: 10px; -fx-alignment: center; -fx-background-color: rwhiteed;" styleClass="HBox-title">
+        <HBox prefHeight="74.0" prefWidth="626.0" spacing="20.0" style="-fx-padding: 10px; -fx-alignment: center;">
             <children>
-                <Label contentDisplay="CENTER" prefHeight="63.0" prefWidth="267.0" style="-fx-alignment: center; -fx-font-size: 35;" styleClass="label-title" text="TRACKTUNE" />
+                <Label contentDisplay="CENTER" prefHeight="60.0" prefWidth="287.0" styleClass="label-title" text="TRACKTUNE" />
             </children>
         </HBox>
         <HBox prefHeight="44.0" prefWidth="631.0" style="-fx-padding: 10px; -fx-alignment: center;">
             <children>
-                <Label contentDisplay="CENTER" prefHeight="36.0" prefWidth="484.0" style="-fx-alignment: center; -fx-font-size: 20; -fx-font-weight: bold;" styleClass="label-subtitle" text="Condividi e accedi alla community musicale " wrapText="true" />
+                <Label prefHeight="57.0" prefWidth="549.0" style="-fx-alignment: center; -fx-font-size: 20; -fx-font-weight: bold;" styleClass="label-subtitle" text="Share your experiences with the music community" wrapText="true">
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2a-account-group" iconSize="20" />
+                    </graphic>
+                </Label>
             </children>
         </HBox>
         <GridPane prefHeight="259.0" prefWidth="631.0">
@@ -35,8 +39,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Label contentDisplay="CENTER" prefHeight="66.0" prefWidth="613.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Username:" underline="true" GridPane.rowIndex="2" />
-                <Label contentDisplay="CENTER" prefHeight="66.0" prefWidth="365.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Password:" underline="true" GridPane.rowIndex="3" />
+                <Label contentDisplay="CENTER" prefHeight="66.0" prefWidth="613.0" style="-fx-alignment: center; -fx-text-fill: #4a280f; -fx-font-size: 17; -fx-font-weight: bold;" text="Username:" underline="true" GridPane.rowIndex="2" />
+                <Label contentDisplay="CENTER" prefHeight="66.0" prefWidth="365.0" style="-fx-alignment: center; -fx-text-fill: #4a280f; -fx-font-size: 17; -fx-font-weight: bold;" text="Password:" underline="true" GridPane.rowIndex="3" />
                 <TextField fx:id="TxtUsername" prefHeight="50.0" prefWidth="300.0" style="-fx-max-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                 <PasswordField fx:id="TxtPassword" prefHeight="48.0" prefWidth="200.0" style="-fx-max-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             </children>
@@ -52,7 +56,7 @@
         </HBox>
         <HBox prefHeight="167.0" prefWidth="626.0" style="-fx-alignment: center;">
             <children>
-                <Label contentDisplay="CENTER" prefHeight="64.0" prefWidth="307.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 15;" text="Se non possiedi un account, richiedine uno:" underline="true" />
+                <Label contentDisplay="CENTER" prefHeight="64.0" prefWidth="330.0" style="-fx-alignment: center; -fx-font-weight: bold; -fx-text-fill: #3c200b; -fx-font-size: 15;" text="Se non possiedi un account, richiedine uno:" underline="true" />
                 <Button mnemonicParsing="false" onMouseClicked="#handleAccountRequest" prefHeight="42.0" prefWidth="114.0" style="-fx-font-weight: bold;" text="Richiedi">
                     <graphic>
                         <FontIcon iconLiteral="mdi2a-account-multiple-plus" iconSize="20" />

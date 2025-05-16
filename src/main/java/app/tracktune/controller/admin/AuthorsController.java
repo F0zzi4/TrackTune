@@ -148,7 +148,7 @@ public class AuthorsController {
 
         Button acceptBtn = new Button(Strings.RESTORE);
         acceptBtn.getStyleClass().add("accept-button");
-        acceptBtn.setOnAction(e -> activeAuthor(author));
+        acceptBtn.setOnAction(e -> addAuthor(author));
 
         Button rejectBtn = new Button(Strings.DELETE);
         rejectBtn.getStyleClass().add("delete-button");
@@ -177,11 +177,9 @@ public class AuthorsController {
      *
      * @param author the {@link Author} to activate
      */
-    private void activeAuthor(Author author) {
+    private void addAuthor(Author author) {
         try {
-            author.setStatus(AuthorStatusEnum.ACTIVE);
-            authorDAO.update(author);
-
+            authorDAO.update(new Author(author.getAuthorshipName(), AuthorStatusEnum.ACTIVE));
             removeAuthorAndUpdate(author);
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
@@ -196,9 +194,7 @@ public class AuthorsController {
      */
     private void removeAuthor(Author author) {
         try {
-            author.setStatus(AuthorStatusEnum.REMOVED);
-            authorDAO.update(author);
-
+            authorDAO.update(new Author(author.getAuthorshipName(), AuthorStatusEnum.REMOVED));
             removeAuthorAndUpdate(author);
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);

@@ -65,6 +65,33 @@ public class AuthenticatedUserDashboardController implements Initializable {
     }
 
     /**
+     * Loads and displays the tracks view by updating the main content area
+     */
+    @FXML
+    public void handleResources(){
+        try{
+            setMainContent(Frames.RESOURCES_VIEW_PATH);
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Loads and displays the activities view by updating the main content area.
+     * It's a log about the activities done by the logged user
+     */
+    @FXML
+    public void handleActivities(){
+        try{
+
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
      * Logs out the current user by calling the {@link ViewManager#logout()} method.
      * Displays an error alert if the logout process fails.
      */
@@ -90,7 +117,7 @@ public class AuthenticatedUserDashboardController implements Initializable {
             Parent view = loader.load();
             mainContent.getChildren().setAll(view);
         } catch (IOException e) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.MEDIA_NOT_SUPPORTED, Strings.MEDIA_NOT_SUPPORTED, Alert.AlertType.ERROR);
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
         }
     }
@@ -107,11 +134,6 @@ public class AuthenticatedUserDashboardController implements Initializable {
             System.err.println(e.getMessage());
             disposeMediaPlayer();
         }
-    }
-
-    @FXML
-    public void viewTracks(){
-        initMediaPlayer();
     }
 
     public void disposeMediaPlayer() {

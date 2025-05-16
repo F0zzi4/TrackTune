@@ -14,25 +14,26 @@ public class AuthorDAO implements DAO<Author> {
     //FIELD
     private static final String AUTHORSHIP_NAME = "authorshipName";
     private static final String STATUS = "status";
+
     private static final String INSERT_AUTHOR_STMT = """
-        INSERT INTO Authors (authorshipName, status) 
+        INSERT INTO Authors (authorshipName, status)
         VALUES (?, ?)
     """;
 
     private static final String UPDATE_AUTHOR_STMT = """
-        UPDATE Authors 
+        UPDATE Authors
         SET authorshipName = ?, status = ?
         WHERE authorshipName = ?
     """;
 
     private static final String DELETE_AUTHOR_STMT = """
-            DELETE FROM Authors 
+            DELETE FROM Authors
             WHERE authorshipName = ?
     """;
 
     private static final String GET_ALL_AUTHORS_STMT = """
-            SELECT * 
-            FROM Authors 
+            SELECT *
+            FROM Authors
     """;
 
     public AuthorDAO() {

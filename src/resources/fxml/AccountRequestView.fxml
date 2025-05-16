@@ -16,8 +16,7 @@
     <children>
         <StackPane prefWidth="700.0" style="-fx-padding: 10;">
             <children>
-                <Label contentDisplay="CENTER" prefHeight="63.0" prefWidth="267.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="label-title" text="TRACKTUNE" />
-
+                <Label contentDisplay="CENTER" prefHeight="50.0" prefWidth="287.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="label-title" text="TRACKTUNE" />
                 <HBox alignment="CENTER_LEFT" prefHeight="80.0" prefWidth="600.0">
                     <children>
                         <Button mnemonicParsing="false" onMouseClicked="#handleReturn" stylesheets="@../style/account_request-style.css">
@@ -31,7 +30,11 @@
         </StackPane>
         <HBox prefHeight="44.0" prefWidth="631.0" style="-fx-padding: 10px; -fx-alignment: center;">
             <children>
-                <Label contentDisplay="CENTER" prefHeight="36.0" prefWidth="484.0" style="-fx-alignment: center; -fx-font-size: 20; -fx-font-weight: bold;" styleClass="label-subtitle" text="Richiedi un account" wrapText="true" />
+                <Label prefHeight="41.0" prefWidth="280.0" style="-fx-alignment: center; -fx-font-size: 20; -fx-font-weight: bold;" styleClass="label-subtitle" text="Account Request" wrapText="true">
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2a-account-multiple-plus" iconSize="20" />
+                    </graphic>
+                </Label>
             </children>
         </HBox>
         <GridPane prefHeight="330.0" prefWidth="637.0">
@@ -47,11 +50,11 @@
                 <RowConstraints minHeight="-Infinity" prefHeight="60.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Label contentDisplay="CENTER" prefHeight="51.0" prefWidth="339.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Cognome:" underline="true" GridPane.rowIndex="3" />
+                <Label contentDisplay="CENTER" prefHeight="51.0" prefWidth="339.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Surname:" underline="true" GridPane.rowIndex="3" />
                 <Label contentDisplay="CENTER" prefHeight="52.0" prefWidth="339.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Password:" underline="true" GridPane.rowIndex="4" />
                 <Label contentDisplay="CENTER" prefHeight="51.0" prefWidth="339.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Username:" underline="true" />
                 <TextField fx:id="TxtUsername" prefHeight="50.0" prefWidth="300.0" style="-fx-max-width: 200;" GridPane.columnIndex="1" />
-                <Label contentDisplay="CENTER" prefHeight="51.0" prefWidth="339.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Nome:" underline="true" GridPane.rowIndex="1" />
+                <Label contentDisplay="CENTER" prefHeight="51.0" prefWidth="339.0" style="-fx-alignment: center; -fx-text-fill: #3c200b; -fx-font-size: 17; -fx-font-weight: bold;" text="Name:" underline="true" GridPane.rowIndex="1" />
                 <TextField fx:id="TxtName" prefHeight="50.0" prefWidth="300.0" style="-fx-max-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                 <TextField fx:id="TxtSurname" prefHeight="50.0" prefWidth="300.0" style="-fx-max-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 <PasswordField fx:id="TxtPassword" prefHeight="48.0" prefWidth="200.0" style="-fx-max-width: 200;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
@@ -61,7 +64,7 @@
             <children>
                 <Button defaultButton="true" mnemonicParsing="false" onMouseClicked="#handleRequest" prefHeight="40.0" prefWidth="120.0" style="-fx-font-weight: bold;" text="Richiedi">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-multiple-plus" iconSize="20" />
+                        <FontIcon iconLiteral="mdi2a-account" iconSize="20" />
                     </graphic>
                 </Button>
             </children>

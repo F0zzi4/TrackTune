@@ -1,10 +1,8 @@
-/* Root settings */
 .root {
     -fx-font-family: "Segoe UI", sans-serif;
     -fx-background-color: linear-gradient(to bottom right, #4a280f, #6b3b1a);
 }
 
-/* Sidebar */
 .sidebar {
     -fx-background-color: linear-gradient(to bottom, #ffb74d, #ff9800);
     -fx-padding: 30 10;
@@ -33,7 +31,6 @@
     -fx-cursor: hand;
 }
 
-/* Logout button */
 .logout-button {
     -fx-background-color: linear-gradient(to right, #ff944d, #f16f15);
     -fx-text-fill: #653817;
@@ -50,7 +47,6 @@
     -fx-text-fill: red;
 }
 
-/* Main content */
 .main-content {
     -fx-background-color: linear-gradient(to bottom right, #ffe0b2, #ffcc80);
     -fx-padding: 30;
@@ -71,7 +67,6 @@
 }
 
 .dashboard-panel{
-    /*-fx-background-color: linear-gradient(to bottom right, #f4c06f, #ec9a40);*/
     -fx-background-color: linear-gradient(to bottom right, #ffe0b2, #ffcc80);
     -fx-border-style: solid ;
     -fx-border-color: linear-gradient(to bottom, #ffd38a, #f3b766);
