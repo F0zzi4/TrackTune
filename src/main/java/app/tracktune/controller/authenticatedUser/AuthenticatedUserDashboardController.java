@@ -1,14 +1,13 @@
 package app.tracktune.controller.authenticatedUser;
 
+import app.tracktune.controller.Controller;
 import app.tracktune.model.user.AuthenticatedUser;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
@@ -17,15 +16,14 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AuthenticatedUserDashboardController implements Initializable {
-    private MediaPlayer mediaPlayer;
+public class AuthenticatedUserDashboardController extends Controller implements Initializable {
     @FXML private MediaView mediaPlayerView;
-    @FXML private StackPane mainContent;
+    @FXML public StackPane mainContent;
     @FXML private Label LblWelcome;
+    private MediaPlayer mediaPlayer;
     private AuthenticatedUser authUser;
     private Node dashboardContent;
 
@@ -57,7 +55,7 @@ public class AuthenticatedUserDashboardController implements Initializable {
     @FXML
     public void handleDiscover() {
         try{
-            setMainContent(Frames.DISCOVER_VIEW_PATH);
+            ViewManager.setMainContent(Frames.DISCOVER_VIEW_PATH, mainContent, this);
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
@@ -70,7 +68,7 @@ public class AuthenticatedUserDashboardController implements Initializable {
     @FXML
     public void handleResources(){
         try{
-            setMainContent(Frames.RESOURCES_VIEW_PATH);
+            ViewManager.setMainContent(Frames.RESOURCES_VIEW_PATH, mainContent, this);
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
@@ -100,23 +98,6 @@ public class AuthenticatedUserDashboardController implements Initializable {
         try{
             ViewManager.logout();
         }catch(Exception e){
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Sets the main content area of the dashboard to display a new view.
-     * The new view is loaded from the specified FXML file path.
-     *
-     * @param contentPath Path to the FXML file to load and display in the main content area.
-     */
-    private void setMainContent(String contentPath) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(contentPath));
-            Parent view = loader.load();
-            mainContent.getChildren().setAll(view);
-        } catch (IOException e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
         }

@@ -1,5 +1,6 @@
 package app.tracktune.controller.admin;
 
+import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.genre.Genre;
@@ -8,13 +9,14 @@ import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import java.io.Serializable;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -27,7 +29,7 @@ import java.util.*;
  * Pagination is handled to display genres in a manageable way.
  * </p>
  */
-public class GenresController implements Serializable {
+public class GenresController extends Controller implements Initializable {
 
     @FXML private VBox requestsContainer;
     @FXML private Button btnPrev;
@@ -51,7 +53,7 @@ public class GenresController implements Serializable {
      * </p>
      */
     @FXML
-    public void initialize() {
+    public void initialize(URL location, ResourceBundle resources) {
         genreList = genreDAO.getAll();
 
         btnPrev.setOnAction(e -> {
@@ -69,10 +71,10 @@ public class GenresController implements Serializable {
         });
 
         btnAddGenre.setOnAction(e -> {
-            String name = txtName.getText().trim();
-            String description = txtDescription.getText().trim();
-
             try{
+                String name = txtName.getText().trim();
+                String description = txtDescription.getText().trim();
+
                 if (!name.isEmpty() && !description.isEmpty()) {
                     if(SQLiteScripts.checkForSQLInjection(name, description))
                         throw new SQLInjectionException(Strings.ERR_SQL_INJECTION);
@@ -93,6 +95,9 @@ public class GenresController implements Serializable {
                     throw new TrackTuneException(Strings.FIELD_EMPTY);
             }catch (TrackTuneException exception){
                 ViewManager.setAndShowAlert(Strings.ERROR, Strings.GENRE_FAILED, exception.getMessage(), Alert.AlertType.ERROR);
+            }catch(Exception ex){
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.GENRE_FAILED, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+                System.err.println(ex.getMessage());
             }
         });
 

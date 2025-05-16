@@ -231,3 +231,101 @@
 .mfx-toggle-button:selected .thumb {
     -fx-background-color: #ff8c00;
 }
+
+.date-picker {
+    -fx-background-color: #ffebc8;
+    -fx-text-fill: #4a280f;
+    -fx-font-size: 14px;
+    -fx-border-color: #ff8800;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 5 10;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
+}
+
+.date-picker .arrow-button {
+    -fx-background-color: #ff8800;
+    -fx-background-radius: 0 5 5 0;
+}
+
+.date-picker .arrow-button:hover {
+    -fx-background-color: #ffaa33;
+}
+
+.date-picker .arrow {
+    -fx-background-color: white;
+}
+
+.date-picker .text-field {
+    -fx-background-color: #fdc06f;
+    -fx-text-fill: #4a280f;
+    -fx-font-weight: bold;
+    -fx-background-radius: 5 0 0 5;
+}
+
+.date-picker-popup {
+    -fx-background-color: #ffebc8;
+    -fx-border-color: #4a280f;
+    -fx-border-radius: 5;
+}
+
+.date-picker-popup .month-year-pane {
+    -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
+    -fx-text-fill: #4a280f;
+}
+
+.date-picker-popup .spinner .button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4a280f;
+}
+
+.date-picker-popup .calendar-grid {
+    -fx-background-color: #ffebc8;
+}
+
+.date-picker-popup .day-cell {
+    -fx-text-fill: #4a280f;
+    -fx-background-color: transparent;
+}
+
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #fdc06f;
+}
+
+.date-picker-popup .day-cell:selected {
+    -fx-background-color: #fdc06f;
+    -fx-text-fill: #4a280f;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #fdc06f;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #ffebc8;
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
+}

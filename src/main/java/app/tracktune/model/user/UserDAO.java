@@ -1,6 +1,7 @@
 package app.tracktune.model.user;
 
 import app.tracktune.Main;
+import app.tracktune.exceptions.EntityAlreadyExistsException;
 import app.tracktune.exceptions.UserAlreadyExistsException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
@@ -127,6 +128,10 @@ public class UserDAO implements DAO<User> {
     @Override
     public void update(User user) {
         boolean success = false;
+
+        if(alreadyExists(user)){
+            throw new EntityAlreadyExistsException(Strings.ERR_USER_ALREADY_EXISTS);
+        }
 
         if(user instanceof Administrator admin){
             success = dbManager.executeUpdate(

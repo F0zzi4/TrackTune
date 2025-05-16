@@ -1,9 +1,11 @@
 package app.tracktune.controller.admin;
 
+import app.tracktune.controller.Controller;
 import app.tracktune.model.user.*;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
@@ -11,11 +13,12 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
+import java.net.URL;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class RequestsController {
+public class RequestsController extends Controller implements Initializable {
 
     @FXML
     private VBox requestsContainer;
@@ -27,7 +30,7 @@ public class RequestsController {
     private TabPane filterTabPane;
 
     private AuthRequestStatusEnum currentFilter = AuthRequestStatusEnum.CREATED;
-    private SortedSet<PendingUser> pendingRequests = new TreeSet<>(Comparator.comparing(PendingUser::getRequestDate));
+    private final SortedSet<PendingUser> pendingRequests = new TreeSet<>();
     private List<PendingUser> filteredRequests = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 5;
@@ -35,7 +38,7 @@ public class RequestsController {
     private final PendingUserDAO pendingUserDAO = new PendingUserDAO();
 
     @FXML
-    public void initialize() {
+    public void initialize(URL location, ResourceBundle resources) {
         pendingRequests.addAll(pendingUserDAO.getAll());
 
         createTabsFromEnum();
@@ -149,8 +152,14 @@ public class RequestsController {
 
     private void acceptRequest(PendingUser request) {
         try {
-            request.setStatus(AuthRequestStatusEnum.ACCEPTED);
-            pendingUserDAO.update(request);
+            pendingUserDAO.update(new PendingUser(
+                    request.getUsername(),
+                    request.getPassword(),
+                    request.getName(),
+                    request.getSurname(),
+                    request.getRequestDate(),
+                    AuthRequestStatusEnum.ACCEPTED)
+            );
 
             AuthenticatedUser au = new AuthenticatedUser(
                     request.getUsername(),
@@ -162,26 +171,31 @@ public class RequestsController {
             );
             new UserDAO().insert(au);
 
-            removeRequestAndUpdate(request);
+            removeRequestAndUpdate();
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            ex.printStackTrace();
+            System.err.println(ex.getMessage());
         }
     }
 
     private void rejectRequest(PendingUser request) {
         try {
-            request.setStatus(AuthRequestStatusEnum.REJECTED);
-            pendingUserDAO.update(request);
-
-            removeRequestAndUpdate(request);
+            pendingUserDAO.update(new PendingUser(
+                    request.getUsername(),
+                    request.getPassword(),
+                    request.getName(),
+                    request.getSurname(),
+                    request.getRequestDate(),
+                    AuthRequestStatusEnum.REJECTED)
+            );
+            removeRequestAndUpdate();
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            ex.printStackTrace();
+            System.err.println(ex.getMessage());
         }
     }
 
-    private void removeRequestAndUpdate(PendingUser request) {
+    private void removeRequestAndUpdate() {
         int maxPage = (int) Math.ceil((double) filteredRequests.size() / itemsPerPage);
         if (currentPage >= maxPage && currentPage > 0) {
             currentPage--;

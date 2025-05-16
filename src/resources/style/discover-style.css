@@ -100,6 +100,11 @@
     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
 }
 
+* {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
 .tab-item{
     -fx-background-color: #ffebc8;
     -fx-padding: 10;

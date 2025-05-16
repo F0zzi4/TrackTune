@@ -4,18 +4,16 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<!--<?import org.kordamp.ikonli.javafx.FontIcon?>-->
-
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 <BorderPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@../../style/dashboard-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.admin.AdminDashboardController">
     <left>
         <VBox alignment="TOP_CENTER" prefWidth="220.0" spacing="12.0" styleClass="sidebar">
@@ -40,7 +38,7 @@
                     </graphic>
                 </Button>
             <Separator prefWidth="200.0" />
-                <Button prefHeight="38.0" onMouseClicked="#handleAuthors" prefWidth="356.0" styleClass="sidebar-button" text="Authors">
+                <Button onMouseClicked="#handleAuthors" prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Authors">
                     <graphic>
                         <FontIcon iconLiteral="mdi2a-account-music" iconSize="20" />
                     </graphic>
@@ -51,6 +49,12 @@
                         <FontIcon iconLiteral="mdi2b-book-play" iconSize="20" />
                     </graphic>
                 </Button>
+            <Separator prefWidth="200.0" />
+            <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Instruments">
+               <graphic>
+                  <FontIcon iconLiteral="mdi2t-trumpet" iconSize="20" />
+               </graphic>
+            </Button>
             <Separator prefWidth="200.0" />
             <Button onMouseClicked="#handleRequests" prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Requests">
                 <graphic>
