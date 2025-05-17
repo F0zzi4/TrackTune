@@ -102,3 +102,13 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
     -fx-border-radius: 5px;
 }
+
+.empty-list-label{
+    -fx-font-size: 20px;
+    -fx-text-fill: #555;
+    -fx-font-style: italic;
+}
+
+.nameField:focused, .descriptionField:focused {
+    -fx-prompt-text-fill: rgba(74, 40, 15, 0.4);
+}

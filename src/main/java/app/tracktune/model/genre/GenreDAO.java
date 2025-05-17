@@ -95,7 +95,7 @@ public class GenreDAO implements DAO<Genre> {
     @Override
     public Genre getByKey(Object key) {
         return cache.stream()
-                .filter(user -> user.getName().equals(key))
+                .filter(genre -> genre.getName().equals(key))
                 .findFirst()
                 .orElse(null);
     }
