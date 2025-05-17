@@ -3,8 +3,8 @@ package app.tracktune.controller.admin;
 import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
-import app.tracktune.model.genre.Genre;
-import app.tracktune.model.genre.GenreDAO;
+import app.tracktune.model.musicalInstrument.MusicalInstrument;
+import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
@@ -16,61 +16,67 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+
 import java.net.URL;
 import java.util.*;
 
 /**
- * Controller for managing musical genres in the admin panel.
- * Provides functionality for the admin to add, view, and delete genres,
- * as well as manage pagination for the genres list.
+ * Controller for managing musical instruments in the admin panel.
  * <p>
- * The controller handles genre creation, input validation,
- * and interaction with the genre database through {@link GenreDAO}.
- * Pagination is handled to display genres in a manageable way.
+ * Provides functionality for administrators to:
+ * <ul>
+ *     <li>Add new musical instruments</li>
+ *     <li>View instruments in a paginated list</li>
+ *     <li>Delete instruments from the database</li>
+ * </ul>
+ * </p>
+ * <p>
+ * This controller interacts with {@link MusicalInstrumentDAO} for data operations
+ * and ensures input validation and SQL injection protection.
  * </p>
  */
-public class GenresController extends Controller implements Initializable {
+public class InstrumentsController extends Controller implements Initializable {
 
     @FXML private VBox requestsContainer;
     @FXML private Button btnPrev;
     @FXML private Button btnNext;
-    @FXML private Button btnAddGenre;
+    @FXML private Button btnAddInstrument;
     @FXML private TextField txtName;
     @FXML private TextArea txtDescription;
     @FXML private Label lblCharCount;
 
-    private SortedSet<Genre> genreList = new TreeSet<>();
+    private SortedSet<MusicalInstrument> instrumentsList = new TreeSet<>();
     private int currentPage = 0;
     private final int itemsPerPage = 4;
-    private final GenreDAO genreDAO = new GenreDAO();
+    private final MusicalInstrumentDAO instrumentDAO = new MusicalInstrumentDAO();
 
     /**
-     * Initializes the controller by loading all genres from the database,
-     * setting up pagination buttons, and configuring the genre creation form.
+     * Initializes the controller and loads all instruments from the database.
      * <p>
-     * This method sets up listeners for pagination buttons, handles genre creation,
-     * and tracks changes in the genre description field to ensure that it does not exceed 300 characters.
+     * Sets up pagination controls, adds event handlers for button actions,
+     * and configures the character counter for the description field (limited to 300 characters).
      * </p>
      */
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-        genreList = genreDAO.getAll();
+
+            instrumentsList.addAll(instrumentDAO.getAll());
 
         btnPrev.setOnAction(e -> {
             if (currentPage > 0) {
                 currentPage--;
-                updateRequests();
+                refreshInstrument();
             }
         });
 
         btnNext.setOnAction(e -> {
-            if ((currentPage + 1) * itemsPerPage < genreList.size()) {
+            if ((currentPage + 1) * itemsPerPage < instrumentsList.size()) {
                 currentPage++;
-                updateRequests();
+                refreshInstrument();
             }
         });
 
-        btnAddGenre.setOnAction(e -> {
+        btnAddInstrument.setOnAction(e -> {
             try{
                 String name = txtName.getText().trim();
                 String description = txtDescription.getText().trim();
@@ -79,24 +85,24 @@ public class GenresController extends Controller implements Initializable {
                     if(SQLiteScripts.checkForSQLInjection(name, description))
                         throw new SQLInjectionException(Strings.ERR_SQL_INJECTION);
 
-                    if (genreList.stream().noneMatch(g -> g.getName().equalsIgnoreCase(name))) {
-                        Genre newGenre = new Genre(name, description);
-                        genreDAO.insert(newGenre);
-                        genreList.add(newGenre);
+                    if (instrumentsList.stream().noneMatch(g -> g.getName().equalsIgnoreCase(name))) {
+                        MusicalInstrument newInstrument = new MusicalInstrument(name, description);
+                        instrumentDAO.insert(newInstrument);
+                        instrumentsList.add(newInstrument);
                         txtName.clear();
                         txtDescription.clear();
                         lblCharCount.setText("0/300");
-                        updateRequests();
+                        refreshInstrument();
                     } else {
-                        throw new TrackTuneException(Strings.ERR_GENRE_ALREADY_EXISTS);
+                        throw new TrackTuneException(Strings.ERR_MUSICAL_INSTRUMENT_ALREADY_EXISTS);
                     }
                 }
                 else
                     throw new TrackTuneException(Strings.FIELD_EMPTY);
             }catch (TrackTuneException exception){
-                ViewManager.setAndShowAlert(Strings.ERROR, Strings.GENRE_FAILED, exception.getMessage(), Alert.AlertType.ERROR);
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.MUSICAL_INSTRUMENT_FAILED, exception.getMessage(), Alert.AlertType.ERROR);
             }catch(Exception ex){
-                ViewManager.setAndShowAlert(Strings.ERROR, Strings.GENRE_FAILED, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.MUSICAL_INSTRUMENT_FAILED, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
                 System.err.println(ex.getMessage());
             }
         });
@@ -109,30 +115,30 @@ public class GenresController extends Controller implements Initializable {
             }
         });
 
-        updateRequests();
+        refreshInstrument();
     }
 
     /**
-     * Updates the displayed genres by showing only those on the current page.
+     * Updates the instrument list display based on the current pagination state.
      * <p>
-     * This method is responsible for clearing the current list of displayed genres,
-     * calculating which genres to show based on the current page, and updating the view.
-     * It also enables or disables the pagination buttons based on the current page and total number of genres.
+     * Clears the current view and loads a subset of instruments corresponding
+     * to the current page. Handles enabling/disabling pagination buttons based on the list size.
+     * If the list is empty, displays an appropriate message.
      * </p>
      */
-    private void updateRequests() {
+    private void refreshInstrument() {
         requestsContainer.getChildren().clear();
 
-        int totalRequests = genreList.size();
+        int totalRequests =  instrumentsList.size();
         int start = currentPage * itemsPerPage;
         int end = Math.min(start + itemsPerPage, totalRequests);
 
         btnPrev.setDisable(currentPage == 0);
         btnNext.setDisable(end >= totalRequests);
 
-        List<Genre> pageItems = new ArrayList<>(genreList).subList(start, end);
+        List<MusicalInstrument> pageItems = new ArrayList<>(instrumentsList).subList(start, end);
 
-        if(genreList.isEmpty()) {
+        if(instrumentsList.isEmpty()) {
             Label emptyLabel = new Label(Strings.EMPTY_LIST);
             emptyLabel.getStyleClass().add("empty-list-label");
 
@@ -141,28 +147,28 @@ public class GenresController extends Controller implements Initializable {
             requestsContainer.getChildren().add(emptyBox);
         }
         else{
-            for (Genre genre : pageItems) {
-                HBox requestBox = createRequestItem(genre);
+            for (MusicalInstrument instrument : pageItems) {
+                HBox requestBox = createInstrumentItemBox(instrument);
                 requestsContainer.getChildren().add(requestBox);
             }
         }
     }
 
     /**
-     * Creates an HBox representing a single genre item.
+     * Creates a graphical representation (HBox) for a single musical instrument item.
      * <p>
-     * This method creates an HBox containing a label with the genre name, a label with the description,
-     * and a button for deleting the genre. The HBox is then returned for display in the pagination list.
+     * Includes the instrument's name, description, and a delete button.
+     * The layout and style classes are applied for consistent UI.
      * </p>
      *
-     * @param genre the {@link Genre} to display
-     * @return an {@link HBox} containing the genre's details and actions
+     * @param instrument the {@link MusicalInstrument} to display
+     * @return an {@link HBox} containing the instrument's name, description, and delete action
      */
-    private HBox createRequestItem(Genre genre) {
-        Label nameLabel = new Label(genre.getName());
+    private HBox createInstrumentItemBox(MusicalInstrument instrument) {
+        Label nameLabel = new Label(instrument.getName());
         nameLabel.getStyleClass().add("request-item-title");
 
-        Label descLabel = new Label(genre.getDescription());
+        Label descLabel = new Label(instrument.getDescription());
         descLabel.getStyleClass().add("request-item-description");
         descLabel.setWrapText(true);
 
@@ -171,7 +177,7 @@ public class GenresController extends Controller implements Initializable {
 
         Button deleteBtn = new Button(Strings.DELETE);
         deleteBtn.getStyleClass().add("reject-button");
-        deleteBtn.setOnAction(e -> deleteGenre(genre));
+        deleteBtn.setOnAction(e -> deleteMusicalInstrument(instrument));
         deleteBtn.setMinWidth(80);
 
         HBox buttonBox = new HBox(deleteBtn);
@@ -191,40 +197,38 @@ public class GenresController extends Controller implements Initializable {
     }
 
     /**
-     * Deletes a genre from the database and updates the displayed list.
+     * Deletes a musical instrument from the database and updates the view.
      * <p>
-     * This method handles the deletion of a genre from the database,
-     * and then updates the list of displayed genres to reflect the removal.
-     * It also handles errors that may occur during the deletion process.
+     * Handles exceptions and shows alerts in case of failure. After deletion,
+     * calls a method to refresh the view and update pagination.
      * </p>
      *
-     * @param genre the {@link Genre} to delete
+     * @param instrument the {@link MusicalInstrument} to delete
      */
-    private void deleteGenre(Genre genre){
+    private void deleteMusicalInstrument(MusicalInstrument instrument){
         try {
-            genreDAO.delete(genre);
-            removeGenreAndUpdate(genre);
+            instrumentDAO.delete(instrument);
+            removeInstrumentAndUpdate(instrument);
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
         }
     }
 
     /**
-     * Removes the specified genre from the local list,
-     * adjusts pagination if necessary, and refreshes the view.
+     * Removes the specified instrument from the local list and updates pagination state.
      * <p>
-     * After a genre is removed, this method checks if the current page needs to be adjusted based on
-     * the number of genres remaining, and then updates the view accordingly.
+     * If the current page becomes invalid due to the deletion (e.g., last item on the last page),
+     * it adjusts the current page accordingly and refreshes the list.
      * </p>
      *
-     * @param genre the {@link Genre} to remove
+     * @param instrument the {@link MusicalInstrument} to remove
      */
-    private void removeGenreAndUpdate(Genre genre) {
-        genreList.remove(genre);
-        int maxPage = (int) Math.ceil((double) genreList.size() / itemsPerPage);
+    private void removeInstrumentAndUpdate(MusicalInstrument instrument) {
+         instrumentsList.remove(instrument);
+        int maxPage = (int) Math.ceil((double)  instrumentsList.size() / itemsPerPage);
         if (currentPage >= maxPage && currentPage > 0) {
             currentPage--;
         }
-        updateRequests();
+        refreshInstrument();
     }
 }

@@ -16,6 +16,7 @@ public class Strings {
     public static final String ERR_USER_ALREADY_EXISTS = "User already exists";
     public static final String ERR_USER_NOT_FOUND = "User not found";
     public static final String GENRE_FAILED = "Genre failed";
+    public static final String MUSICAL_INSTRUMENT_FAILED = "Musical Instrument failed";
     public static final String AUTHOR_FAILED = "Author failed";
     public static final String ERR_GENERAL = "Something went wrong";
     public static final String MEDIA_ERROR = "Media error";
@@ -25,6 +26,7 @@ public class Strings {
     public static final String ERR_USER_NOT_ALLOWED = "User not allowed";
     public static final String ERR_SQL_INJECTION = "SQL injection detected";
     public static final String ERR_GENRE_ALREADY_EXISTS = "Genre already exists";
+    public static final String ERR_MUSICAL_INSTRUMENT_ALREADY_EXISTS = "Musical instrument already exists";
     public static final String ERR_GENRE_NOT_FOUND = "Genre not found";
     public static final String ERR_AUTHOR_ALREADY_EXISTS = "Author already exists";
     public static final String ACCEPT = "Accept";

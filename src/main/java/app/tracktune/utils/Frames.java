@@ -21,7 +21,8 @@ public class Frames {
     public static final String PENDING_DASHBOARD_VIEW_PATH = "/fxml/pendingUser/PendingUserDashboardView.fxml";
     public static final String GENRES_VIEW_PATH_VIEW_PATH = "/fxml/admin/GenresView.fxml";
     public static final String REQUESTS_VIEW_PATH = "/fxml/admin/RequestsView.fxml";
-    public static final String REQUESTS_AUTHORS_PATH = "/fxml/admin/AuthorsView.fxml";
+    public static final String AUTHORS_PATH = "/fxml/admin/AuthorsView.fxml";
+    public static final String INSTRUMENTS_PATH = "/fxml/admin/InstrumentsView.fxml";
     public static final String DISCOVER_VIEW_PATH = "/fxml/authenticatedUser/DiscoverView.fxml";
     public static final String RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/ResourcesView.fxml";
     public static final String ADD_RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/AddResourceView.fxml";
