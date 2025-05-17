@@ -50,7 +50,7 @@
                     </graphic>
                 </Button>
             <Separator prefWidth="200.0" />
-            <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Instruments">
+            <Button prefHeight="38.0" prefWidth="356.0" onMouseClicked="#handleInstruments" styleClass="sidebar-button" text="Instruments">
                <graphic>
                   <FontIcon iconLiteral="mdi2t-trumpet" iconSize="20" />
                </graphic>
