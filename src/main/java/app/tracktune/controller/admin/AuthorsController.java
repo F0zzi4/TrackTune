@@ -150,7 +150,7 @@ public class AuthorsController extends Controller implements Initializable {
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         Button acceptBtn = new Button(Strings.RESTORE);
-        acceptBtn.getStyleClass().add("accept-button");
+        acceptBtn.getStyleClass().add("delete-button");
         acceptBtn.setOnAction(e -> addAuthor(author));
 
         Button rejectBtn = new Button(Strings.DELETE);

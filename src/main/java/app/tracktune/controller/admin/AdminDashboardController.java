@@ -93,7 +93,16 @@ public class AdminDashboardController extends Controller implements Initializabl
      */
     @FXML
     public void handleAuthors() {
-        ViewManager.setMainContent(Frames.REQUESTS_AUTHORS_PATH, mainContent, this);
+        ViewManager.setMainContent(Frames.AUTHORS_PATH, mainContent, this);
+    }
+
+
+    /**
+     * Loads and displays the musical instrumets view by updating the main content area of the dashboard
+     */
+    @FXML
+    public void handleInstruments() {
+        ViewManager.setMainContent(Frames.INSTRUMENTS_PATH, mainContent, this);
     }
 
     /**
