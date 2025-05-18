@@ -1,6 +1,7 @@
 package app.tracktune.model.user;
 
-public abstract class User implements Comparable<User>{
+public abstract class User {
+    private final Integer id;
     private final String username;
     private final String password;
     private final String name;
@@ -8,45 +9,67 @@ public abstract class User implements Comparable<User>{
 
     /**
      * Constructor for creating a user object
+     * @param id The user's unique ID
      * @param username The user's username
      * @param password The user's password
      * @param name The user's name
      * @param surname The user's surname
      */
-    public User(String username, String password, String name, String surname) {
+    public User(Integer id, String username, String password, String name, String surname) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.surname = surname;
     }
-    
+
+    public User(String username, String password, String name, String surname) {
+        this.id = null;
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+    }
+
+    /**
+     * Get the user's unique ID
+     * @return The user's ID
+     */
+    public Integer getId() {
+        return id;
+    }
+
     /**
      * Get the user's username
-     * 
      * @return The user's username
      */
-    public String getUsername() { return username; }
-    
+    public String getUsername() {
+        return username;
+    }
+
     /**
      * Get the user's password
-     * 
      * @return The user's password
      */
-    public String getPassword() { return password; }
+    public String getPassword() {
+        return password;
+    }
 
     /**
      * Get the user's name
-     *
      * @return The user's name
      */
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
     /**
      * Get the user's surname
-     *
      * @return The user's surname
      */
-    public String getSurname() { return surname; }
+    public String getSurname() {
+        return surname;
+    }
 
     /**
      * Two users are equal if their username are equal
@@ -55,20 +78,8 @@ public abstract class User implements Comparable<User>{
      */
     @Override
     public boolean equals(Object other) {
-        boolean result = false;
-        if (other instanceof User user) {
-            result = this.getUsername().equals(user.getUsername());
-        }
-        return result;
-    }
-
-    /**
-     * Two user are comparable by their username
-     * @param other the object to be compared
-     * @return an int value based on alphabetic sort of the two users
-     */
-    @Override
-    public int compareTo(User other) {
-        return this.getUsername().compareToIgnoreCase(other.getUsername());
+        if (this == other) return true;
+        if (!(other instanceof User user)) return false;
+        return this.username.equals(user.getUsername());
     }
 }

@@ -22,33 +22,32 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * Controller class for managing authors in the admin panel.
- * This class allows the admin to view, add, activate, and remove authors,
- * as well as apply filters to view active or removed authors, with pagination support.
- */
 public class AuthorsController extends Controller implements Initializable {
-    @FXML private VBox authorsContainer;
-    @FXML private Button prevButton;
-    @FXML private Button nextButton;
-    @FXML private TabPane filterTabPane;
-    @FXML private TextField TxtName;
+
+    @FXML
+    private VBox authorsContainer;
+    @FXML
+    private Button prevButton;
+    @FXML
+    private Button nextButton;
+    @FXML
+    private TabPane filterTabPane;
+    @FXML
+    private TextField TxtName;
 
     private AuthorStatusEnum currentFilter = AuthorStatusEnum.ACTIVE;
-    private final SortedSet<Author> author = new TreeSet<>();
+    private final List<Author> authors = new ArrayList<>();
     private List<Author> filteredAuthors = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 4;
+
     private final AuthorDAO authorDAO = new AuthorDAO();
 
-    /**
-     * Initializes the controller by loading all authors from the database,
-     * setting up the filter tabs, and configuring pagination.
-     */
     @FXML
+    @Override
     public void initialize(URL location, ResourceBundle resources) {
-        author.addAll(authorDAO.getAll());
-
+        authors.clear();
+        authors.addAll(authorDAO.getAll());
         createTabsFromEnum();
 
         prevButton.setOnAction(e -> {
@@ -68,10 +67,6 @@ public class AuthorsController extends Controller implements Initializable {
         updateAuthors();
     }
 
-    /**
-     * Creates tabs for filtering authors by their status (ACTIVE, REMOVED).
-     * Each tab is linked to a specific filter that updates the displayed authors.
-     */
     private void createTabsFromEnum() {
         filterTabPane.getTabs().clear();
 
@@ -92,19 +87,13 @@ public class AuthorsController extends Controller implements Initializable {
         filterTabPane.getSelectionModel().selectFirst();
     }
 
-    /**
-     * Filters the authors based on the current selected status filter.
-     */
     private void filterAuthors() {
-        filteredAuthors = author.stream()
-                .filter(r -> r.getStatus() == currentFilter)
+        filteredAuthors = authors.stream()
+                .filter(a -> a.getStatus() == currentFilter)
+                .sorted(Comparator.comparing(Author::getAuthorshipName))
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Updates the authors list displayed on the UI, considering the current page and filter applied.
-     * Also updates the state of the pagination buttons (prev/next).
-     */
     private void updateAuthors() {
         filterAuthors();
         authorsContainer.getChildren().clear();
@@ -132,37 +121,30 @@ public class AuthorsController extends Controller implements Initializable {
         }
     }
 
-    /**
-     * Creates a UI element (HBox) to display a single author item, including their name,
-     * the number of tracks, and buttons to restore or remove them based on their current status.
-     *
-     * @param author the {@link Author} object to display
-     * @return an {@link HBox} containing the author details and action buttons
-     */
     private HBox createAuthorItem(Author author) {
         Label infoLabel = new Label(author.getAuthorshipName());
         infoLabel.getStyleClass().add("author-item-title");
 
-        Label nTrackLabel = new Label("N tracks");
+        Label nTrackLabel = new Label("Author");
         nTrackLabel.getStyleClass().add("author-item-date");
 
         VBox textBox = new VBox(5, infoLabel, nTrackLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
 
-        Button acceptBtn = new Button(Strings.RESTORE);
-        acceptBtn.getStyleClass().add("delete-button");
-        acceptBtn.setOnAction(e -> addAuthor(author));
+        Button restoreBtn = new Button(Strings.RESTORE);
+        restoreBtn.getStyleClass().add("restore-button");
+        restoreBtn.setOnAction(e -> restoreAuthor(author));
 
-        Button rejectBtn = new Button(Strings.DELETE);
-        rejectBtn.getStyleClass().add("delete-button");
-        rejectBtn.setOnAction(e -> removeAuthor(author));
+        Button removeBtn = new Button(Strings.DELETE);
+        removeBtn.getStyleClass().add("delete-button");
+        removeBtn.setOnAction(e -> removeAuthor(author));
 
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
         switch (author.getStatus()) {
-            case ACTIVE -> buttonBox.getChildren().addAll(rejectBtn);
-            case REMOVED -> buttonBox.getChildren().add(acceptBtn);
+            case ACTIVE -> buttonBox.getChildren().add(removeBtn);
+            case REMOVED -> buttonBox.getChildren().add(restoreBtn);
         }
 
         Region spacer = new Region();
@@ -175,53 +157,40 @@ public class AuthorsController extends Controller implements Initializable {
         return box;
     }
 
-    /**
-     * Activates an author, changing their status to ACTIVE and updating the database.
-     *
-     * @param author the {@link Author} to activate
-     */
-    private void addAuthor(Author author) {
+    private void restoreAuthor(Author author) {
         try {
-            authorDAO.update(new Author(author.getAuthorshipName(), AuthorStatusEnum.ACTIVE));
-            removeAuthorAndUpdate(author);
+            Author updatedAuthor = new Author(author.getAuthorshipName(), AuthorStatusEnum.ACTIVE);
+            authorDAO.updateById(updatedAuthor, author.getId());
+            int index = authors.indexOf(author);
+            if (index >= 0) authors.set(index, updatedAuthor);
+            adjustPageAfterUpdate();
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            ex.printStackTrace();
+            System.err.println(ex.getMessage());
         }
     }
 
-    /**
-     * Removes an author, changing their status to REMOVED and updating the database.
-     *
-     * @param author the {@link Author} to remove
-     */
     private void removeAuthor(Author author) {
         try {
-            authorDAO.update(new Author(author.getAuthorshipName(), AuthorStatusEnum.REMOVED));
-            removeAuthorAndUpdate(author);
+            Author updatedAuthor = new Author(author.getAuthorshipName(), AuthorStatusEnum.REMOVED);
+            authorDAO.updateById(updatedAuthor, author.getId());
+            int index = authors.indexOf(author);
+            if (index >= 0) authors.set(index, updatedAuthor);
+            adjustPageAfterUpdate();
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            ex.printStackTrace();
+            System.err.println(ex.getMessage());
         }
     }
 
-    /**
-     * Removes an author from the list and updates the view, adjusting pagination if necessary.
-     *
-     * @param author the {@link Author} to remove
-     */
-    private void removeAuthorAndUpdate(Author author) {
-        int maxPage = (int) Math.ceil((double) filteredAuthors.size() / itemsPerPage);
-        if (currentPage >= maxPage && currentPage > 0) {
-            currentPage--;
+    private void adjustPageAfterUpdate() {
+        int maxPage = (int) Math.ceil((double) filteredAuthors.size() / itemsPerPage) - 1;
+        if (currentPage > maxPage) {
+            currentPage = Math.max(0, maxPage);
         }
         updateAuthors();
     }
 
-    /**
-     * Adds a new author to the database and updates the displayed list of authors.
-     * Throws an exception if the author's name is empty or already exists.
-     */
     @FXML
     public void addAuthor() {
         String name = TxtName.getText().trim();
@@ -232,10 +201,14 @@ public class AuthorsController extends Controller implements Initializable {
                     throw new TrackTuneException(Strings.ERR_SQL_INJECTION);
                 }
 
-                if (author.stream().noneMatch(a -> a.getAuthorshipName().equalsIgnoreCase(name))) {
-                    Author newAuthor = new Author(name);
+                boolean exists = authors.stream()
+                        .anyMatch(a -> a.getAuthorshipName().equalsIgnoreCase(name));
+
+                if (!exists) {
+                    Author newAuthor = new Author(name, AuthorStatusEnum.ACTIVE);
                     authorDAO.insert(newAuthor);
-                    author.add(newAuthor);
+                    authors.clear();
+                    authors.addAll(authorDAO.getAll());
                     TxtName.clear();
                     updateAuthors();
                 } else {
@@ -246,7 +219,9 @@ public class AuthorsController extends Controller implements Initializable {
             }
         } catch (TrackTuneException exception) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.AUTHOR_FAILED, exception.getMessage(), Alert.AlertType.ERROR);
+        } catch (Exception e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
         }
     }
 }
-

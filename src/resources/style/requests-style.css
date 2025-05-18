@@ -88,20 +88,25 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 6, 0.4, 0, 3);
 }
 
+
 .tab-pane {
+    -fx-alignment: center;
     -fx-tab-min-width: 120px;
     -fx-tab-max-width: 200px;
     -fx-tab-min-height: 40px;
     -fx-background-color: transparent;
-    -fx-padding: 0 10 0 10;
+    -fx-padding: 0 0 0 0;
+}
+
+.tab {
+    -fx-alignment: center;
 }
 
 .tab-pane .tab-header-area {
-    /*-fx-background-color: linear-gradient(to right, #ffd38a, #f3b766);*/
+    -fx-alignment: center;
     -fx-background-color: transparent;
     -fx-background-radius: 10 10 0 0;
     -fx-padding: 5 10 5 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0.3, 0, 2);
 }
 
 .tab-pane .tab-header-background {
@@ -109,9 +114,9 @@
 }
 
 .tab-pane .tab {
+    -fx-alignment: center;
     -fx-background-insets: 0;
     -fx-padding: 8 20 8 20;
-    /*-fx-background-color: linear-gradient(to top, #fff3e0, #ffe0b2);*/
     -fx-background-color: transparent;
     -fx-border-radius: 5 5 0 0;
     -fx-background-radius: 10 10 0 0;
@@ -128,22 +133,48 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0.4, 0, 2);
 }
 
-* {
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
-}
-
-.tab-pane .tab-label {
+.tab-pane {
     -fx-text-fill: #4a280f;
 }
 
-.tab-pane .tab:selected .tab-label {
+.tab-pane .tab:selected {
     -fx-text-fill: #3c1e08;
 }
 
 .tab-pane .tab:hover {
     -fx-background-color: linear-gradient(to top, #ffe0b2, #ffcc80);
     -fx-cursor: hand;
+}
+
+.tab-pane .tab:selected:hover {
+    -fx-background-color: linear-gradient(to right, #ec9763, #ff9f40);
+    -fx-cursor: default;
+}
+
+.text-field {
+    -fx-font-size: 15px;
+    -fx-background-color: #ffebc8;
+    -fx-border-color: #ff9159;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-padding: 10 12;
+    -fx-prompt-text-fill: #4a280f;
+    -fx-text-fill: #4a280f;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
+}
+
+* {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab-item{
+    -fx-background-color: #ffebc8;
+    -fx-padding: 10;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #4a280f;
 }
 
 .empty-list-label{

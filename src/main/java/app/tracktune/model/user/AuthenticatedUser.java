@@ -6,6 +6,12 @@ public class AuthenticatedUser extends User {
     private final UserStatusEnum status;
     private final Timestamp creationDate;
 
+    public AuthenticatedUser(Integer id, String username, String password, String name, String surname, UserStatusEnum status, Timestamp creationDate) {
+        super(id, username, password, name, surname);
+        this.creationDate = creationDate;
+        this.status = status;
+    }
+
     public AuthenticatedUser(String username, String password, String name, String surname, UserStatusEnum status, Timestamp creationDate) {
         super(username, password, name, surname);
         this.creationDate = creationDate;

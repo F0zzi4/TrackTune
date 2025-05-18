@@ -7,6 +7,7 @@ module app.tracktune {
     requires javafx.media;
     requires MaterialFX;
     requires java.sql.rowset;
+    requires org.kordamp.ikonli.javafx;
 
     opens app.tracktune to javafx.fxml;
     opens app.tracktune.controller to javafx.fxml;
@@ -23,4 +24,5 @@ module app.tracktune {
     exports app.tracktune.model.genre;
     exports app.tracktune.model.author;
     exports app.tracktune.model.resource;
+    exports app.tracktune.model.track;
 }

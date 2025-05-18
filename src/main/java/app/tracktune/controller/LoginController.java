@@ -46,7 +46,7 @@ public class LoginController extends Controller{
             }
 
             // Check if it's an admin or authenticated user
-            User user = userDAO.getByKey(username);
+            User user = userDAO.getByUsername(username);
             if (user != null && user.getPassword().equals(password)) {
                 if(user instanceof Administrator admin){
                     ViewManager.initSessionManager(admin);
@@ -59,7 +59,7 @@ public class LoginController extends Controller{
             }
 
             // Check if it's a pending user
-            PendingUser pendingUser = pendingUserDAO.getByKey(username);
+            PendingUser pendingUser = pendingUserDAO.getByUsername(username);
             if (pendingUser != null && pendingUser.getPassword().equals(password)) {
                 ViewManager.initSessionManager(pendingUser);
                 ViewManager.navigateToPendingUserDashboard();

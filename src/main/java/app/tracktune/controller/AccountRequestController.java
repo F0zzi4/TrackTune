@@ -54,7 +54,7 @@ public class AccountRequestController extends Controller {
                     AuthRequestStatusEnum.CREATED
             );
             pendingUserDAO.insert(pendingUser);
-            ViewManager.initSessionManager(pendingUser);
+            ViewManager.initSessionManager(pendingUserDAO.getByUsername(username));
             ViewManager.navigateToPendingUserDashboard();
         }catch(TrackTuneException e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_ACCOUNT_REQUEST, e.getMessage(), Alert.AlertType.ERROR);

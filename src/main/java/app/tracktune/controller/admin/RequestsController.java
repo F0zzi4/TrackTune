@@ -2,6 +2,7 @@ package app.tracktune.controller.admin;
 
 import app.tracktune.controller.Controller;
 import app.tracktune.model.user.*;
+import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -20,17 +21,13 @@ import java.util.stream.Collectors;
 
 public class RequestsController extends Controller implements Initializable {
 
-    @FXML
-    private VBox requestsContainer;
-    @FXML
-    private Button prevButton;
-    @FXML
-    private Button nextButton;
-    @FXML
-    private TabPane filterTabPane;
+    @FXML private VBox requestsContainer;
+    @FXML private Button prevButton;
+    @FXML private Button nextButton;
+    @FXML private TabPane filterTabPane;
 
     private AuthRequestStatusEnum currentFilter = AuthRequestStatusEnum.CREATED;
-    private final SortedSet<PendingUser> pendingRequests = new TreeSet<>();
+    private List<PendingUser> allRequests = new ArrayList<>();
     private List<PendingUser> filteredRequests = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 5;
@@ -39,8 +36,7 @@ public class RequestsController extends Controller implements Initializable {
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-        pendingRequests.addAll(pendingUserDAO.getAll());
-
+        allRequests = new ArrayList<>(pendingUserDAO.getAll());
         createTabsFromEnum();
 
         prevButton.setOnAction(e -> {
@@ -56,6 +52,7 @@ public class RequestsController extends Controller implements Initializable {
                 updateRequests();
             }
         });
+
         updateRequests();
     }
 
@@ -78,7 +75,7 @@ public class RequestsController extends Controller implements Initializable {
     }
 
     private void filterRequests() {
-        filteredRequests = pendingRequests.stream()
+        filteredRequests = allRequests.stream()
                 .filter(r -> r.getStatus() == currentFilter)
                 .sorted(Comparator.comparing(PendingUser::getRequestDate))
                 .collect(Collectors.toList());
@@ -95,17 +92,15 @@ public class RequestsController extends Controller implements Initializable {
         prevButton.setDisable(currentPage == 0);
         nextButton.setDisable(end >= totalRequests);
 
-        if(filteredRequests.isEmpty()) {
+        if (filteredRequests.isEmpty()) {
             Label emptyLabel = new Label(Strings.EMPTY_LIST);
             emptyLabel.getStyleClass().add("empty-list-label");
 
             HBox emptyBox = new HBox(emptyLabel);
             emptyBox.setAlignment(Pos.CENTER);
             requestsContainer.getChildren().add(emptyBox);
-        }
-        else{
+        } else {
             List<PendingUser> pageItems = filteredRequests.subList(start, end);
-
             for (PendingUser request : pageItems) {
                 requestsContainer.getChildren().add(createRequestItem(request));
             }
@@ -116,7 +111,7 @@ public class RequestsController extends Controller implements Initializable {
         Label infoLabel = new Label(request.getUsername() + " - " + request.getName() + " " + request.getSurname());
         infoLabel.getStyleClass().add("request-item-title");
 
-        Label dateLabel = new Label(request.getFormattedRequestDate());
+        Label dateLabel = new Label(SQLiteScripts.getFormattedRequestDate(request.getRequestDate()));
         dateLabel.getStyleClass().add("request-item-date");
 
         VBox textBox = new VBox(5, infoLabel, dateLabel);
@@ -136,8 +131,7 @@ public class RequestsController extends Controller implements Initializable {
         switch (request.getStatus()) {
             case CREATED -> buttonBox.getChildren().addAll(rejectBtn, acceptBtn);
             case REJECTED -> buttonBox.getChildren().add(acceptBtn);
-            case ACCEPTED -> {
-            }
+            case ACCEPTED -> {}
         }
 
         Region spacer = new Region();
@@ -152,14 +146,18 @@ public class RequestsController extends Controller implements Initializable {
 
     private void acceptRequest(PendingUser request) {
         try {
-            pendingUserDAO.update(new PendingUser(
+            PendingUser updatedRequest = new PendingUser(
                     request.getUsername(),
                     request.getPassword(),
                     request.getName(),
                     request.getSurname(),
                     request.getRequestDate(),
-                    AuthRequestStatusEnum.ACCEPTED)
+                    AuthRequestStatusEnum.ACCEPTED
             );
+            pendingUserDAO.updateById(updatedRequest, request.getId());
+            allRequests = allRequests.stream()
+                    .map(r -> Objects.equals(r.getId(), request.getId()) ? updatedRequest : r)
+                    .collect(Collectors.toList());
 
             AuthenticatedUser au = new AuthenticatedUser(
                     request.getUsername(),
@@ -180,14 +178,20 @@ public class RequestsController extends Controller implements Initializable {
 
     private void rejectRequest(PendingUser request) {
         try {
-            pendingUserDAO.update(new PendingUser(
+            PendingUser updatedRequest = new PendingUser(
                     request.getUsername(),
                     request.getPassword(),
                     request.getName(),
                     request.getSurname(),
                     request.getRequestDate(),
-                    AuthRequestStatusEnum.REJECTED)
+                    AuthRequestStatusEnum.REJECTED
             );
+            pendingUserDAO.updateById(updatedRequest, request.getId());
+
+            allRequests = allRequests.stream()
+                    .map(r -> Objects.equals(r.getId(), request.getId()) ? updatedRequest : r)
+                    .collect(Collectors.toList());
+
             removeRequestAndUpdate();
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
@@ -196,9 +200,9 @@ public class RequestsController extends Controller implements Initializable {
     }
 
     private void removeRequestAndUpdate() {
-        int maxPage = (int) Math.ceil((double) filteredRequests.size() / itemsPerPage);
-        if (currentPage >= maxPage && currentPage > 0) {
-            currentPage--;
+        int maxPage = (int) Math.ceil((double) filteredRequests.size() / itemsPerPage) - 1;
+        if (currentPage > maxPage) {
+            currentPage = Math.max(0, maxPage);
         }
         updateRequests();
     }

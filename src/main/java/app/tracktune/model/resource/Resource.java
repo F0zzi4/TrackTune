@@ -1,16 +1,17 @@
 package app.tracktune.model.resource;
 
-import java.sql.Blob;
 import java.sql.Timestamp;
 
 public class Resource {
+    private final Integer id;
     private final ResourceTypeEnum type;
-    private final Blob data;
+    private final byte[] data;
     private final Timestamp creationDate;
     private final boolean isMultimedia;
     private final int trackID;
 
-    public Resource(ResourceTypeEnum type, Blob data, Timestamp creationDate, boolean isMultimedia, int trackID) {
+    public Resource(Integer id, ResourceTypeEnum type, byte[] data, Timestamp creationDate, boolean isMultimedia, int trackID) {
+        this.id = id;
         this.type = type;
         this.data = data;
         this.creationDate = creationDate;
@@ -18,11 +19,19 @@ public class Resource {
         this.trackID = trackID;
     }
 
+    public Resource(ResourceTypeEnum type, byte[] data, Timestamp creationDate, boolean isMultimedia, int trackID) {
+        this(null, type, data, creationDate, isMultimedia, trackID);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
     public ResourceTypeEnum getType() {
         return type;
     }
 
-    public Blob getData() {
+    public byte[] getData() {
         return data;
     }
 

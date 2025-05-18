@@ -41,10 +41,9 @@
     -fx-border-color: #a65229;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-font-weight: bold;
     -fx-padding: 10 12;
-    -fx-prompt-text-fill: #ffc470;
-    -fx-text-fill: #ffe0b2;
+    -fx-text-fill: #4a280f;
+    -fx-font-weight: bold;
     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
 }
 

@@ -1,17 +1,17 @@
 package app.tracktune.utils;
 
 /**
- * Singleton Pattern Class
  * Dedicated class for localizing strings
  */
 public class Strings {
-    public static final String LOGIN_FAILED = "Login failed";
     public static final String ERROR = "Error";
+    public static final String SUCCESS = "Success";
+    public static final String LOGIN_FAILED = "Login failed";
     public static final String USER_PWD_EMPTY = "Username or password is empty";
     public static final String FIELD_EMPTY = "One or more fields are empty";
     public static final String CONN_FAILED = "Connection failed";
     public static final String DB_CONN_FAILED = "Connection with database failed";
-    public static final String ERR_EXEC_STMT = "Error executing statement";
+    public static final String ERR_EXEC_STMT = "Error executing statement ";
     public static final String ERR_INIT_DB = "Error initializing database";
     public static final String ERR_USER_ALREADY_EXISTS = "User already exists";
     public static final String ERR_USER_NOT_FOUND = "User not found";
@@ -36,4 +36,9 @@ public class Strings {
     public static final String EMPTY_LIST = "No elements found";
     public static final String ERR_LOAD_FILE = "Error loading file";
     public static final String ERR_FILE_NOT_FOUND = "File not found";
+    public static final String ERR_DATABASE = "Database error";
+    public static final String RESULT = "Result";
+    public static final String RESOURCE_UPLOADED = "Resource uploaded successfully";
+    public static final String RESOURCE_UPDATED = "Resource updated successfully";
+    public static final String RESOURCE_NOT_UPLOADED = "Resource not uploaded";
 }

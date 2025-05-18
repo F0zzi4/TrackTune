@@ -23,6 +23,7 @@ import javafx.util.Duration;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 
 import static app.tracktune.Main.root;
 
