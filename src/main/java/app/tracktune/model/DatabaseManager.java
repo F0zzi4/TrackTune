@@ -6,6 +6,7 @@ import app.tracktune.utils.Strings;
 
 import java.io.File;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 
 /**
  * Dedicated class for data manipulation
@@ -48,6 +49,8 @@ public class DatabaseManager {
     private void initializeDatabase() {
         try {
             dbConnection = DriverManager.getConnection(dbUrl);
+            // to be able to do property ON DELETE CASCADE
+            dbConnection.createStatement().execute("PRAGMA foreign_keys = ON;");
             Statement statement = dbConnection.createStatement();
 
             String sqlStatements = DBInit.getDBInitStatement();
@@ -133,5 +136,22 @@ public class DatabaseManager {
      */
     public interface ResultSetProcessor<T> {
         T process(ResultSet rs) throws SQLException;
+    }
+
+    public Integer getLastInsertId() {
+        String sql = "SELECT last_insert_rowid()";
+
+        try (Statement stmt = dbConnection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.err.println(Strings.ERR_EXEC_STMT + e.getMessage());
+        }
+
+        return null;
     }
 }

@@ -1,16 +1,24 @@
 package app.tracktune.model.author;
 
-public class Author implements Comparable<Author>{
+import java.util.Objects;
+
+public class Author {
+    private final Integer id;
     private final String authorshipName;
     private final AuthorStatusEnum status;
 
-    public Author(String authorshipName) {
+    public Author(Integer id, String authorshipName, AuthorStatusEnum status) {
+        this.id = id;
         this.authorshipName = authorshipName;
-        this.status = AuthorStatusEnum.ACTIVE;
+        this.status = status != null ? status : AuthorStatusEnum.ACTIVE;
     }
+
     public Author(String authorshipName, AuthorStatusEnum status) {
-        this.authorshipName = authorshipName;
-        this.status = status;
+        this(null, authorshipName, status);
+    }
+
+    public Integer getId() {
+        return id;
     }
 
     public String getAuthorshipName() {
@@ -22,7 +30,16 @@ public class Author implements Comparable<Author>{
     }
 
     @Override
-    public int compareTo(Author other) {
-        return authorshipName.compareToIgnoreCase(other.authorshipName);
+    public String toString() {
+        return authorshipName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        boolean result = false;
+        if(o instanceof Author a){
+            result = a.getAuthorshipName().equalsIgnoreCase(this.authorshipName);
+        }
+        return result;
     }
 }

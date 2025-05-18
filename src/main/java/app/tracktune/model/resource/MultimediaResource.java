@@ -9,8 +9,34 @@ public class MultimediaResource extends Resource {
     private final String location;
     private final Date resourceDate;
 
-    public MultimediaResource(ResourceTypeEnum type, Blob data, Timestamp creationDate, boolean isMultimedia, int duration, String location, Date resourceDate, int trackID) {
-        super(type, data, creationDate, isMultimedia, trackID);
+    public MultimediaResource(
+            Integer id,
+            ResourceTypeEnum type,
+            byte[] data,
+            Timestamp creationDate,
+            boolean isMultimedia,
+            int duration,
+            String location,
+            Date resourceDate,
+            int trackID
+    ) {
+        super(id, type, data, creationDate, isMultimedia, trackID);
+        this.duration = duration;
+        this.location = location;
+        this.resourceDate = resourceDate;
+    }
+
+    public MultimediaResource(
+            ResourceTypeEnum type,
+            byte[] data,
+            Timestamp creationDate,
+            boolean isMultimedia,
+            int duration,
+            String location,
+            Date resourceDate,
+            int trackID
+    ) {
+        super(null, type, data, creationDate, isMultimedia, trackID);
         this.duration = duration;
         this.location = location;
         this.resourceDate = resourceDate;

@@ -1,0 +1,138 @@
+package app.tracktune.model.track;
+
+import app.tracktune.Main;
+import app.tracktune.exceptions.SQLiteException;
+import app.tracktune.interfaces.DAO;
+import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.Strings;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+public class TrackDAO implements DAO<Track> {
+    private final DatabaseManager dbManager;
+
+    // FIELDS
+    private static final String ID = "ID";
+    private static final String TITLE = "title";
+    private static final String CREATION_DATE = "creationDate";
+    private static final String USER_ID = "userID";
+
+    // CRUD STATEMENTS
+    private static final String INSERT_TRACK_STMT = """
+        INSERT INTO Tracks (title, creationDate, userID)
+        VALUES (?, ?, ?)
+    """;
+
+    private static final String UPDATE_TRACK_STMT = """
+        UPDATE Tracks
+        SET title = ?,
+        creationDate = ?,
+        userId = ?
+        WHERE ID = ?
+    """;
+
+    private static final String DELETE_TRACK_STMT = """
+        DELETE FROM Tracks
+        WHERE ID = ?
+    """;
+
+    private static final String GET_ALL_TRACKS_STMT = """
+        SELECT *
+        FROM Tracks
+    """;
+
+    private static final String GET_TRACK_BY_ID_STMT = """
+        SELECT *
+        FROM Tracks
+        WHERE ID = ?
+    """;
+
+    public TrackDAO() {
+        dbManager = Main.dbManager;
+    }
+
+    @Override
+    public Integer insert(Track track) {
+        boolean success = dbManager.executeUpdate(INSERT_TRACK_STMT,
+                track.getTitle(),
+                track.getCreationDate(),
+                track.getUserID()
+        );
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+        return dbManager.getLastInsertId();
+    }
+
+    @Override
+    public void updateById(Track track, int id) {
+        boolean success = dbManager.executeUpdate(UPDATE_TRACK_STMT,
+                track.getTitle(),
+                track.getCreationDate(),
+                track.getUserID(),
+                id
+        );
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+    }
+
+    @Override
+    public void deleteById(int id) {
+        boolean success = dbManager.executeUpdate(DELETE_TRACK_STMT, id);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+    }
+
+    @Override
+    public Track getById(int id) {
+        AtomicReference<Track> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_TRACK_BY_ID_STMT,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, id);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return result.get();
+    }
+
+    @Override
+    public List<Track> getAll() {
+        List<Track> tracks = new ArrayList<>();
+
+        dbManager.executeQuery(GET_ALL_TRACKS_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        tracks.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                });
+
+        return tracks;
+    }
+
+    private Track mapResultSetToEntity(ResultSet rs) throws SQLException {
+        Integer id = rs.getInt(ID);
+        String title = rs.getString(TITLE);
+        Timestamp creationDate = rs.getTimestamp(CREATION_DATE);
+        int userID = rs.getInt(USER_ID);
+        return new Track(id, title, creationDate, userID);
+    }
+}

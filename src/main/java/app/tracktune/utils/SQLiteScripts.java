@@ -1,5 +1,9 @@
 package app.tracktune.utils;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 public class SQLiteScripts {
     public static final String SELECT_PENDING_USERS_BY_USERNAME = "SELECT * FROM PendingUsers WHERE username = ?";
     public static final String SELECT_USER_BY_USERNAME = "SELECT * FROM Users WHERE username = ?";
@@ -25,5 +29,16 @@ public class SQLiteScripts {
         }
 
         return result;
+    }
+
+    /**
+     * Get the formatted request date, showing only up to minutes.
+     * @param date date to convert into dd MMM yyyy, HH:mm format
+     * @return Formatted request date
+     */
+    public static String getFormattedRequestDate(Timestamp date) {
+        if (date == null) return "";
+        SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy, HH:mm");
+        return formatter.format(new Date(date.getTime()));
     }
 }

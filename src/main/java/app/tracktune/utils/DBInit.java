@@ -39,7 +39,7 @@ public class DBInit {
             userID INTEGER NOT NULL,
             title TEXT NOT NULL,
             creationDate TIMESTAMP NOT NULL,
-            FOREIGN KEY (userID) REFERENCES Users(ID)
+            FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE
         );
     """;
 
@@ -52,8 +52,8 @@ public class DBInit {
             startTrackInterval INTEGER,
             endTrackInterval INTEGER,
             creationDate TIMESTAMP NOT NULL,
-            FOREIGN KEY (userID) REFERENCES Users(ID),
-            FOREIGN KEY (trackID) REFERENCES Tracks(ID)
+            FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE,
+            FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE
         );
     """;
 
@@ -62,8 +62,8 @@ public class DBInit {
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             commentID INTEGER NOT NULL,
             replyID INTEGER NOT NULL,
-            FOREIGN KEY (commentID) REFERENCES Comments(ID),
-            FOREIGN KEY (replyID) REFERENCES Comments(ID)
+            FOREIGN KEY (commentID) REFERENCES Comments(ID) ON DELETE CASCADE,
+            FOREIGN KEY (replyID) REFERENCES Comments(ID) ON DELETE CASCADE
         );
     """;
 
@@ -81,8 +81,8 @@ public class DBInit {
             instrumentID INTEGER NOT NULL,
             trackID INTEGER NOT NULL,
             UNIQUE (instrumentID, trackID),
-            FOREIGN KEY (instrumentID) REFERENCES MusicalInstruments(ID),
-            FOREIGN KEY (trackID) REFERENCES Tracks(ID)
+            FOREIGN KEY (instrumentID) REFERENCES MusicalInstruments(ID) ON DELETE CASCADE,
+            FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE
         );
     """;
 
@@ -97,7 +97,7 @@ public class DBInit {
             location TEXT,
             resourceDate TIMESTAMP,
             trackID INTEGER,
-            FOREIGN KEY (trackID) REFERENCES Tracks(ID)
+            FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE
         );
     """;
 
@@ -109,25 +109,25 @@ public class DBInit {
         );
     """;
 
-    private static final String CREATE_TRACK_AUTHOR_TABLE_STMT = """
+    private static final String CREATE_TRACKS_AUTHORS_TABLE_STMT = """
         CREATE TABLE IF NOT EXISTS TracksAuthors (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             trackID INTEGER NOT NULL,
             authorID INTEGER NOT NULL,
             UNIQUE (trackID, authorID),
-            FOREIGN KEY (trackID) REFERENCES Tracks(ID),
-            FOREIGN KEY (authorID) REFERENCES Authors(ID)
+            FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE,
+            FOREIGN KEY (authorID) REFERENCES Authors(ID) ON DELETE CASCADE
         );
     """;
 
-    private static final String CREATE_RESOURCE_AUTHOR_TABLE_STMT = """  
+    private static final String CREATE_RESOURCES_AUTHORS_TABLE_STMT = """  
         CREATE TABLE IF NOT EXISTS ResourcesAuthors (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
             resourceID INTEGER NOT NULL,
             authorID INTEGER NOT NULL,
             UNIQUE (resourceID, authorID),
-            FOREIGN KEY (resourceID) REFERENCES resources(ID),
-            FOREIGN KEY (authorID) REFERENCES authors(ID)
+            FOREIGN KEY (resourceID) REFERENCES resources(ID) ON DELETE CASCADE,
+            FOREIGN KEY (authorID) REFERENCES authors(ID) ON DELETE CASCADE
         );
     """;
 
@@ -139,13 +139,13 @@ public class DBInit {
         );
     """;
 
-    private static final String CREATE_RESOURCE_GENRE_TABLE_STMT = """  
-        CREATE TABLE IF NOT EXISTS ResourcesGenres (
+    private static final String CREATE_TRACKS_GENRES_TABLE_STMT = """  
+        CREATE TABLE IF NOT EXISTS TracksGenres (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            trackID INTEGER NOT NULL,
             genreID INTEGER NOT NULL,
-            resourceID INTEGER NOT NULL,
-            FOREIGN KEY (genreID) REFERENCES Genres(ID),
-            FOREIGN KEY (resourceID) REFERENCES resources(ID)
+            FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE,
+            FOREIGN KEY (genreID) REFERENCES Genres(ID) ON DELETE CASCADE
         );
     """;
 
@@ -178,9 +178,9 @@ public class DBInit {
                 CREATE_TRACKS_INSTRUMENTS_TABLE_STMT + ";" +
                 CREATE_RESOURCES_TABLE_STMT + ";" +
                 CREATE_AUTHORS_TABLE_STMT + ";" +
-                CREATE_TRACK_AUTHOR_TABLE_STMT + ";" +
+                CREATE_TRACKS_AUTHORS_TABLE_STMT + ";" +
                 CREATE_GENRES_TABLE_STMT + ";"+
-                CREATE_RESOURCE_GENRE_TABLE_STMT + ";" +
-                CREATE_RESOURCE_AUTHOR_TABLE_STMT;
+                CREATE_TRACKS_GENRES_TABLE_STMT + ";" +
+                CREATE_RESOURCES_AUTHORS_TABLE_STMT;
     }
 }

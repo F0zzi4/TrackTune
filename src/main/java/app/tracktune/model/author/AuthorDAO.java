@@ -1,20 +1,26 @@
 package app.tracktune.model.author;
 
 import app.tracktune.Main;
-import app.tracktune.exceptions.EntityAlreadyExistsException;
+import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.utils.Strings;
-import java.util.SortedSet;
-import java.util.TreeSet;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class AuthorDAO implements DAO<Author> {
-    private final SortedSet<Author> cache = new TreeSet<>();
     private final DatabaseManager dbManager;
-    //FIELD
+
+    // FIELDS
+    private static final String ID = "ID";
     private static final String AUTHORSHIP_NAME = "authorshipName";
     private static final String STATUS = "status";
 
+    // CRUD STATEMENTS
     private static final String INSERT_AUTHOR_STMT = """
         INSERT INTO Authors (authorshipName, status)
         VALUES (?, ?)
@@ -23,90 +29,101 @@ public class AuthorDAO implements DAO<Author> {
     private static final String UPDATE_AUTHOR_STMT = """
         UPDATE Authors
         SET authorshipName = ?, status = ?
-        WHERE authorshipName = ?
+        WHERE ID = ?
     """;
 
     private static final String DELETE_AUTHOR_STMT = """
-            DELETE FROM Authors
-            WHERE authorshipName = ?
+        DELETE FROM Authors
+        WHERE ID = ?
     """;
 
     private static final String GET_ALL_AUTHORS_STMT = """
-            SELECT *
-            FROM Authors
+        SELECT * FROM Authors
+    """;
+
+    private static final String GET_AUTHOR_BY_ID_STMT = """
+        SELECT * FROM Authors
+        WHERE ID = ?
     """;
 
     public AuthorDAO() {
         dbManager = Main.dbManager;
-        refreshCache();
     }
 
     @Override
-    public void refreshCache() {
-        cache.clear();
-        dbManager.executeQuery(GET_ALL_AUTHORS_STMT,
-                rs -> {
-                    while (rs.next()) {
-                        String authorshipName = rs.getString(AUTHORSHIP_NAME);
-                        AuthorStatusEnum status = AuthorStatusEnum.fromInt(rs.getInt(STATUS));
-                        cache.add(new Author(authorshipName, status));
-                    }
-                    return null;
-                }
-        );
-    }
-
-    @Override
-    public void insert(Author author) {
-        if(alreadyExists(author)){
-            throw new EntityAlreadyExistsException(Strings.ERR_ENTITY_ALREADY_EXISTS);
-        }
-
+    public Integer insert(Author author) {
         boolean success = dbManager.executeUpdate(INSERT_AUTHOR_STMT,
                 author.getAuthorshipName(),
                 author.getStatus().ordinal()
         );
 
-        if(success)
-            cache.add(author);
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
 
+        return dbManager.getLastInsertId();
     }
 
     @Override
-    public void update(Author author) {
-        boolean success = dbManager.executeUpdate(
-                UPDATE_AUTHOR_STMT,
+    public void updateById(Author author, int id) {
+        boolean success = dbManager.executeUpdate(UPDATE_AUTHOR_STMT,
                 author.getAuthorshipName(),
                 author.getStatus().ordinal(),
-                author.getAuthorshipName()
+                id
         );
 
-        if (success) {
-            cache.remove(author);
-            cache.add(author);
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
         }
     }
 
     @Override
-    public void delete(Author author) {
+    public void deleteById(int id) {
+        boolean success = dbManager.executeUpdate(DELETE_AUTHOR_STMT, id);
 
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
     }
 
     @Override
-    public Author getByKey(Object key) {
-        return cache.stream()
-                .filter(pendingUser -> pendingUser.getAuthorshipName().equals(key))
-                .findFirst()
-                .orElse(null);
+    public Author getById(int id) {
+        AtomicReference<Author> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_AUTHOR_BY_ID_STMT,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, id);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return result.get();
     }
 
     @Override
-    public SortedSet<Author> getAll() {
-        return cache;
+    public List<Author> getAll() {
+        List<Author> authors = new ArrayList<>();
+        dbManager.executeQuery(GET_ALL_AUTHORS_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        authors.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                });
+
+        return authors;
     }
 
-    @Override
-    public boolean alreadyExists(Author author) {
-        return getByKey(author.getAuthorshipName()) != null;
+    private Author mapResultSetToEntity(ResultSet rs) throws SQLException {
+        int id = rs.getInt(ID);
+        String authorshipName = rs.getString(AUTHORSHIP_NAME);
+        AuthorStatusEnum status = AuthorStatusEnum.fromInt(rs.getInt(STATUS));
+        return new Author(id, authorshipName, status);
     }
 }

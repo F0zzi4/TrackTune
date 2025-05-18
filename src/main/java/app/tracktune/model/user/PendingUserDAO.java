@@ -1,17 +1,19 @@
 package app.tracktune.model.user;
 
 import app.tracktune.Main;
-import app.tracktune.exceptions.EntityAlreadyExistsException;
+import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.utils.Strings;
 
-import java.sql.Timestamp;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class PendingUserDAO implements DAO<PendingUser> {
-    // FIELDS
+    private static final String ID = "ID";
     private static final String USERNAME = "username";
     private static final String PASSWORD = "password";
     private static final String NAME = "name";
@@ -19,23 +21,25 @@ public class PendingUserDAO implements DAO<PendingUser> {
     private static final String STATUS = "status";
     private static final String REQUEST_DATE = "requestDate";
 
-    private final SortedSet<PendingUser> cache = new TreeSet<>();
     private final DatabaseManager dbManager;
 
-    // CRUD STATEMENTS
     private static final String INSERT_PENDING_USER_STMT = """
         INSERT INTO PendingUsers (username, password, name, surname, status, requestDate)
         VALUES (?, ?, ?, ?, ?, ?)
     """;
+
     private static final String UPDATE_PENDING_USER_STMT = """
         UPDATE PendingUsers
-        SET password = ?, name = ?, surname = ?, status = ?
-        WHERE username = ?
+        SET password = ?,
+            name = ?,
+            surname = ?,
+            status = ?
+        WHERE ID = ?
     """;
 
     private static final String DELETE_PENDING_USER_STMT = """
         DELETE FROM PendingUsers
-        WHERE username = ?
+        WHERE ID = ?
     """;
 
     private static final String GET_ALL_PENDING_USERS_STMT = """
@@ -43,98 +47,131 @@ public class PendingUserDAO implements DAO<PendingUser> {
         FROM PendingUsers
     """;
 
-    public PendingUserDAO() {
-        dbManager = Main.dbManager;
-        refreshCache();
-    }
+    private static final String GET_PENDING_USER_BY_ID = """
+        SELECT *
+        FROM PendingUsers
+        WHERE ID = ?
+    """;
 
-    /**
-     * Refresh the pending user cache from the database
-     */
-    public void refreshCache() {
-        cache.clear();
-        dbManager.executeQuery(GET_ALL_PENDING_USERS_STMT,
-                rs -> {
-                    while (rs.next()) {
-                        String username = rs.getString(USERNAME);
-                        String password = rs.getString(PASSWORD);
-                        String name = rs.getString(NAME);
-                        String surname = rs.getString(SURNAME);
-                        AuthRequestStatusEnum status = AuthRequestStatusEnum.fromInt(rs.getInt(STATUS));
-                        Timestamp creationDate = rs.getTimestamp(REQUEST_DATE);
-                        cache.add(new PendingUser(username, password, name, surname, creationDate, status));
-                    }
-                    return null;
-                }
-        );
+    private static final String GET_PENDING_USER_BY_USERNAME_STMT = """
+        SELECT *
+        FROM PendingUsers
+        WHERE username = ?
+    """;
+
+    public PendingUserDAO() {
+        this.dbManager = Main.dbManager;
     }
 
     @Override
-    public void insert(PendingUser pendingUser) {
-        if(alreadyExists(pendingUser)){
-            throw new EntityAlreadyExistsException(Strings.ERR_ENTITY_ALREADY_EXISTS);
-        }
-
-        boolean success = dbManager.executeUpdate(INSERT_PENDING_USER_STMT,
+    public Integer insert(PendingUser pendingUser) {
+        boolean success = dbManager.executeUpdate(
+                INSERT_PENDING_USER_STMT,
                 pendingUser.getUsername(),
                 pendingUser.getPassword(),
                 pendingUser.getName(),
                 pendingUser.getSurname(),
                 pendingUser.getStatus().ordinal(),
-                pendingUser.getRequestDate());
+                pendingUser.getRequestDate()
+        );
 
-        if(success)
-            cache.add(pendingUser);
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+        return dbManager.getLastInsertId();
     }
 
     @Override
-    public void update(PendingUser user) {
+    public void updateById(PendingUser user, int id) {
         boolean success = dbManager.executeUpdate(
                 UPDATE_PENDING_USER_STMT,
                 user.getPassword(),
                 user.getName(),
                 user.getSurname(),
                 user.getStatus().ordinal(),
-                user.getUsername()
+                id
         );
 
-        if (success) {
-            cache.remove(user);
-            cache.add(user);
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
         }
     }
 
     @Override
-    public void delete(PendingUser pendingUser) {
+    public void deleteById(int id) {
         boolean success = dbManager.executeUpdate(
                 DELETE_PENDING_USER_STMT,
-                pendingUser.getUsername()
+                id
         );
 
-        if (success) {
-            cache.remove(pendingUser);
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
         }
     }
 
     @Override
-    public PendingUser getByKey(Object key) {
-        return cache.stream()
-                .filter(pendingUser -> pendingUser.getUsername().equals(key))
-                .findFirst()
-                .orElse(null);
+    public PendingUser getById(int id) {
+        AtomicReference<PendingUser> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_PENDING_USER_BY_ID,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, id);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return result.get();
     }
 
     @Override
-    public SortedSet<PendingUser> getAll() {
-        return cache;
+    public List<PendingUser> getAll() {
+        List<PendingUser> users = new ArrayList<>();
+
+        dbManager.executeQuery(GET_ALL_PENDING_USERS_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        users.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                });
+
+        return users;
     }
 
-    /**
-     * Check if a username exists
-     * @param pendingUser pendingUser to check if exists
-     * @return true if exists, false otherwise
-     */
-    public boolean alreadyExists(PendingUser pendingUser) {
-        return getByKey(pendingUser.getUsername()) != null;
+    private PendingUser mapResultSetToEntity(ResultSet rs) throws SQLException {
+        return new PendingUser(
+                rs.getInt(ID),
+                rs.getString(USERNAME),
+                rs.getString(PASSWORD),
+                rs.getString(NAME),
+                rs.getString(SURNAME),
+                rs.getTimestamp(REQUEST_DATE),
+                AuthRequestStatusEnum.fromInt(rs.getInt(STATUS))
+        );
+    }
+
+    public PendingUser getByUsername(String username) {
+        AtomicReference<PendingUser> pendUser = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_PENDING_USER_BY_USERNAME_STMT,
+                rs -> {
+                    if (rs.next()) {
+                        pendUser.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, username);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return pendUser.get();
     }
 }

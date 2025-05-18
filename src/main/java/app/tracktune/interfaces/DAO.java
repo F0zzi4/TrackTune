@@ -1,47 +1,39 @@
 package app.tracktune.interfaces;
 
-
-import java.util.Set;
+import java.util.List;
 
 public interface DAO<T> {
-    /**
-     * Refresh the cache related to the entity T from the database
-     */
-    void refreshCache();
-
     /**
      * Inserts a new record into the database
      *
      * @param data the object to be inserted into the data source
      */
-    void insert(T data);
+    Integer insert(T data);
 
     /**
      * Updates a record on database
      *
-     * @param data the object to update on database
+     * @param id ID of the entity to update
      */
-    void update(T data);
+    void updateById(T data, int id);
 
     /**
      * Deletes a record on database
      *
-     * @param data the object to delete on database
+     * @param id ID of the entity to delete
      */
-    void delete(T data);
+    void deleteById(int id);
 
     /**
      * Get the related object from database with corresponding given key
-     * @param key usually is the primary key or logic key in the database
+     * @param id usually is the primary key or logic key in the database
      * @return the related object if key exists, null otherwise
      */
-    T getByKey(Object key);
+    T getById(int id);
 
     /**
      * Get all the elements stored in the cache
      * @return sorted list of stored elements
      */
-    Set<T> getAll();
-
-    boolean alreadyExists(T data);
+    List<T> getAll();
 }

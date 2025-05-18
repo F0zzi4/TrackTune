@@ -1,112 +1,131 @@
 package app.tracktune.model.genre;
 
 import app.tracktune.Main;
-import app.tracktune.exceptions.GenreAlreadyExistsExeception;
+import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.utils.Strings;
-import java.util.SortedSet;
-import java.util.TreeSet;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class GenreDAO implements DAO<Genre> {
-    private final SortedSet<Genre> cache = new TreeSet<>();
     private final DatabaseManager dbManager;
-    //FIELDS
+
+    // FIELDS
+    private static final String ID = "ID";
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
+
     // CRUD STATEMENTS
     private static final String INSERT_GENRE_STMT = """
         INSERT INTO Genres (name, description)
         VALUES (?, ?)
     """;
+
     private static final String UPDATE_GENRE_STMT = """
         UPDATE Genres
+        SET name = ?, description = ?
+        WHERE ID = ?
     """;
+
     private static final String DELETE_GENRE_STMT = """
         DELETE FROM Genres
-        where name = ?
+        WHERE ID = ?
     """;
+
     private static final String GET_ALL_GENRES_STMT = """
         SELECT *
         FROM Genres
     """;
 
+    private static final String GET_GENRE_BY_ID_STMT = """
+        SELECT *
+        FROM Genres
+        WHERE ID = ?
+    """;
+
     public GenreDAO() {
         dbManager = Main.dbManager;
-        refreshCache();
     }
 
     @Override
-    public void refreshCache() {
-        cache.clear();
-        dbManager.executeQuery(GET_ALL_GENRES_STMT,
-                rs -> {
-                    while (rs.next()) {
-                        String name = rs.getString(NAME);
-                        String description = rs.getString(DESCRIPTION);
-
-                        cache.add(new Genre(name, description));
-                    }
-                    return null;
-                }
-        );
-    }
-
-    @Override
-    public void insert(Genre genre) {
-        boolean success = false;
-        if(alreadyExists(genre)){
-            throw new GenreAlreadyExistsExeception(Strings.ERR_GENRE_ALREADY_EXISTS);
-        }
-
-        success = dbManager.executeUpdate(INSERT_GENRE_STMT,genre.getName(),genre.getDescription());
-        if (success) {
-            cache.add(genre);
-        }
-    }
-
-    @Override
-    public void update(Genre genre) {
-        boolean success = false;
-        success = dbManager.executeUpdate(
-                UPDATE_GENRE_STMT,
+    public Integer insert(Genre genre) {
+        boolean success = dbManager.executeUpdate(INSERT_GENRE_STMT,
                 genre.getName(),
                 genre.getDescription()
         );
 
-        if(success){
-            cache.remove(genre);
-            cache.add(genre);
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
         }
+        return dbManager.getLastInsertId();
     }
 
     @Override
-    public void delete(Genre genre) {
-        boolean success = dbManager.executeUpdate(
-                DELETE_GENRE_STMT,
-                genre.getName()
+    public void updateById(Genre genre, int id) {
+        boolean success = dbManager.executeUpdate(UPDATE_GENRE_STMT,
+                genre.getName(),
+                genre.getDescription(),
+                id
         );
 
-        if (success) {
-            cache.remove(genre);
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
         }
     }
 
     @Override
-    public Genre getByKey(Object key) {
-        return cache.stream()
-                .filter(genre -> genre.getName().equals(key))
-                .findFirst()
-                .orElse(null);
+    public void deleteById(int id) {
+        boolean success = dbManager.executeUpdate(DELETE_GENRE_STMT, id);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
     }
 
     @Override
-    public SortedSet<Genre> getAll() {
-        return cache;
+    public Genre getById(int id) {
+        AtomicReference<Genre> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_GENRE_BY_ID_STMT,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, id);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return result.get();
     }
 
     @Override
-    public boolean alreadyExists(Genre data) {
-        return getByKey(data.getName()) != null;
+    public List<Genre> getAll() {
+        List<Genre> genres = new ArrayList<>();
+
+        dbManager.executeQuery(GET_ALL_GENRES_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        genres.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                });
+
+        return genres;
+    }
+
+    private Genre mapResultSetToEntity(ResultSet rs) throws SQLException {
+        int id = rs.getInt(ID);
+        String name = rs.getString(NAME);
+        String description = rs.getString(DESCRIPTION);
+        return new Genre(id, name, description);
     }
 }

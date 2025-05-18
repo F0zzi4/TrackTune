@@ -20,24 +20,9 @@ import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.*;
 
-/**
- * Controller for managing musical instruments in the admin panel.
- * <p>
- * Provides functionality for administrators to:
- * <ul>
- *     <li>Add new musical instruments</li>
- *     <li>View instruments in a paginated list</li>
- *     <li>Delete instruments from the database</li>
- * </ul>
- * </p>
- * <p>
- * This controller interacts with {@link MusicalInstrumentDAO} for data operations
- * and ensures input validation and SQL injection protection.
- * </p>
- */
 public class InstrumentsController extends Controller implements Initializable {
 
-    @FXML private VBox requestsContainer;
+    @FXML private VBox instrumentsContainer;
     @FXML private Button btnPrev;
     @FXML private Button btnNext;
     @FXML private Button btnAddInstrument;
@@ -45,22 +30,14 @@ public class InstrumentsController extends Controller implements Initializable {
     @FXML private TextArea txtDescription;
     @FXML private Label lblCharCount;
 
-    private SortedSet<MusicalInstrument> instrumentsList = new TreeSet<>();
+    private List<MusicalInstrument> instruments = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 4;
     private final MusicalInstrumentDAO instrumentDAO = new MusicalInstrumentDAO();
 
-    /**
-     * Initializes the controller and loads all instruments from the database.
-     * <p>
-     * Sets up pagination controls, adds event handlers for button actions,
-     * and configures the character counter for the description field (limited to 300 characters).
-     * </p>
-     */
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-
-            instrumentsList.addAll(instrumentDAO.getAll());
+        instruments = instrumentDAO.getAll();
 
         btnPrev.setOnAction(e -> {
             if (currentPage > 0) {
@@ -70,38 +47,43 @@ public class InstrumentsController extends Controller implements Initializable {
         });
 
         btnNext.setOnAction(e -> {
-            if ((currentPage + 1) * itemsPerPage < instrumentsList.size()) {
+            if ((currentPage + 1) * itemsPerPage < instruments.size()) {
                 currentPage++;
                 refreshInstrument();
             }
         });
 
         btnAddInstrument.setOnAction(e -> {
-            try{
+            try {
                 String name = txtName.getText().trim();
                 String description = txtDescription.getText().trim();
 
                 if (!name.isEmpty() && !description.isEmpty()) {
-                    if(SQLiteScripts.checkForSQLInjection(name, description))
+                    if (SQLiteScripts.checkForSQLInjection(name, description)) {
                         throw new SQLInjectionException(Strings.ERR_SQL_INJECTION);
+                    }
 
-                    if (instrumentsList.stream().noneMatch(g -> g.getName().equalsIgnoreCase(name))) {
-                        MusicalInstrument newInstrument = new MusicalInstrument(name, description);
-                        instrumentDAO.insert(newInstrument);
-                        instrumentsList.add(newInstrument);
-                        txtName.clear();
-                        txtDescription.clear();
-                        lblCharCount.setText("0/300");
-                        refreshInstrument();
-                    } else {
+                    boolean alreadyExists = instruments.stream()
+                            .anyMatch(instr -> instr.getName().equalsIgnoreCase(name));
+                    if (alreadyExists) {
                         throw new TrackTuneException(Strings.ERR_MUSICAL_INSTRUMENT_ALREADY_EXISTS);
                     }
-                }
-                else
+
+                    MusicalInstrument newInstrument = new MusicalInstrument(name, description);
+                    instrumentDAO.insert(newInstrument);
+                    instruments = instrumentDAO.getAll();
+
+                    txtName.clear();
+                    txtDescription.clear();
+                    lblCharCount.setText("0/300");
+                    currentPage = 0;
+                    refreshInstrument();
+                } else {
                     throw new TrackTuneException(Strings.FIELD_EMPTY);
-            }catch (TrackTuneException exception){
+                }
+            } catch (TrackTuneException exception) {
                 ViewManager.setAndShowAlert(Strings.ERROR, Strings.MUSICAL_INSTRUMENT_FAILED, exception.getMessage(), Alert.AlertType.ERROR);
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 ViewManager.setAndShowAlert(Strings.ERROR, Strings.MUSICAL_INSTRUMENT_FAILED, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
                 System.err.println(ex.getMessage());
             }
@@ -118,52 +100,32 @@ public class InstrumentsController extends Controller implements Initializable {
         refreshInstrument();
     }
 
-    /**
-     * Updates the instrument list display based on the current pagination state.
-     * <p>
-     * Clears the current view and loads a subset of instruments corresponding
-     * to the current page. Handles enabling/disabling pagination buttons based on the list size.
-     * If the list is empty, displays an appropriate message.
-     * </p>
-     */
     private void refreshInstrument() {
-        requestsContainer.getChildren().clear();
+        instrumentsContainer.getChildren().clear();
 
-        int totalRequests =  instrumentsList.size();
+        int total = instruments.size();
         int start = currentPage * itemsPerPage;
-        int end = Math.min(start + itemsPerPage, totalRequests);
+        int end = Math.min(start + itemsPerPage, total);
 
         btnPrev.setDisable(currentPage == 0);
-        btnNext.setDisable(end >= totalRequests);
+        btnNext.setDisable(end >= total);
 
-        List<MusicalInstrument> pageItems = new ArrayList<>(instrumentsList).subList(start, end);
-
-        if(instrumentsList.isEmpty()) {
+        if (instruments.isEmpty()) {
             Label emptyLabel = new Label(Strings.EMPTY_LIST);
             emptyLabel.getStyleClass().add("empty-list-label");
 
             HBox emptyBox = new HBox(emptyLabel);
             emptyBox.setAlignment(Pos.CENTER);
-            requestsContainer.getChildren().add(emptyBox);
-        }
-        else{
+            instrumentsContainer.getChildren().add(emptyBox);
+        } else {
+            List<MusicalInstrument> pageItems = instruments.subList(start, end);
+
             for (MusicalInstrument instrument : pageItems) {
-                HBox requestBox = createInstrumentItemBox(instrument);
-                requestsContainer.getChildren().add(requestBox);
+                instrumentsContainer.getChildren().add(createInstrumentItemBox(instrument));
             }
         }
     }
 
-    /**
-     * Creates a graphical representation (HBox) for a single musical instrument item.
-     * <p>
-     * Includes the instrument's name, description, and a delete button.
-     * The layout and style classes are applied for consistent UI.
-     * </p>
-     *
-     * @param instrument the {@link MusicalInstrument} to display
-     * @return an {@link HBox} containing the instrument's name, description, and delete action
-     */
     private HBox createInstrumentItemBox(MusicalInstrument instrument) {
         Label nameLabel = new Label(instrument.getName());
         nameLabel.getStyleClass().add("request-item-title");
@@ -196,39 +158,17 @@ public class InstrumentsController extends Controller implements Initializable {
         return box;
     }
 
-    /**
-     * Deletes a musical instrument from the database and updates the view.
-     * <p>
-     * Handles exceptions and shows alerts in case of failure. After deletion,
-     * calls a method to refresh the view and update pagination.
-     * </p>
-     *
-     * @param instrument the {@link MusicalInstrument} to delete
-     */
-    private void deleteMusicalInstrument(MusicalInstrument instrument){
+    private void deleteMusicalInstrument(MusicalInstrument instrument) {
         try {
-            instrumentDAO.delete(instrument);
-            removeInstrumentAndUpdate(instrument);
+            instrumentDAO.deleteById(instrument.getId());
+            instruments.remove(instrument);
+            int maxPage = (int) Math.ceil((double) instruments.size() / itemsPerPage);
+            if (currentPage >= maxPage && currentPage > 0) {
+                currentPage--;
+            }
+            refreshInstrument();
         } catch (Exception ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
         }
-    }
-
-    /**
-     * Removes the specified instrument from the local list and updates pagination state.
-     * <p>
-     * If the current page becomes invalid due to the deletion (e.g., last item on the last page),
-     * it adjusts the current page accordingly and refreshes the list.
-     * </p>
-     *
-     * @param instrument the {@link MusicalInstrument} to remove
-     */
-    private void removeInstrumentAndUpdate(MusicalInstrument instrument) {
-         instrumentsList.remove(instrument);
-        int maxPage = (int) Math.ceil((double)  instrumentsList.size() / itemsPerPage);
-        if (currentPage >= maxPage && currentPage > 0) {
-            currentPage--;
-        }
-        refreshInstrument();
     }
 }
