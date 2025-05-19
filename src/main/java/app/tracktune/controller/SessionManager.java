@@ -4,7 +4,7 @@ import app.tracktune.model.user.User;
 
 public class SessionManager {
     private static SessionManager instance;
-    private final User sessionUser;
+    private User sessionUser;
 
     private SessionManager(User sessionUser) {
         this.sessionUser = sessionUser;

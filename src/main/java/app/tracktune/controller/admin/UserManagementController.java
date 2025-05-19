@@ -1,10 +1,6 @@
 package app.tracktune.controller.admin;
 
 import app.tracktune.controller.Controller;
-import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
-import app.tracktune.exceptions.TrackTuneException;
-import app.tracktune.model.author.Author;
-import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.model.user.*;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
@@ -22,8 +18,13 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class UserManagementController extends Controller implements Initializable {
+/**
+ * Controller for the Admin User Management view.
+ * Handles display, filtering, pagination, and actions related to AuthenticatedUser and Administrator entities.
+ * Allows the administrator to suspend, remove, restore users, or promote them to administrator.
+ */
 
+public class UserManagementController extends Controller implements Initializable {
     @FXML
     private VBox usersContainer;
     @FXML
@@ -41,6 +42,12 @@ public class UserManagementController extends Controller implements Initializabl
 
     private final UserDAO userDAO = new UserDAO();
 
+    /**
+     * Initializes the controller, loads all users, creates filter tabs, sets up pagination controls.
+     *
+     * @param location  the location used to resolve relative paths
+     * @param resources the resources used to localize the root object
+     */
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,6 +77,10 @@ public class UserManagementController extends Controller implements Initializabl
         updateUsers();
     }
 
+    /**
+     * Creates one tab for each UserStatusEnum value, plus a custom "ADMIN" tab for administrators.
+     * Sets the listener to update the view when the tab selection changes.
+     */
     private void createTabsFromEnum() {
         filterTabPane.getTabs().clear();
 
@@ -94,6 +105,11 @@ public class UserManagementController extends Controller implements Initializabl
         filterTabPane.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Filters the users list based on the selected tab.
+     * If "ADMIN" is selected, shows only active administrators.
+     * Otherwise, shows only non-admin users with the selected status.
+     */
     private void filterUsers() {
         if ("ADMIN".equals(currentFilter)) {
             filteredUsers = users.stream()
@@ -108,6 +124,10 @@ public class UserManagementController extends Controller implements Initializabl
         }
     }
 
+    /**
+     * Updates the list of users shown in the view based on the current filter and page.
+     * Handles pagination and displays an empty message if no users are found.
+     */
     private void updateUsers() {
         filterUsers();
         usersContainer.getChildren().clear();
@@ -135,19 +155,33 @@ public class UserManagementController extends Controller implements Initializabl
         }
     }
 
+    /**
+     * Creates the graphical representation (HBox) of a single user with buttons for actions.
+     *
+     * @param user the user to display
+     * @return an HBox representing the user row
+     */
     private HBox createUserItem(AuthenticatedUser user) {
-        Label infoLabel = new Label(user.getUsername() + " " + user.getSurname());
-        infoLabel.getStyleClass().add("author-item-title");
+        Label infoLabel = new Label(user.getName() + " " + user.getSurname());
+        infoLabel.getStyleClass().add("user-item-title");
 
         Label nTrackLabel = new Label(SQLiteScripts.getFormattedRequestDate(user.getCreationDate()));
-        nTrackLabel.getStyleClass().add("author-item-date");
+        nTrackLabel.getStyleClass().add("user-item-date");
 
         VBox textBox = new VBox(5, infoLabel, nTrackLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         Button restoreBtn = new Button(Strings.RESTORE);
-        restoreBtn.getStyleClass().add("restore-button");
+        restoreBtn.getStyleClass().add("accept-button");
         restoreBtn.setOnAction(e -> restoreUser(user));
+
+        Button makeAdminButton = new Button(Strings.MAKE_ADMIN);
+        makeAdminButton.getStyleClass().add("make-admin-button");
+        makeAdminButton.setOnAction(e -> makeAdmin(user));
+
+        Button suspendButton = new Button(Strings.SUSPEND);
+        suspendButton.getStyleClass().add("suspend-button");
+        suspendButton.setOnAction(e -> suspendUser(user));
 
         Button removeBtn = new Button(Strings.DELETE);
         removeBtn.getStyleClass().add("delete-button");
@@ -156,29 +190,40 @@ public class UserManagementController extends Controller implements Initializabl
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
-        if(user.getStatus() == UserStatusEnum.ACTIVE)
-            buttonBox.getChildren().add(removeBtn);
+        if(user instanceof Administrator) {
+            //
+        }
+        else{
+            if(user.getStatus() == UserStatusEnum.ACTIVE){
+                buttonBox.getChildren().add(suspendButton);
+                buttonBox.getChildren().add(removeBtn);
+                buttonBox.getChildren().add(makeAdminButton);
+            }
 
-        else if(user.getStatus() == UserStatusEnum.SUSPENDED)
-            buttonBox.getChildren().add(removeBtn);
-
-        else if(user.getStatus() == UserStatusEnum.REMOVED)
-            buttonBox.getChildren().add(restoreBtn);
-
-        else if(user instanceof Administrator)
-            buttonBox.getChildren().add(removeBtn);
-
+            else if(user.getStatus() == UserStatusEnum.SUSPENDED) {
+                buttonBox.getChildren().add(removeBtn);
+                buttonBox.getChildren().add(restoreBtn);
+            }
+            else if(user.getStatus() == UserStatusEnum.REMOVED) {
+                buttonBox.getChildren().add(restoreBtn);
+            }
+        }
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox box = new HBox(10, textBox, spacer, buttonBox);
-        box.getStyleClass().add("author-item");
+        box.getStyleClass().add("user-item");
         box.setAlignment(Pos.CENTER_LEFT);
 
         return box;
     }
 
+    /**
+     * Restores a suspended or removed user by setting their status to ACTIVE.
+     *
+     * @param user the user to restore
+     */
     private void restoreUser (AuthenticatedUser user) {
         try {
             user.setStatus(UserStatusEnum.ACTIVE);
@@ -192,6 +237,11 @@ public class UserManagementController extends Controller implements Initializabl
         }
     }
 
+    /**
+     * Sets the user's status to REMOVED.
+     *
+     * @param user the user to remove
+     */
     private void removeUser(AuthenticatedUser user) {
         try {
             user.setStatus(UserStatusEnum.REMOVED);
@@ -205,6 +255,47 @@ public class UserManagementController extends Controller implements Initializabl
         }
     }
 
+    /**
+     * Sets the user's status to SUSPENDED.
+     *
+     * @param user the user to suspend
+     */
+    private void suspendUser(AuthenticatedUser user) {
+        try {
+            user.setStatus(UserStatusEnum.SUSPENDED);
+            userDAO.updateById(user, user.getId());
+            int index = users.indexOf(user);
+            if (index >= 0) users.set(index, user);
+            adjustPageAfterUpdate();
+        } catch (Exception ex) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    /**
+     * Promotes a user to administrator by replacing their instance with an Administrator object.
+     *
+     * @param user the user to promote
+     */
+    private void makeAdmin(AuthenticatedUser user) {
+        try {
+            Administrator ad = new Administrator(user.getId(), user.getUsername(), user.getPassword(), user.getName(), user.getSurname(), user.getStatus(), user.getCreationDate());
+            userDAO.updateById(ad, user.getId());
+            int index = users.indexOf(user);
+            if (index >= 0) users.set(index, ad);
+            adjustPageAfterUpdate();
+        } catch (Exception ex) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(ex.getMessage());
+        }
+    }
+
+
+    /**
+     * Adjusts the current page index if the number of filtered users has changed due to an update.
+     * Ensures the current page is within valid bounds.
+     */
     private void adjustPageAfterUpdate() {
         int maxPage = (int) Math.ceil((double) filteredUsers.size() / itemsPerPage) - 1;
         if (currentPage > maxPage) {

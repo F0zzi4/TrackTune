@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../style/me-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.MeController">
+    <children>
+        <VBox alignment="CENTER" spacing="15.0" styleClass="split-pane-divider">
+
+            <Label alignment="CENTER" prefHeight="19.0" prefWidth="240.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Me">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2a-account" iconSize="30" />
+                </graphic>
+            </Label>
+             <Label fx:id="LblRole" prefHeight="49.0" prefWidth="144.0" style="-fx-font-size: 18; -fx-font-weight: bold;" text="Administrator" />
+
+            <VBox alignment="CENTER" maxWidth="500" spacing="10">
+
+                <HBox alignment="CENTER" spacing="10">
+                    <Label prefWidth="100" text="Username:" />
+                    <TextField fx:id="TxtUsername" promptText="Username" styleClass="nameField" />
+                </HBox>
+
+                <HBox alignment="CENTER" spacing="10">
+                    <Label prefWidth="100" text="First name:" />
+                    <TextField fx:id="TxtName" promptText="First name" styleClass="nameField" />
+                </HBox>
+
+                <HBox alignment="CENTER" spacing="10">
+                    <Label prefWidth="100" text="Last name:" />
+                    <TextField fx:id="TxtSurname" promptText="Last name" styleClass="nameField" />
+                </HBox>
+
+            </VBox>
+
+            <Button fx:id="EditRole" onAction="#handleEditButton" styleClass="delete-button" text="Edit" />
+        </VBox>
+    </children>
+</StackPane>
