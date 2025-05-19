@@ -89,6 +89,16 @@ public class AuthenticatedUserDashboardController extends Controller implements 
         }
     }
 
+    @FXML
+    public void handleMe(){
+        try{
+            ViewManager.setMainContent(Frames.ME_VIEW_PATH, mainContent, this);
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
     /**
      * Logs out the current user by calling the {@link ViewManager#logout()} method.
      * Displays an error alert if the logout process fails.

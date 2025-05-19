@@ -41,4 +41,7 @@ public class Strings {
     public static final String RESOURCE_UPLOADED = "Resource uploaded successfully";
     public static final String RESOURCE_UPDATED = "Resource updated successfully";
     public static final String RESOURCE_NOT_UPLOADED = "Resource not uploaded";
+    public static final String MAKE_ADMIN = "Make Admin";
+    public static final String SUSPEND = "Suspend";
+    public static final String ERR_ME = "Me error";
 }

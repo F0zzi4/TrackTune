@@ -26,6 +26,7 @@ public class Frames {
     public static final String DISCOVER_VIEW_PATH = "/fxml/authenticatedUser/DiscoverView.fxml";
     public static final String RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/ResourcesView.fxml";
     public static final String ADD_RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/AddResourceView.fxml";
+    public static final String ME_VIEW_PATH = "/fxml/authenticatedUser/MeView.fxml";
     public static final String USER_MANAGEMENT_VIEW_PATH = "/fxml/admin/UserManagementView.fxml";
     // FRAME ICONS
     public static final String MAIN_ICON_PATH = "/assets/icon/appIcon.png";
