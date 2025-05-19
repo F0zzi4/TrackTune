@@ -105,6 +105,11 @@ public class AdminDashboardController extends Controller implements Initializabl
         ViewManager.setMainContent(Frames.INSTRUMENTS_PATH, mainContent, this);
     }
 
+    @FXML
+    public void handleUserManagement() {
+        ViewManager.setMainContent(Frames.USER_MANAGEMENT_VIEW_PATH, mainContent, this);
+    }
+
     /**
      * Logs out the current user by calling the {@link ViewManager#logout()} method.
      * Displays an error alert if the logout process fails
