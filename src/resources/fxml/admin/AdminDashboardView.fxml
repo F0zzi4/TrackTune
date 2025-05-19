@@ -26,7 +26,7 @@
                     </graphic>
                 </Button>
             <Separator prefWidth="200.0" />
-                <Button prefHeight="38.0" prefWidth="385.0" styleClass="sidebar-button" text="Users">
+                <Button prefHeight="38.0" onMouseClicked="#handleUserManagement" prefWidth="385.0" styleClass="sidebar-button" text="Users">
                     <graphic>
                         <FontIcon iconLiteral="mdi2a-account-circle" iconSize="20" />
                     </graphic>
