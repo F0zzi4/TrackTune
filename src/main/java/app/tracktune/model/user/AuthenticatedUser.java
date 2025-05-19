@@ -3,7 +3,7 @@ package app.tracktune.model.user;
 import java.sql.Timestamp;
 
 public class AuthenticatedUser extends User {
-    private final UserStatusEnum status;
+    private UserStatusEnum status;
     private final Timestamp creationDate;
 
     public AuthenticatedUser(Integer id, String username, String password, String name, String surname, UserStatusEnum status, Timestamp creationDate) {
@@ -32,5 +32,9 @@ public class AuthenticatedUser extends User {
      */
     public UserStatusEnum getStatus() {
         return status;
+    }
+
+    public void setStatus(UserStatusEnum status) {
+        this.status = status;
     }
 }
