@@ -1,5 +1,12 @@
 package app.tracktune.controller;
 
+import app.tracktune.model.resource.Resource;
+import javafx.scene.Node;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.io.ByteArrayInputStream;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -16,9 +23,35 @@ public class Controller {
      * @param date date to convert into dd MMM yyyy, HH:mm format
      * @return Formatted request date
      */
-    public static String getFormattedRequestDate(Timestamp date) {
+    protected static String getFormattedRequestDate(Timestamp date) {
         if (date == null) return "";
         SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy, HH:mm");
         return formatter.format(new Date(date.getTime()));
+    }
+
+    protected Node createPreview(Resource resource) {
+        String mimeType = resource.getType().toString();
+
+        if (mimeType.startsWith("png")) {
+            ByteArrayInputStream bis = new ByteArrayInputStream(resource.getData());
+            Image image = new Image(bis, 100, 100, true, true);
+            return new ImageView(image);
+        }
+
+        if (mimeType.startsWith("video")) {
+            FontIcon videoIcon = new FontIcon("mdi2v-video");
+            videoIcon.setIconSize(60);
+            return videoIcon;
+        }
+
+        if (mimeType.startsWith("audio")) {
+            FontIcon audioIcon = new FontIcon("mdi2m-music");
+            audioIcon.setIconSize(60);
+            return audioIcon;
+        }
+
+        FontIcon fileIcon = new FontIcon("mdi2f-file");
+        fileIcon.setIconSize(60);
+        return fileIcon;
     }
 }

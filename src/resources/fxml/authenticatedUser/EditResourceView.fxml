@@ -18,20 +18,30 @@
 
 <StackPane prefHeight="770.0" prefWidth="800.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.EditResourceController">
     <children>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="550.0" style="-fx-background-color: transparent;" vbarPolicy="AS_NEEDED">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="582.0" prefHeight="710.0" prefWidth="582.0" style="-fx-background-color: transparent;" vbarPolicy="AS_NEEDED">
             <content>
                 <VBox alignment="CENTER" maxWidth="566.0" prefHeight="673.0" prefWidth="566.0" spacing="12">
-
-                    <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Edit Resource">
+               <HBox prefHeight="68.0" prefWidth="548.0">
+                  <children>
+                     <Region prefHeight="68.0" prefWidth="5.0" />
+                     <Button mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="43.0" prefWidth="54.0" styleClass="search-button" stylesheets="@../../style/account_request-style.css">
                         <graphic>
-                            <FontIcon iconLiteral="mdi2f-file-music" iconSize="27" />
+                           <FontIcon iconLiteral="mdi2a-arrow-left-thick" iconSize="22" />
                         </graphic>
-                    </Label>
-                    <Region prefHeight="16.0" prefWidth="548.0" />
+                     </Button>
+                     <Region prefHeight="68.0" prefWidth="69.0" />
+      
+                          <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Edit Resource">
+                              <graphic>
+                                  <FontIcon iconLiteral="mdi2c-content-save-edit" iconSize="27" />
+                              </graphic>
+                          </Label>
+                  </children>
+               </HBox>
                     <HBox alignment="CENTER_LEFT" prefHeight="53.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
                         <children>
                             <Label prefHeight="25.0" prefWidth="54.0" styleClass="label-title" text="Track:" />
-                            <TextField fx:id="txtTrack" prefHeight="43.0" prefWidth="237.0" styleClass="nameField" />
+                            <TextField fx:id="txtTrack" prefHeight="43.0" prefWidth="242.0" styleClass="nameField" />
                             <Region prefHeight="43.0" prefWidth="40.0" />
                         </children>
                     </HBox>
@@ -59,15 +69,6 @@
                         </children>
                     </HBox>
                     <FlowPane fx:id="selectedInstrumentsPane" hgap="10" prefHeight="37.0" prefWidth="548.0" vgap="10" />
-                    <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="505.0" spacing="10" style="-fx-alignment: center;">
-                        <Label prefHeight="25.0" prefWidth="68.0" style="-fx-alignment: center;" styleClass="label-title" text="File:" />
-                        <TextField fx:id="txtFilePathField" editable="false" prefHeight="31.0" prefWidth="240.0" promptText="Choose a file..." styleClass="fileField" />
-                        <Button fx:id="btnBrowseFile" prefHeight="38.0" prefWidth="50.0" styleClass="switch-button">
-                            <graphic>
-                                <FontIcon iconLiteral="mdi2f-file-find" iconSize="18" />
-                            </graphic>
-                        </Button>
-                    </HBox>
                     <MFXToggleButton fx:id="btnIsMultimedia" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Multimedia">
                         <effect>
                             <InnerShadow />
@@ -98,9 +99,9 @@
                     <Region prefHeight="5.0" prefWidth="505.0" />
                     <HBox alignment="CENTER" prefHeight="73.0" prefWidth="548.0">
                         <children>
-                            <Button onMouseClicked="#handleAddResource" styleClass="switch-button" text="Edit">
+                            <Button onMouseClicked="#handleEditResource" styleClass="switch-button" text="Edit">
                                 <graphic>
-                                    <FontIcon iconLiteral="mdi2c-content-save-move" iconSize="20" />
+                                    <FontIcon iconLiteral="mdi2c-content-save-edit" iconSize="20" />
                                 </graphic>
                             </Button>
                             <Region prefHeight="86.0" prefWidth="21.0" />

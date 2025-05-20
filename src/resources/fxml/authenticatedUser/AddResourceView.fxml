@@ -28,29 +28,28 @@
                 </graphic>
             </Label>
          <Region prefHeight="16.0" prefWidth="548.0" />
-         <HBox alignment="CENTER_LEFT" prefHeight="53.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
+         <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
             <children>
                <Label prefHeight="25.0" prefWidth="54.0" styleClass="label-title" text="Track:" />
-               <TextField fx:id="txtTrack" prefHeight="43.0" prefWidth="237.0" styleClass="nameField" />
+                     <ComboBox fx:id="trackComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search track..." />
                <Region prefHeight="43.0" prefWidth="40.0" />
             </children>
          </HBox>
-               <Region prefHeight="10.0" prefWidth="548.0" />
-
-            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
+            <FlowPane fx:id="selectedTrackPane" hgap="10" prefHeight="21.0" prefWidth="548.0" vgap="10" />
+            <HBox alignment="CENTER_LEFT" prefHeight="30.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
                 <Label prefHeight="25.0" prefWidth="65.0" styleClass="label-title" text="Authors:" />
                 <ComboBox fx:id="authorComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search authors..." />
             <Region prefHeight="40.0" prefWidth="49.0" />
             </HBox>
-            <FlowPane fx:id="selectedAuthorsPane" hgap="10" prefHeight="33.0" prefWidth="548.0" vgap="10" />
-         <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
+            <FlowPane fx:id="selectedAuthorsPane" hgap="10" prefHeight="27.0" prefWidth="548.0" vgap="10" />
+            <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
             <children>
                <Label prefHeight="25.0" prefWidth="65.0" styleClass="label-title" text="Genres:" />
                <ComboBox fx:id="genreComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search genres..." />
                <Region prefHeight="40.0" prefWidth="49.0" />
             </children>
          </HBox>
-         <FlowPane fx:id="selectedGenresPane" hgap="10" prefHeight="36.0" prefWidth="548.0" vgap="10" />
+         <FlowPane fx:id="selectedGenresPane" hgap="10" prefHeight="29.0" prefWidth="548.0" vgap="10" />
          <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
             <children>
                <Label prefHeight="25.0" prefWidth="98.0" styleClass="label-title" text="Instruments:" />
@@ -58,7 +57,7 @@
                <Region prefHeight="40.0" prefWidth="80.0" />
             </children>
          </HBox>
-         <FlowPane fx:id="selectedInstrumentsPane" hgap="10" prefHeight="37.0" prefWidth="548.0" vgap="10" />
+         <FlowPane fx:id="selectedInstrumentsPane" hgap="10" prefHeight="21.0" prefWidth="548.0" vgap="10" />
         <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="505.0" spacing="10" style="-fx-alignment: center;">
             <Label prefHeight="25.0" prefWidth="68.0" style="-fx-alignment: center;" styleClass="label-title" text="File:" />
             <TextField fx:id="txtFilePathField" editable="false" prefHeight="31.0" prefWidth="240.0" promptText="Choose a file..." styleClass="fileField" />

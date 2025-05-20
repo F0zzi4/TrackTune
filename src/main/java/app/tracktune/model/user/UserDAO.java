@@ -60,7 +60,7 @@ public class UserDAO implements DAO<User> {
     private static final String GET_USER_BY_USERNAME_STMT = """
         SELECT *
         FROM Users
-        WHERE username = ?
+        WHERE username = ? AND status = 0
     """;
 
     public UserDAO() {
@@ -163,7 +163,7 @@ public class UserDAO implements DAO<User> {
         return userRef.get();
     }
 
-    public User getByUsername(String username) {
+    public User getActiveUserByUsername(String username) {
         AtomicReference<User> userRef = new AtomicReference<>();
 
         boolean success = dbManager.executeQuery(GET_USER_BY_USERNAME_STMT,

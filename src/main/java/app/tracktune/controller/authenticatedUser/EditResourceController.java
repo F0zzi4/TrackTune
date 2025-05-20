@@ -13,6 +13,7 @@ import app.tracktune.model.resource.Resource;
 import app.tracktune.model.resource.ResourceDAO;
 import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.*;
+import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
@@ -24,12 +25,8 @@ import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -38,9 +35,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class EditResourceController extends Controller implements Initializable {
-    @FXML
-    private TextField txtFilePathField;
-    @FXML private Button btnBrowseFile;
     @FXML private ComboBox<Author> authorComboBox;
     @FXML private FlowPane selectedAuthorsPane;
     @FXML private ComboBox<Genre> genreComboBox;
@@ -106,7 +100,6 @@ public class EditResourceController extends Controller implements Initializable 
             setAddingElementListener(genreComboBox, selectedGenresPane, selectedGenres);
             setAddingElementListener(instrumentComboBox, selectedInstrumentsPane, selectedInstruments);
 
-            setSearchFileListener();
             setIsMultimediaListener();
         } catch (Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
@@ -141,6 +134,7 @@ public class EditResourceController extends Controller implements Initializable 
             btnIsMultimedia.setSelected(true);
             txtDuration.setText(String.valueOf(multimediaResource.getDuration()));
             txtLocation.setText(multimediaResource.getLocation());
+            resourceDate.setValue(multimediaResource.getResourceDate().toLocalDate());
         }
     }
 
@@ -176,21 +170,6 @@ public class EditResourceController extends Controller implements Initializable 
         }
     }
 
-    private void setSearchFileListener() {
-        btnBrowseFile.setOnAction(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Select Audio File");
-            fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav", "*.mp4", "*.pdf", "*.midi", "*.jpg", "*.png"),
-                    new FileChooser.ExtensionFilter("All Files", "*.*")
-            );
-            File selectedFile = fileChooser.showOpenDialog(btnBrowseFile.getScene().getWindow());
-            if (selectedFile != null) {
-                txtFilePathField.setText(selectedFile.getAbsolutePath());
-            }
-        });
-    }
-
     private void setIsMultimediaListener() {
         btnIsMultimedia.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
             durationBox.setVisible(isSelected);
@@ -211,13 +190,13 @@ public class EditResourceController extends Controller implements Initializable 
     }
 
     @FXML
-    private void handleAddResource() {
+    private void handleEditResource() {
         try {
             if (!checkInput()) {
                 throw new TrackTuneException(Strings.FIELD_EMPTY);
             }
             String trackName = txtTrack.getText();
-            ResourceTypeEnum type = getFileExtensionToEnum();
+            ResourceTypeEnum type = resource.getType();
 
             Integer[] authorIds = selectedAuthors.stream()
                     .map(Author::getId)
@@ -231,20 +210,19 @@ public class EditResourceController extends Controller implements Initializable 
                     .map(MusicalInstrument::getId)
                     .toArray(Integer[]::new);
 
-            String filePath = txtFilePathField.getText();
-            byte[] data = createBlobFromFile(filePath);
+            byte[] data = resource.getData();
 
             boolean isMultimedia = btnIsMultimedia.isSelected();
 
-            int trackId = manageTrackEntity(trackName, ViewManager.getSessionUser().getId(), authorIds, genreIds, instrumentIds);
-            Integer result = manageResourceEntity(type, data, trackId, isMultimedia);
+            int trackId = resource.getTrackID();
 
-            if (result != null){
-                ViewManager.setAndShowAlert(Strings.SUCCESS, Strings.RESULT, Strings.RESOURCE_UPLOADED, Alert.AlertType.INFORMATION);
-                resetFields();
-            }
-            else
-                throw new TrackTuneException(Strings.RESOURCE_NOT_UPLOADED);
+            Track track = trackDAO.getById(resource.getTrackID());
+            if(!track.getTitle().equals(trackName))
+                trackId = manageTrackEntity(trackName, ViewManager.getSessionUser().getId(), authorIds, genreIds, instrumentIds);
+
+            manageResourceEntity(type, data, trackId, isMultimedia);
+
+            ViewManager.setAndShowAlert(Strings.SUCCESS, Strings.RESULT, Strings.RESOURCE_UPDATED, Alert.AlertType.INFORMATION);
         } catch (TrackTuneException e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
@@ -263,30 +241,12 @@ public class EditResourceController extends Controller implements Initializable 
                 return false;
             }
 
-            if (selectedGenres.isEmpty()) {
-                return false;
-            }
-
-            return txtFilePathField.getText() != null && !txtFilePathField.getText().trim().isEmpty();
+            return !selectedGenres.isEmpty();
         } catch (Exception e) {
             return false;
         }
     }
 
-    public byte[] createBlobFromFile(String filePath) throws IOException {
-        File file = new File(filePath);
-        if (!file.exists() || !file.isFile()) {
-            throw new IOException(Strings.ERR_FILE_NOT_FOUND);
-        }
-
-        try (FileInputStream fis = new FileInputStream(file)) {
-            return fis.readAllBytes();
-        } catch (IOException e) {
-            throw new TrackTuneException(Strings.ERR_LOAD_FILE);
-        }
-    }
-
-    // Converter for ComboBox from object T to String
     private static class EntityToStringConverter<T> extends StringConverter<T> {
         @Override
         public String toString(T object) {
@@ -299,23 +259,15 @@ public class EditResourceController extends Controller implements Initializable 
         }
     }
 
-    private ResourceTypeEnum getFileExtensionToEnum() {
-        String fileName = txtFilePathField.getText();
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        return ResourceTypeEnum.valueOf(extension.toLowerCase());
-    }
-
-    private Integer manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
-        Integer result;
+    private void manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
         if (isMultimedia) {
             String duration = txtDuration.getText();
             String location = txtLocation.getText();
-            result = resourceDAO.insert(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
-                    Integer.parseInt(duration), location, Date.valueOf(resourceDate.getValue()), trackId));
+            resourceDAO.updateById(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
+                    Integer.parseInt(duration), location, Date.valueOf(resourceDate.getValue()), trackId), resource.getId());
         } else {
-            result = resourceDAO.insert(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId));
+            resourceDAO.updateById(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId), resource.getId());
         }
-        return result;
     }
 
     private int manageTrackEntity(String title, int userId, Integer[] authorIds, Integer[] genreIds, Integer[] instrumentIds) {
@@ -348,7 +300,6 @@ public class EditResourceController extends Controller implements Initializable 
 
     private void resetFields() {
         txtTrack.clear();
-        txtFilePathField.clear();
         txtDuration.clear();
         txtLocation.clear();
         resourceDate.setValue(null);
@@ -364,5 +315,17 @@ public class EditResourceController extends Controller implements Initializable 
         selectedAuthorsPane.getChildren().clear();
         selectedGenresPane.getChildren().clear();
         selectedInstrumentsPane.getChildren().clear();
+    }
+
+    @FXML
+    private void handleReturn(){
+        try{
+            if(parentController instanceof AuthenticatedUserDashboardController authController){
+                ViewManager.setMainContent(Frames.RESOURCES_VIEW_PATH, authController.mainContent, parentController);
+            }
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
     }
 }

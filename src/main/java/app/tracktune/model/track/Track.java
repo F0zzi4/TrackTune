@@ -37,4 +37,9 @@ public class Track {
     public int getUserID() {
         return userID;
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

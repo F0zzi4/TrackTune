@@ -42,6 +42,22 @@
     -fx-text-fill: #3e2609;
 }
 
+.view-button {
+    -fx-background-color: linear-gradient(to right, #e45d00, #f49800);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
+    -fx-text-fill: #4a280f;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.view-button:hover {
+    -fx-background-color: linear-gradient(to right, #f8a028, #ff9316);
+    -fx-text-fill: #3e2609;
+}
+
 .search-button {
     -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
