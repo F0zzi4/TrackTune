@@ -159,16 +159,18 @@ public class InstrumentsController extends Controller implements Initializable {
     }
 
     private void deleteMusicalInstrument(MusicalInstrument instrument) {
-        try {
-            instrumentDAO.deleteById(instrument.getId());
-            instruments.remove(instrument);
-            int maxPage = (int) Math.ceil((double) instruments.size() / itemsPerPage);
-            if (currentPage >= maxPage && currentPage > 0) {
-                currentPage--;
+        boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
+        if (response)
+            try {
+                instrumentDAO.deleteById(instrument.getId());
+                instruments.remove(instrument);
+                int maxPage = (int) Math.ceil((double) instruments.size() / itemsPerPage);
+                if (currentPage >= maxPage && currentPage > 0) {
+                    currentPage--;
+                }
+                refreshInstrument();
+            } catch (Exception ex) {
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
             }
-            refreshInstrument();
-        } catch (Exception ex) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
         }
-    }
 }

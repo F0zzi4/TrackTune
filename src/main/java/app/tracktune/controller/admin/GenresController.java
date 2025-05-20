@@ -153,16 +153,18 @@ public class GenresController extends Controller implements Initializable {
     }
 
     private void deleteGenre(Genre genre) {
-        try {
-            genreDAO.deleteById(genre.getId());
-            genres.remove(genre);
-            int maxPage = (int) Math.ceil((double) genres.size() / itemsPerPage);
-            if (currentPage >= maxPage && currentPage > 0) {
-                currentPage--;
+        boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
+        if (response)
+            try {
+                genreDAO.deleteById(genre.getId());
+                genres.remove(genre);
+                int maxPage = (int) Math.ceil((double) genres.size() / itemsPerPage);
+                if (currentPage >= maxPage && currentPage > 0) {
+                    currentPage--;
+                }
+                updateRequests();
+            } catch (Exception ex) {
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
             }
-            updateRequests();
-        } catch (Exception ex) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
-        }
     }
 }

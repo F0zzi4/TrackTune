@@ -1,5 +1,6 @@
 package app.tracktune.controller;
 
+import app.tracktune.exceptions.EntityAlreadyExistsException;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.user.*;
@@ -13,8 +14,8 @@ import javafx.scene.control.TextField;
 import java.sql.Timestamp;
 
 public class AccountRequestController extends Controller {
-    private final PendingUserDAO pendingUserDAO;
-
+    private final PendingUserDAO pendingUserDAO = new PendingUserDAO();
+    private final UserDAO userDAO = new UserDAO();
     @FXML
     private TextField TxtUsername;
     @FXML
@@ -23,10 +24,6 @@ public class AccountRequestController extends Controller {
     private TextField TxtName;
     @FXML
     private TextField TxtSurname;
-
-    public AccountRequestController() {
-        pendingUserDAO = new PendingUserDAO();
-    }
 
     /**
      * Access button handler for account request
@@ -44,6 +41,12 @@ public class AccountRequestController extends Controller {
 
             if(SQLiteScripts.checkForSQLInjection(username, password, name, surname))
                 throw new SQLInjectionException(Strings.ERR_SQL_INJECTION);
+
+            if(pendingUserDAO.getByUsername(username) != null)
+                throw new EntityAlreadyExistsException(Strings.ERR_REQUEST_ALREADY_EXISTS);
+
+            if(userDAO.getByUsername(username) != null)
+                throw new EntityAlreadyExistsException(Strings.ERR_USER_ALREADY_EXISTS);
 
             PendingUser pendingUser = new PendingUser(
                     username,

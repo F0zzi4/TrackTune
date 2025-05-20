@@ -22,7 +22,7 @@
         <content>
         <VBox alignment="CENTER" maxWidth="566.0" prefHeight="673.0" prefWidth="566.0" spacing="12">
 
-            <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="New Resource">
+            <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Add Resource">
                 <graphic>
                     <FontIcon iconLiteral="mdi2f-file-music" iconSize="27" />
                 </graphic>

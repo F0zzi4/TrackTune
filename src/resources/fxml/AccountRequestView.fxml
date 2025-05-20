@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox prefHeight="630.0" prefWidth="700.0" stylesheets="@../style/main-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.AccountRequestController">
+<VBox prefHeight="560.0" prefWidth="700.0" stylesheets="@../style/main-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.AccountRequestController">
     <children>
         <StackPane prefWidth="700.0" style="-fx-padding: 10;">
             <children>

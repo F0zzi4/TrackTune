@@ -9,44 +9,40 @@
 <?import javafx.scene.layout.HBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="200.0" prefWidth="910.0" stylesheets="@../../style/discover-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.DiscoverController">
+<AnchorPane prefHeight="770.0" prefWidth="1020.0" stylesheets="@../../style/discover-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.DiscoverController">
  <children>
-    <AnchorPane prefHeight="230.0" prefWidth="930.0" styleClass="split-pane-divider">
+    <AnchorPane prefHeight="236.0" prefWidth="1020.0" styleClass="split-pane-divider">
          <children>
-            <Label layoutX="210.0" layoutY="14.0" prefHeight="49.0" prefWidth="511.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Discover Community">
+            <Label layoutX="255.0" layoutY="14.0" prefHeight="49.0" prefWidth="511.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Discover Community">
                 <graphic>
-                    <FontIcon iconLiteral="mdi2l-lumx" iconSize="30" />
+                    <FontIcon iconLiteral="mdi2a-account-group" iconSize="30" />
                 </graphic>
             </Label>
-            <HBox layoutX="239.0" layoutY="134.0" prefHeight="47.0" prefWidth="452.0" style="-fx-alignment: center;">
+            <HBox layoutX="293.0" layoutY="131.0" prefHeight="47.0" prefWidth="446.0" style="-fx-alignment: center;">
                <children>
                   <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" wrappingWidth="43.0" />
                   <TextField prefHeight="38.0" prefWidth="360.0" />
                   <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" textAlignment="RIGHT" wrappingWidth="43.0" />
                </children>
             </HBox>
-            <Label layoutX="87.0" layoutY="84.0" prefHeight="30.0" prefWidth="784.0" style="-fx-font-size: 22; -fx-alignment: center;" styleClass="section-subtitle-label" text="Take a look what community posted about their favorite tracks">
-               <graphic>
-                  <FontIcon iconLiteral="mdi2m-music-box-multiple" iconSize="30" />
-               </graphic>
-            </Label>
-            <Button fx:id="btnSearch" layoutX="415.0" layoutY="186.0" styleClass="search-button" text="Search">
+            <Label layoutX="111.0" layoutY="82.0" prefHeight="30.0" prefWidth="784.0" style="-fx-font-size: 22; -fx-alignment: center;" styleClass="section-subtitle-label" text="Take a look at what community posted about their favorite tracks" />
+            <Button fx:id="btnSearch" layoutX="460.0" layoutY="186.0" styleClass="search-button" text="Search">
                <graphic>
                   <FontIcon iconLiteral="mdi2c-card-search" iconSize="20" />
                </graphic>
             </Button>
          </children>
     </AnchorPane>
-    <AnchorPane layoutY="235.0" prefHeight="505.0" prefWidth="930.0" styleClass="split-pane-divider">
+    <AnchorPane layoutY="242.0" prefHeight="528.0" prefWidth="1020.0" styleClass="split-pane-divider">
          <children>
-            <TabPane layoutX="43.0" layoutY="10.0" prefHeight="492.0" prefWidth="851.0" styleClass="split-pane-divider" tabClosingPolicy="UNAVAILABLE">
+            <TabPane layoutX="43.0" layoutY="10.0" prefHeight="492.0" prefWidth="938.0" styleClass="split-pane-divider" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab fx:id="tabMostRecent" text="Most recent">
                     <graphic>
                         <FontIcon iconLiteral="mdi2s-sort-calendar-ascending" iconSize="20" />
                     </graphic>
                     <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="883.0" />
                     </content>
                 </Tab>
                 <Tab fx:id="tabPopular" text="Popular">

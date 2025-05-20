@@ -11,11 +11,11 @@ public class Frames {
     public static final String LOGIN_VIEW_PATH = "/fxml/LoginView.fxml";
     // ACCOUNT REQUEST
     public static final int ACCOUNT_REQUEST_FRAME_WIDTH = 700;
-    public static final int ACCOUNT_REQUEST_FRAME_HEIGHT = 630;
+    public static final int ACCOUNT_REQUEST_FRAME_HEIGHT = 560;
     public static final String ACCOUNT_REQUEST_VIEW_PATH = "/fxml/AccountRequestView.fxml";
     // DASHBOARD
-    public static final int DASHBOARD_FRAME_WIDTH = 1200;
-    public static final int DASHBOARD_FRAME_HEIGHT = 800;
+    public static final int DASHBOARD_FRAME_WIDTH = 1300;
+    public static final int DASHBOARD_FRAME_HEIGHT = 830;
     public static final String ADMIN_DASHBOARD_VIEW_PATH = "/fxml/admin/AdminDashboardView.fxml";
     public static final String USER_DASHBOARD_VIEW_PATH = "/fxml/authenticatedUser/AuthenticatedUserDashboardView.fxml";
     public static final String PENDING_DASHBOARD_VIEW_PATH = "/fxml/pendingUser/PendingUserDashboardView.fxml";
@@ -26,7 +26,8 @@ public class Frames {
     public static final String DISCOVER_VIEW_PATH = "/fxml/authenticatedUser/DiscoverView.fxml";
     public static final String RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/ResourcesView.fxml";
     public static final String ADD_RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/AddResourceView.fxml";
-    public static final String USER_MANAGEMENT_VIEW_PATH = "/fxml/admin/UserManagementView.fxml";
+    public static final String EDIT_RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/EditResourceView.fxml";
+    public static final String USER_MANAGEMENT_VIEW_PATH = "/fxml/admin/UsersView.fxml";
     // FRAME ICONS
     public static final String MAIN_ICON_PATH = "/assets/icon/appIcon.png";
     public static final String MAIN_ICON_192_PATH = "/assets/icon/app_icon192x192.png";

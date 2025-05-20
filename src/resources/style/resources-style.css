@@ -1,9 +1,11 @@
 .request-item {
     -fx-background-color: #ffebc8;
     -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #4a280f;
     -fx-padding: 15;
     -fx-spacing: 10;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
 }
 
 .request-item-title {
@@ -14,6 +16,14 @@
 .request-item-description {
     -fx-font-size: 14px;
     -fx-text-fill: #555;
+    -fx-padding: 0 0 0 15;
+}
+
+.request-item-authors {
+    -fx-font-size: 13px;
+    -fx-text-fill: #888888;
+    -fx-font-style: italic;
+    -fx-padding: 0 0 0 10;
 }
 
 .switch-button {

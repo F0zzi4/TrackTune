@@ -127,7 +127,7 @@ public class TrackInstrumentDAO implements DAO<TrackInstrument> {
                     while (rs.next()) {
                         list.add(mapResultSetToEntity(rs));
                     }
-                    return null;
+                    return true;
                 }, trackId);
 
         if (!success) {
@@ -145,7 +145,7 @@ public class TrackInstrumentDAO implements DAO<TrackInstrument> {
                     while (rs.next()) {
                         list.add(mapResultSetToEntity(rs));
                     }
-                    return null;
+                    return true;
                 }, instrumentId);
 
         if (!success) {

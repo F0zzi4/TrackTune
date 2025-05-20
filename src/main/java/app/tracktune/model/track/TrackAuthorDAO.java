@@ -120,7 +120,7 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
         return result.get();
     }
 
-    public List<TrackAuthor> getByResourceId(int resourceId) {
+    public List<TrackAuthor> getByTrackId(int trackId) {
         List<TrackAuthor> trackAuthors = new ArrayList<>();
 
             boolean success = dbManager.executeQuery(GET_TRACK_AUTHOR_BY_TRACK_ID_STMT,
@@ -128,8 +128,8 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
                     while (rs.next()) {
                         trackAuthors.add(mapResultSetToEntity(rs));
                     }
-                    return null;
-                }, resourceId);
+                    return true;
+                }, trackId);
 
         if (!success) {
             throw new SQLiteException(Strings.ERR_DATABASE);
@@ -138,7 +138,7 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
         return trackAuthors;
     }
 
-    public List<TrackAuthor> getByAuthorId(int resourceId) {
+    public List<TrackAuthor> getByAuthorId(int authorId) {
         List<TrackAuthor> trackAuthors = new ArrayList<>();
 
         boolean success = dbManager.executeQuery(GET_TRACK_AUTHOR_BY_AUTHOR_ID_STMT,
@@ -146,8 +146,8 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
                     while (rs.next()) {
                         trackAuthors.add(mapResultSetToEntity(rs));
                     }
-                    return null;
-                }, resourceId);
+                    return true;
+                }, authorId);
 
         if (!success) {
             throw new SQLiteException(Strings.ERR_DATABASE);
