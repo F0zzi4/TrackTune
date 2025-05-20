@@ -105,6 +105,9 @@ public class AdminDashboardController extends Controller implements Initializabl
         ViewManager.setMainContent(Frames.INSTRUMENTS_PATH, mainContent, this);
     }
 
+    /**
+     * Loads and displays the user management view by updating the main content area of the dashboard
+     */
     @FXML
     public void handleUserManagement() {
         ViewManager.setMainContent(Frames.USER_MANAGEMENT_VIEW_PATH, mainContent, this);

@@ -1,6 +1,10 @@
 package app.tracktune.controller.admin;
 
 import app.tracktune.controller.Controller;
+import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
+import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.author.Author;
+import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.model.user.*;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
@@ -18,7 +22,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class UsersController extends Controller implements Initializable {
+public class UserManagementController extends Controller implements Initializable {
 
     @FXML
     private VBox usersContainer;
@@ -134,16 +138,29 @@ public class UsersController extends Controller implements Initializable {
     private HBox createUserItem(AuthenticatedUser user) {
         Label infoLabel = new Label(user.getUsername() + " - " + user.getName() + " " + user.getSurname());
         infoLabel.getStyleClass().add("author-item-title");
+        Label infoLabel = new Label(user.getName() + " " + user.getSurname());
+        infoLabel.getStyleClass().add("user-item-title");
 
         Label nTrackLabel = new Label(getFormattedRequestDate(user.getCreationDate()));
         nTrackLabel.getStyleClass().add("author-item-date");
+        Label nTrackLabel = new Label(Controller.getFormattedRequestDate(user.getCreationDate()));
+        nTrackLabel.getStyleClass().add("user-item-date");
 
         VBox textBox = new VBox(5, infoLabel, nTrackLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         Button restoreBtn = new Button(Strings.RESTORE);
         restoreBtn.getStyleClass().add("search-button");
+        restoreBtn.getStyleClass().add("accept-button");
         restoreBtn.setOnAction(e -> restoreUser(user));
+
+        Button makeAdminButton = new Button(Strings.MAKE_ADMIN);
+        makeAdminButton.getStyleClass().add("make-admin-button");
+        makeAdminButton.setOnAction(e -> makeAdmin(user));
+
+        Button suspendButton = new Button(Strings.SUSPEND);
+        suspendButton.getStyleClass().add("suspend-button");
+        suspendButton.setOnAction(e -> suspendUser(user));
 
         Button removeBtn = new Button(Strings.DELETE);
         removeBtn.getStyleClass().add("delete-button");
@@ -152,24 +169,30 @@ public class UsersController extends Controller implements Initializable {
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
-        if(user.getStatus() == UserStatusEnum.ACTIVE)
-            buttonBox.getChildren().add(removeBtn);
+        if(user instanceof Administrator) {
+            //
+        }
+        else{
+            if(user.getStatus() == UserStatusEnum.ACTIVE){
+                buttonBox.getChildren().add(suspendButton);
+                buttonBox.getChildren().add(removeBtn);
+                buttonBox.getChildren().add(makeAdminButton);
+            }
 
-        else if(user.getStatus() == UserStatusEnum.SUSPENDED)
-            buttonBox.getChildren().add(removeBtn);
-
-        else if(user.getStatus() == UserStatusEnum.REMOVED)
-            buttonBox.getChildren().add(restoreBtn);
-
-        else if(user instanceof Administrator)
-            buttonBox.getChildren().add(removeBtn);
-
+            else if(user.getStatus() == UserStatusEnum.SUSPENDED) {
+                buttonBox.getChildren().add(removeBtn);
+                buttonBox.getChildren().add(restoreBtn);
+            }
+            else if(user.getStatus() == UserStatusEnum.REMOVED) {
+                buttonBox.getChildren().add(restoreBtn);
+            }
+        }
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox box = new HBox(10, textBox, spacer, buttonBox);
-        box.getStyleClass().add("author-item");
+        box.getStyleClass().add("user-item");
         box.setAlignment(Pos.CENTER_LEFT);
 
         return box;
@@ -201,6 +224,47 @@ public class UsersController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Sets the user's status to SUSPENDED.
+     *
+     * @param user the user to suspend
+     */
+    private void suspendUser(AuthenticatedUser user) {
+        try {
+            user.setStatus(UserStatusEnum.SUSPENDED);
+            userDAO.updateById(user, user.getId());
+            int index = users.indexOf(user);
+            if (index >= 0) users.set(index, user);
+            adjustPageAfterUpdate();
+        } catch (Exception ex) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(ex.getMessage());
+        }
+    }
+
+    /**
+     * Promotes a user to administrator by replacing their instance with an Administrator object.
+     *
+     * @param user the user to promote
+     */
+    private void makeAdmin(AuthenticatedUser user) {
+        try {
+            Administrator ad = new Administrator(user.getId(), user.getUsername(), user.getPassword(), user.getName(), user.getSurname(), user.getStatus(), user.getCreationDate());
+            userDAO.updateById(ad, user.getId());
+            int index = users.indexOf(user);
+            if (index >= 0) users.set(index, ad);
+            adjustPageAfterUpdate();
+        } catch (Exception ex) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(ex.getMessage());
+        }
+    }
+
+
+    /**
+     * Adjusts the current page index if the number of filtered users has changed due to an update.
+     * Ensures the current page is within valid bounds.
+     */
     private void adjustPageAfterUpdate() {
         int maxPage = (int) Math.ceil((double) filteredUsers.size() / itemsPerPage) - 1;
         if (currentPage > maxPage) {
