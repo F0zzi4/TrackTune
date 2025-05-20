@@ -14,7 +14,7 @@
 
             <Label prefHeight="19.0" prefWidth="240.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Users">
                 <graphic>
-                    <FontIcon iconLiteral="mdi2a-account-circle" iconSize="30" />
+                    <FontIcon iconLiteral="mdi2a-account-music" iconSize="30" />
                 </graphic>
             </Label>
 

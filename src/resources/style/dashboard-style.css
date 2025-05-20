@@ -112,3 +112,34 @@
 .nameField:focused, .descriptionField:focused {
     -fx-prompt-text-fill: rgba(74, 40, 15, 0.4);
 }
+
+.accept-button {
+    -fx-background-color: linear-gradient(to right, #6b8e4e, #4f6b3a);
+    -fx-text-fill: #2b321b;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 6, 0.5, 0, 3);
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.accept-button:hover {
+    -fx-background-color: linear-gradient(to right, #5c7a43, #3f572c);
+    -fx-text-fill: #1d230f;
+}
+
+.delete-button {
+    -fx-background-color: linear-gradient(to right, #ff944d, #f16f15);
+    -fx-text-fill: #653817;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
+}
+
+.delete-button:hover {
+    -fx-background-color: linear-gradient(to right, #ff8e40, #ff814f);
+    -fx-text-fill: red;
+}
