@@ -77,9 +77,9 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <AnchorPane layoutX="645.0" layoutY="-1.0" prefHeight="763.0" prefWidth="293.0" styleClass="split-pane-divider">
+                  <AnchorPane layoutX="645.0" layoutY="-1.0" prefHeight="763.0" prefWidth="374.0" styleClass="split-pane-divider">
                      <children>
-                        <Label layoutX="20.0" layoutY="21.0" prefHeight="27.0" prefWidth="242.0" styleClass="section-title-label" text="Community">
+                        <Label layoutX="66.0" layoutY="21.0" prefHeight="27.0" prefWidth="242.0" styleClass="section-title-label" text="Community">
                            <graphic>
                               <FontIcon iconLiteral="mdi2a-account-group" iconSize="26" />
                            </graphic>

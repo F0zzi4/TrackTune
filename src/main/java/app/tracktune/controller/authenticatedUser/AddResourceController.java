@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 public class AddResourceController extends Controller implements Initializable {
     @FXML private TextField txtFilePathField;
     @FXML private Button btnBrowseFile;
+    @FXML private FlowPane selectedTrackPane;
     @FXML private ComboBox<Author> authorComboBox;
     @FXML private FlowPane selectedAuthorsPane;
     @FXML private ComboBox<Genre> genreComboBox;
@@ -50,7 +51,7 @@ public class AddResourceController extends Controller implements Initializable {
     @FXML private TextField txtLocation;
     @FXML private DatePicker resourceDate;
     @FXML private HBox resourceDateBox;
-    @FXML private TextField txtTrack;
+    @FXML private ComboBox<Track> trackComboBox;
 
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final AuthorDAO authorDAO = new AuthorDAO();
@@ -62,6 +63,7 @@ public class AddResourceController extends Controller implements Initializable {
     private final TrackDAO trackDAO = new TrackDAO();
 
     // Data set
+    private final ObservableList<Track> allTracks = FXCollections.observableArrayList();
     private final ObservableList<Author> allAuthors = FXCollections.observableArrayList();
     private final ObservableList<Genre> allGenres = FXCollections.observableArrayList();
     private final ObservableList<MusicalInstrument> allMusicalInstruments = FXCollections.observableArrayList();
@@ -70,29 +72,38 @@ public class AddResourceController extends Controller implements Initializable {
     private final ObservableList<Author> selectedAuthors = FXCollections.observableArrayList();
     private final ObservableList<Genre> selectedGenres = FXCollections.observableArrayList();
     private final ObservableList<MusicalInstrument> selectedInstruments = FXCollections.observableArrayList();
+    private final ObservableList<Track> selectedTracks = FXCollections.observableArrayList();
 
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
+            allTracks.addAll(trackDAO.getAll());
             allAuthors.addAll(authorDAO.getAll());
             allGenres.addAll(genreDAO.getAll());
             allMusicalInstruments.addAll(musicalInstrumentDAO.getAll());
 
+            trackComboBox.setConverter(new EntityToStringConverter<>());
+            trackComboBox.setEditable(true);
+            trackComboBox.setItems(allTracks);
+
             authorComboBox.setConverter(new EntityToStringConverter<>());
-            genreComboBox.setConverter(new EntityToStringConverter<>());
-            instrumentComboBox.setConverter(new EntityToStringConverter<>());
-
-            authorComboBox.setItems(allAuthors);
             authorComboBox.setEditable(true);
-            genreComboBox.setItems(allGenres);
-            genreComboBox.setEditable(true);
-            instrumentComboBox.setItems(allMusicalInstruments);
-            instrumentComboBox.setEditable(true);
+            authorComboBox.setItems(allAuthors);
 
+            genreComboBox.setConverter(new EntityToStringConverter<>());
+            genreComboBox.setEditable(true);
+            genreComboBox.setItems(allGenres);
+
+            instrumentComboBox.setConverter(new EntityToStringConverter<>());
+            instrumentComboBox.setEditable(true);
+            instrumentComboBox.setItems(allMusicalInstruments);
+
+            setDynamicResearchListener(trackComboBox, allTracks);
             setDynamicResearchListener(authorComboBox, allAuthors);
             setDynamicResearchListener(genreComboBox, allGenres);
             setDynamicResearchListener(instrumentComboBox, allMusicalInstruments);
 
+            setTrackAddingElementListener(trackComboBox, selectedTrackPane, selectedTracks);
             setAddingElementListener(authorComboBox, selectedAuthorsPane, selectedAuthors);
             setAddingElementListener(genreComboBox, selectedGenresPane, selectedGenres);
             setAddingElementListener(instrumentComboBox, selectedInstrumentsPane, selectedInstruments);
@@ -114,6 +125,47 @@ public class AddResourceController extends Controller implements Initializable {
             comboBox.setItems(FXCollections.observableArrayList(filtered));
             comboBox.show();
         });
+    }
+
+    private <T> void setTrackAddingElementListener(ComboBox<T> comboBox, FlowPane selectedElementsPane, ObservableList<T> selectedElements) {
+        comboBox.setOnAction(e -> {
+            T selected = comboBox.getValue();
+            if (selected != null && !selectedElements.contains(selected)) {
+                selectedElements.clear();
+                selectedElements.add(selected);
+                updateSelectedElements(selectedElementsPane, selectedElements);
+                if(selected instanceof Track track)
+                    loadTrackInfo(track);
+            }
+            comboBox.getEditor().clear();
+            comboBox.setItems(comboBox.getItems());
+        });
+    }
+
+    private void loadTrackInfo(Track track){
+        trackComboBox.getEditor().setText(track.getTitle());
+
+        List<TrackAuthor> trackAuthors = trackAuthorDAO.getByTrackId(track.getId());
+        List<TrackGenre> trackGenres = trackGenreDAO.getByTrackId(track.getId());
+        List<TrackInstrument> trackInstruments = trackInstrumentDAO.getByTrackId(track.getId());
+
+        selectedAuthors.clear();
+        for(TrackAuthor trackAuthor : trackAuthors){
+            selectedAuthors.add(authorDAO.getById(trackAuthor.getAuthorId()));
+        }
+        updateSelectedElements(selectedAuthorsPane, selectedAuthors);
+
+        selectedGenres.clear();
+        for(TrackGenre trackGenre : trackGenres){
+            selectedGenres.add(genreDAO.getById(trackGenre.getGenreId()));
+        }
+        updateSelectedElements(selectedGenresPane, selectedGenres);
+
+        selectedInstruments.clear();
+        for(TrackInstrument trackInstrument : trackInstruments){
+            selectedInstruments.add(musicalInstrumentDAO.getById(trackInstrument.getInstrumentId()));
+        }
+        updateSelectedElements(selectedInstrumentsPane, selectedInstruments);
     }
 
     private <T> void setAddingElementListener(ComboBox<T> comboBox, FlowPane selectedElementsPane, ObservableList<T> selectedElements) {
@@ -177,7 +229,7 @@ public class AddResourceController extends Controller implements Initializable {
             if (!checkInput()) {
                 throw new TrackTuneException(Strings.FIELD_EMPTY);
             }
-            String trackName = txtTrack.getText();
+            String trackTitle = !trackComboBox.getEditor().getText().isEmpty() ? trackComboBox.getEditor().getText() : selectedTracks.getFirst().getTitle();
             ResourceTypeEnum type = getFileExtensionToEnum();
 
             Integer[] authorIds = selectedAuthors.stream()
@@ -193,11 +245,17 @@ public class AddResourceController extends Controller implements Initializable {
                     .toArray(Integer[]::new);
 
             String filePath = txtFilePathField.getText();
-            byte[] data = createBlobFromFile(filePath);
+            byte[] data = createFileFromPath(filePath);
 
             boolean isMultimedia = btnIsMultimedia.isSelected();
 
-            int trackId = manageTrackEntity(trackName, ViewManager.getSessionUser().getId(), authorIds, genreIds, instrumentIds);
+            int trackId;
+            if(selectedTracks.isEmpty())
+                trackId = trackDAO.insert(new Track(trackTitle,new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId()));
+            else
+                trackId = selectedTracks.getFirst().getId();
+
+            manageTrackEntity(trackId, authorIds, genreIds, instrumentIds);
             Integer result = manageResourceEntity(type, data, trackId, isMultimedia);
 
             if (result != null){
@@ -216,7 +274,7 @@ public class AddResourceController extends Controller implements Initializable {
 
     private boolean checkInput() {
         try {
-            if (txtTrack.getText().isEmpty()) {
+            if (selectedTracks.isEmpty() && trackComboBox.getEditor().getText().isEmpty()) {
                 return false;
             }
 
@@ -234,7 +292,7 @@ public class AddResourceController extends Controller implements Initializable {
         }
     }
 
-    public byte[] createBlobFromFile(String filePath) throws IOException {
+    public byte[] createFileFromPath(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists() || !file.isFile()) {
             throw new IOException(Strings.ERR_FILE_NOT_FOUND);
@@ -279,12 +337,11 @@ public class AddResourceController extends Controller implements Initializable {
         return result;
     }
 
-    private int manageTrackEntity(String title, int userId, Integer[] authorIds, Integer[] genreIds, Integer[] instrumentIds) {
-        int trackId = trackDAO.insert(new Track(title, new Timestamp(System.currentTimeMillis()), userId));
-        manageTrackAuthorRelation(authorIds, trackId);
-        manageTrackGenreRelation(genreIds, trackId);
-        manageTrackInstrumentRelation(instrumentIds, trackId);
-        return trackId;
+    private void manageTrackEntity(int trackId, Integer[] authorIds, Integer[] genreIds, Integer[] instrumentIds) {
+        Track track = trackDAO.getById(trackId);
+        manageTrackAuthorRelation(authorIds, track.getId());
+        manageTrackGenreRelation(genreIds, track.getId());
+        manageTrackInstrumentRelation(instrumentIds, track.getId());
     }
 
     private void manageTrackAuthorRelation(Integer[] authorIds, int trackId){
@@ -308,11 +365,12 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private void resetFields() {
-        txtTrack.clear();
+        trackComboBox.setValue(null);
         txtFilePathField.clear();
         txtDuration.clear();
         txtLocation.clear();
         resourceDate.setValue(null);
+        selectedTracks.clear();
         selectedAuthors.clear();
         selectedGenres.clear();
         selectedInstruments.clear();

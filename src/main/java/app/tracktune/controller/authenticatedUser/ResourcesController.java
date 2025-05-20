@@ -19,15 +19,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.ByteArrayInputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +70,25 @@ public class ResourcesController extends Controller implements Initializable {
         try{
             if(parentController instanceof AuthenticatedUserDashboardController authController){
                 ViewManager.setMainContent(Frames.ADD_RESOURCES_VIEW_PATH, authController.mainContent, this);
+            }
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void viewResource(Resource resource) {
+        try{
+            if(parentController instanceof AuthenticatedUserDashboardController authController){
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
+                loader.setControllerFactory(param -> new ResourceFileController(resource));
+                Parent view = loader.load();
+
+                Controller controller = loader.getController();
+                controller.setParentController(parentController);
+
+                authController.mainContent.getChildren().setAll(view);
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
@@ -189,7 +205,12 @@ public class ResourcesController extends Controller implements Initializable {
         editBtn.setOnAction(e -> editResource(resource));
         editBtn.setMinWidth(80);
 
-        HBox buttonBox = new HBox(10,editBtn, deleteBtn);
+        Button viewBtn = new Button(Strings.VIEW);
+        viewBtn.getStyleClass().add("view-button");
+        viewBtn.setOnAction(e -> viewResource(resource));
+        viewBtn.setMinWidth(80);
+
+        HBox buttonBox = new HBox(10, viewBtn,editBtn, deleteBtn);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
         Region spacer = new Region();
@@ -220,31 +241,4 @@ public class ResourcesController extends Controller implements Initializable {
                 ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
             }
     }
-
-    private Node createPreview(Resource resource) {
-        String mimeType = resource.getType().toString();
-
-        if (mimeType.startsWith("png")) {
-            ByteArrayInputStream bis = new ByteArrayInputStream(resource.getData());
-            Image image = new Image(bis, 100, 100, true, true);
-            return new ImageView(image);
-        }
-
-        if (mimeType.startsWith("video")) {
-            FontIcon videoIcon = new FontIcon("mdi2v-video");
-            videoIcon.setIconSize(60);
-            return videoIcon;
-        }
-
-        if (mimeType.startsWith("audio")) {
-            FontIcon audioIcon = new FontIcon("mdi2m-music");
-            audioIcon.setIconSize(60);
-            return audioIcon;
-        }
-
-        FontIcon fileIcon = new FontIcon("mdi2f-file");
-        fileIcon.setIconSize(60);
-        return fileIcon;
-    }
-
 }

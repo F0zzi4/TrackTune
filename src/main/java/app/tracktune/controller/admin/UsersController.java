@@ -142,7 +142,7 @@ public class UsersController extends Controller implements Initializable {
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         Button restoreBtn = new Button(Strings.RESTORE);
-        restoreBtn.getStyleClass().add("restore-button");
+        restoreBtn.getStyleClass().add("search-button");
         restoreBtn.setOnAction(e -> restoreUser(user));
 
         Button removeBtn = new Button(Strings.DELETE);

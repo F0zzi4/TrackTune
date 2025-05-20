@@ -1,5 +1,6 @@
-package app.tracktune.controller;
+package app.tracktune.controller.authentication;
 
+import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.EntityAlreadyExistsException;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
@@ -45,7 +46,7 @@ public class AccountRequestController extends Controller {
             if(pendingUserDAO.getByUsername(username) != null)
                 throw new EntityAlreadyExistsException(Strings.ERR_REQUEST_ALREADY_EXISTS);
 
-            if(userDAO.getByUsername(username) != null)
+            if(userDAO.getActiveUserByUsername(username) != null)
                 throw new EntityAlreadyExistsException(Strings.ERR_USER_ALREADY_EXISTS);
 
             PendingUser pendingUser = new PendingUser(

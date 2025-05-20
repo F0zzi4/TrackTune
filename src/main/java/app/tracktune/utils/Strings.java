@@ -35,6 +35,7 @@ public class Strings {
     public static final String DELETE = "Delete";
     public static final String EDIT = "Edit";
     public static final String SAVE = "Save";
+    public static final String VIEW = "View";
     public static final String CANCEL = "Cancel";
     public static final String EMPTY_LIST = "No elements found";
     public static final String ERR_LOAD_FILE = "Error loading file";
@@ -44,6 +45,9 @@ public class Strings {
     public static final String RESOURCE_UPLOADED = "Resource uploaded successfully";
     public static final String RESOURCE_UPDATED = "Resource updated successfully";
     public static final String RESOURCE_NOT_UPLOADED = "Resource not uploaded";
+    public static final String MAKE_ADMIN = "Make Admin";
+    public static final String SUSPEND = "Suspend";
+    public static final String ERR_ME = "Me error";
     public static final String ADMIN = "ADMIN";
     public static final String ERR_ENTITY_NOT_FOUND = "Entity not found";
     public static final String ERR_USER_ALREADY_EXISTS = "User already exists";

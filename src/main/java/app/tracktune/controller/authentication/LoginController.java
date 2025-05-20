@@ -1,5 +1,6 @@
-package app.tracktune.controller;
+package app.tracktune.controller.authentication;
 
+import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.exceptions.UserNotFoundException;
@@ -12,7 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
-public class LoginController extends Controller{
+public class LoginController extends Controller {
     private final UserDAO userDAO;
     private final PendingUserDAO pendingUserDAO;
     @FXML
@@ -46,7 +47,7 @@ public class LoginController extends Controller{
             }
 
             // Check if it's an admin or authenticated user
-            User user = userDAO.getByUsername(username);
+            User user = userDAO.getActiveUserByUsername(username);
             if (user != null && user.getPassword().equals(password)) {
                 if(user instanceof Administrator admin){
                     ViewManager.initSessionManager(admin);
