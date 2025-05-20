@@ -22,7 +22,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class UserManagementController extends Controller implements Initializable {
+public class UsersController extends Controller implements Initializable {
 
     @FXML
     private VBox usersContainer;
@@ -137,20 +137,15 @@ public class UserManagementController extends Controller implements Initializabl
 
     private HBox createUserItem(AuthenticatedUser user) {
         Label infoLabel = new Label(user.getUsername() + " - " + user.getName() + " " + user.getSurname());
-        infoLabel.getStyleClass().add("author-item-title");
-        Label infoLabel = new Label(user.getName() + " " + user.getSurname());
         infoLabel.getStyleClass().add("user-item-title");
 
         Label nTrackLabel = new Label(getFormattedRequestDate(user.getCreationDate()));
-        nTrackLabel.getStyleClass().add("author-item-date");
-        Label nTrackLabel = new Label(Controller.getFormattedRequestDate(user.getCreationDate()));
         nTrackLabel.getStyleClass().add("user-item-date");
 
         VBox textBox = new VBox(5, infoLabel, nTrackLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         Button restoreBtn = new Button(Strings.RESTORE);
-        restoreBtn.getStyleClass().add("search-button");
         restoreBtn.getStyleClass().add("accept-button");
         restoreBtn.setOnAction(e -> restoreUser(user));
 
