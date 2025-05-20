@@ -1,7 +1,7 @@
 package app.tracktune.controller.authenticatedUser;
 
 import app.tracktune.controller.Controller;
-import app.tracktune.controller.SessionManager;
+import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.user.AuthenticatedUser;
@@ -67,7 +67,7 @@ public class MeController extends Controller implements Initializable {
                         throw new SQLInjectionException(Strings.ERR_SQL_INJECTION);
                     }
 
-                    AuthenticatedUser existingUser = (AuthenticatedUser) userDAO.getByUsername(username);
+                    AuthenticatedUser existingUser = (AuthenticatedUser) userDAO.getActiveUserByUsername(username);
                     if (existingUser != null && !existingUser.getId().equals(user.getId())) {
                         throw new TrackTuneException(Strings.ERR_USER_ALREADY_EXISTS);
                     }
