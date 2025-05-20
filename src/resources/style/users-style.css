@@ -10,24 +10,17 @@
     -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
 }
 
-.author-item {
+.user-item {
     -fx-background-color: #ffebc8;
     -fx-background-radius: 10;
-    -fx-border-radius: 10;
-    -fx-border-color: #4a280f;
     -fx-padding: 15;
     -fx-spacing: 10;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
 }
 
-.author-item-title {
+.user-item-title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
-}
-
-.author-item-description {
-    -fx-font-size: 14px;
-    -fx-text-fill: #555;
 }
 
 .switch-button {
@@ -159,3 +152,37 @@
     -fx-text-fill: #555;
     -fx-font-style: italic;
 }
+
+.make-admin-button {
+    -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
+    -fx-text-fill: #4a280f;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 5, 0.4, 0, 3);
+    -fx-cursor: hand;
+}
+
+.make-admin-button:hover {
+    -fx-background-color: linear-gradient(to right, #ffd699, #ffb74d);
+    -fx-text-fill: #3e2609;
+}
+
+
+.suspend-button {
+    -fx-background-color: linear-gradient(to right, #f9a825, #f57f17);
+    -fx-text-fill: #4a280f;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
+    -fx-cursor: hand;
+}
+
+.suspend-button:hover {
+    -fx-background-color: linear-gradient(to right, #fbc02d, #ffa000);
+    -fx-text-fill: #3e2609;
+}
+
