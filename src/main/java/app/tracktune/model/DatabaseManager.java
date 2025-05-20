@@ -6,7 +6,6 @@ import app.tracktune.utils.Strings;
 
 import java.io.File;
 import java.sql.*;
-import java.text.SimpleDateFormat;
 
 /**
  * Dedicated class for data manipulation
@@ -117,7 +116,10 @@ public class DatabaseManager {
         try {
             PreparedStatement prepStatement = dbConnection.prepareStatement(sql);
             for (int i = 0; i < params.length; i++) {
-                prepStatement.setObject(i + 1, params[i]);
+                if(params[i] instanceof byte[] data)
+                    prepStatement.setBytes(i + 1, data);
+                else
+                    prepStatement.setObject(i + 1, params[i]);
             }
 
             try (ResultSet rs = prepStatement.executeQuery()) {

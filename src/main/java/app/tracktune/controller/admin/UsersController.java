@@ -1,10 +1,6 @@
 package app.tracktune.controller.admin;
 
 import app.tracktune.controller.Controller;
-import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
-import app.tracktune.exceptions.TrackTuneException;
-import app.tracktune.model.author.Author;
-import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.model.user.*;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
@@ -22,7 +18,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class UserManagementController extends Controller implements Initializable {
+public class UsersController extends Controller implements Initializable {
 
     @FXML
     private VBox usersContainer;
@@ -87,8 +83,8 @@ public class UserManagementController extends Controller implements Initializabl
             }
         });
 
-        Tab adminTab = new Tab("ADMIN");
-        adminTab.setUserData("ADMIN");
+        Tab adminTab = new Tab(Strings.ADMIN);
+        adminTab.setUserData(Strings.ADMIN);
         filterTabPane.getTabs().add(adminTab);
 
         filterTabPane.getSelectionModel().selectFirst();
@@ -112,12 +108,12 @@ public class UserManagementController extends Controller implements Initializabl
         filterUsers();
         usersContainer.getChildren().clear();
 
-        int totaleUsers = filteredUsers.size();
+        int totalUsers = filteredUsers.size();
         int start = currentPage * itemsPerPage;
-        int end = Math.min(start + itemsPerPage, totaleUsers);
+        int end = Math.min(start + itemsPerPage, totalUsers);
 
         prevButton.setDisable(currentPage == 0);
-        nextButton.setDisable(end >= totaleUsers);
+        nextButton.setDisable(end >= totalUsers);
 
         if (filteredUsers.isEmpty()) {
             Label emptyLabel = new Label(Strings.EMPTY_LIST);
@@ -136,10 +132,10 @@ public class UserManagementController extends Controller implements Initializabl
     }
 
     private HBox createUserItem(AuthenticatedUser user) {
-        Label infoLabel = new Label(user.getUsername() + " " + user.getSurname());
+        Label infoLabel = new Label(user.getUsername() + " - " + user.getName() + " " + user.getSurname());
         infoLabel.getStyleClass().add("author-item-title");
 
-        Label nTrackLabel = new Label(SQLiteScripts.getFormattedRequestDate(user.getCreationDate()));
+        Label nTrackLabel = new Label(getFormattedRequestDate(user.getCreationDate()));
         nTrackLabel.getStyleClass().add("author-item-date");
 
         VBox textBox = new VBox(5, infoLabel, nTrackLabel);

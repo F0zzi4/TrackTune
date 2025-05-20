@@ -1,18 +1,23 @@
 package app.tracktune.controller.authenticatedUser;
 
 import app.tracktune.controller.Controller;
+import app.tracktune.model.author.Author;
+import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.model.resource.ResourceDAO;
 import app.tracktune.model.track.Track;
+import app.tracktune.model.track.TrackAuthor;
+import app.tracktune.model.track.TrackAuthorDAO;
 import app.tracktune.model.track.TrackDAO;
 import app.tracktune.utils.Frames;
-import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -38,6 +43,9 @@ public class ResourcesController extends Controller implements Initializable {
     private final int itemsPerPage = 6;
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final TrackDAO trackDAO = new TrackDAO();
+    private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
+    private final AuthorDAO authorDAO = new AuthorDAO();
+    protected Resource resource;
 
     @Override
     public void initialize(URL location, ResourceBundle res) {
@@ -72,6 +80,25 @@ public class ResourcesController extends Controller implements Initializable {
         }
     }
 
+    @FXML
+    private void editResource(Resource resource) {
+        try{
+            if(parentController instanceof AuthenticatedUserDashboardController authController){
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCES_VIEW_PATH));
+                loader.setControllerFactory(param -> new EditResourceController(resource));
+                Parent view = loader.load();
+
+                Controller controller = loader.getController();
+                controller.setParentController(parentController);
+
+                authController.mainContent.getChildren().setAll(view);
+            }
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
     private void updateResources() {
         resourcesContainer.getChildren().clear();
 
@@ -92,58 +119,106 @@ public class ResourcesController extends Controller implements Initializable {
         } else {
             List<Resource> pageItems = resources.subList(start, end);
             for (Resource resource : pageItems) {
-                Node preview = createPreview(resource);
-                resourcesContainer.getChildren().add(createRequestItem(resource));
-                resourcesContainer.getChildren().add(preview);
+                HBox itemBox = createResourceItemBox(resource);
+                resourcesContainer.getChildren().add(itemBox);
             }
         }
     }
 
+    private HBox createResourceItemBox(Resource resource) {
+        Node preview = createPreview(resource);
+        if (preview instanceof ImageView) {
+            ((ImageView) preview).setFitWidth(100);
+            ((ImageView) preview).setFitHeight(100);
+            ((ImageView) preview).setPreserveRatio(true);
+        }
+
+        HBox requestItemBox = createRequestItem(resource);
+
+        HBox container = new HBox(15, preview, requestItemBox);
+        container.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(requestItemBox, Priority.ALWAYS);
+        container.getStyleClass().add("request-item");
+
+        requestItemBox.setMaxWidth(Double.MAX_VALUE);
+
+        return container;
+    }
+
     private HBox createRequestItem(Resource resource) {
         Track track = trackDAO.getById(resource.getTrackID());
-        Label nameLabel = new Label(track.getTitle());
-        nameLabel.getStyleClass().add("request-item-title");
+        List<TrackAuthor> trackAuthors = trackAuthorDAO.getByTrackId(resource.getTrackID());
 
-        Label descLabel = new Label(SQLiteScripts.getFormattedRequestDate(resource.getCreationDate()));
+        Label trackLabel = new Label(track.getTitle());
+        trackLabel.getStyleClass().add("request-item-title");
+
+        StringBuilder authorNames = new StringBuilder();
+        for (TrackAuthor trackAuthor : trackAuthors) {
+            Author author = authorDAO.getById(trackAuthor.getAuthorId());
+            authorNames.append(author.getAuthorshipName()).append(", ");
+        }
+
+        if (!authorNames.isEmpty()) {
+            authorNames.setLength(authorNames.length() - 2);
+        }
+
+        Label authorsLabel = new Label("Authors: " + authorNames);
+        authorsLabel.getStyleClass().add("request-item-authors");
+
+        HBox titleBox = new HBox(10, trackLabel, authorsLabel);
+        titleBox.setAlignment(Pos.CENTER_LEFT);
+        titleBox.setStyle("-fx-padding: 0 0 0 15;");
+        titleBox.setSpacing(15);
+
+        Label descLabel = new Label(getFormattedRequestDate(resource.getCreationDate()));
         descLabel.getStyleClass().add("request-item-description");
         descLabel.setWrapText(true);
 
-        VBox textBox = new VBox(5, nameLabel, descLabel);
+        VBox textBox = new VBox(5, titleBox, descLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
+        textBox.setStyle("-fx-padding: 0 0 0 10;");
+        textBox.setSpacing(15);
 
         Button deleteBtn = new Button(Strings.DELETE);
         deleteBtn.getStyleClass().add("reject-button");
         deleteBtn.setOnAction(e -> deleteResource(resource));
         deleteBtn.setMinWidth(80);
 
-        HBox buttonBox = new HBox(deleteBtn);
+        Button editBtn = new Button(Strings.EDIT);
+        editBtn.getStyleClass().add("switch-button");
+        editBtn.setOnAction(e -> editResource(resource));
+        editBtn.setMinWidth(80);
+
+        HBox buttonBox = new HBox(10,editBtn, deleteBtn);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         HBox box = new HBox(10, textBox, spacer, buttonBox);
-        box.getStyleClass().add("request-item");
         box.setAlignment(Pos.CENTER_LEFT);
+        box.setMaxWidth(Double.MAX_VALUE);
 
-        descLabel.maxWidthProperty().bind(box.widthProperty().subtract(deleteBtn.widthProperty()).subtract(100));
+        descLabel.maxWidthProperty().bind(box.widthProperty().subtract(deleteBtn.widthProperty()).subtract(50));
         textBox.maxWidthProperty().bind(descLabel.maxWidthProperty());
 
         return box;
     }
 
     private void deleteResource(Resource resource) {
-        try {
-            resourceDAO.deleteById(resource.getId());
-            resources.remove(resource);
-            int maxPage = (int) Math.ceil((double) resources.size() / itemsPerPage);
-            if (currentPage >= maxPage && currentPage > 0) {
-                currentPage--;
+        boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
+        if (response)
+            try {
+                resourceDAO.deleteById(resource.getId());
+                resources.remove(resource);
+                int maxPage = (int) Math.ceil((double) resources.size() / itemsPerPage);
+                if (currentPage >= maxPage && currentPage > 0) {
+                    currentPage--;
+                }
+                updateResources();
+            } catch (Exception ex) {
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
             }
-            updateResources();
-        } catch (Exception ex) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
-        }
     }
 
     private Node createPreview(Resource resource) {

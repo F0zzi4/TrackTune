@@ -14,12 +14,12 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" stylesheets="@../../style/dashboard-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController">
+<BorderPane prefHeight="830.0" prefWidth="1300.0" stylesheets="@../../style/dashboard-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController">
     <left>
         <VBox alignment="TOP_CENTER" prefWidth="220.0" spacing="12.0" styleClass="sidebar">
             <children>
                 <Label styleClass="sidebar-title" text="TRACKTUNE" />
-                <ProgressBar id="custom-progress" prefWidth="200.0" progress="0.0" />
+                <ProgressBar id="custom-progress" prefHeight="11.0" prefWidth="200.0" progress="0.0" />
                 <Button onMouseClicked="#handleDashboard" prefHeight="38.0" prefWidth="648.0" styleClass="sidebar-button" text="Dashboard">
                     <graphic>
                         <FontIcon iconLiteral="mdi2v-view-dashboard" iconSize="20" />
@@ -28,7 +28,7 @@
                 <Separator prefWidth="200.0" />
                 <Button onMouseClicked="#handleDiscover" prefHeight="38.0" prefWidth="385.0" styleClass="sidebar-button" text="Discover">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2l-lumx" iconSize="21" />
+                        <FontIcon iconLiteral="mdi2a-account-group" iconSize="21" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
@@ -51,7 +51,7 @@
                 </Button>
                 <Separator prefWidth="200.0" />
                 <Region prefHeight="336.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
-                <Button onMouseClicked="#handleLogout" prefHeight="44.0" prefWidth="110.0" styleClass="logout-button" text="Logout">
+                <Button onMouseClicked="#handleLogout" prefHeight="33.0" prefWidth="110.0" styleClass="logout-button" text="Logout">
                     <graphic>
                         <FontIcon iconLiteral="fas-sign-out-alt" />
                     </graphic>
@@ -65,7 +65,7 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <AnchorPane layoutX="638.0" layoutY="-1.0" prefHeight="741.0" prefWidth="282.0" styleClass="split-pane-divider">
+                  <AnchorPane layoutX="645.0" layoutY="-1.0" prefHeight="763.0" prefWidth="293.0" styleClass="split-pane-divider">
                      <children>
                         <Label layoutX="20.0" layoutY="21.0" prefHeight="27.0" prefWidth="242.0" styleClass="section-title-label" text="Community">
                             <graphic>
@@ -84,10 +84,11 @@
                         <ImageView fitHeight="360.0" fitWidth="434.0" layoutX="101.0" layoutY="80.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@../../assets/dashboard.png" />
-                           </image></ImageView>
+                           </image>
+                        </ImageView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane layoutY="456.0" prefHeight="284.0" prefWidth="627.0" styleClass="split-pane-divider">
+                  <AnchorPane layoutY="460.0" prefHeight="303.0" prefWidth="627.0" styleClass="split-pane-divider">
                      <children>
                         <Label layoutX="32.0" layoutY="27.0" prefHeight="52.0" prefWidth="574.0" styleClass="section-title-label" text="News">
                             <graphic>

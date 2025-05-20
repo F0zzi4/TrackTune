@@ -25,4 +25,5 @@ module app.tracktune {
     exports app.tracktune.model.author;
     exports app.tracktune.model.resource;
     exports app.tracktune.model.track;
+    exports app.tracktune.model.musicalInstrument;
 }

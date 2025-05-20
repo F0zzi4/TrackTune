@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import io.github.palexdev.materialfx.controls.MFXToggleButton?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane prefHeight="770.0" prefWidth="800.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.EditResourceController">
+    <children>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="550.0" style="-fx-background-color: transparent;" vbarPolicy="AS_NEEDED">
+            <content>
+                <VBox alignment="CENTER" maxWidth="566.0" prefHeight="673.0" prefWidth="566.0" spacing="12">
+
+                    <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Edit Resource">
+                        <graphic>
+                            <FontIcon iconLiteral="mdi2f-file-music" iconSize="27" />
+                        </graphic>
+                    </Label>
+                    <Region prefHeight="16.0" prefWidth="548.0" />
+                    <HBox alignment="CENTER_LEFT" prefHeight="53.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
+                        <children>
+                            <Label prefHeight="25.0" prefWidth="54.0" styleClass="label-title" text="Track:" />
+                            <TextField fx:id="txtTrack" prefHeight="43.0" prefWidth="237.0" styleClass="nameField" />
+                            <Region prefHeight="43.0" prefWidth="40.0" />
+                        </children>
+                    </HBox>
+                    <Region prefHeight="10.0" prefWidth="548.0" />
+
+                    <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
+                        <Label prefHeight="25.0" prefWidth="65.0" styleClass="label-title" text="Authors:" />
+                        <ComboBox fx:id="authorComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search authors..." />
+                        <Region prefHeight="40.0" prefWidth="49.0" />
+                    </HBox>
+                    <FlowPane fx:id="selectedAuthorsPane" hgap="10" prefHeight="33.0" prefWidth="548.0" vgap="10" />
+                    <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
+                        <children>
+                            <Label prefHeight="25.0" prefWidth="65.0" styleClass="label-title" text="Genres:" />
+                            <ComboBox fx:id="genreComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search genres..." />
+                            <Region prefHeight="40.0" prefWidth="49.0" />
+                        </children>
+                    </HBox>
+                    <FlowPane fx:id="selectedGenresPane" hgap="10" prefHeight="36.0" prefWidth="548.0" vgap="10" />
+                    <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
+                        <children>
+                            <Label prefHeight="25.0" prefWidth="98.0" styleClass="label-title" text="Instruments:" />
+                            <ComboBox fx:id="instrumentComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search instruments..." />
+                            <Region prefHeight="40.0" prefWidth="80.0" />
+                        </children>
+                    </HBox>
+                    <FlowPane fx:id="selectedInstrumentsPane" hgap="10" prefHeight="37.0" prefWidth="548.0" vgap="10" />
+                    <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="505.0" spacing="10" style="-fx-alignment: center;">
+                        <Label prefHeight="25.0" prefWidth="68.0" style="-fx-alignment: center;" styleClass="label-title" text="File:" />
+                        <TextField fx:id="txtFilePathField" editable="false" prefHeight="31.0" prefWidth="240.0" promptText="Choose a file..." styleClass="fileField" />
+                        <Button fx:id="btnBrowseFile" prefHeight="38.0" prefWidth="50.0" styleClass="switch-button">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi2f-file-find" iconSize="18" />
+                            </graphic>
+                        </Button>
+                    </HBox>
+                    <MFXToggleButton fx:id="btnIsMultimedia" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Multimedia">
+                        <effect>
+                            <InnerShadow />
+                        </effect></MFXToggleButton>
+                    <ProgressBar id="custom-progress" prefHeight="9.0" prefWidth="371.0" progress="0.0" />
+                    <HBox fx:id="durationBox" alignment="CENTER_LEFT" managed="false" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;" visible="false">
+                        <children>
+                            <Label prefHeight="25.0" prefWidth="75.0" styleClass="label-title" text="Duration:" />
+                            <TextField fx:id="txtDuration" prefHeight="43.0" prefWidth="236.0" styleClass="nameField" />
+                            <Region prefHeight="43.0" prefWidth="45.0" />
+                        </children>
+                    </HBox>
+
+                    <HBox fx:id="locationBox" alignment="CENTER_LEFT" managed="false" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;" visible="false">
+                        <children>
+                            <Label prefHeight="25.0" prefWidth="75.0" styleClass="label-title" text="Location:" />
+                            <TextField fx:id="txtLocation" prefHeight="43.0" prefWidth="236.0" styleClass="nameField" />
+                            <Region prefHeight="40.0" prefWidth="43.0" />
+                        </children>
+                    </HBox>
+                    <HBox fx:id="resourceDateBox" alignment="CENTER_LEFT" managed="false" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;" visible="false">
+                        <children>
+                            <Label prefHeight="25.0" prefWidth="71.0" styleClass="label-title" text="Date:" />
+                            <DatePicker fx:id="resourceDate" prefHeight="42.0" prefWidth="236.0" />
+                            <Region prefHeight="42.0" prefWidth="41.0" />
+                        </children>
+                    </HBox>
+                    <Region prefHeight="5.0" prefWidth="505.0" />
+                    <HBox alignment="CENTER" prefHeight="73.0" prefWidth="548.0">
+                        <children>
+                            <Button onMouseClicked="#handleAddResource" styleClass="switch-button" text="Edit">
+                                <graphic>
+                                    <FontIcon iconLiteral="mdi2c-content-save-move" iconSize="20" />
+                                </graphic>
+                            </Button>
+                            <Region prefHeight="86.0" prefWidth="21.0" />
+                            <Button onMouseClicked="#handleReset" styleClass="reject-button" text="Reset">
+                                <graphic>
+                                    <FontIcon iconLiteral="mdi2m-marker-cancel" iconSize="20" />
+                                </graphic>
+                            </Button>
+                        </children>
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</StackPane>

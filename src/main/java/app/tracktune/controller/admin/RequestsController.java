@@ -111,7 +111,7 @@ public class RequestsController extends Controller implements Initializable {
         Label infoLabel = new Label(request.getUsername() + " - " + request.getName() + " " + request.getSurname());
         infoLabel.getStyleClass().add("request-item-title");
 
-        Label dateLabel = new Label(SQLiteScripts.getFormattedRequestDate(request.getRequestDate()));
+        Label dateLabel = new Label(getFormattedRequestDate(request.getRequestDate()));
         dateLabel.getStyleClass().add("request-item-date");
 
         VBox textBox = new VBox(5, infoLabel, dateLabel);

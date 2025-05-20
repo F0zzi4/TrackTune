@@ -157,7 +157,7 @@ public class UserDAO implements DAO<User> {
                 }, id);
 
         if (!success) {
-            throw new SQLiteException(Strings.ERR_DATABASE);
+            throw new SQLiteException(Strings.ERR_USER_NOT_FOUND);
         }
 
         return userRef.get();
@@ -176,7 +176,7 @@ public class UserDAO implements DAO<User> {
                 }, username);
 
         if (!success) {
-            throw new SQLiteException(Strings.ERR_DATABASE);
+            throw new SQLiteException(Strings.ERR_USER_NOT_FOUND);
         }
 
         return userRef.get();

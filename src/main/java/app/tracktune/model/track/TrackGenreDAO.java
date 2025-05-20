@@ -17,7 +17,7 @@ public class TrackGenreDAO implements DAO<TrackGenre> {
 
     // FIELDS
     private static final String ID = "ID";
-    private static final String RESOURCE_ID = "resourceID";
+    private static final String TRACK_ID = "trackID";
     private static final String GENRE_ID = "genreID";
 
     // CRUD STATEMENTS
@@ -128,7 +128,7 @@ public class TrackGenreDAO implements DAO<TrackGenre> {
                     while (rs.next()) {
                         trackGenres.add(mapResultSetToEntity(rs));
                     }
-                    return null;
+                    return true;
                 }, resourceId);
 
         if (!success) {
@@ -146,7 +146,7 @@ public class TrackGenreDAO implements DAO<TrackGenre> {
                     while (rs.next()) {
                         trackGenres.add(mapResultSetToEntity(rs));
                     }
-                    return null;
+                    return true;
                 }, genreId);
 
         if (!success) {
@@ -173,7 +173,7 @@ public class TrackGenreDAO implements DAO<TrackGenre> {
 
     private TrackGenre mapResultSetToEntity(ResultSet rs) throws SQLException {
         int id = rs.getInt(ID);
-        int resourceId = rs.getInt(RESOURCE_ID);
+        int resourceId = rs.getInt(TRACK_ID);
         int genreId = rs.getInt(GENRE_ID);
         return new TrackGenre(id, resourceId, genreId);
     }

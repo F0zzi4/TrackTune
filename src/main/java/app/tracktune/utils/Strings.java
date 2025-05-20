@@ -13,7 +13,7 @@ public class Strings {
     public static final String DB_CONN_FAILED = "Connection with database failed";
     public static final String ERR_EXEC_STMT = "Error executing statement ";
     public static final String ERR_INIT_DB = "Error initializing database";
-    public static final String ERR_USER_ALREADY_EXISTS = "User already exists";
+    public static final String ERR_REQUEST_ALREADY_EXISTS = "User already exists";
     public static final String ERR_USER_NOT_FOUND = "User not found";
     public static final String GENRE_FAILED = "Genre failed";
     public static final String MUSICAL_INSTRUMENT_FAILED = "Musical Instrument failed";
@@ -21,7 +21,7 @@ public class Strings {
     public static final String ERR_GENERAL = "Something went wrong";
     public static final String MEDIA_ERROR = "Media error";
     public static final String MEDIA_NOT_SUPPORTED = "Media type not supported";
-    public static final String ERR_ACCOUNT_REQUEST = "Account request error";
+    public static final String ERR_ACCOUNT_REQUEST = "Account request failed";
     public static final String ERR_ENTITY_ALREADY_EXISTS = "There is already an element of this entity";
     public static final String ERR_USER_NOT_ALLOWED = "User not allowed";
     public static final String ERR_SQL_INJECTION = "SQL injection detected";
@@ -33,6 +33,9 @@ public class Strings {
     public static final String RESTORE = "Restore";
     public static final String REJECT = "Reject";
     public static final String DELETE = "Delete";
+    public static final String EDIT = "Edit";
+    public static final String SAVE = "Save";
+    public static final String CANCEL = "Cancel";
     public static final String EMPTY_LIST = "No elements found";
     public static final String ERR_LOAD_FILE = "Error loading file";
     public static final String ERR_FILE_NOT_FOUND = "File not found";
@@ -41,4 +44,10 @@ public class Strings {
     public static final String RESOURCE_UPLOADED = "Resource uploaded successfully";
     public static final String RESOURCE_UPDATED = "Resource updated successfully";
     public static final String RESOURCE_NOT_UPLOADED = "Resource not uploaded";
+    public static final String ADMIN = "ADMIN";
+    public static final String ERR_ENTITY_NOT_FOUND = "Entity not found";
+    public static final String ERR_USER_ALREADY_EXISTS = "User already exists";
+    public static final String CONFIRM_DELETION = "Confirm deletion";
+    public static final String ARE_YOU_SURE = "Are you sure to complete this operation?";
+    public static final String CHANGE_PRIVILEGES = "Change privileges";
 }

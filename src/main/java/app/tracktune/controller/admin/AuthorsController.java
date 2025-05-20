@@ -158,29 +158,33 @@ public class AuthorsController extends Controller implements Initializable {
     }
 
     private void restoreAuthor(Author author) {
-        try {
-            Author updatedAuthor = new Author(author.getAuthorshipName(), AuthorStatusEnum.ACTIVE);
-            authorDAO.updateById(updatedAuthor, author.getId());
-            int index = authors.indexOf(author);
-            if (index >= 0) authors.set(index, updatedAuthor);
-            adjustPageAfterUpdate();
-        } catch (Exception ex) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            System.err.println(ex.getMessage());
-        }
+        boolean response = ViewManager.setAndGetConfirmAlert(Strings.CHANGE_PRIVILEGES, Strings.CHANGE_PRIVILEGES, Strings.ARE_YOU_SURE);
+        if (response)
+            try {
+                Author updatedAuthor = new Author(author.getAuthorshipName(), AuthorStatusEnum.ACTIVE);
+                authorDAO.updateById(updatedAuthor, author.getId());
+                int index = authors.indexOf(author);
+                if (index >= 0) authors.set(index, updatedAuthor);
+                adjustPageAfterUpdate();
+            } catch (Exception ex) {
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+                System.err.println(ex.getMessage());
+            }
     }
 
     private void removeAuthor(Author author) {
-        try {
-            Author updatedAuthor = new Author(author.getAuthorshipName(), AuthorStatusEnum.REMOVED);
-            authorDAO.updateById(updatedAuthor, author.getId());
-            int index = authors.indexOf(author);
-            if (index >= 0) authors.set(index, updatedAuthor);
-            adjustPageAfterUpdate();
-        } catch (Exception ex) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            System.err.println(ex.getMessage());
-        }
+        boolean response = ViewManager.setAndGetConfirmAlert(Strings.CHANGE_PRIVILEGES, Strings.CHANGE_PRIVILEGES, Strings.ARE_YOU_SURE);
+        if (response)
+            try {
+                Author updatedAuthor = new Author(author.getAuthorshipName(), AuthorStatusEnum.REMOVED);
+                authorDAO.updateById(updatedAuthor, author.getId());
+                int index = authors.indexOf(author);
+                if (index >= 0) authors.set(index, updatedAuthor);
+                adjustPageAfterUpdate();
+            } catch (Exception ex) {
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+                System.err.println(ex.getMessage());
+            }
     }
 
     private void adjustPageAfterUpdate() {

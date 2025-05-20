@@ -13,6 +13,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
@@ -23,7 +25,6 @@ import javafx.util.Duration;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 
 import static app.tracktune.Main.root;
 
@@ -127,6 +128,25 @@ public class ViewManager {
         dialogPane.getStyleClass().add("custom-alert");
 
         alert.showAndWait();
+    }
+
+    public static boolean setAndGetConfirmAlert(String title, String header, String content) {
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setTitle(title);
+        confirmAlert.setHeaderText(header);
+        confirmAlert.setContentText(content);
+        confirmAlert.initOwner(root);
+
+        ButtonType yesButton = new ButtonType(Strings.DELETE, ButtonBar.ButtonData.YES);
+        ButtonType noButton = new ButtonType(Strings.CANCEL, ButtonBar.ButtonData.NO);
+
+        confirmAlert.getButtonTypes().setAll(yesButton, noButton);
+
+        DialogPane dialogPane = confirmAlert.getDialogPane();
+        dialogPane.getStylesheets().add(Main.class.getResource("/style/alert-style.css").toExternalForm());
+        dialogPane.getStyleClass().add("custom-alert");
+
+        return confirmAlert.showAndWait().filter(response -> response == yesButton).isPresent();
     }
 
     public static void navigateToLogin(){redirectView(Frames.LOGIN_VIEW_PATH, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);}
