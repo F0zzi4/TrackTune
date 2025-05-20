@@ -132,7 +132,7 @@ public class GenresController extends Controller implements Initializable {
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         Button deleteBtn = new Button(Strings.DELETE);
-        deleteBtn.getStyleClass().add("reject-button");
+        deleteBtn.getStyleClass().add("delete-button");
         deleteBtn.setOnAction(e -> deleteGenre(genre));
         deleteBtn.setMinWidth(80);
 

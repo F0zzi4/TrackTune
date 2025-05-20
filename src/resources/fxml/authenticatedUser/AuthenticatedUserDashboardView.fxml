@@ -44,7 +44,7 @@
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Me">
+                <Button prefHeight="38.0" onMouseClicked="#handleMe" prefWidth="356.0" styleClass="sidebar-button" text="Me">
                     <graphic>
                         <FontIcon iconLiteral="mdi2f-folder-account" iconSize="22" />
                     </graphic>
