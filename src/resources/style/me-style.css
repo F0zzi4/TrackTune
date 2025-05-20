@@ -49,7 +49,7 @@
     -fx-max-width: 250;
 }
 
-#LblRole {
+#lblRole {
     -fx-font-size: 16px;
     -fx-text-fill: #4a280f;
     -fx-background-color: #ffe0b3;
@@ -80,4 +80,19 @@
     -fx-background-color: #ffe3bd;
     -fx-background-radius: 6;
     -fx-padding: 4 10;
+}
+
+.status-label-title {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3c200b;
+}
+
+.status-label-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #784d14;
+    -fx-background-color: linear-gradient(to right, #ff8e40, #ff814f);
+    -fx-padding: 6px 12px;
+    -fx-background-radius: 8px;
 }

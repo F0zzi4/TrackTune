@@ -37,6 +37,7 @@ public class Strings {
     public static final String SAVE = "Save";
     public static final String VIEW = "View";
     public static final String CANCEL = "Cancel";
+    public static final String USER = "USER";
     public static final String EMPTY_LIST = "No elements found";
     public static final String ERR_LOAD_FILE = "Error loading file";
     public static final String ERR_FILE_NOT_FOUND = "File not found";

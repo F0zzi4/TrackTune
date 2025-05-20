@@ -21,18 +21,14 @@ import java.util.ResourceBundle;
 
 public class MeController extends Controller implements Initializable {
 
-    @FXML
-    private Label LblRole;
-    @FXML
-    private TextField TxtUsername;
-    @FXML
-    private TextField TxtName;
-    @FXML
-    private TextField TxtSurname;
-    @FXML
-    private Button EditRole;
+    @FXML private Label lblRole;
+    @FXML private TextField txtUsername;
+    @FXML private TextField txtName;
+    @FXML private TextField txtSurname;
+    @FXML private Button editRole;
+    @FXML private Label lblStatus;
 
-    private UserDAO userDAO = new UserDAO();
+    private final UserDAO userDAO = new UserDAO();
     private AuthenticatedUser user;
     private boolean editable = false;
 
@@ -40,23 +36,24 @@ public class MeController extends Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (ViewManager.getSessionUser() instanceof AuthenticatedUser) {
             user = (AuthenticatedUser) ViewManager.getSessionUser();
-            LblRole.setText("USER");
+            lblRole.setText(Strings.USER);
         } else {
-            LblRole.setText("ADMIN");
+            lblRole.setText(Strings.ADMIN);
         }
 
-        TxtUsername.setText(user.getUsername());
-        TxtName.setText(user.getName());
-        TxtSurname.setText(user.getSurname());
+        txtUsername.setText(user.getUsername());
+        txtName.setText(user.getName());
+        txtSurname.setText(user.getSurname());
+        lblStatus.setText(user.getStatus().toString());
     }
 
     @FXML
     public void handleEditButton() {
         if (editable) {
             try {
-                String name = TxtName.getText().trim();
-                String surname = TxtSurname.getText().trim();
-                String username = TxtUsername.getText().trim();
+                String name = txtName.getText().trim();
+                String surname = txtSurname.getText().trim();
+                String username = txtUsername.getText().trim();
 
                 if(!name.equals(user.getName()) || !surname.equals(user.getSurname()) || !username.equals(user.getUsername())){
                     if (username.isEmpty() || name.isEmpty() || surname.isEmpty()) {
@@ -72,7 +69,7 @@ public class MeController extends Controller implements Initializable {
                         throw new TrackTuneException(Strings.ERR_USER_ALREADY_EXISTS);
                     }
 
-                    AuthenticatedUser updatedUser = new AuthenticatedUser(
+                    AuthenticatedUser authenticatedUser = new AuthenticatedUser(
                             username,
                             user.getPassword(),
                             name,
@@ -81,24 +78,23 @@ public class MeController extends Controller implements Initializable {
                             user.getCreationDate()
                     );
 
-                    userDAO.updateById(updatedUser, user.getId());
-                    user = updatedUser;
+                    userDAO.updateById(authenticatedUser, user.getId());
 
                     SessionManager.reset();
-                    ViewManager.initSessionManager(user);
+                    ViewManager.initSessionManager(authenticatedUser);
                 }
 
-                TxtUsername.setText(user.getUsername());
-                TxtName.setText(user.getName());
-                TxtSurname.setText(user.getSurname());
+                txtUsername.setText(user.getUsername());
+                txtName.setText(user.getName());
+                txtSurname.setText(user.getSurname());
 
-                TxtUsername.setDisable(true);
-                TxtName.setDisable(true);
-                TxtSurname.setDisable(true);
+                txtUsername.setDisable(true);
+                txtName.setDisable(true);
+                txtSurname.setDisable(true);
 
-                EditRole.setText("Edit");
-                EditRole.getStyleClass().removeAll("accept-button");
-                EditRole.getStyleClass().add("delete-button");
+                editRole.setText(Strings.EDIT);
+                editRole.getStyleClass().removeAll("accept-button");
+                editRole.getStyleClass().add("delete-button");
 
             } catch (TrackTuneException e) {
                 ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_ME, e.getMessage(), Alert.AlertType.ERROR);
@@ -106,13 +102,13 @@ public class MeController extends Controller implements Initializable {
                 ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_ME, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             }
         } else {
-            TxtUsername.setDisable(false);
-            TxtName.setDisable(false);
-            TxtSurname.setDisable(false);
+            txtUsername.setDisable(false);
+            txtName.setDisable(false);
+            txtSurname.setDisable(false);
 
-            EditRole.setText("Save");
-            EditRole.getStyleClass().removeAll("delete-button");
-            EditRole.getStyleClass().add("accept-button");
+            editRole.setText(Strings.SAVE);
+            editRole.getStyleClass().removeAll("delete-button");
+            editRole.getStyleClass().add("accept-button");
         }
 
         editable = !editable;
