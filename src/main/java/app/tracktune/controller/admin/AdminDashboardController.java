@@ -6,19 +6,13 @@ import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -29,8 +23,6 @@ import java.util.ResourceBundle;
  */
 public class AdminDashboardController extends Controller implements Initializable {
     @FXML public StackPane mainContent;
-    @FXML private MediaView mediaPlayerView;
-    private MediaPlayer mediaPlayer;
     private Administrator admin;
     private Node dashboardContent;
 
@@ -53,19 +45,6 @@ public class AdminDashboardController extends Controller implements Initializabl
     private void handleDashboard(){
         try{
             mainContent.getChildren().setAll(dashboardContent);
-        } catch(Exception e) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Starts the media player to play a video when the "View Tracks" button is clicked
-     */
-    @FXML
-    public void handleTracks() {
-        try{
-            initMediaPlayer();
         } catch(Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
@@ -124,27 +103,6 @@ public class AdminDashboardController extends Controller implements Initializabl
         } catch(Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
-        }
-    }
-
-    /**
-     * Initializes the media player with a video file located at a hardcoded path.
-     * If the media file is not supported or cannot be loaded, an error alert is displayed.
-     */
-    private void initMediaPlayer() {
-        String videoPath = "C:\\Users\\ACER\\Videos\\test3.mp4";
-        Media media = new Media(new File(videoPath).toURI().toString());
-        mediaPlayer = new MediaPlayer(media);
-        mediaPlayerView.setMediaPlayer(mediaPlayer);
-        mediaPlayer.play();
-    }
-
-    /**
-     * Stops the media player if it is playing, releasing resources used by the player.
-     */
-    public void disposeMediaPlayer() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
         }
     }
 }
