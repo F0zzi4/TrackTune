@@ -42,6 +42,12 @@ public class GenreDAO implements DAO<Genre> {
         FROM Genres
     """;
 
+    private static final String GET_ALL_GENRES_USED_STMT = """
+        SELECT DISTINCT g.*
+        FROM Genres g
+        JOIN TracksGenres tg ON tg.genreID = g.ID
+    """;
+
     private static final String GET_GENRE_BY_ID_STMT = """
         SELECT *
         FROM Genres
@@ -112,6 +118,20 @@ public class GenreDAO implements DAO<Genre> {
         List<Genre> genres = new ArrayList<>();
 
         dbManager.executeQuery(GET_ALL_GENRES_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        genres.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                });
+
+        return genres;
+    }
+
+    public List<Genre> getAllUsed() {
+        List<Genre> genres = new ArrayList<>();
+
+        dbManager.executeQuery(GET_ALL_GENRES_USED_STMT,
                 rs -> {
                     while (rs.next()) {
                         genres.add(mapResultSetToEntity(rs));
