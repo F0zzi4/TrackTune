@@ -6,19 +6,13 @@ import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -29,8 +23,6 @@ import java.util.ResourceBundle;
  */
 public class AdminDashboardController extends Controller implements Initializable {
     @FXML public StackPane mainContent;
-    @FXML private MediaView mediaPlayerView;
-    private MediaPlayer mediaPlayer;
     private Administrator admin;
     private Node dashboardContent;
 
@@ -59,15 +51,7 @@ public class AdminDashboardController extends Controller implements Initializabl
         }
     }
 
-    /**
-     * Starts the media player to play a video when the "View Tracks" button is clicked
-     */
-    @FXML
-    public void handleTracks() {
-        ViewManager.setMainContent(Frames.TRACKS_VIEW_PATH_VIEW_PATH, mainContent, this);
-    }
 
-    /**
      * Loads and displays the Genre view by updating the main content area of the dashboard
      */
     @FXML
@@ -107,7 +91,6 @@ public class AdminDashboardController extends Controller implements Initializabl
     public void handleUserManagement() {
         ViewManager.setMainContent(Frames.USER_MANAGEMENT_VIEW_PATH, mainContent, this);
     }
-
 
 
     /**

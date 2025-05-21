@@ -29,12 +29,12 @@ public class Controller {
         return formatter.format(new Date(date.getTime()));
     }
 
-    protected Node createPreview(Resource resource) {
+    protected Node createPreview(Resource resource, double width, double height) {
         String mimeType = resource.getType().toString();
 
         if (mimeType.startsWith("png")) {
             ByteArrayInputStream bis = new ByteArrayInputStream(resource.getData());
-            Image image = new Image(bis, 100, 100, true, true);
+            Image image = new Image(bis, width, height, true, true);
             return new ImageView(image);
         }
 
