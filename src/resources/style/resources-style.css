@@ -352,3 +352,29 @@
 .scroll-bar .decrement-arrow {
     -fx-shape: "";
 }
+
+.anchor-pane {
+    -fx-background-color: #efa054; /* Dark background for media content */
+    -fx-border-color: #fdb276;     /* Subtle border color */
+    -fx-border-width: 5px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+/* StackPane: Container for media content */
+.stack-pane {
+    -fx-background-color: #ffcc80; /* Slightly lighter background */
+    -fx-border-color: #885116;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+/* HBox: Media control bar */
+.media-control-bar {
+    -fx-background-color: #ffcc80; /* Control bar background */
+    -fx-border-color: #885116;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
