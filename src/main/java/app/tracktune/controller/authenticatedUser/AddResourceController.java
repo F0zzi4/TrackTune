@@ -380,6 +380,7 @@ public class AddResourceController extends Controller implements Initializable {
         btnIsMultimedia.setSelected(false);
         durationBox.setVisible(false);
         durationBox.setManaged(false);
+        selectedTrackPane.getChildren().clear();
         selectedAuthorsPane.getChildren().clear();
         selectedGenresPane.getChildren().clear();
         selectedInstrumentsPane.getChildren().clear();

@@ -51,7 +51,7 @@ public class AdminDashboardController extends Controller implements Initializabl
         }
     }
 
-    /**
+
      * Loads and displays the Genre view by updating the main content area of the dashboard
      */
     @FXML
@@ -91,6 +91,7 @@ public class AdminDashboardController extends Controller implements Initializabl
     public void handleUserManagement() {
         ViewManager.setMainContent(Frames.USER_MANAGEMENT_VIEW_PATH, mainContent, this);
     }
+
 
     /**
      * Logs out the current user by calling the {@link ViewManager#logout()} method.
