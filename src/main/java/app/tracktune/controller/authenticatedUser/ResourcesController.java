@@ -142,7 +142,10 @@ public class ResourcesController extends Controller implements Initializable {
     }
 
     private HBox createResourceItemBox(Resource resource) {
-        Node preview = createPreview(resource);
+        int previewWidth = 100;
+        int previewHeight = 100;
+
+        Node preview = createPreview(resource, previewWidth, previewHeight);
         if (preview instanceof ImageView) {
             ((ImageView) preview).setFitWidth(100);
             ((ImageView) preview).setFitHeight(100);
