@@ -10,8 +10,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -42,6 +40,19 @@ public class AdminDashboardController extends Controller implements Initializabl
      * Loads and displays the dashboard view by updating the main content area by initial content
      */
     @FXML
+    private void handleTracks(){
+        try{
+            ViewManager.setMainContent(Frames.TRACKS_VIEW_PATH_VIEW_PATH, mainContent, this);
+        } catch(Exception e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Loads and displays the dashboard view by updating the main content area by initial content
+     */
+    @FXML
     private void handleDashboard(){
         try{
             mainContent.getChildren().setAll(dashboardContent);
@@ -51,13 +62,17 @@ public class AdminDashboardController extends Controller implements Initializabl
         }
     }
 
-
+    /*
      * Loads and displays the Genre view by updating the main content area of the dashboard
      */
     @FXML
     private void handleGenre(){
-        ViewManager.setMainContent(Frames.GENRES_VIEW_PATH_VIEW_PATH, mainContent, this);
-    }
+        try{
+            ViewManager.setMainContent(Frames.GENRES_VIEW_PATH_VIEW_PATH, mainContent, this);
+        } catch(Exception e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }    }
 
     /**
      * Loads and displays the requests view by updating the main content area of the dashboard
@@ -77,7 +92,7 @@ public class AdminDashboardController extends Controller implements Initializabl
 
 
     /**
-     * Loads and displays the musical instrumets view by updating the main content area of the dashboard
+     * Loads and displays the musical instruments view by updating the main content area of the dashboard
      */
     @FXML
     public void handleInstruments() {
