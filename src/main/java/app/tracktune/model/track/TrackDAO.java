@@ -52,6 +52,28 @@ public class TrackDAO implements DAO<Track> {
         WHERE ID = ?
     """;
 
+    private static final String GET_ALL_TRACK_BY_AUTHOR_ID_STMT = """
+    SELECT t.*
+    FROM Tracks t
+    JOIN TracksAuthors ta ON ta.trackID = t.ID
+    WHERE ta.authorID = ?;
+    """;
+
+    private static final String GET_ALL_TRACK_BY_GENRE_ID_STMT = """
+    SELECT t.*
+    FROM Tracks t
+    JOIN TracksGenres ta ON ta.trackID = t.ID
+    WHERE ta.genreID = ?;
+    """;
+
+    private static final String GET_ALL_TRACK_BY_INSTRUMENT_ID_STMT = """
+    SELECT t.*
+    FROM Tracks t
+    JOIN TracksInstruments ta ON ta.instrumentID = t.ID
+    WHERE ta.instrumentID = ?;
+    """;
+
+
     public TrackDAO() {
         dbManager = Main.dbManager;
     }
@@ -111,6 +133,49 @@ public class TrackDAO implements DAO<Track> {
         }
 
         return result.get();
+    }
+
+
+    public List<Track> getAllByAuthorId(int id) {
+        List<Track> tracks = new ArrayList<>();
+
+        dbManager.executeQuery(GET_ALL_TRACK_BY_AUTHOR_ID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        tracks.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, id);
+
+        return tracks;
+    }
+
+    public List<Track> getAllByTrackId(int id) {
+        List<Track> tracks = new ArrayList<>();
+
+        dbManager.executeQuery(GET_ALL_TRACK_BY_GENRE_ID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        tracks.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, id);
+
+        return tracks;
+    }
+
+    public List<Track> getAllByInstrumentId(int id) {
+        List<Track> tracks = new ArrayList<>();
+
+        dbManager.executeQuery(GET_ALL_TRACK_BY_INSTRUMENT_ID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        tracks.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, id);
+
+        return tracks;
     }
 
     @Override

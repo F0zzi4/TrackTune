@@ -30,6 +30,7 @@ public class Frames {
     public static final String RESOURCE_FILE_VIEW_PATH = "/fxml/authenticatedUser/ResourceFileView.fxml";
     public static final String ME_VIEW_PATH = "/fxml/authenticatedUser/MeView.fxml";
     public static final String USER_MANAGEMENT_VIEW_PATH = "/fxml/admin/UsersView.fxml";
+    public static final String TRACKS_VIEW_PATH_VIEW_PATH = "/fxml/admin/TracksView.fxml";
     // FRAME ICONS
     public static final String MAIN_ICON_PATH = "/assets/icon/appIcon.png";
     public static final String MAIN_ICON_192_PATH = "/assets/icon/app_icon192x192.png";
