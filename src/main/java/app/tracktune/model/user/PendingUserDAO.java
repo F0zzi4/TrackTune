@@ -159,18 +159,13 @@ public class PendingUserDAO implements DAO<PendingUser> {
     public PendingUser getByUsername(String username) {
         AtomicReference<PendingUser> pendUser = new AtomicReference<>();
 
-        boolean success = dbManager.executeQuery(GET_PENDING_USER_BY_USERNAME_STMT,
+        dbManager.executeQuery(GET_PENDING_USER_BY_USERNAME_STMT,
                 rs -> {
                     if (rs.next()) {
                         pendUser.set(mapResultSetToEntity(rs));
-                        return true;
                     }
-                    return false;
+                    return null;
                 }, username);
-
-        if (!success) {
-            throw new SQLiteException(Strings.ERR_DATABASE);
-        }
 
         return pendUser.get();
     }

@@ -1,6 +1,9 @@
-package app.tracktune.controller.authenticatedUser;
+package app.tracktune.controller.admin;
 
 import app.tracktune.controller.Controller;
+import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.controller.authenticatedUser.EditResourceController;
+import app.tracktune.controller.authenticatedUser.ResourceFileController;
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
@@ -19,7 +22,9 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -39,15 +44,18 @@ public class ResourcesController extends Controller implements Initializable {
     private List<Resource> resources = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 6;
+    private Track track;
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final TrackDAO trackDAO = new TrackDAO();
     private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
     private final AuthorDAO authorDAO = new AuthorDAO();
     protected Resource resource;
 
+    public ResourcesController(Track track) {this.track = track;}
+
     @Override
     public void initialize(URL location, ResourceBundle res) {
-        resources = resourceDAO.getAllByUserID(SessionManager.getInstance().getUser().getId());
+        resources = resourceDAO.getAllByTrackID(track.getId());
 
         btnPrev.setOnAction(e -> {
             if (currentPage > 0) {

@@ -78,7 +78,7 @@ public class AddResourceController extends Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             allTracks.addAll(trackDAO.getAll());
-            allAuthors.addAll(authorDAO.getAll());
+            allAuthors.addAll(authorDAO.getAllActive());
             allGenres.addAll(genreDAO.getAll());
             allMusicalInstruments.addAll(musicalInstrumentDAO.getAll());
 
