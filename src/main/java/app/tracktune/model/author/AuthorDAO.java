@@ -41,6 +41,11 @@ public class AuthorDAO implements DAO<Author> {
         SELECT * FROM Authors
     """;
 
+    private static final String GET_ALL_AUTHORS_ACTIVE_STMT = """
+        SELECT * FROM Authors
+        where status = 0
+    """;
+
     private static final String GET_AUTHOR_BY_ID_STMT = """
         SELECT * FROM Authors
         WHERE ID = ?
@@ -110,6 +115,19 @@ public class AuthorDAO implements DAO<Author> {
     public List<Author> getAll() {
         List<Author> authors = new ArrayList<>();
         dbManager.executeQuery(GET_ALL_AUTHORS_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        authors.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                });
+
+        return authors;
+    }
+
+    public List<Author> getAllActive() {
+        List<Author> authors = new ArrayList<>();
+        dbManager.executeQuery(GET_ALL_AUTHORS_ACTIVE_STMT,
                 rs -> {
                     while (rs.next()) {
                         authors.add(mapResultSetToEntity(rs));

@@ -62,7 +62,7 @@ public class GenresController extends Controller implements Initializable {
                             .anyMatch(g -> g.getName().equalsIgnoreCase(name));
 
                     if (!exists) {
-                        Genre newGenre = new Genre(name, description);
+                        Genre newGenre = new Genre(Controller.toTitleCase(name), description);
                         genreDAO.insert(newGenre);
                         genres = genreDAO.getAll();
                         txtName.clear();

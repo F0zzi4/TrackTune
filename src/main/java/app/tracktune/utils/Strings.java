@@ -55,4 +55,5 @@ public class Strings {
     public static final String CONFIRM_DELETION = "Confirm deletion";
     public static final String ARE_YOU_SURE = "Are you sure to complete this operation?";
     public static final String CHANGE_PRIVILEGES = "Change privileges";
+    public static final String ERR_DELETE_TRACK = "Error to deleting track";
 }

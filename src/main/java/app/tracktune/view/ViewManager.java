@@ -137,10 +137,10 @@ public class ViewManager {
         confirmAlert.setContentText(content);
         confirmAlert.initOwner(root);
 
-        ButtonType yesButton = new ButtonType(Strings.DELETE, ButtonBar.ButtonData.YES);
         ButtonType noButton = new ButtonType(Strings.CANCEL, ButtonBar.ButtonData.NO);
+        ButtonType yesButton = new ButtonType(Strings.DELETE, ButtonBar.ButtonData.YES);
 
-        confirmAlert.getButtonTypes().setAll(yesButton, noButton);
+        confirmAlert.getButtonTypes().setAll(noButton, yesButton);
 
         DialogPane dialogPane = confirmAlert.getDialogPane();
         dialogPane.getStylesheets().add(Main.class.getResource("/style/alert-style.css").toExternalForm());

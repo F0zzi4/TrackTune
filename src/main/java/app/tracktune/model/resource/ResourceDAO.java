@@ -50,6 +50,18 @@ public class ResourceDAO implements DAO<Resource> {
         SELECT * FROM Resources
     """;
 
+    private static final String GET_ALL_RESOURCES_BY_USERID_STMT = """
+        SELECT R.*
+        FROM Resources R
+        JOIN Tracks T ON R.trackID = T.ID
+        WHERE T.userID = ?;
+    """;
+
+    private static final String GET_ALL_RESOURCES_BY_TRACKID_STMT = """
+        SELECT * FROM Resources
+        WHERE trackID = ?
+    """;
+
     private static final String GET_RESOURCE_BY_ID_STMT = """
         SELECT * FROM Resources
         WHERE ID = ?
@@ -172,6 +184,38 @@ public class ResourceDAO implements DAO<Resource> {
                     }
                     return null;
                 }
+        );
+
+        return resources;
+    }
+
+    public List<Resource> getAllByUserID(int userId) {
+        List<Resource> resources = new ArrayList<>();
+
+        dbManager.executeQuery(
+                GET_ALL_RESOURCES_BY_USERID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        resources.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, userId
+        );
+
+        return resources;
+    }
+
+    public List<Resource> getAllByTrackID(int userId) {
+        List<Resource> resources = new ArrayList<>();
+
+        dbManager.executeQuery(
+                GET_ALL_RESOURCES_BY_TRACKID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        resources.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, userId
         );
 
         return resources;

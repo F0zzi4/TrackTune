@@ -1,6 +1,12 @@
 package app.tracktune.utils;
 
+import app.tracktune.exceptions.SQLiteException;
+import app.tracktune.model.DatabaseManager;
+import app.tracktune.view.ViewManager;
+import javafx.scene.control.Alert;
+
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
@@ -30,4 +36,31 @@ public class SQLiteScripts {
 
         return result;
     }
+
+    public static void deleteTrack(DatabaseManager db, int trackID) throws SQLException {
+        String[] queries = {
+                "DELETE FROM Interactions WHERE commentID IN (SELECT ID FROM Comments WHERE trackID = ?) OR replyID IN (SELECT ID FROM Comments WHERE trackID = ?)",
+                "DELETE FROM Comments WHERE trackID = ?",
+                "DELETE FROM ResourcesAuthors WHERE resourceID IN (SELECT ID FROM Resources WHERE trackID = ?)",
+                "DELETE FROM Resources WHERE trackID = ?",
+                "DELETE FROM TracksInstruments WHERE trackID = ?",
+                "DELETE FROM TracksAuthors WHERE trackID = ?",
+                "DELETE FROM TracksGenres WHERE trackID = ?",
+                "DELETE FROM Tracks WHERE ID = ?"
+        };
+
+        try {
+            for (String query : queries) {
+                if (query.contains("commentID IN")) {
+                    db.executeUpdate(query, trackID, trackID);
+                } else {
+                    db.executeUpdate(query, trackID);
+                }
+            }
+        } catch (SQLiteException ex) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.DELETE, Strings.ERR_DELETE_TRACK, Alert.AlertType.ERROR);
+            System.err.println(ex.getMessage());
+        }
+    }
+
 }

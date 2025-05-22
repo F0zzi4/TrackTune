@@ -1,6 +1,10 @@
 package app.tracktune.controller.admin;
 
 import app.tracktune.controller.Controller;
+import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.controller.authenticatedUser.ResourceFileController;
+import app.tracktune.exceptions.SQLiteException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.genre.Genre;
@@ -9,12 +13,17 @@ import app.tracktune.model.musicalInstrument.MusicalInstrument;
 import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.model.track.*;
+import app.tracktune.utils.Frames;
+import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
+import app.tracktune.view.ViewManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -22,6 +31,7 @@ import javafx.util.StringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -288,11 +298,11 @@ public class TracksController extends Controller implements Initializable {
 
         Button viewBtn = new Button(Strings.VIEW);
         viewBtn.getStyleClass().add("view-button");
-        viewBtn.setOnAction(e -> viewTrack());
+        viewBtn.setOnAction(e -> viewTrack(track));
 
         Button deleteBtn = new Button(Strings.DELETE);
         deleteBtn.getStyleClass().add("reject-button");
-        deleteBtn.setOnAction(e -> deleteTrack());
+        deleteBtn.setOnAction(e -> deleteTrack(track));
 
         HBox buttonBox = new HBox(10, viewBtn, deleteBtn);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
@@ -310,18 +320,42 @@ public class TracksController extends Controller implements Initializable {
 
     /**
      * Placeholder method for viewing track details.
-     * TODO: Implement view logic.
      */
-    private void viewTrack() {
-        // TODO: Implement deletion logic
+    private void viewTrack(Track track) {
+        try{
+            if(parentController instanceof AdminDashboardController authController){
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_ADMIN_VIEW_PATH));
+                loader.setControllerFactory(param -> new ResourcesController(track));
+                Parent view = loader.load();
+
+                Controller controller = loader.getController();
+                controller.setParentController(parentController);
+
+                authController.mainContent.getChildren().setAll(view);
+            }
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
     }
 
     /**
      * Placeholder method for deleting a track.
-     * TODO: Implement delete logic.
      */
-    private void deleteTrack() {
-        // TODO: Implement deletion logic
+    private void deleteTrack(Track track) {
+        boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
+        if(response){
+            try{
+                SQLiteScripts.deleteTrack(DatabaseManager.getInstance(), track.getId());
+            }catch (SQLiteException | SQLException ex) {
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.DELETE, Strings.ERR_DELETE_TRACK, Alert.AlertType.ERROR);
+                System.err.println(ex.getMessage());
+            }
+
+            allTracks.remove(track);
+            filteredTracks.remove(track);
+            updateTracks();
+        }
     }
 
     /**

@@ -54,4 +54,27 @@ public class Controller {
         fileIcon.setIconSize(60);
         return fileIcon;
     }
+
+    /**
+     * Converts a string to title case, capitalizing the first letter of each word.
+     *
+     * @param input the input string
+     * @return the formatted string in title case
+     */
+    public static String toTitleCase(String input) {
+        if (input == null || input.isEmpty()) return input;
+
+        String[] words = input.toLowerCase().split(" ");
+        StringBuilder titleCase = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                titleCase.append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1))
+                        .append(" ");
+            }
+        }
+
+        return titleCase.toString().trim();
+    }
 }
