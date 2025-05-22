@@ -69,7 +69,7 @@ public class InstrumentsController extends Controller implements Initializable {
                         throw new TrackTuneException(Strings.ERR_MUSICAL_INSTRUMENT_ALREADY_EXISTS);
                     }
 
-                    MusicalInstrument newInstrument = new MusicalInstrument(name, description);
+                    MusicalInstrument newInstrument = new MusicalInstrument(Controller.toTitleCase(name), description);
                     instrumentDAO.insert(newInstrument);
                     instruments = instrumentDAO.getAll();
 
