@@ -166,18 +166,13 @@ public class UserDAO implements DAO<User> {
     public User getActiveUserByUsername(String username) {
         AtomicReference<User> userRef = new AtomicReference<>();
 
-        boolean success = dbManager.executeQuery(GET_USER_BY_USERNAME_STMT,
+        dbManager.executeQuery(GET_USER_BY_USERNAME_STMT,
                 rs -> {
                     if (rs.next()) {
                         userRef.set(mapResultSetToEntity(rs));
-                        return true;
                     }
-                    return false;
+                    return null;
                 }, username);
-
-        if (!success) {
-            throw new SQLiteException(Strings.ERR_USER_NOT_FOUND);
-        }
 
         return userRef.get();
     }

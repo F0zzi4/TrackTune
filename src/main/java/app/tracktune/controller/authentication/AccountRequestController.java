@@ -32,10 +32,10 @@ public class AccountRequestController extends Controller {
     @FXML
     private void handleRequest(){
         try{
-            String username = TxtUsername.getText();
-            String password = TxtPassword.getText();
-            String name = TxtName.getText();
-            String surname = TxtSurname.getText();
+            String username = TxtUsername.getText().trim();
+            String password = TxtPassword.getText().trim();
+            String name = TxtName.getText().trim();
+            String surname = TxtSurname.getText().trim();
 
             if(!isInputValid(username, password, name, surname))
                 throw new TrackTuneException(Strings.FIELD_EMPTY);
@@ -46,19 +46,20 @@ public class AccountRequestController extends Controller {
             if(pendingUserDAO.getByUsername(username) != null)
                 throw new EntityAlreadyExistsException(Strings.ERR_REQUEST_ALREADY_EXISTS);
 
+            System.out.println(userDAO.getActiveUserByUsername(username));
             if(userDAO.getActiveUserByUsername(username) != null)
                 throw new EntityAlreadyExistsException(Strings.ERR_USER_ALREADY_EXISTS);
-
             PendingUser pendingUser = new PendingUser(
                     username,
                     password,
-                    name,
-                    surname,
+                    Controller.toTitleCase(name),
+                    Controller.toTitleCase(surname),
                     new Timestamp(System.currentTimeMillis()),
                     AuthRequestStatusEnum.CREATED
             );
+            System.out.println("TEST 4");
             pendingUserDAO.insert(pendingUser);
-            ViewManager.initSessionManager(pendingUserDAO.getByUsername(username));
+            ViewManager.initSessionManager(pendingUser);
             ViewManager.navigateToPendingUserDashboard();
         }catch(TrackTuneException e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_ACCOUNT_REQUEST, e.getMessage(), Alert.AlertType.ERROR);

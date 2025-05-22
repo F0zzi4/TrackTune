@@ -132,7 +132,7 @@ public class AuthorsController extends Controller implements Initializable {
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         Button restoreBtn = new Button(Strings.RESTORE);
-        restoreBtn.getStyleClass().add("restore-button");
+        restoreBtn.getStyleClass().add("accept-button");
         restoreBtn.setOnAction(e -> restoreAuthor(author));
 
         Button removeBtn = new Button(Strings.DELETE);
@@ -197,7 +197,7 @@ public class AuthorsController extends Controller implements Initializable {
 
     @FXML
     public void addAuthor() {
-        String name = TxtName.getText().trim();
+        String name = Controller.toTitleCase(TxtName.getText().trim());
 
         try {
             if (!name.isEmpty()) {
