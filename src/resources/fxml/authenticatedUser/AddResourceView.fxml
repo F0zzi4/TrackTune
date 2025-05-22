@@ -21,12 +21,24 @@
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="550.0" style="-fx-background-color: transparent;" vbarPolicy="AS_NEEDED">
         <content>
         <VBox alignment="CENTER" maxWidth="566.0" prefHeight="673.0" prefWidth="566.0" spacing="12">
-
-            <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Add Resource">
-                <graphic>
-                    <FontIcon iconLiteral="mdi2f-file-music" iconSize="27" />
-                </graphic>
-            </Label>
+               <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
+                  <children>
+                     <Region prefHeight="51.0" prefWidth="0.0" />
+                     <Button mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="43.0" prefWidth="54.0" styleClass="search-button" stylesheets="@../../style/account_request-style.css">
+                        <graphic>
+                           <FontIcon iconLiteral="mdi2a-arrow-left-thick" iconSize="22" />
+                        </graphic>
+                     </Button>
+                     <Region prefHeight="51.0" prefWidth="43.0" />
+      
+                  <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Add Resource">
+                      <graphic>
+                          <FontIcon iconLiteral="mdi2f-file-music" iconSize="27" />
+                      </graphic>
+                  </Label>
+                     <Region prefHeight="51.0" prefWidth="112.0" />
+                  </children>
+               </HBox>
          <Region prefHeight="16.0" prefWidth="548.0" />
          <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
             <children>

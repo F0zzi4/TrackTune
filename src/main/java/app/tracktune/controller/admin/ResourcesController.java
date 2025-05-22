@@ -4,7 +4,6 @@ import app.tracktune.controller.Controller;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
 import app.tracktune.controller.authenticatedUser.EditResourceController;
 import app.tracktune.controller.authenticatedUser.ResourceFileController;
-import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.resource.Resource;
@@ -14,6 +13,7 @@ import app.tracktune.model.track.TrackAuthor;
 import app.tracktune.model.track.TrackAuthorDAO;
 import app.tracktune.model.track.TrackDAO;
 import app.tracktune.utils.Frames;
+import app.tracktune.utils.ResourceConverter;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -25,7 +25,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -44,7 +43,7 @@ public class ResourcesController extends Controller implements Initializable {
     private List<Resource> resources = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 6;
-    private Track track;
+    private final Track track;
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final TrackDAO trackDAO = new TrackDAO();
     private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
@@ -78,7 +77,7 @@ public class ResourcesController extends Controller implements Initializable {
     private void handleAddResource() {
         try{
             if(parentController instanceof AuthenticatedUserDashboardController authController){
-                ViewManager.setMainContent(Frames.ADD_RESOURCES_VIEW_PATH, authController.mainContent, this);
+                ViewManager.setMainContent(Frames.ADD_RESOURCES_VIEW_PATH, authController.mainContent, parentController);
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
@@ -154,12 +153,8 @@ public class ResourcesController extends Controller implements Initializable {
         int previewWidth = 100;
         int previewHeight = 100;
 
-        Node preview = createPreview(resource, previewWidth, previewHeight);
-        if (preview instanceof ImageView) {
-            ((ImageView) preview).setFitWidth(100);
-            ((ImageView) preview).setFitHeight(100);
-            ((ImageView) preview).setPreserveRatio(true);
-        }
+        ResourceConverter resourceConverter = new ResourceConverter(resource);
+        Node preview = resourceConverter.createMediaNode(previewWidth, previewHeight);
 
         HBox requestItemBox = createRequestItem(resource);
 

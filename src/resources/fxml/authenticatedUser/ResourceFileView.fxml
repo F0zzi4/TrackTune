@@ -19,33 +19,33 @@
                         <FontIcon iconLiteral="mdi2a-arrow-left-thick" iconSize="22" />
                      </graphic>
                   </Button>
-                  <Label layoutX="221.0" layoutY="10.0" prefHeight="51.0" prefWidth="403.0" styleClass="section-title-label" text="Resource Viewer">
+                  <Label fx:id="lblTitle" layoutX="221.0" layoutY="10.0" prefHeight="51.0" prefWidth="403.0" styleClass="section-title-label" text="Resource Viewer">
                      <graphic>
                         <FontIcon iconLiteral="mdi2m-microsoft-xbox-controller-view" iconSize="35" textAlignment="CENTER" wrappingWidth="43.0" />
                      </graphic>
                   </Label>
-                  <StackPane fx:id="fileContainer" layoutX="37.0" layoutY="68.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="537.0" prefWidth="787.0" styleClass="stack-pane" />
-                  <HBox alignment="CENTER" layoutX="37.0" layoutY="607.0" prefHeight="73.0" prefWidth="787.0" styleClass="media-control-bar">
+                  <StackPane fx:id="fileContainer" layoutX="37.0" layoutY="68.0" prefHeight="537.0" prefWidth="787.0" styleClass="stack-pane" />
+                  <HBox fx:id="videoToolBox" alignment="CENTER" layoutX="37.0" layoutY="607.0" prefHeight="73.0" prefWidth="787.0" styleClass="media-control-bar">
                      <children>
-                        <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="15.0" styleClass="search-button">
+                        <Button onMouseClicked="#handlePlay" mnemonicParsing="false" prefHeight="52.0" prefWidth="15.0" styleClass="search-button">
                            <graphic>
                               <FontIcon iconLiteral="mdi2g-google-play" iconSize="32" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
                            </graphic>
                         </Button>
                         <Region prefHeight="73.0" prefWidth="64.0" />
-                        <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
+                        <Button onMouseClicked="#handleStop" mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
                            <graphic>
                               <FontIcon iconLiteral="mdi2s-stop" iconSize="35" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
                            </graphic>
                         </Button>
                         <Region prefHeight="73.0" prefWidth="64.0" />
-                        <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
+                        <Button onMouseClicked="#handleGoBackward" mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
                            <graphic>
                               <FontIcon iconLiteral="mdi2s-step-backward" iconSize="35" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
                            </graphic>
                         </Button>
                         <Region prefHeight="73.0" prefWidth="64.0" />
-                        <Button mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
+                        <Button onMouseClicked="#handleGoForward" mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
                            <graphic>
                               <FontIcon iconLiteral="mdi2s-step-forward" iconSize="35" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
                            </graphic>

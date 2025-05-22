@@ -70,6 +70,7 @@ public class MeController extends Controller implements Initializable {
                     }
 
                     AuthenticatedUser authenticatedUser = new AuthenticatedUser(
+                            user.getId(),
                             username,
                             user.getPassword(),
                             name,
@@ -93,13 +94,11 @@ public class MeController extends Controller implements Initializable {
                 txtSurname.setDisable(true);
 
                 editRole.setText(Strings.EDIT);
-                editRole.getStyleClass().removeAll("accept-button");
-                editRole.getStyleClass().add("delete-button");
 
             } catch (TrackTuneException e) {
-                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_ME, e.getMessage(), Alert.AlertType.ERROR);
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR);
             } catch (Exception e) {
-                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_ME, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             }
         } else {
             txtUsername.setDisable(false);
@@ -107,8 +106,6 @@ public class MeController extends Controller implements Initializable {
             txtSurname.setDisable(false);
 
             editRole.setText(Strings.SAVE);
-            editRole.getStyleClass().removeAll("delete-button");
-            editRole.getStyleClass().add("accept-button");
         }
 
         editable = !editable;

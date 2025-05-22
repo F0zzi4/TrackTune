@@ -1,8 +1,8 @@
-package app.tracktune.controller.admin;
+package app.tracktune.controller.common;
 
 import app.tracktune.controller.Controller;
-import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
-import app.tracktune.controller.authenticatedUser.ResourceFileController;
+import app.tracktune.controller.admin.AdminDashboardController;
+import app.tracktune.controller.admin.ResourcesController;
 import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
@@ -45,7 +45,6 @@ import java.util.stream.Collectors;
  * {@link GenreDAO}, and {@link MusicalInstrumentDAO} to fetch related data.
  */
 public class TracksController extends Controller implements Initializable {
-
     @FXML private VBox tracksContainer;
     @FXML private Button btnPrev, btnNext;
     @FXML private ComboBox<String> filterTypeComboBox;

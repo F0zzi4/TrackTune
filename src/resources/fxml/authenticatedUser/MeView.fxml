@@ -32,25 +32,24 @@
 
                 <HBox alignment="CENTER" spacing="10">
                     <Label prefWidth="100" text="Username:" />
-                    <TextField fx:id="txtUsername" editable="false" promptText="Username" styleClass="nameField" />
+                    <TextField fx:id="txtUsername" disable="true" promptText="Username" styleClass="nameField" />
                 </HBox>
             <Region prefHeight="28.0" prefWidth="740.0" />
 
                 <HBox alignment="CENTER" spacing="10">
                     <Label prefWidth="100" text="Name:" />
-                    <TextField fx:id="txtName" accessibleRoleDescription="ed" editable="false" promptText="First name" styleClass="nameField" />
+                    <TextField fx:id="txtName" disable="true" promptText="Name" styleClass="nameField" />
                 </HBox>
             <Region prefHeight="28.0" prefWidth="740.0" />
 
                 <HBox alignment="CENTER" spacing="10">
                     <Label prefWidth="100" text="Surname:" />
-                    <TextField fx:id="txtSurname" editable="false" promptText="Last name" styleClass="nameField" />
+                    <TextField fx:id="txtSurname" disable="true" promptText="Surname" styleClass="nameField" />
                 </HBox>
 
             </VBox>
          <Region prefHeight="28.0" prefWidth="740.0" />
-
-            <Button fx:id="editRole" onAction="#handleEditButton" styleClass="delete-button" text="Edit" />
+            <Button fx:id="editRole" onAction="#handleEditButton" styleClass="accept-button" text="Edit" />
          <Region prefHeight="28.0" prefWidth="740.0" />
         </VBox>
     </children>
