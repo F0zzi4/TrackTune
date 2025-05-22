@@ -10,6 +10,7 @@ import app.tracktune.model.musicalInstrument.MusicalInstrument;
 import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.model.resource.*;
 import app.tracktune.model.track.*;
+import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
@@ -384,5 +385,20 @@ public class AddResourceController extends Controller implements Initializable {
         selectedAuthorsPane.getChildren().clear();
         selectedGenresPane.getChildren().clear();
         selectedInstrumentsPane.getChildren().clear();
+    }
+
+    /**
+     * Handles the return button click, going back to the previous view.
+     */
+    @FXML
+    private void handleReturn() {
+        try {
+            if (parentController instanceof AuthenticatedUserDashboardController authController) {
+                ViewManager.setMainContent(Frames.RESOURCES_VIEW_PATH, authController.mainContent, parentController);
+            }
+        } catch (Exception e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
     }
 }

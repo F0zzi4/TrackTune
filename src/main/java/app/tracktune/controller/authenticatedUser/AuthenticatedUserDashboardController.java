@@ -76,6 +76,19 @@ public class AuthenticatedUserDashboardController extends Controller implements 
     }
 
     /**
+     * Loads and displays the dashboard view by updating the main content area by initial content
+     */
+    @FXML
+    private void handleTracks(){
+        try{
+            ViewManager.setMainContent(Frames.TRACKS_VIEW_PATH_VIEW_PATH, mainContent, this);
+        } catch(Exception e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
      * Loads and displays the activities view by updating the main content area.
      * It's a log about the activities done by the logged user
      */

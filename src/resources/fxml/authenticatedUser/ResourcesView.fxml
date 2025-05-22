@@ -10,7 +10,7 @@
 <StackPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.ResourcesController">
     <children>
         <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="split-pane-divider">
-            <Label prefHeight="43.0" prefWidth="240.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Resources">
+            <Label prefHeight="57.0" prefWidth="299.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="My Resources">
                 <graphic>
                     <FontIcon iconLiteral="mdi2f-file-music" iconSize="30" />
                 </graphic>
