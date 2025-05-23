@@ -85,9 +85,9 @@ public class MeController extends Controller implements Initializable {
                     ViewManager.initSessionManager(authenticatedUser);
                 }
 
-                txtUsername.setText(user.getUsername());
-                txtName.setText(user.getName());
-                txtSurname.setText(user.getSurname());
+                txtUsername.setText(username);
+                txtName.setText(name);
+                txtSurname.setText(surname);
 
                 txtUsername.setDisable(true);
                 txtName.setDisable(true);

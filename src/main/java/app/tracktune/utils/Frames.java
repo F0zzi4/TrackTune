@@ -24,11 +24,11 @@ public class Frames {
     public static final String AUTHORS_PATH = "/fxml/admin/AuthorsView.fxml";
     public static final String INSTRUMENTS_PATH = "/fxml/admin/InstrumentsView.fxml";
     public static final String DISCOVER_VIEW_PATH = "/fxml/authenticatedUser/DiscoverView.fxml";
-    public static final String RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/ResourcesView.fxml";
-    public static final String ADD_RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/AddResourceView.fxml";
-    public static final String EDIT_RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/EditResourceView.fxml";
-    public static final String RESOURCE_FILE_VIEW_PATH = "/fxml/authenticatedUser/ResourceFileView.fxml";
-    public static final String RESOURCE_ADMIN_VIEW_PATH = "/fxml/admin/ResourcesView.fxml";
+    public static final String MY_RESOURCES_VIEW_PATH = "/fxml/authenticatedUser/UserResourcesView.fxml";
+    public static final String ADD_RESOURCE_VIEW_PATH = "/fxml/common/AddResourceView.fxml";
+    public static final String EDIT_RESOURCE_VIEW_PATH = "/fxml/common/EditResourceView.fxml";
+    public static final String RESOURCE_FILE_VIEW_PATH = "/fxml/common/ResourceFileView.fxml";
+    public static final String RESOURCES_COMMON_VIEW_PATH = "/fxml/common/TrackResourcesView.fxml";
     public static final String ME_VIEW_PATH = "/fxml/authenticatedUser/MeView.fxml";
     public static final String USER_MANAGEMENT_VIEW_PATH = "/fxml/admin/UsersView.fxml";
     public static final String TRACKS_VIEW_PATH_VIEW_PATH = "/fxml/common/TracksView.fxml";

@@ -68,7 +68,7 @@ public class AuthenticatedUserDashboardController extends Controller implements 
     @FXML
     public void handleResources(){
         try{
-            ViewManager.setMainContent(Frames.RESOURCES_VIEW_PATH, mainContent, this);
+            ViewManager.setMainContent(Frames.MY_RESOURCES_VIEW_PATH, mainContent, this);
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());

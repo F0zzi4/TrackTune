@@ -35,15 +35,6 @@
                     </graphic>
                 </Button>
             </HBox>
-         <HBox alignment="CENTER" prefHeight="63.0" prefWidth="740.0">
-            <children>
-<!--                 <Button alignment="CENTER" onMouseClicked="#handleAddResource" styleClass="switch-button" text="Add resource">-->
-<!--                     <graphic>-->
-<!--                         <FontIcon iconLiteral="mdi2f-file-music" iconSize="20" />-->
-<!--                     </graphic>-->
-<!--                 </Button>-->
-            </children>
-         </HBox>
         </VBox>
     </children>
 </StackPane>

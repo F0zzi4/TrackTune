@@ -36,6 +36,7 @@ public class Strings {
     public static final String EDIT = "Edit";
     public static final String SAVE = "Save";
     public static final String VIEW = "View";
+    public static final String LINKED_RESOURCES = "Linked Resources";
     public static final String CANCEL = "Cancel";
     public static final String USER = "USER";
     public static final String EMPTY_LIST = "No elements found";
