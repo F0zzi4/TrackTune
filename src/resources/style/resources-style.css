@@ -378,3 +378,45 @@
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
 }
+
+/* Slider del progresso video */
+.media-slider {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.media-slider .track {
+    -fx-background-insets: 0.5;
+    -fx-background-radius: 8;
+    -fx-pref-height: 6;
+    -fx-background-color:
+            linear-gradient(
+                    to right,
+                    #ff8c00 0%,
+                    #ff8c00 50%,
+                    rgba(255, 140, 0, 0.3) 50%,
+                    rgba(255, 140, 0, 0.3) 100%
+            );
+}
+
+.media-slider .thumb {
+    -fx-background-color: #ff8c00;
+    -fx-background-radius: 12;
+    -fx-pref-width: 16;
+    -fx-pref-height: 16;
+    -fx-effect: dropshadow(gaussian, rgba(255,140,0,0.7), 4, 0.2, 0, 0);
+}
+
+.media-slider:hover .thumb {
+    -fx-background-color: #ffaa33;
+}
+
+/* Label tempo attuale e restante */
+.media-time-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a280f;
+    -fx-min-width: 50px;
+    -fx-alignment: center;
+    -fx-padding: 0 5 0 5;
+}
