@@ -56,6 +56,12 @@
                               <FontIcon iconLiteral="mdi2v-volume-off" iconSize="35" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
                            </graphic>
                         </Button>
+                        <Region prefHeight="73.0" prefWidth="64.0" />
+                        <Button mnemonicParsing="false" onMouseClicked="#handleFullView" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
+                           <graphic>
+                              <FontIcon iconLiteral="mdi2f-fullscreen" iconSize="35" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
+                           </graphic>
+                        </Button>
                      </children>
                   </HBox>
                </children>
