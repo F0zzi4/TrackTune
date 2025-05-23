@@ -1,7 +1,8 @@
-package app.tracktune.controller.authenticatedUser;
+package app.tracktune.controller.common;
 
 import app.tracktune.controller.Controller;
-import app.tracktune.controller.authentication.SessionManager;
+import app.tracktune.controller.admin.AdminDashboardController;
+import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.resource.Resource;
@@ -20,7 +21,9 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -31,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class ResourcesController extends Controller implements Initializable {
+public class TrackResourcesController extends Controller implements Initializable {
     @FXML private VBox resourcesContainer;
     @FXML private Button btnPrev;
     @FXML private Button btnNext;
@@ -39,15 +42,18 @@ public class ResourcesController extends Controller implements Initializable {
     private List<Resource> resources = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 6;
+    private final Track track;
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final TrackDAO trackDAO = new TrackDAO();
     private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
     private final AuthorDAO authorDAO = new AuthorDAO();
     protected Resource resource;
 
+    public TrackResourcesController(Track track) {this.track = track;}
+
     @Override
     public void initialize(URL location, ResourceBundle res) {
-        resources = resourceDAO.getAllByUserID(SessionManager.getInstance().getUser().getId());
+        resources = resourceDAO.getAllByTrackID(track.getId());
 
         btnPrev.setOnAction(e -> {
             if (currentPage > 0) {
@@ -70,7 +76,9 @@ public class ResourcesController extends Controller implements Initializable {
     private void handleAddResource() {
         try{
             if(parentController instanceof AuthenticatedUserDashboardController authController){
-                ViewManager.setMainContent(Frames.ADD_RESOURCES_VIEW_PATH, authController.mainContent, parentController);
+                ViewManager.setMainContent(Frames.ADD_RESOURCE_VIEW_PATH, authController.mainContent, parentController);
+            }else if(parentController instanceof AdminDashboardController adminController){
+                ViewManager.setMainContent(Frames.ADD_RESOURCE_VIEW_PATH, adminController.mainContent, parentController);
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
@@ -81,15 +89,17 @@ public class ResourcesController extends Controller implements Initializable {
     @FXML
     private void viewResource(Resource resource) {
         try{
+            FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
+            loader.setControllerFactory(param -> new ResourceFileController(resource));
+            Parent view = loader.load();
+
+            Controller controller = loader.getController();
+            controller.setParentController(parentController);
+
             if(parentController instanceof AuthenticatedUserDashboardController authController){
-                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
-                loader.setControllerFactory(param -> new ResourceFileController(resource));
-                Parent view = loader.load();
-
-                Controller controller = loader.getController();
-                controller.setParentController(parentController);
-
                 authController.mainContent.getChildren().setAll(view);
+            }else if(parentController instanceof AdminDashboardController adminController){
+                adminController.mainContent.getChildren().setAll(view);
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
@@ -100,15 +110,16 @@ public class ResourcesController extends Controller implements Initializable {
     @FXML
     private void editResource(Resource resource) {
         try{
+            FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCE_VIEW_PATH));
+            loader.setControllerFactory(param -> new EditResourceController(resource));
+            Parent view = loader.load();
+
+            Controller controller = loader.getController();
+            controller.setParentController(parentController);
             if(parentController instanceof AuthenticatedUserDashboardController authController){
-                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCES_VIEW_PATH));
-                loader.setControllerFactory(param -> new EditResourceController(resource));
-                Parent view = loader.load();
-
-                Controller controller = loader.getController();
-                controller.setParentController(parentController);
-
                 authController.mainContent.getChildren().setAll(view);
+            }else if(parentController instanceof AdminDashboardController adminController){
+                adminController.mainContent.getChildren().setAll(view);
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);

@@ -1,9 +1,9 @@
-package app.tracktune.controller.admin;
+package app.tracktune.controller.authenticatedUser;
 
 import app.tracktune.controller.Controller;
-import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
-import app.tracktune.controller.authenticatedUser.EditResourceController;
-import app.tracktune.controller.authenticatedUser.ResourceFileController;
+import app.tracktune.controller.authentication.SessionManager;
+import app.tracktune.controller.common.EditResourceController;
+import app.tracktune.controller.common.ResourceFileController;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.resource.Resource;
@@ -22,9 +22,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -35,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class ResourcesController extends Controller implements Initializable {
+public class UserResourcesController extends Controller implements Initializable {
     @FXML private VBox resourcesContainer;
     @FXML private Button btnPrev;
     @FXML private Button btnNext;
@@ -43,18 +41,15 @@ public class ResourcesController extends Controller implements Initializable {
     private List<Resource> resources = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 6;
-    private final Track track;
     private final ResourceDAO resourceDAO = new ResourceDAO();
     private final TrackDAO trackDAO = new TrackDAO();
     private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
     private final AuthorDAO authorDAO = new AuthorDAO();
     protected Resource resource;
 
-    public ResourcesController(Track track) {this.track = track;}
-
     @Override
     public void initialize(URL location, ResourceBundle res) {
-        resources = resourceDAO.getAllByTrackID(track.getId());
+        resources = resourceDAO.getAllByUserID(SessionManager.getInstance().getUser().getId());
 
         btnPrev.setOnAction(e -> {
             if (currentPage > 0) {
@@ -77,7 +72,7 @@ public class ResourcesController extends Controller implements Initializable {
     private void handleAddResource() {
         try{
             if(parentController instanceof AuthenticatedUserDashboardController authController){
-                ViewManager.setMainContent(Frames.ADD_RESOURCES_VIEW_PATH, authController.mainContent, parentController);
+                ViewManager.setMainContent(Frames.ADD_RESOURCE_VIEW_PATH, authController.mainContent, parentController);
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
@@ -108,7 +103,7 @@ public class ResourcesController extends Controller implements Initializable {
     private void editResource(Resource resource) {
         try{
             if(parentController instanceof AuthenticatedUserDashboardController authController){
-                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCES_VIEW_PATH));
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCE_VIEW_PATH));
                 loader.setControllerFactory(param -> new EditResourceController(resource));
                 Parent view = loader.load();
 

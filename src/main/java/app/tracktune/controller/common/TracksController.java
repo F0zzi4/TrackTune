@@ -2,7 +2,7 @@ package app.tracktune.controller.common;
 
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
-import app.tracktune.controller.admin.ResourcesController;
+import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
 import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
@@ -13,6 +13,7 @@ import app.tracktune.model.musicalInstrument.MusicalInstrument;
 import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.model.track.*;
+import app.tracktune.model.user.Administrator;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
@@ -295,16 +296,21 @@ public class TracksController extends Controller implements Initializable {
         textBox.setAlignment(Pos.CENTER_LEFT);
         textBox.setStyle("-fx-padding: 0 0 0 10;");
 
-        Button viewBtn = new Button(Strings.VIEW);
+        Button viewBtn = new Button(Strings.LINKED_RESOURCES);
         viewBtn.getStyleClass().add("view-button");
         viewBtn.setOnAction(e -> viewTrack(track));
+        HBox buttonBox;
+        if(ViewManager.getSessionUser() instanceof Administrator){
+            Button deleteBtn = new Button(Strings.DELETE);
+            deleteBtn.getStyleClass().add("reject-button");
+            deleteBtn.setOnAction(e -> deleteTrack(track));
 
-        Button deleteBtn = new Button(Strings.DELETE);
-        deleteBtn.getStyleClass().add("reject-button");
-        deleteBtn.setOnAction(e -> deleteTrack(track));
-
-        HBox buttonBox = new HBox(10, viewBtn, deleteBtn);
-        buttonBox.setAlignment(Pos.CENTER_RIGHT);
+            buttonBox = new HBox(10, viewBtn, deleteBtn);
+            buttonBox.setAlignment(Pos.CENTER_RIGHT);
+        }else{
+            buttonBox = new HBox(10, viewBtn);
+            buttonBox.setAlignment(Pos.CENTER_RIGHT);
+        }
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
@@ -322,9 +328,18 @@ public class TracksController extends Controller implements Initializable {
      */
     private void viewTrack(Track track) {
         try{
-            if(parentController instanceof AdminDashboardController authController){
-                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_ADMIN_VIEW_PATH));
-                loader.setControllerFactory(param -> new ResourcesController(track));
+            if(parentController instanceof AdminDashboardController adminController){
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCES_COMMON_VIEW_PATH));
+                loader.setControllerFactory(param -> new TrackResourcesController(track));
+                Parent view = loader.load();
+
+                Controller controller = loader.getController();
+                controller.setParentController(parentController);
+
+                adminController.mainContent.getChildren().setAll(view);
+            }else if(parentController instanceof AuthenticatedUserDashboardController authController){
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCES_COMMON_VIEW_PATH));
+                loader.setControllerFactory(param -> new TrackResourcesController(track));
                 Parent view = loader.load();
 
                 Controller controller = loader.getController();

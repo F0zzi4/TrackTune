@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="747.0" prefWidth="935.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.ResourceFileController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="747.0" prefWidth="935.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.ResourceFileController">
    <children>
       <HBox prefHeight="721.0" prefWidth="875.0" style="-fx-alignment: center;">
          <children>
@@ -27,27 +27,33 @@
                   <StackPane fx:id="fileContainer" layoutX="37.0" layoutY="68.0" prefHeight="537.0" prefWidth="787.0" styleClass="stack-pane" />
                   <HBox fx:id="videoToolBox" alignment="CENTER" layoutX="37.0" layoutY="607.0" prefHeight="73.0" prefWidth="787.0" styleClass="media-control-bar">
                      <children>
-                        <Button onMouseClicked="#handlePlay" mnemonicParsing="false" prefHeight="52.0" prefWidth="15.0" styleClass="search-button">
+                        <Button mnemonicParsing="false" onMouseClicked="#handlePlayPause" prefHeight="52.0" prefWidth="15.0" styleClass="search-button">
                            <graphic>
-                              <FontIcon iconLiteral="mdi2g-google-play" iconSize="32" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
+                              <FontIcon iconLiteral="mdi2p-play" iconSize="32" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
                            </graphic>
                         </Button>
                         <Region prefHeight="73.0" prefWidth="64.0" />
-                        <Button onMouseClicked="#handleStop" mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
+                        <Button mnemonicParsing="false" onMouseClicked="#handleStop" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
                            <graphic>
                               <FontIcon iconLiteral="mdi2s-stop" iconSize="35" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
                            </graphic>
                         </Button>
                         <Region prefHeight="73.0" prefWidth="64.0" />
-                        <Button onMouseClicked="#handleGoBackward" mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
+                        <Button mnemonicParsing="false" onMouseClicked="#handleGoBackward" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
                            <graphic>
                               <FontIcon iconLiteral="mdi2s-step-backward" iconSize="35" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
                            </graphic>
                         </Button>
                         <Region prefHeight="73.0" prefWidth="64.0" />
-                        <Button onMouseClicked="#handleGoForward" mnemonicParsing="false" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
+                        <Button mnemonicParsing="false" onMouseClicked="#handleGoForward" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
                            <graphic>
                               <FontIcon iconLiteral="mdi2s-step-forward" iconSize="35" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
+                           </graphic>
+                        </Button>
+                        <Region prefHeight="73.0" prefWidth="64.0" />
+                        <Button mnemonicParsing="false" onMouseClicked="#handleMute" prefHeight="52.0" prefWidth="63.0" styleClass="search-button">
+                           <graphic>
+                              <FontIcon iconLiteral="mdi2v-volume-off" iconSize="35" textAlignment="CENTER" wrappingWidth="35.666656494140625" />
                            </graphic>
                         </Button>
                      </children>

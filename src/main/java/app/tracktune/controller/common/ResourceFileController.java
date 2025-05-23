@@ -1,6 +1,8 @@
-package app.tracktune.controller.authenticatedUser;
+package app.tracktune.controller.common;
 
 import app.tracktune.controller.Controller;
+import app.tracktune.controller.admin.AdminDashboardController;
+import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.utils.Frames;
@@ -11,11 +13,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -30,6 +34,7 @@ public class ResourceFileController extends Controller implements Initializable 
     private final int defaultSkipTime = 10;
     private final int defaultGapContainerToolBox = 30;
     private final int defaultGapTitle = 10;
+    private boolean isPlaying = false;
 
     public ResourceFileController(Resource resource) {
         resourceConverter = new ResourceConverter(resource);
@@ -48,6 +53,7 @@ public class ResourceFileController extends Controller implements Initializable 
                 fileContainer.setLayoutY(fileContainer.getLayoutY() + defaultGapContainerToolBox);
             }else{
                 mediaPlayer = ((MediaView) resourceNode).getMediaPlayer();
+                handlePlayPause();
             }
         }catch(TrackTuneException ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, ex.getMessage(), Alert.AlertType.ERROR);
@@ -75,9 +81,23 @@ public class ResourceFileController extends Controller implements Initializable 
      * If an error occurs during playback, an alert is shown and the media player is disposed.
      */
     @FXML
-    private void handlePlay() {
+    private void handlePlayPause() {
         try {
-            mediaPlayer.play();
+            if (mediaPlayer != null) {
+                Node node = videoToolBox.getChildren().getFirst();
+
+                if (node instanceof Button button && button.getGraphic() instanceof FontIcon icon) {
+                    if (isPlaying) {
+                        mediaPlayer.pause();
+                        isPlaying = false;
+                        icon.setIconLiteral("mdi2p-play");
+                    } else {
+                        mediaPlayer.play();
+                        isPlaying = true;
+                        icon.setIconLiteral("mdi2p-pause");
+                    }
+                }
+            }
         } catch (Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.MEDIA_ERROR, Alert.AlertType.ERROR);
             System.err.println(Strings.MEDIA_ERROR + e.getMessage());
@@ -144,15 +164,45 @@ public class ResourceFileController extends Controller implements Initializable 
     }
 
     /**
+     * Toggles the mute state of the media player.
+     * If the media player is currently muted, it will be unmuted and vice versa.
+     * Also updates the button's icon accordingly.
+     */
+    @FXML
+    private void handleMute() {
+        try {
+            if (mediaPlayer != null) {
+                mediaPlayer.setMute(!mediaPlayer.isMute());
+
+                Node node = videoToolBox.getChildren().get(8);
+                if (node instanceof Button button && button.getGraphic() instanceof FontIcon icon) {
+                    if (mediaPlayer.isMute()) {
+                        icon.setIconLiteral("mdi2v-volume-high");
+                    } else {
+                        icon.setIconLiteral("mdi2v-volume-off");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.MEDIA_ERROR, Alert.AlertType.ERROR);
+            System.err.println(Strings.MEDIA_ERROR + e.getMessage());
+            disposeMediaPlayer();
+        }
+    }
+
+    /**
      * Handles the return button click, going back to the previous view.
      */
     @FXML
     private void handleReturn() {
         try {
             if (parentController instanceof AuthenticatedUserDashboardController authController) {
-                ViewManager.setMainContent(Frames.RESOURCES_VIEW_PATH, authController.mainContent, parentController);
-                disposeMediaPlayer();
+                ViewManager.setMainContent(Frames.MY_RESOURCES_VIEW_PATH, authController.mainContent, parentController);
             }
+            else if(parentController instanceof AdminDashboardController adminController){
+                ViewManager.setMainContent(Frames.TRACKS_VIEW_PATH_VIEW_PATH, adminController.mainContent, parentController);
+            }
+            disposeMediaPlayer();
         } catch (Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
