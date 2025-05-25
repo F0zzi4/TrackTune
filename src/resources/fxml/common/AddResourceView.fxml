@@ -18,13 +18,13 @@
 
 <StackPane prefHeight="770.0" prefWidth="800.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.AddResourceController">
     <children>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="550.0" style="-fx-background-color: transparent;" vbarPolicy="AS_NEEDED">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="550.0" style="-fx-background-color: transparent;">
         <content>
         <VBox alignment="CENTER" maxWidth="566.0" prefHeight="673.0" prefWidth="566.0" spacing="12">
                <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
                   <children>
                      <Region prefHeight="51.0" prefWidth="0.0" />
-                     <Button mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="43.0" prefWidth="54.0" styleClass="search-button" stylesheets="@../../style/account_request-style.css">
+                     <Button mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="50.0" prefWidth="40.0" styleClass="back-button" stylesheets="@../../style/account_request-style.css">
                         <graphic>
                            <FontIcon iconLiteral="mdi2a-arrow-left-thick" iconSize="22" />
                         </graphic>
@@ -84,14 +84,6 @@
                <InnerShadow />
             </effect></MFXToggleButton>
          <ProgressBar id="custom-progress" prefHeight="9.0" prefWidth="371.0" progress="0.0" />
-        <HBox fx:id="durationBox" alignment="CENTER_LEFT" managed="false" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;" visible="false">
-            <children>
-                <Label prefHeight="25.0" prefWidth="75.0" styleClass="label-title" text="Duration:" />
-                <TextField fx:id="txtDuration" prefHeight="43.0" prefWidth="236.0" styleClass="nameField" />
-                <Region prefHeight="43.0" prefWidth="45.0" />
-            </children>
-        </HBox>
-
         <HBox fx:id="locationBox" alignment="CENTER_LEFT" managed="false" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;" visible="false">
             <children>
                 <Label prefHeight="25.0" prefWidth="75.0" styleClass="label-title" text="Location:" />

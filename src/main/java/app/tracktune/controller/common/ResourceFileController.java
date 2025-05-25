@@ -6,7 +6,7 @@ import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardCont
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.utils.Frames;
-import app.tracktune.utils.ResourceConverter;
+import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -39,7 +39,7 @@ public class ResourceFileController extends Controller implements Initializable 
     @FXML private Label lblTitle;
 
 
-    private final ResourceConverter resourceConverter;
+    private final ResourceManager resourceManager;
     private MediaPlayer mediaPlayer;
 
     //CONSTANTS
@@ -52,13 +52,13 @@ public class ResourceFileController extends Controller implements Initializable 
 
 
     public ResourceFileController(Resource resource) {
-        resourceConverter = new ResourceConverter(resource);
+        resourceManager = new ResourceManager(resource);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            Node resourceNode = resourceConverter.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight());
+            Node resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight());
             boolean isMultimedia = resourceNode instanceof MediaView;
 
             if (!isMultimedia) {
@@ -178,7 +178,6 @@ public class ResourceFileController extends Controller implements Initializable 
         int seconds = (int) (duration.toSeconds() % 60);
         return String.format("%02d:%02d", minutes, seconds);
     }
-
 
     /**
      * Stops the media player if it's active and releases the used resources.

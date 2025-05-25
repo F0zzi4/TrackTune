@@ -2,30 +2,32 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="747.0" prefWidth="935.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.ResourceFileController">
+<StackPane prefHeight="816.0" prefWidth="1245.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.ResourceFileController">
    <children>
-      <HBox prefHeight="721.0" prefWidth="875.0" style="-fx-alignment: center;">
+      <HBox alignment="CENTER_LEFT" prefHeight="884.0" prefWidth="1170.0" style="-fx-alignment: center;">
          <children>
-            <AnchorPane prefHeight="705.0" prefWidth="861.0" styleClass="anchor-pane">
+            <AnchorPane prefHeight="777.0" prefWidth="861.0" styleClass="anchor-pane">
                <children>
-                  <Button layoutX="37.0" layoutY="13.0" mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="43.0" prefWidth="54.0" styleClass="search-button" stylesheets="@../../style/account_request-style.css">
+                  <Button layoutX="30.0" layoutY="16.0" mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="50.0" prefWidth="40.0" styleClass="back-button" stylesheets="@../../style/account_request-style.css">
                      <graphic>
-                        <FontIcon iconLiteral="mdi2a-arrow-left-thick" iconSize="22" />
+                        <FontIcon iconLiteral="mdi2a-arrow-left-thick" iconSize="22" wrappingWidth="23.0" />
                      </graphic>
                   </Button>
-                  <Label fx:id="lblTitle" layoutX="221.0" layoutY="10.0" prefHeight="51.0" prefWidth="403.0" styleClass="section-title-label" text="Resource Viewer">
+                  <Label fx:id="lblTitle" layoutX="229.0" layoutY="19.0" prefHeight="51.0" prefWidth="403.0" styleClass="section-title-label" text="Resource Viewer">
                      <graphic>
                         <FontIcon iconLiteral="mdi2m-microsoft-xbox-controller-view" iconSize="35" textAlignment="CENTER" wrappingWidth="43.0" />
                      </graphic>
                   </Label>
-                  <StackPane fx:id="fileContainer" layoutX="37.0" layoutY="68.0" prefHeight="537.0" prefWidth="787.0" styleClass="stack-pane" />
-                  <HBox fx:id="videoToolBox" alignment="CENTER" layoutX="37.0" layoutY="607.0" prefHeight="73.0" prefWidth="787.0" styleClass="media-control-bar">
+                  <StackPane fx:id="fileContainer" layoutX="24.0" layoutY="86.0" prefHeight="557.0" prefWidth="814.0" styleClass="stack-pane" />
+                  <HBox fx:id="videoToolBox" alignment="CENTER" layoutX="24.0" layoutY="659.0" prefHeight="82.0" prefWidth="814.0" styleClass="media-control-bar">
                      <children>
                         <Button mnemonicParsing="false" onMouseClicked="#handlePlayPause" prefHeight="52.0" prefWidth="15.0" styleClass="search-button">
                            <graphic>
@@ -66,6 +68,21 @@
                   </HBox>
                </children>
             </AnchorPane>
+            <HBox prefHeight="745.0" prefWidth="309.0">
+               <children>
+                  <AnchorPane prefHeight="745.0" prefWidth="316.0" styleClass="anchor-pane">
+                     <children>
+                        <Label layoutX="16.0" layoutY="22.0" prefHeight="51.0" prefWidth="286.0" styleClass="section-title-label" text="Comments">
+                           <graphic>
+                              <FontIcon iconLiteral="mdi2c-comment-text-multiple" iconSize="30" textAlignment="CENTER" wrappingWidth="40" />
+                           </graphic>
+                        </Label>
+                        <TextField layoutX="17.0" layoutY="697.0" prefHeight="50.0" prefWidth="286.0" styleClass="nameField" />
+                        <VBox layoutX="10.0" layoutY="82.0" prefHeight="583.0" prefWidth="298.0" />
+                     </children>
+                  </AnchorPane>
+               </children>
+            </HBox>
          </children>
       </HBox>
    </children>

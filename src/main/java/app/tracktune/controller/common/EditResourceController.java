@@ -16,6 +16,7 @@ import app.tracktune.model.resource.ResourceDAO;
 import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.*;
 import app.tracktune.utils.Frames;
+import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
@@ -31,6 +32,7 @@ import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -44,9 +46,7 @@ public class EditResourceController extends Controller implements Initializable 
     @FXML private ComboBox<MusicalInstrument> instrumentComboBox;
     @FXML private FlowPane selectedInstrumentsPane;
     @FXML private MFXToggleButton btnIsMultimedia;
-    @FXML private HBox durationBox;
     @FXML private HBox locationBox;
-    @FXML private TextField txtDuration;
     @FXML private TextField txtLocation;
     @FXML private DatePicker resourceDate;
     @FXML private HBox resourceDateBox;
@@ -134,7 +134,6 @@ public class EditResourceController extends Controller implements Initializable 
 
         if(resource instanceof MultimediaResource multimediaResource){
             btnIsMultimedia.setSelected(true);
-            txtDuration.setText(String.valueOf(multimediaResource.getDuration()));
             txtLocation.setText(multimediaResource.getLocation());
             resourceDate.setValue(multimediaResource.getResourceDate().toLocalDate());
         }
@@ -174,8 +173,6 @@ public class EditResourceController extends Controller implements Initializable 
 
     private void setIsMultimediaListener() {
         btnIsMultimedia.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-            durationBox.setVisible(isSelected);
-            durationBox.setManaged(isSelected);
             locationBox.setVisible(isSelected);
             locationBox.setManaged(isSelected);
             resourceDateBox.setVisible(isSelected);
@@ -183,8 +180,6 @@ public class EditResourceController extends Controller implements Initializable 
         });
 
         boolean isSelected = btnIsMultimedia.isSelected();
-        durationBox.setVisible(isSelected);
-        durationBox.setManaged(isSelected);
         locationBox.setVisible(isSelected);
         locationBox.setManaged(isSelected);
         resourceDateBox.setVisible(isSelected);
@@ -263,10 +258,10 @@ public class EditResourceController extends Controller implements Initializable 
 
     private void manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
         if (isMultimedia) {
-            String duration = txtDuration.getText();
+            Time duration = ResourceManager.calcMediaDuration(data, type.toString());
             String location = txtLocation.getText();
             resourceDAO.updateById(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
-                    Integer.parseInt(duration), location, Date.valueOf(resourceDate.getValue()), trackId), resource.getId());
+                    duration, location, Date.valueOf(resourceDate.getValue()), trackId), resource.getId());
         } else {
             resourceDAO.updateById(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId), resource.getId());
         }
@@ -302,7 +297,6 @@ public class EditResourceController extends Controller implements Initializable 
 
     private void resetFields() {
         txtTrack.clear();
-        txtDuration.clear();
         txtLocation.clear();
         resourceDate.setValue(null);
         selectedAuthors.clear();
@@ -312,8 +306,6 @@ public class EditResourceController extends Controller implements Initializable 
         genreComboBox.getEditor().clear();
         instrumentComboBox.getEditor().clear();
         btnIsMultimedia.setSelected(false);
-        durationBox.setVisible(false);
-        durationBox.setManaged(false);
         selectedAuthorsPane.getChildren().clear();
         selectedGenresPane.getChildren().clear();
         selectedInstrumentsPane.getChildren().clear();

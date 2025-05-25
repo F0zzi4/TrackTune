@@ -46,12 +46,12 @@ public class DBInit {
     private static final String CREATE_COMMENTS_TABLE_STMT = """
         CREATE TABLE IF NOT EXISTS Comments (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
+            description TEXT NOT NULL,
+            startTrackInterval TIME,
+            endTrackInterval TIME,
+            creationDate TIMESTAMP NOT NULL,
             userID INTEGER,
             trackID INTEGER,
-            description TEXT NOT NULL,
-            startTrackInterval INTEGER,
-            endTrackInterval INTEGER,
-            creationDate TIMESTAMP NOT NULL,
             FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE,
             FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE
         );
@@ -93,7 +93,7 @@ public class DBInit {
             data BLOB NOT NULL,
             creationDate TIMESTAMP NOT NULL,
             isMultimedia INTEGER CHECK (isMultimedia IN (0, 1)) NOT NULL,
-            duration INTEGER,
+            duration TIME,
             location TEXT,
             resourceDate TIMESTAMP,
             trackID INTEGER,

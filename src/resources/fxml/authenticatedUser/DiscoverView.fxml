@@ -7,62 +7,68 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="796.0" prefWidth="1109.0" stylesheets="@../../style/discover-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.DiscoverController">
- <children>
-    <AnchorPane prefHeight="241.0" prefWidth="1109.0" styleClass="split-pane-divider">
-         <children>
-            <Label layoutX="282.0" layoutY="14.0" prefHeight="49.0" prefWidth="511.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Discover Community">
-                <graphic>
-                    <FontIcon iconLiteral="mdi2a-account-group" iconSize="30" />
-                </graphic>
-            </Label>
-            <HBox layoutX="315.0" layoutY="131.0" prefHeight="47.0" prefWidth="446.0" style="-fx-alignment: center;">
+<AnchorPane prefHeight="307.0" prefWidth="1054.0" stylesheets="@../../style/discover-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.DiscoverController">
+    <children>
+        <AnchorPane prefHeight="241.0" styleClass="split-pane-divider" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <children>
+                <VBox alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" wrappingWidth="43.0" />
-                  <TextField prefHeight="38.0" prefWidth="360.0" />
-                  <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" textAlignment="RIGHT" wrappingWidth="43.0" />
+                      <Label prefHeight="49.0" prefWidth="511.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Discover Community">
+                          <graphic>
+                              <FontIcon iconLiteral="mdi2a-account-group" iconSize="30" />
+                          </graphic>
+                      </Label>
+                      <Label prefHeight="30.0" prefWidth="784.0" style="-fx-font-size: 22; -fx-alignment: center;" styleClass="section-subtitle-label" text="Take a look at what community posted about their favorite tracks" />
+                      <HBox alignment="CENTER" prefHeight="47.0" prefWidth="446.0" style="-fx-alignment: center;">
+                          <children>
+                              <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" wrappingWidth="43.0" />
+                              <TextField prefHeight="38.0" prefWidth="360.0" />
+                              <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" textAlignment="RIGHT" wrappingWidth="43.0" />
+                          </children>
+                      </HBox>
+                      <Button fx:id="btnSearch" styleClass="search-button" text="Search">
+                          <graphic>
+                              <FontIcon iconLiteral="mdi2c-card-search" iconSize="20" />
+                          </graphic>
+                      </Button>
                </children>
-            </HBox>
-            <Label layoutX="146.0" layoutY="80.0" prefHeight="30.0" prefWidth="784.0" style="-fx-font-size: 22; -fx-alignment: center;" styleClass="section-subtitle-label" text="Take a look at what community posted about their favorite tracks" />
-            <Button fx:id="btnSearch" layoutX="488.0" layoutY="186.0" styleClass="search-button" text="Search">
-               <graphic>
-                  <FontIcon iconLiteral="mdi2c-card-search" iconSize="20" />
-               </graphic>
-            </Button>
-         </children>
-    </AnchorPane>
-    <AnchorPane layoutY="249.0" prefHeight="553.0" prefWidth="1109.0" styleClass="split-pane-divider">
-         <children>
-            <TabPane layoutX="43.0" layoutY="10.0" prefHeight="525.0" prefWidth="1025.0" styleClass="split-pane-divider" tabClosingPolicy="UNAVAILABLE">
-              <tabs>
-                <Tab fx:id="tabMostRecent" text="Most recent">
-                    <graphic>
-                        <FontIcon iconLiteral="mdi2s-sort-calendar-ascending" iconSize="20" />
-                    </graphic>
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="426.0" prefWidth="883.0" />
-                    </content>
-                </Tab>
-                <Tab fx:id="tabPopular" text="Popular">
-                    <graphic>
-                        <FontIcon iconLiteral="mdi2s-star-box" iconSize="20" />
-                    </graphic>
-                    <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                    </content>
-                </Tab>
-                  <Tab fx:id="tabUnpopular" text="Unpopular">
-                      <graphic>
-                          <FontIcon iconLiteral="mdi2s-star-four-points" iconSize="20" />
-                      </graphic>
-                      <content>
-                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                      </content>
-                  </Tab>
-              </tabs>
-            </TabPane>
-         </children></AnchorPane>
- </children>
+            </VBox>
+            </children>
+        </AnchorPane>
+        <AnchorPane styleClass="split-pane-divider" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="241.0">
+            <children>
+                <TabPane layoutX="43.0" layoutY="10.0" styleClass="split-pane-divider" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <tabs>
+                        <Tab fx:id="tabMostRecent" text="Most recent">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi2s-sort-calendar-ascending" iconSize="20" />
+                            </graphic>
+                            <content>
+                                <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </content>
+                        </Tab>
+                        <Tab fx:id="tabPopular" text="Popular">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi2s-star-box" iconSize="20" />
+                            </graphic>
+                            <content>
+                                <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </content>
+                        </Tab>
+                        <Tab fx:id="tabUnpopular" text="Unpopular">
+                            <graphic>
+                                <FontIcon iconLiteral="mdi2s-star-four-points" iconSize="20" />
+                            </graphic>
+                            <content>
+                                <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </children>
+        </AnchorPane>
+    </children>
 </AnchorPane>

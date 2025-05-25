@@ -61,6 +61,12 @@ public class TrackGenreDAO implements DAO<TrackGenre> {
         WHERE genreID = ?
     """;
 
+    private static final String GET_TRACK_GENRE_BY_TRACK_AND_GENRE_ID = """
+        SELECT *
+        FROM TracksGenres
+        WHERE trackID = ? AND genreID = ?
+    """;
+
     public TrackGenreDAO() {
         dbManager = Main.dbManager;
     }
@@ -154,6 +160,25 @@ public class TrackGenreDAO implements DAO<TrackGenre> {
         }
 
         return trackGenres;
+    }
+
+    public TrackGenre getByTrackIdAndGenreId(int trackId, int genreId) {
+        AtomicReference<TrackGenre> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_TRACK_GENRE_BY_TRACK_AND_GENRE_ID,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, trackId, genreId);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return result.get();
     }
 
     @Override

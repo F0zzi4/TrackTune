@@ -1,11 +1,11 @@
 package app.tracktune.model.resource;
 
-import java.sql.Blob;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 
 public class MultimediaResource extends Resource {
-    private final int duration;
+    private final Time duration;
     private final String location;
     private final Date resourceDate;
 
@@ -15,7 +15,7 @@ public class MultimediaResource extends Resource {
             byte[] data,
             Timestamp creationDate,
             boolean isMultimedia,
-            int duration,
+            Time duration,
             String location,
             Date resourceDate,
             int trackID
@@ -31,7 +31,7 @@ public class MultimediaResource extends Resource {
             byte[] data,
             Timestamp creationDate,
             boolean isMultimedia,
-            int duration,
+            Time duration,
             String location,
             Date resourceDate,
             int trackID
@@ -42,7 +42,7 @@ public class MultimediaResource extends Resource {
         this.resourceDate = resourceDate;
     }
 
-    public int getDuration() {
+    public Time getDuration() {
         return duration;
     }
 

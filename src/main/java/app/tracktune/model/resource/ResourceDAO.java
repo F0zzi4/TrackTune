@@ -6,10 +6,7 @@ import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.utils.Strings;
 
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -57,7 +54,7 @@ public class ResourceDAO implements DAO<Resource> {
         WHERE T.userID = ?;
     """;
 
-    private static final String GET_ALL_RESOURCES_BY_TRACKID_STMT = """
+    private static final String GET_ALL_RESOURCES_BY_TRACK_ID_STMT = """
         SELECT * FROM Resources
         WHERE trackID = ?
     """;
@@ -209,7 +206,7 @@ public class ResourceDAO implements DAO<Resource> {
         List<Resource> resources = new ArrayList<>();
 
         dbManager.executeQuery(
-                GET_ALL_RESOURCES_BY_TRACKID_STMT,
+                GET_ALL_RESOURCES_BY_TRACK_ID_STMT,
                 rs -> {
                     while (rs.next()) {
                         resources.add(mapResultSetToEntity(rs));
@@ -230,7 +227,7 @@ public class ResourceDAO implements DAO<Resource> {
         int trackID = rs.getInt(TRACK_ID);
 
         if (isMultimedia) {
-            int duration = rs.getInt(DURATION);
+            Time duration = rs.getTime(DURATION);
             String location = rs.getString(LOCATION);
             Date resourceDate = rs.getDate(RESOURCE_DATE);
             return new MultimediaResource(id, type, data, creationDate, true, duration, location, resourceDate, trackID);
