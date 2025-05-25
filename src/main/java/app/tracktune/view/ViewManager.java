@@ -149,15 +149,32 @@ public class ViewManager {
         return confirmAlert.showAndWait().filter(response -> response == yesButton).isPresent();
     }
 
-    public static void navigateToLogin(){redirectView(Frames.LOGIN_VIEW_PATH, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);}
+    public static void navigateToLogin(){
+        root.setResizable(false);
+        root.setFullScreen(false);
+        redirectView(Frames.LOGIN_VIEW_PATH, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);
+    }
 
-    public static void navigateToAdminDashboard(){redirectView(Frames.ADMIN_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);}
+    public static void navigateToAccountRequest(){
+        root.setResizable(false);
+        redirectView(Frames.ACCOUNT_REQUEST_VIEW_PATH, Frames.ACCOUNT_REQUEST_FRAME_WIDTH, Frames.ACCOUNT_REQUEST_FRAME_HEIGHT);
+    }
 
-    public static void navigateToUserDashboard(){redirectView(Frames.USER_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);}
+    public static void navigateToAdminDashboard(){
+        root.setResizable(true);
+        redirectView(Frames.ADMIN_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
+    }
 
-    public static void navigateToAccountRequest(){redirectView(Frames.ACCOUNT_REQUEST_VIEW_PATH, Frames.ACCOUNT_REQUEST_FRAME_WIDTH, Frames.ACCOUNT_REQUEST_FRAME_HEIGHT);}
+    public static void navigateToUserDashboard(){
+        root.setResizable(true);
+        redirectView(Frames.USER_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
+    }
 
-    public static void navigateToPendingUserDashboard(){redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);}
+    public static void navigateToPendingUserDashboard(){
+        root.setResizable(true);
+        root.setFullScreen(true);
+        redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
+    }
 
     /**
      * Sets the main content area of the dashboard to display a new view.

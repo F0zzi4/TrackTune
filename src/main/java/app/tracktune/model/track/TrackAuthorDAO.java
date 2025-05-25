@@ -61,6 +61,12 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
         WHERE authorID = ?
     """;
 
+    private static final String GET_TRACK_AUTHOR_BY_TRACK_AND_AUTHOR_ID = """
+        SELECT *
+        FROM TracksAuthors
+        WHERE trackID = ? AND authorID = ?
+    """;
+
     public TrackAuthorDAO() {
         dbManager = Main.dbManager;
     }
@@ -154,6 +160,25 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
         }
 
         return trackAuthors;
+    }
+
+    public TrackAuthor getByTrackIdAndAuthorId(int trackId, int authorId) {
+        AtomicReference<TrackAuthor> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_TRACK_AUTHOR_BY_TRACK_AND_AUTHOR_ID,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, trackId, authorId);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return result.get();
     }
 
     @Override

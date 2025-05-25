@@ -14,8 +14,8 @@ public class Frames {
     public static final int ACCOUNT_REQUEST_FRAME_HEIGHT = 560;
     public static final String ACCOUNT_REQUEST_VIEW_PATH = "/fxml/authentication/AccountRequestView.fxml";
     // DASHBOARD
-    public static final int DASHBOARD_FRAME_WIDTH = 1300;
-    public static final int DASHBOARD_FRAME_HEIGHT = 830;
+    public static final int DASHBOARD_FRAME_WIDTH = 1600;
+    public static final int DASHBOARD_FRAME_HEIGHT = 900;
     public static final String ADMIN_DASHBOARD_VIEW_PATH = "/fxml/admin/AdminDashboardView.fxml";
     public static final String USER_DASHBOARD_VIEW_PATH = "/fxml/authenticatedUser/AuthenticatedUserDashboardView.fxml";
     public static final String PENDING_DASHBOARD_VIEW_PATH = "/fxml/pendingUser/PendingUserDashboardView.fxml";

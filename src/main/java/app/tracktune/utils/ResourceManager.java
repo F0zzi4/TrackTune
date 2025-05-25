@@ -13,15 +13,17 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.util.Duration;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.sql.Time;
 
-public final class ResourceConverter {
+public final class ResourceManager {
     public final Resource resource;
 
-    public ResourceConverter(Resource resource){
+    public ResourceManager(Resource resource){
         this.resource = resource;
     }
 
@@ -48,12 +50,19 @@ public final class ResourceConverter {
         }
     }
 
+    public static Time calcMediaDuration(byte[] data, String extension){
+        MediaView mediaView = ResourceManager.createMediaPlayer(data, extension);
+        Duration duration = mediaView.getMediaPlayer().getTotalDuration();
+        long millis = Math.round(duration.toMillis());
+        return new Time(millis);
+    }
+
     /**
      * Initializes the media player with a video file located at a specific path.
      * The video will be displayed inside the fileContainer.
      * If the video cannot be loaded or played, an error alert is shown.
      */
-    private MediaView createMediaPlayer(byte[] videoBytes, String extension) {
+    private static MediaView createMediaPlayer(byte[] videoBytes, String extension) {
         MediaView mediaView = null;
         try {
             File tempFile = File.createTempFile("temp", extension);

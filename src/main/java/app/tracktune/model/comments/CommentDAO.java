@@ -1,0 +1,147 @@
+package app.tracktune.model.comments;
+
+import app.tracktune.Main;
+import app.tracktune.exceptions.SQLiteException;
+import app.tracktune.interfaces.DAO;
+import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.Strings;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+public class CommentDAO implements DAO<Comment> {
+    private final DatabaseManager dbManager;
+
+    //FIELDS
+    private static final String ID = "ID";
+    private static final String DESCRIPTION = "description";
+    private static final String START_TRACK_INTERVAL = "startTrackInterval";
+    private static final String END_TRACK_INTERVAL = "endTrackInterval";
+    private static final String CREATION_DATE = "creationDate";
+    private static final String USER_ID = "userID";
+    private static final String TRACK_ID = "trackID";
+
+    // CRUD STATEMENTS
+    private static final String INSERT_COMMENT_STMT = """
+        INSERT INTO Comments (description, startTrackInterval, endTrackInterval, creationDate, userID, trackID)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """;
+
+    private static final String UPDATE_COMMENT_STMT = """
+        UPDATE Comments
+        SET description = ?, startTrackInterval = ?, endTrackInterval = ?, creationDate = ?, userID = ?, trackID = ?
+        WHERE ID = ?
+    """;
+
+    private static final String DELETE_COMMENT_STMT = """
+        DELETE FROM Comments
+        WHERE ID = ?
+    """;
+
+    private static final String GET_ALL_COMMENTS_STMT = """
+        SELECT * FROM Comments
+    """;
+
+    private static final String GET_COMMENT_BY_ID_STMT = """
+        SELECT * FROM Comments
+        WHERE ID = ?
+    """;
+
+    public CommentDAO() {
+        this.dbManager = Main.dbManager;
+    }
+
+    @Override
+    public Integer insert(Comment comment) {
+        boolean success = dbManager.executeUpdate(INSERT_COMMENT_STMT,
+                comment.getDescription(),
+                comment.getStartTrackInterval(),
+                comment.getEndTrackInterval(),
+                comment.getCreationDate(),
+                comment.getUserID(),
+                comment.getTrackID()
+        );
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return dbManager.getLastInsertId();
+    }
+
+    @Override
+    public void updateById(Comment comment, int id) {
+        boolean success = dbManager.executeUpdate(UPDATE_COMMENT_STMT,
+                comment.getDescription(),
+                comment.getStartTrackInterval(),
+                comment.getEndTrackInterval(),
+                comment.getCreationDate(),
+                comment.getUserID(),
+                comment.getTrackID(),
+                id
+        );
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+    }
+
+    @Override
+    public void deleteById(int id) {
+        boolean success = dbManager.executeUpdate(DELETE_COMMENT_STMT, id);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+    }
+
+    @Override
+    public Comment getById(int id) {
+        AtomicReference<Comment> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_COMMENT_BY_ID_STMT,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, id);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return result.get();
+    }
+
+    @Override
+    public List<Comment> getAll() {
+        List<Comment> comments = new ArrayList<>();
+        dbManager.executeQuery(GET_ALL_COMMENTS_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        comments.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                });
+
+        return comments;
+    }
+
+    private Comment mapResultSetToEntity(ResultSet rs) throws SQLException {
+        int id = rs.getInt(ID);
+        String description = rs.getString(DESCRIPTION);
+        Time startTrackInterval = rs.getTime(START_TRACK_INTERVAL);
+        Time endTrackInterval = rs.getTime(END_TRACK_INTERVAL);
+        Timestamp creationDate = rs.getTimestamp(CREATION_DATE);
+        int userID = rs.getInt(USER_ID);
+        int trackID = rs.getInt(TRACK_ID);
+        return new Comment(id, description, startTrackInterval, endTrackInterval, creationDate, userID, trackID);
+    }
+}

@@ -60,6 +60,12 @@ public class TrackInstrumentDAO implements DAO<TrackInstrument> {
         WHERE instrumentID = ?
     """;
 
+    private static final String GET_TRACK_INSTRUMENT_BY_TRACK_AND_INSTRUMENT_ID = """
+        SELECT *
+        FROM TracksInstruments
+        WHERE trackID = ? AND instrumentID = ?
+    """;
+
     public TrackInstrumentDAO() {
         dbManager = Main.dbManager;
     }
@@ -153,6 +159,25 @@ public class TrackInstrumentDAO implements DAO<TrackInstrument> {
         }
 
         return list;
+    }
+
+    public TrackInstrument getByTrackIdAndInstrumentId(int trackId, int instrumentId) {
+        AtomicReference<TrackInstrument> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_TRACK_INSTRUMENT_BY_TRACK_AND_INSTRUMENT_ID,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, trackId, instrumentId);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return result.get();
     }
 
     @Override

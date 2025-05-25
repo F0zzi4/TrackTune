@@ -13,7 +13,7 @@ import app.tracktune.model.track.TrackAuthor;
 import app.tracktune.model.track.TrackAuthorDAO;
 import app.tracktune.model.track.TrackDAO;
 import app.tracktune.utils.Frames;
-import app.tracktune.utils.ResourceConverter;
+import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -148,8 +148,8 @@ public class UserResourcesController extends Controller implements Initializable
         int previewWidth = 100;
         int previewHeight = 100;
 
-        ResourceConverter resourceConverter = new ResourceConverter(resource);
-        Node preview = resourceConverter.createMediaNode(previewWidth, previewHeight);
+        ResourceManager resourceManager = new ResourceManager(resource);
+        Node preview = resourceManager.createMediaNode(previewWidth, previewHeight);
 
         HBox requestItemBox = createRequestItem(resource);
 

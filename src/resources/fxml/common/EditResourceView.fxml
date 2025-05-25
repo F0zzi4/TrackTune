@@ -24,7 +24,7 @@
                <HBox prefHeight="68.0" prefWidth="548.0">
                   <children>
                      <Region prefHeight="68.0" prefWidth="5.0" />
-                     <Button mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="43.0" prefWidth="54.0" styleClass="search-button" stylesheets="@../../style/account_request-style.css">
+                     <Button mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="50.0" prefWidth="40.0" styleClass="back-button" stylesheets="@../../style/account_request-style.css">
                         <graphic>
                            <FontIcon iconLiteral="mdi2a-arrow-left-thick" iconSize="22" />
                         </graphic>
@@ -74,14 +74,6 @@
                             <InnerShadow />
                         </effect></MFXToggleButton>
                     <ProgressBar id="custom-progress" prefHeight="9.0" prefWidth="371.0" progress="0.0" />
-                    <HBox fx:id="durationBox" alignment="CENTER_LEFT" managed="false" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;" visible="false">
-                        <children>
-                            <Label prefHeight="25.0" prefWidth="75.0" styleClass="label-title" text="Duration:" />
-                            <TextField fx:id="txtDuration" prefHeight="43.0" prefWidth="236.0" styleClass="nameField" />
-                            <Region prefHeight="43.0" prefWidth="45.0" />
-                        </children>
-                    </HBox>
-
                     <HBox fx:id="locationBox" alignment="CENTER_LEFT" managed="false" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;" visible="false">
                         <children>
                             <Label prefHeight="25.0" prefWidth="75.0" styleClass="label-title" text="Location:" />

@@ -13,6 +13,7 @@ import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.model.resource.*;
 import app.tracktune.model.track.*;
 import app.tracktune.utils.Frames;
+import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
@@ -32,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -48,9 +50,7 @@ public class AddResourceController extends Controller implements Initializable {
     @FXML private ComboBox<MusicalInstrument> instrumentComboBox;
     @FXML private FlowPane selectedInstrumentsPane;
     @FXML private MFXToggleButton btnIsMultimedia;
-    @FXML private HBox durationBox;
     @FXML private HBox locationBox;
-    @FXML private TextField txtDuration;
     @FXML private TextField txtLocation;
     @FXML private DatePicker resourceDate;
     @FXML private HBox resourceDateBox;
@@ -209,8 +209,6 @@ public class AddResourceController extends Controller implements Initializable {
 
     private void setIsMultimediaListener() {
         btnIsMultimedia.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-            durationBox.setVisible(isSelected);
-            durationBox.setManaged(isSelected);
             locationBox.setVisible(isSelected);
             locationBox.setManaged(isSelected);
             resourceDateBox.setVisible(isSelected);
@@ -218,8 +216,6 @@ public class AddResourceController extends Controller implements Initializable {
         });
 
         boolean isSelected = btnIsMultimedia.isSelected();
-        durationBox.setVisible(isSelected);
-        durationBox.setManaged(isSelected);
         locationBox.setVisible(isSelected);
         locationBox.setManaged(isSelected);
         resourceDateBox.setVisible(isSelected);
@@ -268,7 +264,7 @@ public class AddResourceController extends Controller implements Initializable {
             else
                 throw new TrackTuneException(Strings.RESOURCE_NOT_UPLOADED);
         } catch (TrackTuneException e) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR);
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, e.getMessage(), Alert.AlertType.ERROR);
         } catch (Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
@@ -330,10 +326,10 @@ public class AddResourceController extends Controller implements Initializable {
     private Integer manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
         Integer result;
         if (isMultimedia) {
-            String duration = txtDuration.getText();
+            Time duration = ResourceManager.calcMediaDuration(data, type.toString());
             String location = txtLocation.getText();
             result = resourceDAO.insert(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
-                    Integer.parseInt(duration), location, Date.valueOf(resourceDate.getValue()), trackId));
+                    duration, location, Date.valueOf(resourceDate.getValue()), trackId));
         } else {
             result = resourceDAO.insert(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId));
         }
@@ -341,25 +337,27 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private void manageTrackEntity(int trackId, Integer[] authorIds, Integer[] genreIds, Integer[] instrumentIds) {
-        Track track = trackDAO.getById(trackId);
-        manageTrackAuthorRelation(authorIds, track.getId());
-        manageTrackGenreRelation(genreIds, track.getId());
-        manageTrackInstrumentRelation(instrumentIds, track.getId());
+        manageTrackAuthorRelation(authorIds, trackId);
+        manageTrackGenreRelation(genreIds, trackId);
+        manageTrackInstrumentRelation(instrumentIds, trackId);
     }
 
     private void manageTrackAuthorRelation(Integer[] authorIds, int trackId){
         for(int authorId : authorIds)
-            trackAuthorDAO.insert(new TrackAuthor(trackId, authorId));
+            if(trackAuthorDAO.getByTrackIdAndAuthorId(trackId, authorId) == null)
+                trackAuthorDAO.insert(new TrackAuthor(trackId, authorId));
     }
 
     private void manageTrackGenreRelation(Integer[] genreIds, int trackId){
         for(int genreId: genreIds)
-            trackGenreDAO.insert(new TrackGenre(trackId, genreId));
+            if(trackGenreDAO.getByTrackIdAndGenreId(trackId, genreId) == null)
+                trackGenreDAO.insert(new TrackGenre(trackId, genreId));
     }
 
     private void manageTrackInstrumentRelation(Integer[] instrumentIds, int trackId){
         for(int instrumentId : instrumentIds)
-            trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId));
+            if(trackInstrumentDAO.getByTrackIdAndInstrumentId(trackId, instrumentId) == null)
+                trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId));
     }
 
     @FXML
@@ -370,7 +368,6 @@ public class AddResourceController extends Controller implements Initializable {
     private void resetFields() {
         trackComboBox.setValue(null);
         txtFilePathField.clear();
-        txtDuration.clear();
         txtLocation.clear();
         resourceDate.setValue(null);
         selectedTracks.clear();
@@ -381,8 +378,6 @@ public class AddResourceController extends Controller implements Initializable {
         genreComboBox.getEditor().clear();
         instrumentComboBox.getEditor().clear();
         btnIsMultimedia.setSelected(false);
-        durationBox.setVisible(false);
-        durationBox.setManaged(false);
         selectedTrackPane.getChildren().clear();
         selectedAuthorsPane.getChildren().clear();
         selectedGenresPane.getChildren().clear();
