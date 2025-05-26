@@ -51,6 +51,18 @@ public class AuthorDAO implements DAO<Author> {
         WHERE ID = ?
     """;
 
+    private static final String GET_AUTHOR_BY_AUTHORSHIP_NAME_STMT = """
+        SELECT * FROM Authors
+        WHERE authorshipName = ?
+    """;
+
+    private static final String GET_ALL_AUTHORS_BY_TRACK_ID_STMT = """
+        SELECT a.*
+        FROM Authors a
+        JOIN TracksAuthors ta ON ta.authorId = a.ID
+        WHERE ta.trackID = ?
+    """;
+
     public AuthorDAO() {
         dbManager = Main.dbManager;
     }
@@ -111,6 +123,21 @@ public class AuthorDAO implements DAO<Author> {
         return result.get();
     }
 
+    public boolean existByAutorShipname(String id) {
+        AtomicReference<Author> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(GET_AUTHOR_BY_AUTHORSHIP_NAME_STMT,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                }, id);
+
+        return success;
+    }
+
     @Override
     public List<Author> getAll() {
         List<Author> authors = new ArrayList<>();
@@ -121,6 +148,20 @@ public class AuthorDAO implements DAO<Author> {
                     }
                     return null;
                 });
+
+        return authors;
+    }
+
+
+    public List<Author> getAllAuthorsByTrackId(int id) {
+        List<Author> authors = new ArrayList<>();
+        dbManager.executeQuery(GET_ALL_AUTHORS_BY_TRACK_ID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        authors.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, id);
 
         return authors;
     }
