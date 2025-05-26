@@ -3,8 +3,20 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.author.Author;
+import app.tracktune.model.author.AuthorDAO;
+import app.tracktune.model.genre.Genre;
+import app.tracktune.model.genre.GenreDAO;
+import app.tracktune.model.musicalInstrument.MusicalInstrument;
+import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
+import app.tracktune.model.resource.MultimediaResource;
 import app.tracktune.model.resource.Resource;
+import app.tracktune.model.resource.ResourceDAO;
+import app.tracktune.model.resource.ResourceTypeEnum;
+import app.tracktune.model.track.Track;
+import app.tracktune.model.track.TrackDAO;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
@@ -15,15 +27,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Screen;
@@ -32,15 +38,22 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
+
 
 public class ResourceFileController extends Controller implements Initializable {
     @FXML private StackPane fileContainer;
     @FXML private HBox videoToolBox;
     @FXML private Label lblTitle;
+    @FXML private VBox metadataBox;
+    @FXML private TextField commentField;
+    @FXML private VBox commentVBox;
 
 
     private final ResourceManager resourceManager;
     private MediaPlayer mediaPlayer;
+    private Node resourceNode;
+    private Track track;
 
     //CONSTANTS
     private final int defaultSkipTime = 10;
@@ -58,7 +71,7 @@ public class ResourceFileController extends Controller implements Initializable 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            Node resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight());
+            resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight());
             boolean isMultimedia = resourceNode instanceof MediaView;
 
             if (!isMultimedia) {
@@ -68,11 +81,13 @@ public class ResourceFileController extends Controller implements Initializable 
                 fileContainer.setLayoutY(fileContainer.getLayoutY() + defaultGapContainerToolBox);
                 fileContainer.getChildren().add(resourceNode);
                 videoToolBox.setVisible(false);
+                metadataBox.getChildren().add(setMetadata());
+                metadataBox.setAlignment(Pos.CENTER);
                 return;
             }
 
-            setUpMediaPlayer(resourceNode);
-
+            setUpMediaPlayer();
+            metadataBox.getChildren().add(setMetadata());
         } catch (TrackTuneException ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, ex.getMessage(), Alert.AlertType.ERROR);
             disposeMediaPlayer();
@@ -84,7 +99,7 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
-    private void setUpMediaPlayer(Node resourceNode) {
+    private void setUpMediaPlayer() {
         mediaPlayer = ((MediaView) resourceNode).getMediaPlayer();
 
         initSlider();
@@ -108,6 +123,70 @@ public class ResourceFileController extends Controller implements Initializable 
 
         videoToolBox.setVisible(true);
         handlePlayPause();
+    }
+
+    private VBox setMetadata() {
+        VBox box = new VBox();
+        box.setAlignment(Pos.CENTER);
+        box.setSpacing(5);
+        TrackDAO trackDAO = new TrackDAO();
+        AuthorDAO authorDAO = new AuthorDAO();
+        GenreDAO genreDAO = new GenreDAO();
+        MusicalInstrumentDAO instrumentDAO = new MusicalInstrumentDAO();
+
+        track = trackDAO.getTrackByResourceId(resourceManager.resource.getId());
+        String title = track.getTitle();
+        box.getChildren().add(createMetadataRow("Title:", title));
+
+        String authors = authorDAO.getAllAuthorsByTrackId(track.getId()).stream()
+                .map(Author::getAuthorshipName)
+                .collect(Collectors.joining(", "));
+        box.getChildren().add(createMetadataRow("Author:", authors));
+
+        String genres = genreDAO.getAllGenresByTrackId(track.getId()).stream()
+                .map(Genre::getName)
+                .collect(Collectors.joining(", "));
+        box.getChildren().add(createMetadataRow("Genre:", genres));
+
+        String instruments = instrumentDAO.getAllInstrumentByTrackId(track.getId()).stream()
+                .map(MusicalInstrument::getName)
+                .collect(Collectors.joining(", "));
+        box.getChildren().add(createMetadataRow("Instruments:", instruments));
+
+        box.getChildren().add(createMetadataRow("File format:", resourceManager.resource.getType().toString()));
+        box.getChildren().add(createMetadataRow("Resource Size:", humanReadableByteCount(resourceManager.resource.getData().length)));
+
+        if(resourceManager.resource instanceof MultimediaResource multimediaResource) {
+            mediaPlayer.setOnReady(() -> {
+                metadataBox.getChildren().add(createMetadataRow("Duration:", formatDuration(mediaPlayer.getTotalDuration())));
+                metadataBox.getChildren().add(createMetadataRow("Registered Data:", multimediaResource.getResourceDate().toString()));
+            });
+        }
+
+        return box;
+    }
+
+
+    /**
+     * Crea una riga di metadato con Label titolo e Label valore, colorate diversamente
+     */
+    private HBox createMetadataRow(String title, String value) {
+        Label lblTitle = new Label(title);
+        lblTitle.getStyleClass().add("metadata-label");
+        Label lblValue = new Label(value != null ? value : "N/A");
+        lblValue.getStyleClass().add("metadata-value");
+
+        HBox row = new HBox(5, lblTitle, lblValue);
+        row.setAlignment(Pos.CENTER);
+        return row;
+    }
+
+    private String humanReadableByteCount(long bytes) {
+        int unit = 1024;
+        if (bytes < unit) return bytes + " B";
+        int exp = (int) (Math.log(bytes) / Math.log(unit));
+        String pre = ("KMGTPE").charAt(exp-1) + "";
+        return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
     private void initSlider() {
@@ -360,6 +439,89 @@ public class ResourceFileController extends Controller implements Initializable 
             System.err.println(Strings.MEDIA_ERROR + e.getMessage());
         }
     }
+
+    @FXML
+    private void handleSendComment() {
+        String commentText = commentField.getText();
+        if (commentText != null && !commentText.trim().isEmpty()) {
+            addComment(commentText);
+            commentField.clear();
+        }
+    }
+
+    private void addComment(String commentText) {
+        // LABEL: Nome Cognome
+        Label nameLabel = new Label(SessionManager.getInstance().getUser().getName() + " " + SessionManager.getInstance().getUser().getSurname());
+        nameLabel.getStyleClass().add("comment-author");
+
+        // Bottoni icona: rispondi
+        FontIcon replyIcon = new FontIcon("mdi2r-reply");
+        replyIcon.setIconSize(18);
+        Button replyButton = new Button();
+        replyButton.setGraphic(replyIcon);
+        replyButton.getStyleClass().add("comment-icon-button");
+        replyButton.setOnAction(e -> {
+            System.out.println("Rispondi a: ");
+
+            //TODO - ..
+        });
+
+        // Bottone icona: elimina
+        FontIcon deleteIcon = new FontIcon("mdi2d-delete");
+        deleteIcon.setIconSize(18);
+        Button deleteButton = new Button();
+        deleteButton.setGraphic(deleteIcon);
+        deleteButton.getStyleClass().add("delete-comment");
+        HBox buttonsBox;
+
+        // TOP: Nome + bottoni
+        HBox topBox = new HBox();
+        topBox.setAlignment(Pos.CENTER_LEFT);
+        topBox.setSpacing(5);
+
+        buttonsBox = new HBox(5, replyButton, deleteButton);
+        buttonsBox.setAlignment(Pos.CENTER_RIGHT);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        topBox.getChildren().addAll(nameLabel, spacer, buttonsBox);
+
+        HBox aboveBox = new HBox();
+        // CENTER: commento
+        Label commentLabel = new Label(commentText);
+        commentLabel.setWrapText(true);
+        commentLabel.getStyleClass().add("comment-text");
+        commentLabel.setAlignment(Pos.CENTER_LEFT);
+
+        // BOTTOM: data
+        FontIcon clockIcon = new FontIcon("mdi2c-clock-outline");
+        clockIcon.setIconSize(14);
+        Label dateLabel = new Label("data ...");
+        dateLabel.setGraphic(clockIcon);
+        dateLabel.setContentDisplay(ContentDisplay.LEFT);
+        dateLabel.getStyleClass().add("comment-date");
+        dateLabel.setAlignment(Pos.CENTER_RIGHT);
+        Region spacer2 = new Region();
+        HBox.setHgrow(spacer2, Priority.ALWAYS);
+        aboveBox.getChildren().addAll(commentLabel, spacer2, dateLabel);
+
+        // VBOX principale del commento
+        VBox commentBox = new VBox(topBox, aboveBox);
+        commentBox.setSpacing(5);
+        commentBox.setPadding(new Insets(10));
+        commentBox.setStyle("-fx-background-color: #f9f9f9; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;");
+        commentBox.setMaxWidth(280);
+
+        // Contenitore principale (opzionale per padding esterno)
+        VBox container = new VBox(commentBox);
+        container.setPadding(new Insets(5, 0, 5, 0));
+
+        deleteButton.setOnAction(e -> {
+            commentVBox.getChildren().remove(container);
+        });
+
+        commentVBox.getChildren().add(container);
+    }
+
 }
 
 

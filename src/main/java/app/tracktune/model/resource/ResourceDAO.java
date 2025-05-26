@@ -101,6 +101,7 @@ public class ResourceDAO implements DAO<Resource> {
         if (!success) {
             throw new SQLiteException(Strings.ERR_DATABASE);
         }
+
         return dbManager.getLastInsertId();
     }
 
@@ -161,10 +162,6 @@ public class ResourceDAO implements DAO<Resource> {
                     }
                     return false;
                 }, id);
-
-        if (!success) {
-            throw new SQLiteException(Strings.ERR_DATABASE);
-        }
 
         return result.get();
     }

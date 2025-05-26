@@ -73,6 +73,13 @@ public class TrackDAO implements DAO<Track> {
     WHERE ta.instrumentID = ?;
     """;
 
+    private static final String GET_TRACK_BY_RESOURCE_ID_STMT = """
+            SELECT t.*
+            FROM Tracks t
+            JOIN Resources r ON r.trackID = t.ID
+            WHERE r.ID = ?
+    """;
+
 
     public TrackDAO() {
         dbManager = Main.dbManager;
@@ -176,6 +183,20 @@ public class TrackDAO implements DAO<Track> {
                 }, id);
 
         return tracks;
+    }
+
+    public Track getTrackByResourceId(int id) {
+        AtomicReference<Track> track = new AtomicReference<>();
+
+        dbManager.executeQuery(GET_TRACK_BY_RESOURCE_ID_STMT,
+                rs -> {
+                    if (rs.next()) {
+                        track.set(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, id);
+
+        return track.get();
     }
 
     @Override

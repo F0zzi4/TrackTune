@@ -174,9 +174,6 @@ public class TrackGenreDAO implements DAO<TrackGenre> {
                     return false;
                 }, trackId, genreId);
 
-        if (!success) {
-            throw new SQLiteException(Strings.ERR_DATABASE);
-        }
 
         return result.get();
     }
