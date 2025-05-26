@@ -3,9 +3,11 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
+import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.model.genre.Genre;
 import app.tracktune.model.genre.GenreDAO;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
@@ -14,6 +16,7 @@ import app.tracktune.model.resource.*;
 import app.tracktune.model.track.*;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
+import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
@@ -399,5 +402,41 @@ public class AddResourceController extends Controller implements Initializable {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
         }
+    }
+
+    /**
+     * Handles the add author button click.
+     */
+    @FXML
+    private void handleAddAuthor(){
+        try{
+            if(authorComboBox.getEditor().getText().isEmpty())
+                throw new TrackTuneException(Strings.FIELD_EMPTY);
+
+            String authorString = authorComboBox.getEditor().getText();
+
+            if(SQLiteScripts.checkForSQLInjection(authorString))
+                throw new TrackTuneException(Strings.ERR_SQL_INJECTION);
+
+            if(!authorDAO.existByAutorShipname(Controller.toTitleCase(authorString))){
+                Author newAuthor = new Author(Controller.toTitleCase(authorString), AuthorStatusEnum.ACTIVE);
+                if(authorDAO.insert(newAuthor) != null){
+                    selectedAuthors.add(newAuthor);
+                    allAuthors.add(newAuthor);
+                    updateSelectedElements(selectedAuthorsPane, selectedAuthors);
+                    authorComboBox.getEditor().clear();
+                    authorComboBox.setItems(allAuthors);
+                }
+                else{
+                    throw new TrackTuneException(Strings.ERR_DATABASE);
+                }
+            }
+            else{
+                throw new AuthorAlreadyExixtsExeption(Strings.ERR_AUTHOR_ALREADY_EXISTS);
+            }
+        }catch (TrackTuneException e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.AUTHOR_FAILED, e.getMessage(), Alert.AlertType.ERROR);
+        }
+
     }
 }

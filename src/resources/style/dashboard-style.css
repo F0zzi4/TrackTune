@@ -90,7 +90,6 @@
     -fx-padding: 10 20;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 6, 0.4, 0, 3);
 }
-
 .news-textbox {
     -fx-background-color: linear-gradient(to bottom, #f4c06f, #ec9a40);
     -fx-border-color: linear-gradient(to bottom, #ffd38a, #f3b766);

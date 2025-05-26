@@ -173,10 +173,6 @@ public class TrackInstrumentDAO implements DAO<TrackInstrument> {
                     return false;
                 }, trackId, instrumentId);
 
-        if (!success) {
-            throw new SQLiteException(Strings.ERR_DATABASE);
-        }
-
         return result.get();
     }
 

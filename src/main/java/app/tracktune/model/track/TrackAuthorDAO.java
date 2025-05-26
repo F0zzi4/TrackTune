@@ -174,9 +174,6 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
                     return false;
                 }, trackId, authorId);
 
-        if (!success) {
-            throw new SQLiteException(Strings.ERR_DATABASE);
-        }
 
         return result.get();
     }
