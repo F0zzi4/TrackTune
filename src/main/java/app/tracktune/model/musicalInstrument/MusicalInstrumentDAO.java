@@ -49,6 +49,13 @@ public class MusicalInstrumentDAO implements DAO<MusicalInstrument> {
         WHERE ID = ?
     """;
 
+    private static final String GET_MUSICAL_INSTRUMENT_BY_TRACK_IDSTMT = """
+    SELECT m.*
+    FROM MusicalInstruments m
+         JOIN TracksInstruments ti ON ti.instrumentID = m.ID
+    WHERE ti.trackID = ?
+    """;
+
     public MusicalInstrumentDAO() {
         this.dbManager = Main.dbManager;
     }
@@ -108,6 +115,22 @@ public class MusicalInstrumentDAO implements DAO<MusicalInstrument> {
         }
 
         return result.get();
+    }
+
+
+    public List<MusicalInstrument> getAllInstrumentByTrackId(int id) {
+        List<MusicalInstrument> instruments = new ArrayList<>();
+
+        dbManager.executeQuery(GET_MUSICAL_INSTRUMENT_BY_TRACK_IDSTMT,
+                rs -> {
+                    while (rs.next()) {
+                        MusicalInstrument instrument = mapResultSetToEntity(rs);
+                        instruments.add(instrument);
+                    }
+                    return null;
+                }, id);
+
+        return instruments;
     }
 
     @Override

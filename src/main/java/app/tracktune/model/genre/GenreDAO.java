@@ -54,6 +54,13 @@ public class GenreDAO implements DAO<Genre> {
         WHERE ID = ?
     """;
 
+    private static final String GET_GENRE_BY_TRACK_ID_STMT = """
+        SELECT g.*
+        FROM Genres g
+        JOIN TracksGenres tg ON tg.genreId = g.ID
+        WHERE tg.trackID = ?
+    """;
+
     public GenreDAO() {
         dbManager = Main.dbManager;
     }
@@ -138,6 +145,21 @@ public class GenreDAO implements DAO<Genre> {
                     }
                     return null;
                 });
+
+        return genres;
+    }
+
+
+    public List<Genre> getAllGenresByTrackId(int id) {
+        List<Genre> genres = new ArrayList<>();
+
+        dbManager.executeQuery(GET_GENRE_BY_TRACK_ID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        genres.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, id);
 
         return genres;
     }
