@@ -7,16 +7,18 @@ import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
+import app.tracktune.model.comments.Comment;
+import app.tracktune.model.comments.CommentDAO;
 import app.tracktune.model.genre.Genre;
 import app.tracktune.model.genre.GenreDAO;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
 import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.model.resource.MultimediaResource;
 import app.tracktune.model.resource.Resource;
-import app.tracktune.model.resource.ResourceDAO;
-import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackDAO;
+import app.tracktune.model.user.User;
+import app.tracktune.model.user.UserDAO;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
@@ -36,6 +38,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
 import java.net.URL;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -51,6 +56,8 @@ public class ResourceFileController extends Controller implements Initializable 
 
 
     private final ResourceManager resourceManager;
+    private final CommentDAO commentDAO = new CommentDAO();
+    public final UserDAO userDAO = new UserDAO();
     private MediaPlayer mediaPlayer;
     private Node resourceNode;
     private Track track;
@@ -81,13 +88,14 @@ public class ResourceFileController extends Controller implements Initializable 
                 fileContainer.setLayoutY(fileContainer.getLayoutY() + defaultGapContainerToolBox);
                 fileContainer.getChildren().add(resourceNode);
                 videoToolBox.setVisible(false);
-                metadataBox.getChildren().add(setMetadata());
+                metadataBox.getChildren().add(setDetailsInfo());
                 metadataBox.setAlignment(Pos.CENTER);
                 return;
             }
 
-            setUpMediaPlayer();
-            metadataBox.getChildren().add(setMetadata());
+            setupMediaPlayer();
+            metadataBox.getChildren().add(setDetailsInfo());
+            setComments();
         } catch (TrackTuneException ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, ex.getMessage(), Alert.AlertType.ERROR);
             disposeMediaPlayer();
@@ -99,7 +107,7 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
-    private void setUpMediaPlayer() {
+    private void setupMediaPlayer() {
         mediaPlayer = ((MediaView) resourceNode).getMediaPlayer();
 
         initSlider();
@@ -125,9 +133,19 @@ public class ResourceFileController extends Controller implements Initializable 
         handlePlayPause();
     }
 
-    private VBox setMetadata() {
+    private void setComments() {
+        if (track != null) {
+            for (Comment comment : commentDAO.getAll()) {
+                User user = userDAO.getById(comment.getUserID());
+                if(user != null)
+                    addCommentOnView(comment.getDescription(), comment.getCreationDate(), user.getName(), user.getSurname());
+            }
+        }
+    }
+
+    private VBox setDetailsInfo() {
         VBox box = new VBox();
-        box.setAlignment(Pos.CENTER);
+        box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(5);
         TrackDAO trackDAO = new TrackDAO();
         AuthorDAO authorDAO = new AuthorDAO();
@@ -136,40 +154,36 @@ public class ResourceFileController extends Controller implements Initializable 
 
         track = trackDAO.getTrackByResourceId(resourceManager.resource.getId());
         String title = track.getTitle();
-        box.getChildren().add(createMetadataRow("Title:", title));
+        box.getChildren().add(createMetadataRow(Strings.TRACKS, title));
 
         String authors = authorDAO.getAllAuthorsByTrackId(track.getId()).stream()
                 .map(Author::getAuthorshipName)
                 .collect(Collectors.joining(", "));
-        box.getChildren().add(createMetadataRow("Author:", authors));
+        box.getChildren().add(createMetadataRow(Strings.AUTHORS, authors));
 
         String genres = genreDAO.getAllGenresByTrackId(track.getId()).stream()
                 .map(Genre::getName)
                 .collect(Collectors.joining(", "));
-        box.getChildren().add(createMetadataRow("Genre:", genres));
+        box.getChildren().add(createMetadataRow(Strings.GENRES, genres));
 
         String instruments = instrumentDAO.getAllInstrumentByTrackId(track.getId()).stream()
                 .map(MusicalInstrument::getName)
                 .collect(Collectors.joining(", "));
-        box.getChildren().add(createMetadataRow("Instruments:", instruments));
+        box.getChildren().add(createMetadataRow(Strings.INSTRUMENTS, instruments));
 
-        box.getChildren().add(createMetadataRow("File format:", resourceManager.resource.getType().toString()));
-        box.getChildren().add(createMetadataRow("Resource Size:", humanReadableByteCount(resourceManager.resource.getData().length)));
+        box.getChildren().add(createMetadataRow(Strings.FILE_FORMAT, resourceManager.resource.getType().toString()));
+        box.getChildren().add(createMetadataRow(Strings.RESOURCE_SIZE, humanReadableByteCount(resourceManager.resource.getData().length)));
 
         if(resourceManager.resource instanceof MultimediaResource multimediaResource) {
             mediaPlayer.setOnReady(() -> {
-                metadataBox.getChildren().add(createMetadataRow("Duration:", formatDuration(mediaPlayer.getTotalDuration())));
-                metadataBox.getChildren().add(createMetadataRow("Registered Data:", multimediaResource.getResourceDate().toString()));
+                metadataBox.getChildren().add(createMetadataRow(Strings.DURATION, formatDuration(mediaPlayer.getTotalDuration())));
+                metadataBox.getChildren().add(createMetadataRow(Strings.REGISTERED_DATA, multimediaResource.getResourceDate().toString()));
             });
         }
 
         return box;
     }
 
-
-    /**
-     * Crea una riga di metadato con Label titolo e Label valore, colorate diversamente
-     */
     private HBox createMetadataRow(String title, String value) {
         Label lblTitle = new Label(title);
         lblTitle.getStyleClass().add("metadata-label");
@@ -177,7 +191,7 @@ public class ResourceFileController extends Controller implements Initializable 
         lblValue.getStyleClass().add("metadata-value");
 
         HBox row = new HBox(5, lblTitle, lblValue);
-        row.setAlignment(Pos.CENTER);
+        row.setAlignment(Pos.CENTER_LEFT);
         return row;
     }
 
@@ -444,29 +458,27 @@ public class ResourceFileController extends Controller implements Initializable 
     private void handleSendComment() {
         String commentText = commentField.getText();
         if (commentText != null && !commentText.trim().isEmpty()) {
-            addComment(commentText);
+            addCommentOnView(commentText, new Timestamp(System.currentTimeMillis()), SessionManager.getInstance().getUser().getName(), SessionManager.getInstance().getUser().getSurname());
+            commentDAO.insert(new Comment(commentText, new Time(new Date().getTime()), new Time(new Date().getTime()), new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), track.getId()));
             commentField.clear();
         }
     }
 
-    private void addComment(String commentText) {
-        // LABEL: Nome Cognome
-        Label nameLabel = new Label(SessionManager.getInstance().getUser().getName() + " " + SessionManager.getInstance().getUser().getSurname());
+    private void addCommentOnView(String commentText, Timestamp timestamp, String name, String surname) {
+        Label nameLabel = new Label(name + " " + surname);
         nameLabel.getStyleClass().add("comment-author");
 
-        // Bottoni icona: rispondi
         FontIcon replyIcon = new FontIcon("mdi2r-reply");
         replyIcon.setIconSize(18);
         Button replyButton = new Button();
         replyButton.setGraphic(replyIcon);
         replyButton.getStyleClass().add("comment-icon-button");
         replyButton.setOnAction(e -> {
-            System.out.println("Rispondi a: ");
+            System.out.println("Reply to: ");
 
             //TODO - ..
         });
 
-        // Bottone icona: elimina
         FontIcon deleteIcon = new FontIcon("mdi2d-delete");
         deleteIcon.setIconSize(18);
         Button deleteButton = new Button();
@@ -474,7 +486,6 @@ public class ResourceFileController extends Controller implements Initializable 
         deleteButton.getStyleClass().add("delete-comment");
         HBox buttonsBox;
 
-        // TOP: Nome + bottoni
         HBox topBox = new HBox();
         topBox.setAlignment(Pos.CENTER_LEFT);
         topBox.setSpacing(5);
@@ -486,32 +497,30 @@ public class ResourceFileController extends Controller implements Initializable 
         topBox.getChildren().addAll(nameLabel, spacer, buttonsBox);
 
         HBox aboveBox = new HBox();
-        // CENTER: commento
         Label commentLabel = new Label(commentText);
         commentLabel.setWrapText(true);
         commentLabel.getStyleClass().add("comment-text");
         commentLabel.setAlignment(Pos.CENTER_LEFT);
 
-        // BOTTOM: data
         FontIcon clockIcon = new FontIcon("mdi2c-clock-outline");
         clockIcon.setIconSize(14);
-        Label dateLabel = new Label("data ...");
+        Label dateLabel = new Label("Date: " + getFormattedRequestDate(timestamp));
         dateLabel.setGraphic(clockIcon);
-        dateLabel.setContentDisplay(ContentDisplay.LEFT);
         dateLabel.getStyleClass().add("comment-date");
-        dateLabel.setAlignment(Pos.CENTER_RIGHT);
+
+        HBox dateBox = new HBox(dateLabel);
+        dateBox.setAlignment(Pos.CENTER_LEFT);
+
         Region spacer2 = new Region();
         HBox.setHgrow(spacer2, Priority.ALWAYS);
         aboveBox.getChildren().addAll(commentLabel, spacer2, dateLabel);
 
-        // VBOX principale del commento
-        VBox commentBox = new VBox(topBox, aboveBox);
+        VBox commentBox = new VBox(topBox, aboveBox, dateBox);
         commentBox.setSpacing(5);
         commentBox.setPadding(new Insets(10));
-        commentBox.setStyle("-fx-background-color: #f9f9f9; -fx-background-radius: 8; -fx-border-radius: 8; -fx-border-color: #cccccc;");
+        commentBox.getStyleClass().add("comment-box");
         commentBox.setMaxWidth(280);
 
-        // Contenitore principale (opzionale per padding esterno)
         VBox container = new VBox(commentBox);
         container.setPadding(new Insets(5, 0, 5, 0));
 

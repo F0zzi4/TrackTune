@@ -4,7 +4,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 
 public class Comment {
-    private final int ID;
+    private final Integer ID;
     private final String description;
     private final Time startTrackInterval;
     private final Time endTrackInterval;
@@ -12,7 +12,7 @@ public class Comment {
     private final int userID;
     private final int trackID;
 
-    public Comment(int ID, String description, Time startTrackInterval, Time endTrackInterval, Timestamp creationDate, int userID, int trackID){
+    public Comment(Integer ID, String description, Time startTrackInterval, Time endTrackInterval, Timestamp creationDate, int userID, int trackID){
         this.ID = ID;
         this.description = description;
         this.startTrackInterval = startTrackInterval;
@@ -22,7 +22,17 @@ public class Comment {
         this.trackID = trackID;
     }
 
-    public int getID() {
+    public Comment(String description, Time startTrackInterval, Time endTrackInterval, Timestamp creationDate, Integer userID, Integer trackID){
+        this.ID = null;
+        this.description = description;
+        this.startTrackInterval = startTrackInterval;
+        this.endTrackInterval = endTrackInterval;
+        this.creationDate = creationDate;
+        this.userID = userID;
+        this.trackID = trackID;
+    }
+
+    public Integer getID() {
         return ID;
     }
 

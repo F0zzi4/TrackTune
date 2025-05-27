@@ -16,7 +16,7 @@
       <HBox alignment="CENTER_LEFT" prefHeight="884.0" prefWidth="1170.0" style="-fx-alignment: center;">
          <children>
 
-            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="600" prefWidth="870" vbarPolicy="AS_NEEDED">
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="600" prefWidth="870">
                <content>
                   <AnchorPane prefHeight="1000.0" prefWidth="814.0" styleClass="anchor-pane">
                      <children>
@@ -75,11 +75,11 @@
                            </children>
                         </HBox>
 
-                        <VBox fx:id="metadataBox" alignment="CENTER" layoutX="19.0" layoutY="755.0" prefHeight="130.0" prefWidth="814.0" spacing="5.0" style="-fx-padding: 20;" styleClass="stack-pane">
+                        <VBox fx:id="metadataBox" alignment="CENTER" layoutX="25.0" layoutY="755.0" prefHeight="130.0" prefWidth="814.0" spacing="5.0" style="-fx-padding: 20;" styleClass="stack-pane">
                            <children>
-                              <Label layoutX="16.0" layoutY="22.0" prefHeight="51.0" prefWidth="286.0" styleClass="metadataTitle" text="Meta-Data">
+                              <Label layoutX="16.0" layoutY="22.0" prefHeight="51.0" prefWidth="286.0" styleClass="metadataTitle" text="Details">
                                  <graphic>
-                                    <FontIcon iconLiteral="mdi2c-comment-text-multiple" iconSize="30" />
+                                    <FontIcon iconLiteral="mdi2b-book-information-variant" iconSize="30" />
                                  </graphic>
                               </Label>
                            </children>
@@ -95,13 +95,13 @@
                      <children>
                         <Label layoutX="16.0" layoutY="22.0" prefHeight="51.0" prefWidth="286.0" styleClass="section-title-label" text="Comments">
                            <graphic>
-                              <FontIcon iconLiteral="mdi2c-comment-text-multiple" iconSize="30" />
+                              <FontIcon iconLiteral="mdi2c-comment-text-multiple" iconSize="30" wrappingWidth="33.0" />
                            </graphic>
                         </Label>
                         <HBox layoutX="17.0" layoutY="697.0" prefHeight="50.0" prefWidth="286.0" spacing="5.0">
                            <children>
                               <TextField fx:id="commentField" promptText="Write a comment..." styleClass="nameField" HBox.hgrow="ALWAYS" />
-                              <Button fx:id="sendCommentButton" onAction="#handleSendComment" prefHeight="40.0" prefWidth="40.0" styleClass="icon-button">
+                              <Button onAction="#handleSendComment" prefHeight="40.0" prefWidth="40.0" styleClass="icon-button">
                                  <graphic>
                                     <FontIcon iconLiteral="mdi2s-send" iconSize="22" />
                                  </graphic>
@@ -110,7 +110,7 @@
                         </HBox>
                         <VBox layoutX="10.0" layoutY="82.0" prefHeight="583.0" prefWidth="298.0">
                            <children>
-                              <ScrollPane prefHeight="604.0" prefWidth="298.0" fitToWidth="true" vbarPolicy="AS_NEEDED">
+                              <ScrollPane fitToWidth="true" prefHeight="604.0" prefWidth="298.0">
                                  <content>
                                     <VBox fx:id="commentVBox" spacing="10.0" style="-fx-padding: 10;" />
                                  </content>
