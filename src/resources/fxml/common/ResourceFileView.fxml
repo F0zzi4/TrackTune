@@ -110,7 +110,7 @@
                         </HBox>
                         <VBox layoutX="10.0" layoutY="82.0" prefHeight="583.0" prefWidth="298.0">
                            <children>
-                              <ScrollPane fitToWidth="true" prefHeight="604.0" prefWidth="298.0">
+                              <ScrollPane prefHeight="604.0" prefWidth="298.0" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED">
                                  <content>
                                     <VBox fx:id="commentVBox" spacing="10.0" style="-fx-padding: 10;" />
                                  </content>

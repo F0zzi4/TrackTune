@@ -526,7 +526,6 @@
 .comment-date {
     -fx-font-size: 10px;
     -fx-text-fill: #777;
-    -fx-alignment: left;
 }
 
 .comment-icon-button {
@@ -544,4 +543,26 @@
     -fx-background-color: #ffebc8;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
+}
+
+.replies-toggle-closed {
+    -fx-text-fill: #c47b00; /* arancio caldo */
+    -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-alignment: center-right;
+}
+
+.replies-toggle-open {
+    -fx-text-fill: #6b6b6b; /* grigio scuro, neutro */
+    -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+    -fx-alignment: center-right;
+}
+
+.deep-indent {
+    border-left: 2px solid #ccc;
+    /* eventualmente aggiungi padding o un background leggero */
 }

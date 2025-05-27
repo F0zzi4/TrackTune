@@ -17,6 +17,7 @@ import app.tracktune.model.resource.MultimediaResource;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackDAO;
+import app.tracktune.model.user.Administrator;
 import app.tracktune.model.user.User;
 import app.tracktune.model.user.UserDAO;
 import app.tracktune.utils.Frames;
@@ -27,6 +28,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -40,9 +42,7 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.net.URL;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -135,10 +135,10 @@ public class ResourceFileController extends Controller implements Initializable 
 
     private void setComments() {
         if (track != null) {
-            for (Comment comment : commentDAO.getAll()) {
+            for (Comment comment : commentDAO.getAllCommentByTrack(track.getId())) {
                 User user = userDAO.getById(comment.getUserID());
                 if(user != null)
-                    addCommentOnView(comment.getDescription(), comment.getCreationDate(), user.getName(), user.getSurname());
+                    addCommentOnView(comment, user.getName(), user.getSurname());
             }
         }
     }
@@ -457,14 +457,22 @@ public class ResourceFileController extends Controller implements Initializable 
     @FXML
     private void handleSendComment() {
         String commentText = commentField.getText();
+        Comment c;
         if (commentText != null && !commentText.trim().isEmpty()) {
-            addCommentOnView(commentText, new Timestamp(System.currentTimeMillis()), SessionManager.getInstance().getUser().getName(), SessionManager.getInstance().getUser().getSurname());
-            commentDAO.insert(new Comment(commentText, new Time(new Date().getTime()), new Time(new Date().getTime()), new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), track.getId()));
+            c = new Comment(commentText, new Time(new Date().getTime()), new Time(new Date().getTime()), new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), track.getId());
+            int id = commentDAO.insert(c);
+            c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), track.getId());
+            addCommentOnView(c, ViewManager.getSessionUser().getName(), ViewManager.getSessionUser().getSurname());
             commentField.clear();
         }
     }
 
-    private void addCommentOnView(String commentText, Timestamp timestamp, String name, String surname) {
+    private void addCommentOnView(Comment comment, String name, String surname) {
+        VBox commentNode = createCommentNode(comment, name, surname, 0);
+        commentVBox.getChildren().add(commentNode);
+    }
+
+    private VBox createCommentNode(Comment comment, String name, String surname, int indentLevel) {
         Label nameLabel = new Label(name + " " + surname);
         nameLabel.getStyleClass().add("comment-author");
 
@@ -473,11 +481,6 @@ public class ResourceFileController extends Controller implements Initializable 
         Button replyButton = new Button();
         replyButton.setGraphic(replyIcon);
         replyButton.getStyleClass().add("comment-icon-button");
-        replyButton.setOnAction(e -> {
-            System.out.println("Reply to: ");
-
-            //TODO - ..
-        });
 
         FontIcon deleteIcon = new FontIcon("mdi2d-delete");
         deleteIcon.setIconSize(18);
@@ -485,51 +488,128 @@ public class ResourceFileController extends Controller implements Initializable 
         deleteButton.setGraphic(deleteIcon);
         deleteButton.getStyleClass().add("delete-comment");
         HBox buttonsBox;
+        if(ViewManager.getSessionUser() instanceof Administrator || track.getUserID() == ViewManager.getSessionUser().getId()) {
+            buttonsBox = new HBox(5, replyButton, deleteButton);
+        }
+        else
+            buttonsBox = new HBox(5, replyButton);
+        buttonsBox.setAlignment(Pos.CENTER_RIGHT);
 
-        HBox topBox = new HBox();
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox topBox = new HBox(nameLabel, spacer, buttonsBox);
         topBox.setAlignment(Pos.CENTER_LEFT);
         topBox.setSpacing(5);
 
-        buttonsBox = new HBox(5, replyButton, deleteButton);
-        buttonsBox.setAlignment(Pos.CENTER_RIGHT);
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        topBox.getChildren().addAll(nameLabel, spacer, buttonsBox);
-
-        HBox aboveBox = new HBox();
-        Label commentLabel = new Label(commentText);
+        Label commentLabel = new Label(comment.getDescription());
         commentLabel.setWrapText(true);
         commentLabel.getStyleClass().add("comment-text");
-        commentLabel.setAlignment(Pos.CENTER_LEFT);
 
+        Label dateLabel = new Label(getFormattedRequestDate(comment.getCreationDate()));
         FontIcon clockIcon = new FontIcon("mdi2c-clock-outline");
         clockIcon.setIconSize(14);
-        Label dateLabel = new Label("Date: " + getFormattedRequestDate(timestamp));
         dateLabel.setGraphic(clockIcon);
         dateLabel.getStyleClass().add("comment-date");
 
         HBox dateBox = new HBox(dateLabel);
-        dateBox.setAlignment(Pos.CENTER_LEFT);
+        dateBox.setAlignment(Pos.CENTER_RIGHT);
 
-        Region spacer2 = new Region();
-        HBox.setHgrow(spacer2, Priority.ALWAYS);
-        aboveBox.getChildren().addAll(commentLabel, spacer2, dateLabel);
-
-        VBox commentBox = new VBox(topBox, aboveBox, dateBox);
+        VBox commentBox = new VBox(topBox, commentLabel, dateBox);
         commentBox.setSpacing(5);
         commentBox.setPadding(new Insets(10));
         commentBox.getStyleClass().add("comment-box");
         commentBox.setMaxWidth(280);
 
         VBox container = new VBox(commentBox);
-        container.setPadding(new Insets(5, 0, 5, 0));
+        commentBox.setPadding(new Insets(5, 0, 5, 20 * indentLevel));
 
+        // Azione Elimina
         deleteButton.setOnAction(e -> {
-            commentVBox.getChildren().remove(container);
+            ((VBox) container.getParent()).getChildren().remove(container);
+            // TODO: elimina dal DB se necessario
         });
 
-        commentVBox.getChildren().add(container);
+        // Azione Rispondi
+        replyButton.setOnAction(e -> {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Rispondi al commento");
+            dialog.setHeaderText(null);
+            dialog.setContentText("Scrivi la tua risposta:");
+
+            Optional<String> result = dialog.showAndWait();
+            result.ifPresent(responseText -> {
+                Timestamp now = new Timestamp(System.currentTimeMillis());
+                Comment reply = new Comment(
+                        responseText,
+                        new Time(now.getTime()),
+                        new Time(now.getTime()),
+                        now,
+                        ViewManager.getSessionUser().getId(),
+                        track.getId()
+                );
+
+                int replyID = commentDAO.insert(reply);
+                commentDAO.insertReply(comment.getID(), replyID);
+
+                Comment newReply = new Comment(replyID, reply.getDescription(), reply.getStartTrackInterval(), reply.getEndTrackInterval(), reply.getCreationDate(), reply.getUserID(), track.getId());
+                VBox replyNode = createCommentNode(
+                        newReply,
+                        SessionManager.getInstance().getUser().getName(),
+                        SessionManager.getInstance().getUser().getSurname(),
+                        indentLevel + 1
+                );
+                container.getChildren().add(replyNode);
+            });
+        });
+
+        // Aggiunta ricorsiva delle risposte esistenti
+        List<Comment> replies = commentDAO.getAllReplies(comment.getID());
+        if (replies != null && !replies.isEmpty()) {
+            Label repliesLabel = new Label("[replies]");
+            repliesLabel.getStyleClass().add("replies-toggle");
+            repliesLabel.setCursor(Cursor.HAND);
+
+            VBox repliesBox = new VBox();
+            repliesBox.setPadding(new Insets(10, 0, 0, 20));
+            repliesBox.setVisible(false);
+            repliesBox.setManaged(false);
+            repliesLabel.getStyleClass().add("replies-toggle-closed");
+
+            for (Comment reply : replies) {
+                VBox replyNode = createCommentNode(
+                        reply,
+                        getUserName(reply.getUserID()),
+                        getUserSurname(reply.getUserID()),
+                        indentLevel + 1
+                );
+                repliesBox.getChildren().add(replyNode);
+            }
+
+            repliesLabel.setOnMouseClicked(event -> {
+                boolean isVisible = repliesBox.isVisible();
+                repliesBox.setVisible(!isVisible);
+                repliesBox.setManaged(!isVisible);
+                repliesLabel.setText(isVisible ? "[replies]" : "[hide replies]");
+
+                repliesLabel.getStyleClass().removeAll("replies-toggle-open", "replies-toggle-closed");
+                repliesLabel.getStyleClass().add(isVisible ? "replies-toggle-closed" : "replies-toggle-open");
+            });
+
+            commentBox.getChildren().addAll(repliesLabel, repliesBox);
+        }
+
+        return container;
     }
+
+    private String getUserName(int userId) {
+        return userDAO.getById(userId).getName();
+    }
+
+    private String getUserSurname(int userId) {
+        return userDAO.getById(userId).getSurname();
+    }
+
 
 }
 
