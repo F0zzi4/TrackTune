@@ -57,7 +57,7 @@ public class CommentDAO implements DAO<Comment> {
         FROM Comments c
         LEFT JOIN Interactions i ON c.ID = i.replyID
         WHERE c.trackID = ?
-        AND i.replyID IS NULL; 
+        AND i.replyID IS NULL;
     """;
 
     private static final String GET_REPLY_BY_COMMENT_ID_STMT = """

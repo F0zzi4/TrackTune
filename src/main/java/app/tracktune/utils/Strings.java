@@ -65,4 +65,8 @@ public class Strings {
     public static final String ARE_YOU_SURE = "Are you sure to complete this operation?";
     public static final String CHANGE_PRIVILEGES = "Change privileges";
     public static final String ERR_DELETE_TRACK = "Error to deleting track";
+    public static final String REPLY_TO_COMMENT = "Reply to comment";
+    public static final String WRITE_YOUR_REPLY = "Write your reply";
+    public static final String REPLIES = "[replies]";
+    public static final String HIDE_REPLIES = "[hide replies]";
 }

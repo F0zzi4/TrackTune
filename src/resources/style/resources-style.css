@@ -515,7 +515,6 @@
     -fx-font-size: 14px;
     -fx-text-fill: #4a280f;
     -fx-font-weight: bold;
-    -fx-padding: 0 0 0 6;
 }
 
 .comment-text {
@@ -543,19 +542,21 @@
     -fx-background-color: #ffebc8;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
+    -fx-padding: 7 7 7 7;
 }
 
 .replies-toggle-closed {
-    -fx-text-fill: #c47b00; /* arancio caldo */
+    -fx-text-fill: #c47b00;
     -fx-underline: true;
     -fx-cursor: hand;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
     -fx-alignment: center-right;
+    -fx-padding: 0 0 0 5;
 }
 
 .replies-toggle-open {
-    -fx-text-fill: #6b6b6b; /* grigio scuro, neutro */
+    -fx-text-fill: #6b6b6b;
     -fx-underline: true;
     -fx-cursor: hand;
     -fx-font-size: 12px;
@@ -564,5 +565,4 @@
 
 .deep-indent {
     border-left: 2px solid #ccc;
-    /* eventualmente aggiungi padding o un background leggero */
 }

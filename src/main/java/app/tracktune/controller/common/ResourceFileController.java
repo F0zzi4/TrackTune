@@ -524,18 +524,16 @@ public class ResourceFileController extends Controller implements Initializable 
         VBox container = new VBox(commentBox);
         commentBox.setPadding(new Insets(5, 0, 5, 20 * indentLevel));
 
-        // Azione Elimina
         deleteButton.setOnAction(e -> {
             ((VBox) container.getParent()).getChildren().remove(container);
-            // TODO: elimina dal DB se necessario
+            // TODO
         });
 
-        // Azione Rispondi
         replyButton.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Rispondi al commento");
+            dialog.setTitle(Strings.REPLY_TO_COMMENT);
             dialog.setHeaderText(null);
-            dialog.setContentText("Scrivi la tua risposta:");
+            dialog.setContentText(Strings.WRITE_YOUR_REPLY);
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(responseText -> {
@@ -563,10 +561,9 @@ public class ResourceFileController extends Controller implements Initializable 
             });
         });
 
-        // Aggiunta ricorsiva delle risposte esistenti
         List<Comment> replies = commentDAO.getAllReplies(comment.getID());
         if (replies != null && !replies.isEmpty()) {
-            Label repliesLabel = new Label("[replies]");
+            Label repliesLabel = new Label(Strings.REPLIES);
             repliesLabel.getStyleClass().add("replies-toggle");
             repliesLabel.setCursor(Cursor.HAND);
 
@@ -590,7 +587,7 @@ public class ResourceFileController extends Controller implements Initializable 
                 boolean isVisible = repliesBox.isVisible();
                 repliesBox.setVisible(!isVisible);
                 repliesBox.setManaged(!isVisible);
-                repliesLabel.setText(isVisible ? "[replies]" : "[hide replies]");
+                repliesLabel.setText(isVisible ? Strings.REPLIES : Strings.HIDE_REPLIES);
 
                 repliesLabel.getStyleClass().removeAll("replies-toggle-open", "replies-toggle-closed");
                 repliesLabel.getStyleClass().add(isVisible ? "replies-toggle-closed" : "replies-toggle-open");
@@ -609,8 +606,6 @@ public class ResourceFileController extends Controller implements Initializable 
     private String getUserSurname(int userId) {
         return userDAO.getById(userId).getSurname();
     }
-
-
 }
 
 
