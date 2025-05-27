@@ -52,6 +52,26 @@ public class CommentDAO implements DAO<Comment> {
         WHERE ID = ?
     """;
 
+    private static final String GET_COMMENT_BY_TRACK_ID_STMT = """
+        SELECT c.*
+        FROM Comments c
+        LEFT JOIN Interactions i ON c.ID = i.replyID
+        WHERE c.trackID = ?
+        AND i.replyID IS NULL; 
+    """;
+
+    private static final String GET_REPLY_BY_COMMENT_ID_STMT = """
+        SELECT c.*
+        FROM Comments c
+        JOIN Interactions i ON c.ID = i.replyID
+        WHERE i.commentID = ?;
+    """;
+
+    private static final String INSERT_REPLY_STMT = """
+            INSERT INTO Interactions (commentID, replyID)
+            VALUES (?, ?)
+    """;
+
     public CommentDAO() {
         this.dbManager = Main.dbManager;
     }
@@ -65,6 +85,19 @@ public class CommentDAO implements DAO<Comment> {
                 comment.getCreationDate(),
                 comment.getUserID(),
                 comment.getTrackID()
+        );
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return dbManager.getLastInsertId();
+    }
+
+    public Integer insertReply(int commentID, int replyID) {
+        boolean success = dbManager.executeUpdate(INSERT_REPLY_STMT,
+                commentID,
+                replyID
         );
 
         if (!success) {
@@ -130,6 +163,42 @@ public class CommentDAO implements DAO<Comment> {
                     }
                     return null;
                 });
+
+        return comments;
+    }
+
+    public List<Comment> getAllReplies(int commentId) {
+        List<Comment> replies = new ArrayList<>();
+
+        boolean success = dbManager.executeQuery(GET_REPLY_BY_COMMENT_ID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        replies.add(mapResultSetToEntity(rs));
+                    }
+                    return true;
+                }, commentId);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return replies;
+    }
+
+    public List<Comment> getAllCommentByTrack(int commentId) {
+        List<Comment> comments = new ArrayList<>();
+
+        boolean success = dbManager.executeQuery(GET_COMMENT_BY_TRACK_ID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        comments.add(mapResultSetToEntity(rs));
+                    }
+                    return true;
+                }, commentId);
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
 
         return comments;
     }
