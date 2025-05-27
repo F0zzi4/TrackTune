@@ -36,6 +36,14 @@ public class Strings {
     public static final String EDIT = "Edit";
     public static final String SAVE = "Save";
     public static final String VIEW = "View";
+    public static final String TRACKS = "Tracks:";
+    public static final String AUTHORS = "Author:";
+    public static final String GENRES = "Genres:";
+    public static final String INSTRUMENTS = "Instruments:";
+    public static final String FILE_FORMAT = "File format:";
+    public static final String RESOURCE_SIZE = "Resource Size:";
+    public static final String DURATION = "Duration:";
+    public static final String REGISTERED_DATA = "Registered Data:";
     public static final String LINKED_RESOURCES = "Linked Resources";
     public static final String CANCEL = "Cancel";
     public static final String USER = "USER";

@@ -380,32 +380,29 @@
 }
 
 .anchor-pane {
-    -fx-background-color: #efa054; /* Dark background for media content */
-    -fx-border-color: #fdb276;     /* Subtle border color */
+    -fx-background-color: #efa054;
+    -fx-border-color: #fdb276;
     -fx-border-width: 5px;
     -fx-border-radius: 8px;
     -fx-background-radius: 8px;
 }
 
-/* StackPane: Container for media content */
 .stack-pane {
-    -fx-background-color: #ffcc80; /* Slightly lighter background */
+    -fx-background-color: #ffcc80;
     -fx-border-color: #885116;
     -fx-border-width: 1px;
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
 }
 
-/* HBox: Media control bar */
 .media-control-bar {
-    -fx-background-color: #ffcc80; /* Control bar background */
+    -fx-background-color: #ffcc80;
     -fx-border-color: #885116;
     -fx-border-width: 1px;
     -fx-border-radius: 6px;
     -fx-background-radius: 6px;
 }
 
-/* Slider del progresso video */
 .media-slider {
     -fx-background-color: transparent;
     -fx-padding: 0;
@@ -437,7 +434,6 @@
     -fx-background-color: #ffaa33;
 }
 
-/* Label tempo attuale e restante */
 .media-time-label {
     -fx-font-size: 13px;
     -fx-font-weight: bold;
@@ -448,10 +444,10 @@
 }
 
 .metadata-container {
-    -fx-background-color: #fff4db; /* colore chiaro, caldo e soft */
+    -fx-background-color: #fff4db;
     -fx-background-radius: 8;
     -fx-border-radius: 8;
-    -fx-border-color: #bb8b47; /* marrone scuro tendente all'ocra */
+    -fx-border-color: #bb8b47;
     -fx-padding: 10 15;
     -fx-spacing: 8;
     -fx-effect: dropshadow(three-pass-box, rgba(187,139,71,0.3), 4, 0, 0, 2);
@@ -489,6 +485,7 @@
     -fx-cursor: hand;
     -fx-padding: 0 5 0 5;
 }
+
 .icon-button:hover {
     -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);;
     -fx-border-radius: 5;
@@ -500,18 +497,6 @@
     -fx-text-fill: #4a280f;
     -fx-font-weight: bold;
     -fx-padding: 0 0 0 6;
-}
-
-.comment-icon-button {
-    -fx-background-color: transparent;
-    -fx-cursor: hand;
-    -fx-padding: 2;
-    -fx-border-color: transparent;
-}
-.comment-icon-button:hover {
-    -fx-background-color: #e0e0e0;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
 }
 
 .delete-comment {
@@ -541,17 +526,22 @@
 .comment-date {
     -fx-font-size: 10px;
     -fx-text-fill: #777;
+    -fx-alignment: left;
 }
 
 .comment-icon-button {
-    -fx-background-color: transparent;
+    -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
     -fx-cursor: hand;
-    -fx-padding: 2;
-    -fx-border-color: transparent;
+    -fx-background-radius: 8;
 }
 
 .comment-icon-button:hover {
-    -fx-background-color: #e0e0e0;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
+    -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);
+    -fx-text-fill: #885116;
+}
+
+.comment-box{
+    -fx-background-color: #ffebc8;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
 }
