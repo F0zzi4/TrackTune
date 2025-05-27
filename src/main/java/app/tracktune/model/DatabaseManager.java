@@ -104,6 +104,33 @@ public class DatabaseManager {
         return result;
     }
 
+    public Integer executeUpdateAndReturnId(String sql, Object... params) {
+        Integer generatedId = null;
+
+        try {
+            PreparedStatement prepStatement = dbConnection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+            for (int i = 0; i < params.length; i++) {
+                prepStatement.setObject(i + 1, params[i]);
+            }
+
+            int affectedRows = prepStatement.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = prepStatement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        generatedId = generatedKeys.getInt(1);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println(Strings.ERR_EXEC_STMT + e.getMessage());
+        }
+
+        return generatedId;
+    }
+
     /**
      * Method to execute a query that returns a result set
      * @param sql sql statement converted in string

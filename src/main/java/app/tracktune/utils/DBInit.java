@@ -161,8 +161,8 @@ public class DBInit {
     public static final Object[] ADMIN_PARAMS = {
             "admin",                      // username
             "admin12345",                 // password
-            "admin",                      // name
-            "",                           // surname
+            "Admin",                      // name
+            "Admin",                           // surname
             0,                            // status
             currTimestamp,                // creationDate
             1                             // isAdmin
