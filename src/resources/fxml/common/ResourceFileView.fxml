@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<StackPane prefHeight="816.0" prefWidth="1245.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.ResourceFileController">
+<StackPane prefHeight="817.0" prefWidth="1262.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.ResourceFileController">
    <children>
       <HBox alignment="CENTER_LEFT" prefHeight="884.0" prefWidth="1170.0" style="-fx-alignment: center;">
          <children>
@@ -89,18 +89,18 @@
                </content>
             </ScrollPane>
 
-            <HBox prefHeight="745.0" prefWidth="309.0">
+            <HBox prefHeight="757.0" prefWidth="332.0">
                <children>
-                  <AnchorPane prefHeight="745.0" prefWidth="316.0" styleClass="anchor-pane">
+                  <AnchorPane prefHeight="757.0" prefWidth="376.0" styleClass="anchor-pane">
                      <children>
-                        <Label layoutX="16.0" layoutY="22.0" prefHeight="51.0" prefWidth="286.0" styleClass="section-title-label" text="Comments">
+                        <Label layoutX="25.0" layoutY="23.0" prefHeight="51.0" prefWidth="286.0" styleClass="section-title-label" text="Comments">
                            <graphic>
                               <FontIcon iconLiteral="mdi2c-comment-text-multiple" iconSize="30" wrappingWidth="33.0" />
                            </graphic>
                         </Label>
-                        <HBox layoutX="17.0" layoutY="697.0" prefHeight="50.0" prefWidth="286.0" spacing="5.0">
+                        <HBox layoutX="17.0" layoutY="697.0" prefHeight="50.0" prefWidth="303.0" spacing="5.0">
                            <children>
-                              <TextField fx:id="commentField" promptText="Write a comment..." styleClass="nameField" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="commentField" prefWidth="270.0" promptText="Write a comment..." styleClass="nameField" HBox.hgrow="ALWAYS" />
                               <Button onAction="#handleSendComment" prefHeight="40.0" prefWidth="40.0" styleClass="icon-button">
                                  <graphic>
                                     <FontIcon iconLiteral="mdi2s-send" iconSize="22" />
@@ -108,11 +108,11 @@
                               </Button>
                            </children>
                         </HBox>
-                        <VBox layoutX="10.0" layoutY="82.0" prefHeight="583.0" prefWidth="298.0">
+                        <VBox layoutX="10.0" layoutY="94.0" prefHeight="583.0" prefWidth="315.0">
                            <children>
-                              <ScrollPane prefHeight="604.0" prefWidth="298.0" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED">
+                              <ScrollPane hbarPolicy="AS_NEEDED" prefHeight="601.0" prefWidth="315.0" vbarPolicy="AS_NEEDED">
                                  <content>
-                                    <VBox fx:id="commentVBox" spacing="10.0" style="-fx-padding: 10;" />
+                                    <VBox fx:id="commentVBox" prefHeight="579.0" prefWidth="304.0" spacing="10.0" style="-fx-padding: 10;"/>
                                  </content>
                               </ScrollPane>
                            </children>
