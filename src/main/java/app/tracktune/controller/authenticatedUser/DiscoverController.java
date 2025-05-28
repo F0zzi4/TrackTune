@@ -1,40 +1,60 @@
 package app.tracktune.controller.authenticatedUser;
 
+import app.tracktune.Main;
 import app.tracktune.controller.Controller;
+import app.tracktune.controller.admin.AdminDashboardController;
+import app.tracktune.controller.common.ResourceFileController;
+import app.tracktune.model.author.Author;
+import app.tracktune.model.author.AuthorDAO;
+import app.tracktune.model.resource.Resource;
+import app.tracktune.model.track.Track;
+import app.tracktune.model.track.TrackAuthor;
+import app.tracktune.model.track.TrackAuthorDAO;
+import app.tracktune.model.track.TrackDAO;
+import app.tracktune.utils.Frames;
+import app.tracktune.utils.ResourceManager;
+import app.tracktune.utils.SQLiteScripts;
+import app.tracktune.utils.Strings;
+import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DiscoverController extends Controller implements Initializable {
     @FXML private Tab tabMostRecent;
-    @FXML private Tab tabPopular;
-    @FXML private Tab tabUnpopular;
-    @FXML private Button btnSearch;
+    @FXML private Tab tabMostPopular;
+    @FXML private Tab tabMostCommented;
+
+    private final TrackDAO trackDAO = new TrackDAO();
+    private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
+    private final AuthorDAO authorDAO = new AuthorDAO();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        populateTab(tabMostRecent, "Most Recent", "These are the most recent posts.");
-        populateTab(tabPopular, "Popular", "These are the most popular posts.");
-        populateTab(tabUnpopular, "Unpopular", "These are the least liked posts.");
+        populateTab(tabMostRecent, SQLiteScripts.getMostRecentResources(Main.dbManager));
+        populateTab(tabMostPopular, SQLiteScripts.getMostPopularResources(Main.dbManager));
+        populateTab(tabMostCommented, SQLiteScripts.getMostCommentedResources(Main.dbManager));
     }
 
-    private void populateTab(Tab tab, String title, String description) {
+    private void populateTab(Tab tab, List<Resource> resources) {
         VBox contentBox = new VBox(10);
         VBox.setVgrow(contentBox, javafx.scene.layout.Priority.ALWAYS);
         contentBox.setStyle("-fx-padding: 20;");
 
-        for (int i = 1; i <= 5; i++) {
-            Label item = new Label(title + " item " + i + " - " + description);
-            item.maxWidthProperty().bind(contentBox.widthProperty());
-            item.getStyleClass().add("tab-item");
-            contentBox.getChildren().add(item);
+        for (Resource resource : resources) {
+            contentBox.getChildren().add(createResourceItemBox(resource));
         }
 
         AnchorPane anchor = new AnchorPane();
@@ -45,5 +65,104 @@ public class DiscoverController extends Controller implements Initializable {
         AnchorPane.setBottomAnchor(contentBox, 0.0);
 
         tab.setContent(anchor);
+    }
+
+    private HBox createResourceItemBox(Resource resource) {
+        int previewWidth = 100;
+        int previewHeight = 100;
+
+        ResourceManager resourceManager = new ResourceManager(resource);
+        Node preview = resourceManager.createMediaNode(previewWidth, previewHeight);
+
+        HBox requestItemBox = createRequestItem(resource);
+
+        HBox container = new HBox(15, preview, requestItemBox);
+        container.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(requestItemBox, Priority.ALWAYS);
+        container.getStyleClass().add("request-item");
+
+        requestItemBox.setMaxWidth(Double.MAX_VALUE);
+
+        return container;
+    }
+
+    private HBox createRequestItem(Resource resource) {
+        Track track = trackDAO.getById(resource.getTrackID());
+        List<TrackAuthor> trackAuthors = trackAuthorDAO.getByTrackId(resource.getTrackID());
+
+        Label trackLabel = new Label(track.getTitle());
+        trackLabel.getStyleClass().add("request-item-title");
+
+        StringBuilder authorNames = new StringBuilder();
+        for (TrackAuthor trackAuthor : trackAuthors) {
+            Author author = authorDAO.getById(trackAuthor.getAuthorId());
+            authorNames.append(author.getAuthorshipName()).append(", ");
+        }
+
+        if (!authorNames.isEmpty()) {
+            authorNames.setLength(authorNames.length() - 2);
+        }
+
+        Label authorsLabel = new Label("Authors: " + authorNames);
+        authorsLabel.getStyleClass().add("request-item-authors");
+
+        HBox titleBox = new HBox(10, trackLabel, authorsLabel);
+        titleBox.setAlignment(Pos.CENTER_LEFT);
+        titleBox.setStyle("-fx-padding: 0 0 0 15;");
+        titleBox.setSpacing(15);
+
+        Label descLabel = new Label(getFormattedRequestDate(resource.getCreationDate()));
+        descLabel.getStyleClass().add("request-item-description");
+        descLabel.setWrapText(true);
+
+        VBox textBox = new VBox(5, titleBox, descLabel);
+        textBox.setAlignment(Pos.CENTER_LEFT);
+        textBox.setStyle("-fx-padding: 0 0 0 10;");
+        textBox.setSpacing(15);
+
+        Button viewBtn = new Button(Strings.VIEW);
+        viewBtn.getStyleClass().add("view-button");
+        viewBtn.setOnAction(e -> viewResource(resource));
+        viewBtn.setMinWidth(80);
+
+        HBox buttonBox = new HBox(10, viewBtn);
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox box = new HBox(10, textBox, spacer, buttonBox);
+        box.setAlignment(Pos.CENTER_LEFT);
+        box.setMaxWidth(Double.MAX_VALUE);
+
+        textBox.maxWidthProperty().bind(descLabel.maxWidthProperty());
+
+        return box;
+    }
+
+    @FXML
+    private void viewResource(Resource resource) {
+        try{
+            FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
+            loader.setControllerFactory(param -> new ResourceFileController(resource));
+            Parent view = loader.load();
+
+            Controller controller = loader.getController();
+            controller.setParentController(this);
+
+            if(parentController instanceof AuthenticatedUserDashboardController authController){
+                authController.mainContent.getChildren().setAll(view);
+            }else if(parentController instanceof AdminDashboardController adminController){
+                adminController.mainContent.getChildren().setAll(view);
+            }
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleSearch(){
+
     }
 }

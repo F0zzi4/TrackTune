@@ -122,3 +122,48 @@
     -fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
 }
+
+.request-item {
+    -fx-background-color: #ffebc8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #4a280f;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+    -fx-font-family: SansSerif;
+}
+
+.request-item-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.request-item-description {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555;
+    -fx-padding: 0 0 0 15;
+}
+
+.request-item-authors {
+    -fx-font-size: 13px;
+    -fx-text-fill: #888888;
+    -fx-font-style: italic;
+    -fx-padding: 0 0 0 10;
+}
+
+.view-button {
+    -fx-background-color: linear-gradient(to right, #e45d00, #f49800);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
+    -fx-text-fill: #4a280f;
+    -fx-font-size: 14px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.view-button:hover {
+    -fx-background-color: linear-gradient(to right, #f8a028, #ff9316);
+    -fx-text-fill: #3e2609;
+}

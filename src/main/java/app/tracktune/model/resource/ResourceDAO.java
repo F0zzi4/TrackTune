@@ -215,7 +215,7 @@ public class ResourceDAO implements DAO<Resource> {
         return resources;
     }
 
-    private Resource mapResultSetToEntity(ResultSet rs) throws SQLException {
+    public static Resource mapResultSetToEntity(ResultSet rs) throws SQLException {
         int id = rs.getInt(ID);
         ResourceTypeEnum type = ResourceTypeEnum.fromInt(rs.getInt(TYPE));
         byte[] data = rs.getBytes(DATA);

@@ -40,9 +40,9 @@ public class AdminDashboardController extends Controller implements Initializabl
      * Loads and displays the dashboard view by updating the main content area by initial content
      */
     @FXML
-    private void handleTracks(){
+    private void handleDashboard(){
         try{
-            ViewManager.setMainContent(Frames.TRACKS_VIEW_PATH_VIEW_PATH, mainContent, this);
+            mainContent.getChildren().setAll(dashboardContent);
         } catch(Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
@@ -50,13 +50,13 @@ public class AdminDashboardController extends Controller implements Initializabl
     }
 
     /**
-     * Loads and displays the dashboard view by updating the main content area by initial content
+     * Loads and displays the discover view by updating the main content area
      */
     @FXML
-    private void handleDashboard(){
+    public void handleDiscover() {
         try{
-            mainContent.getChildren().setAll(dashboardContent);
-        } catch(Exception e) {
+            ViewManager.setMainContent(Frames.DISCOVER_VIEW_PATH, mainContent, this);
+        }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
         }
@@ -72,7 +72,8 @@ public class AdminDashboardController extends Controller implements Initializabl
         } catch(Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
-        }    }
+        }
+    }
 
     /**
      * Loads and displays the requests view by updating the main content area of the dashboard
@@ -83,13 +84,25 @@ public class AdminDashboardController extends Controller implements Initializabl
     }
 
     /**
+     * Loads and displays the dashboard view by updating the main content area by initial content
+     */
+    @FXML
+    private void handleTracks(){
+        try{
+            ViewManager.setMainContent(Frames.TRACKS_VIEW_PATH_VIEW_PATH, mainContent, this);
+        } catch(Exception e) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
+
+    /**
      * Loads and displays the authors view by updating the main content area of the dashboard
      */
     @FXML
     public void handleAuthors() {
         ViewManager.setMainContent(Frames.AUTHORS_PATH, mainContent, this);
     }
-
 
     /**
      * Loads and displays the musical instruments view by updating the main content area of the dashboard
@@ -106,7 +119,6 @@ public class AdminDashboardController extends Controller implements Initializabl
     public void handleUserManagement() {
         ViewManager.setMainContent(Frames.USER_MANAGEMENT_VIEW_PATH, mainContent, this);
     }
-
 
     /**
      * Logs out the current user by calling the {@link ViewManager#logout()} method.

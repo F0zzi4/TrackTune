@@ -5,7 +5,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class Controller {
-    protected Controller parentController;
+    public Controller parentController;
 
     public void setParentController(Controller parentController){
         this.parentController = parentController;

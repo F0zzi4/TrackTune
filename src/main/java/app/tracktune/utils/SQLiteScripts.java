@@ -2,13 +2,14 @@ package app.tracktune.utils;
 
 import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.model.DatabaseManager;
+import app.tracktune.model.resource.Resource;
+import app.tracktune.model.resource.ResourceDAO;
 import app.tracktune.view.ViewManager;
 import javafx.scene.control.Alert;
 
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SQLiteScripts {
     public static final String SELECT_PENDING_USERS_BY_USERNAME = "SELECT * FROM PendingUsers WHERE username = ?";
@@ -37,7 +38,7 @@ public class SQLiteScripts {
         return result;
     }
 
-    public static void deleteTrack(DatabaseManager db, int trackID) throws SQLException {
+    public static void deleteTrack(DatabaseManager dbManager, int trackID) throws SQLException {
         String[] queries = {
                 "DELETE FROM Interactions WHERE commentID IN (SELECT ID FROM Comments WHERE trackID = ?) OR replyID IN (SELECT ID FROM Comments WHERE trackID = ?)",
                 "DELETE FROM Comments WHERE trackID = ?",
@@ -52,9 +53,9 @@ public class SQLiteScripts {
         try {
             for (String query : queries) {
                 if (query.contains("commentID IN")) {
-                    db.executeUpdate(query, trackID, trackID);
+                    dbManager.executeUpdate(query, trackID, trackID);
                 } else {
-                    db.executeUpdate(query, trackID);
+                    dbManager.executeUpdate(query, trackID);
                 }
             }
         } catch (SQLiteException ex) {
@@ -63,4 +64,83 @@ public class SQLiteScripts {
         }
     }
 
+    public static List<Resource> getMostRecentResources(DatabaseManager dbManager) {
+        String query = """
+            SELECT *
+            FROM Resources
+            ORDER BY CreationDate DESC
+            LIMIT 5
+        """;
+
+        List<Resource> resources = new ArrayList<>();
+
+        dbManager.executeQuery(
+                query,
+                rs -> {
+                    while (rs.next()) {
+                        resources.add(ResourceDAO.mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, null
+        );
+
+        return resources;
+    }
+
+    public static List<Resource> getMostPopularResources(DatabaseManager dbManager) {
+        String query = """
+            SELECT R.*
+            FROM Resources R
+            WHERE R.trackID IN (
+                SELECT trackID
+                FROM Resources
+                GROUP BY trackID
+                ORDER BY COUNT(ID) DESC
+                LIMIT 5
+            )
+            ORDER BY R.trackID
+        """;
+
+        List<Resource> resources = new ArrayList<>();
+
+        dbManager.executeQuery(
+                query,
+                rs -> {
+                    while (rs.next()) {
+                        resources.add(ResourceDAO.mapResultSetToEntity(rs));
+                    }
+                    return null;
+                },
+                null
+        );
+
+        return resources;
+    }
+
+    public static List<Resource> getMostCommentedResources(DatabaseManager dbManager) {
+        String query = """
+            SELECT R.*
+            FROM Resources R
+            JOIN Tracks T ON R.trackID = T.ID
+            LEFT JOIN Comments C ON T.ID = C.trackID
+            GROUP BY R.ID
+            ORDER BY COUNT(C.ID) DESC
+            LIMIT 5
+        """;
+
+        List<Resource> resources = new ArrayList<>();
+
+        dbManager.executeQuery(
+                query,
+                rs -> {
+                    while (rs.next()) {
+                        resources.add(ResourceDAO.mapResultSetToEntity(rs));
+                    }
+                    return null;
+                },
+                null
+        );
+
+        return resources;
+    }
 }

@@ -71,7 +71,7 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <AnchorPane layoutX="669.0" layoutY="-1.0" prefHeight="840.0" prefWidth="599.0" styleClass="split-pane-divider">
+                  <AnchorPane layoutX="669.0" layoutY="-1.0" prefHeight="830.0" prefWidth="599.0" styleClass="split-pane-divider">
                      <children>
                         <Label layoutX="179.0" layoutY="20.0" prefHeight="27.0" prefWidth="242.0" styleClass="section-title-label" text="Community">
                             <graphic>
@@ -94,7 +94,7 @@
                         </ImageView>
                      </children>
                   </AnchorPane>
-                  <AnchorPane layoutX="1.0" layoutY="542.0" prefHeight="296.0" prefWidth="651.0" styleClass="split-pane-divider">
+                  <AnchorPane layoutX="1.0" layoutY="542.0" prefHeight="286.0" prefWidth="651.0" styleClass="split-pane-divider">
                      <children>
                         <Label layoutX="32.0" layoutY="27.0" prefHeight="52.0" prefWidth="574.0" styleClass="section-title-label" text="News">
                             <graphic>

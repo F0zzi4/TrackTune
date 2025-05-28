@@ -16,7 +16,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<?import javafx.scene.control.Tooltip?>
 <StackPane prefHeight="770.0" prefWidth="800.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.AddResourceController">
     <children>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="550.0" style="-fx-background-color: transparent;">
@@ -49,11 +48,11 @@
                         <ComboBox fx:id="trackComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search track..." />
                         <FlowPane fx:id="selectedTrackPane" hgap="10" prefHeight="21.0" prefWidth="548.0" vgap="10" />
                     </VBox>
-                    <VBox spacing="5" alignment="CENTER_LEFT">
+                    <VBox alignment="CENTER_LEFT" spacing="5">
                         <Label styleClass="label-title" text="Authors:" />
-                        <HBox spacing="5" alignment="CENTER">
-                            <ComboBox fx:id="authorComboBox" prefHeight="40.0" prefWidth="200.0" promptText="Search authors..." />
-                            <Button prefWidth="35" onMouseClicked="#handleAddAuthor" prefHeight="32" styleClass="add-button">
+                        <HBox alignment="CENTER" prefHeight="40.0" prefWidth="275.0" spacing="5">
+                            <ComboBox fx:id="authorComboBox" prefHeight="40.0" prefWidth="254.0" promptText="Search authors..." />
+                            <Button onMouseClicked="#handleAddAuthor" prefHeight="32" prefWidth="35" styleClass="add-button">
                                 <graphic>
                                     <FontIcon iconLiteral="mdi2p-plus" iconSize="18" />
                                 </graphic>
