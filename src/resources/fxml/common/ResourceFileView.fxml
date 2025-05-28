@@ -110,7 +110,7 @@
                         </HBox>
                         <VBox layoutX="10.0" layoutY="94.0" prefHeight="583.0" prefWidth="315.0">
                            <children>
-                              <ScrollPane hbarPolicy="AS_NEEDED" prefHeight="601.0" prefWidth="315.0" vbarPolicy="AS_NEEDED">
+                              <ScrollPane hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" prefHeight="601.0" prefWidth="315.0">
                                  <content>
                                     <VBox fx:id="commentVBox" prefHeight="579.0" prefWidth="304.0" spacing="10.0" style="-fx-padding: 10;"/>
                                  </content>
