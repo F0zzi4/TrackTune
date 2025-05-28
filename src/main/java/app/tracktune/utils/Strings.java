@@ -36,8 +36,8 @@ public class Strings {
     public static final String EDIT = "Edit";
     public static final String SAVE = "Save";
     public static final String VIEW = "View";
-    public static final String TRACKS = "Tracks:";
-    public static final String AUTHORS = "Author:";
+    public static final String TRACKS = "Track:";
+    public static final String AUTHORS = "Authors:";
     public static final String GENRES = "Genres:";
     public static final String INSTRUMENTS = "Instruments:";
     public static final String FILE_FORMAT = "File format:";

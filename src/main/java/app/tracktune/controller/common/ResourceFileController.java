@@ -3,6 +3,7 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.controller.authenticatedUser.DiscoverController;
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.author.Author;
@@ -39,12 +40,12 @@ import javafx.scene.media.MediaView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.javafx.FontIcon;
+
 import java.net.URL;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 public class ResourceFileController extends Controller implements Initializable {
     @FXML private StackPane fileContainer;
@@ -371,7 +372,7 @@ public class ResourceFileController extends Controller implements Initializable 
 
     /**
      * Toggles the mute state of the media player.
-     * If the media player is currently muted, it will be unmuted and vice versa.
+     * If the media player is currently muted, it will be disabled and vice versa.
      * Also updates the button's icon accordingly.
      */
     @FXML
@@ -407,6 +408,13 @@ public class ResourceFileController extends Controller implements Initializable 
             }
             else if(parentController instanceof AdminDashboardController adminController){
                 ViewManager.setMainContent(Frames.TRACKS_VIEW_PATH_VIEW_PATH, adminController.mainContent, parentController);
+            }
+            else if(parentController instanceof DiscoverController discoverController){
+                if(discoverController.parentController instanceof AuthenticatedUserDashboardController authController)
+                    ViewManager.setMainContent(Frames.DISCOVER_VIEW_PATH, authController.mainContent, authController);
+                else if(discoverController.parentController instanceof AdminDashboardController adminController){
+                    ViewManager.setMainContent(Frames.DISCOVER_VIEW_PATH, adminController.mainContent, adminController);
+                }
             }
             disposeMediaPlayer();
         } catch (Exception e) {
@@ -519,7 +527,7 @@ public class ResourceFileController extends Controller implements Initializable 
         repliesBox.setVisible(false);
         repliesBox.setManaged(false);
 
-        Label repliesLabel = new Label("[replies]");
+        Label repliesLabel = new Label(Strings.REPLIES);
         repliesLabel.setVisible(false);
         repliesLabel.getStyleClass().add("replies-toggle-closed");
         repliesLabel.setCursor(Cursor.HAND);
@@ -527,7 +535,7 @@ public class ResourceFileController extends Controller implements Initializable 
             boolean isVisible = repliesBox.isVisible();
             repliesBox.setVisible(!isVisible);
             repliesBox.setManaged(!isVisible);
-            repliesLabel.setText(isVisible ? "[replies]" : "[hide replies]");
+            repliesLabel.setText(isVisible ? Strings.REPLIES : Strings.HIDE_REPLIES);
             repliesLabel.getStyleClass().removeAll("replies-toggle-open", "replies-toggle-closed");
             repliesLabel.getStyleClass().add(isVisible ? "replies-toggle-closed" : "replies-toggle-open");
         });
@@ -548,16 +556,11 @@ public class ResourceFileController extends Controller implements Initializable 
         VBox container = new VBox(indentedBox);
         container.setPadding(new Insets(5, 0, 5, 0));
 
-        deleteButton.setOnAction(e -> {
-            ((VBox) container.getParent()).getChildren().remove(container);
-            // TODO: elimina dal DB se necessario
-        });
-
         replyButton.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle("Rispondi al commento");
+            dialog.setTitle(Strings.REPLY_TO_COMMENT);
             dialog.setHeaderText(null);
-            dialog.setContentText("Scrivi la tua risposta:");
+            dialog.setContentText(Strings.WRITE_YOUR_REPLY);
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(responseText -> {
@@ -588,13 +591,13 @@ public class ResourceFileController extends Controller implements Initializable 
                         newReply,
                         SessionManager.getInstance().getUser().getName(),
                         SessionManager.getInstance().getUser().getSurname(),
-                        1 // forziamo indentazione max a 1 per tutte le risposte
+                        1
                 );
 
                 repliesBox.getChildren().add(replyNode);
                 repliesBox.setVisible(true);
                 repliesBox.setManaged(true);
-                repliesLabel.setText("[hide replies]");
+                repliesLabel.setText(Strings.HIDE_REPLIES);
                 repliesLabel.getStyleClass().removeAll("replies-toggle-closed");
                 repliesLabel.getStyleClass().add("replies-toggle-open");
             });
@@ -608,16 +611,22 @@ public class ResourceFileController extends Controller implements Initializable 
                         reply,
                         getUserName(reply.getUserID()),
                         getUserSurname(reply.getUserID()),
-                        1 // idem, tutte risposte al livello 1
+                        1
                 );
                 repliesBox.getChildren().add(replyNode);
             }
         }
 
+        deleteButton.setOnAction(e -> {
+            boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
+            if(response){
+                ((VBox) container.getParent()).getChildren().remove(container);
+                commentDAO.deleteById(comment.getID());
+            }
+        });
+
         return container;
     }
-
-
 
     private String getUserName(int userId) {
         return userDAO.getById(userId).getName();

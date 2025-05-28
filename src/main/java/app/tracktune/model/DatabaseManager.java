@@ -142,12 +142,13 @@ public class DatabaseManager {
         T result = null;
         try {
             PreparedStatement prepStatement = dbConnection.prepareStatement(sql);
-            for (int i = 0; i < params.length; i++) {
-                if(params[i] instanceof byte[] data)
-                    prepStatement.setBytes(i + 1, data);
-                else
-                    prepStatement.setObject(i + 1, params[i]);
-            }
+            if(params != null)
+                for (int i = 0; i < params.length; i++) {
+                    if(params[i] instanceof byte[] data)
+                        prepStatement.setBytes(i + 1, data);
+                    else
+                        prepStatement.setObject(i + 1, params[i]);
+                }
 
             try (ResultSet rs = prepStatement.executeQuery()) {
                 result = processor.process(rs);

@@ -8,6 +8,7 @@ module app.tracktune {
     requires MaterialFX;
     requires java.sql.rowset;
     requires org.kordamp.ikonli.javafx;
+    requires jdk.compiler;
 
     opens app.tracktune to javafx.fxml;
     opens app.tracktune.controller to javafx.fxml;
