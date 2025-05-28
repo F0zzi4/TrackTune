@@ -566,3 +566,8 @@
 .deep-indent {
     border-left: 2px solid #ccc;
 }
+.replies-toggle {
+    -fx-text-fill: #4a90e2;
+    -fx-font-size: 11px;
+    -fx-font-style: italic;
+}
