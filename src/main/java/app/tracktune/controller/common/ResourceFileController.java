@@ -474,6 +474,7 @@ public class ResourceFileController extends Controller implements Initializable 
 
     private VBox createCommentNode(Comment comment, String name, String surname, int indentLevel) {
         Label nameLabel = new Label(name + " " + surname);
+        nameLabel.setWrapText(true);
         nameLabel.getStyleClass().add("comment-author");
 
         FontIcon replyIcon = new FontIcon("mdi2r-reply");
@@ -487,12 +488,10 @@ public class ResourceFileController extends Controller implements Initializable 
         Button deleteButton = new Button();
         deleteButton.setGraphic(deleteIcon);
         deleteButton.getStyleClass().add("delete-comment");
-        HBox buttonsBox;
-        if(ViewManager.getSessionUser() instanceof Administrator || track.getUserID() == ViewManager.getSessionUser().getId()) {
-            buttonsBox = new HBox(5, replyButton, deleteButton);
-        }
-        else
-            buttonsBox = new HBox(5, replyButton);
+
+        HBox buttonsBox = (ViewManager.getSessionUser() instanceof Administrator || track.getUserID() == ViewManager.getSessionUser().getId())
+                ? new HBox(5, replyButton, deleteButton)
+                : new HBox(5, replyButton);
         buttonsBox.setAlignment(Pos.CENTER_RIGHT);
 
         Region spacer = new Region();
@@ -504,6 +503,7 @@ public class ResourceFileController extends Controller implements Initializable 
 
         Label commentLabel = new Label(comment.getDescription());
         commentLabel.setWrapText(true);
+        commentLabel.setPadding(new Insets(10, 0, 10, 0));
         commentLabel.getStyleClass().add("comment-text");
 
         Label dateLabel = new Label(getFormattedRequestDate(comment.getCreationDate()));
@@ -512,28 +512,52 @@ public class ResourceFileController extends Controller implements Initializable 
         dateLabel.setGraphic(clockIcon);
         dateLabel.getStyleClass().add("comment-date");
 
-        HBox dateBox = new HBox(dateLabel);
-        dateBox.setAlignment(Pos.CENTER_RIGHT);
+        VBox repliesBox = new VBox();
+        repliesBox.setPadding(new Insets(10, 0, 0, 0));
+        repliesBox.setVisible(false);
+        repliesBox.setManaged(false);
+        repliesBox.setVisible(false);
+        repliesBox.setManaged(false);
 
-        VBox commentBox = new VBox(topBox, commentLabel, dateBox);
+        Label repliesLabel = new Label("[replies]");
+        repliesLabel.setVisible(false);
+        repliesLabel.getStyleClass().add("replies-toggle-closed");
+        repliesLabel.setCursor(Cursor.HAND);
+        repliesLabel.setOnMouseClicked(event -> {
+            boolean isVisible = repliesBox.isVisible();
+            repliesBox.setVisible(!isVisible);
+            repliesBox.setManaged(!isVisible);
+            repliesLabel.setText(isVisible ? "[replies]" : "[hide replies]");
+            repliesLabel.getStyleClass().removeAll("replies-toggle-open", "replies-toggle-closed");
+            repliesLabel.getStyleClass().add(isVisible ? "replies-toggle-closed" : "replies-toggle-open");
+        });
+
+        Region spacer3 = new Region();
+        HBox.setHgrow(spacer3, Priority.ALWAYS);
+        HBox replies_date = new HBox(repliesLabel, spacer3, dateLabel);
+
+        VBox commentBox = new VBox(topBox, commentLabel, replies_date);
         commentBox.setSpacing(5);
         commentBox.setPadding(new Insets(10));
         commentBox.getStyleClass().add("comment-box");
         commentBox.setMaxWidth(280);
 
-        VBox container = new VBox(commentBox);
-        commentBox.setPadding(new Insets(5, 0, 5, 20 * indentLevel));
+        VBox indentedBox = new VBox(commentBox, repliesBox);
+        indentedBox.setPadding(new Insets(0, 0, 0, indentLevel == 0 ? 0 : 15));
+
+        VBox container = new VBox(indentedBox);
+        container.setPadding(new Insets(5, 0, 5, 0));
 
         deleteButton.setOnAction(e -> {
             ((VBox) container.getParent()).getChildren().remove(container);
-            // TODO
+            // TODO: elimina dal DB se necessario
         });
 
         replyButton.setOnAction(e -> {
             TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle(Strings.REPLY_TO_COMMENT);
+            dialog.setTitle("Rispondi al commento");
             dialog.setHeaderText(null);
-            dialog.setContentText(Strings.WRITE_YOUR_REPLY);
+            dialog.setContentText("Scrivi la tua risposta:");
 
             Optional<String> result = dialog.showAndWait();
             result.ifPresent(responseText -> {
@@ -550,54 +574,50 @@ public class ResourceFileController extends Controller implements Initializable 
                 int replyID = commentDAO.insert(reply);
                 commentDAO.insertReply(comment.getID(), replyID);
 
-                Comment newReply = new Comment(replyID, reply.getDescription(), reply.getStartTrackInterval(), reply.getEndTrackInterval(), reply.getCreationDate(), reply.getUserID(), track.getId());
+                Comment newReply = new Comment(
+                        replyID,
+                        reply.getDescription(),
+                        reply.getStartTrackInterval(),
+                        reply.getEndTrackInterval(),
+                        reply.getCreationDate(),
+                        reply.getUserID(),
+                        track.getId()
+                );
+
                 VBox replyNode = createCommentNode(
                         newReply,
                         SessionManager.getInstance().getUser().getName(),
                         SessionManager.getInstance().getUser().getSurname(),
-                        indentLevel + 1
+                        1 // forziamo indentazione max a 1 per tutte le risposte
                 );
-                container.getChildren().add(replyNode);
+
+                repliesBox.getChildren().add(replyNode);
+                repliesBox.setVisible(true);
+                repliesBox.setManaged(true);
+                repliesLabel.setText("[hide replies]");
+                repliesLabel.getStyleClass().removeAll("replies-toggle-closed");
+                repliesLabel.getStyleClass().add("replies-toggle-open");
             });
         });
 
         List<Comment> replies = commentDAO.getAllReplies(comment.getID());
         if (replies != null && !replies.isEmpty()) {
-            Label repliesLabel = new Label(Strings.REPLIES);
-            repliesLabel.getStyleClass().add("replies-toggle");
-            repliesLabel.setCursor(Cursor.HAND);
-
-            VBox repliesBox = new VBox();
-            repliesBox.setPadding(new Insets(10, 0, 0, 20));
-            repliesBox.setVisible(false);
-            repliesBox.setManaged(false);
-            repliesLabel.getStyleClass().add("replies-toggle-closed");
-
+            repliesLabel.setVisible(true);
             for (Comment reply : replies) {
                 VBox replyNode = createCommentNode(
                         reply,
                         getUserName(reply.getUserID()),
                         getUserSurname(reply.getUserID()),
-                        indentLevel + 1
+                        1 // idem, tutte risposte al livello 1
                 );
                 repliesBox.getChildren().add(replyNode);
             }
-
-            repliesLabel.setOnMouseClicked(event -> {
-                boolean isVisible = repliesBox.isVisible();
-                repliesBox.setVisible(!isVisible);
-                repliesBox.setManaged(!isVisible);
-                repliesLabel.setText(isVisible ? Strings.REPLIES : Strings.HIDE_REPLIES);
-
-                repliesLabel.getStyleClass().removeAll("replies-toggle-open", "replies-toggle-closed");
-                repliesLabel.getStyleClass().add(isVisible ? "replies-toggle-closed" : "replies-toggle-open");
-            });
-
-            commentBox.getChildren().addAll(repliesLabel, repliesBox);
         }
 
         return container;
     }
+
+
 
     private String getUserName(int userId) {
         return userDAO.getById(userId).getName();
