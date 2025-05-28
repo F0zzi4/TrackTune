@@ -411,7 +411,7 @@ public class AddResourceController extends Controller implements Initializable {
     private void handleAddAuthor(){
         try{
             if(authorComboBox.getEditor().getText().isEmpty())
-                throw new TrackTuneException(Strings.FIELD_EMPTY);
+                throw new TrackTuneException(Strings.INSERT_VALID_AUTHOR);
 
             String authorString = authorComboBox.getEditor().getText();
 

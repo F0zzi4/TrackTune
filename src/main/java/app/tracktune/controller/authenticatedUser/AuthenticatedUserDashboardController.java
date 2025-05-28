@@ -95,7 +95,7 @@ public class AuthenticatedUserDashboardController extends Controller implements 
     @FXML
     public void handleActivities(){
         try{
-
+            ViewManager.setMainContent(Frames.ACTIVITIES_VIEW_PATH, mainContent, this);
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());

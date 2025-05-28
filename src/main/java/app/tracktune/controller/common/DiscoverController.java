@@ -1,9 +1,9 @@
-package app.tracktune.controller.authenticatedUser;
+package app.tracktune.controller.common;
 
 import app.tracktune.Main;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
-import app.tracktune.controller.common.ResourceFileController;
+import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.resource.Resource;

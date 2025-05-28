@@ -9,6 +9,7 @@ public class Strings {
     public static final String LOGIN_FAILED = "Login failed";
     public static final String USER_PWD_EMPTY = "Username or password is empty";
     public static final String FIELD_EMPTY = "One or more fields are empty";
+    public static final String INSERT_VALID_AUTHOR = "Insert a valid author name";
     public static final String CONN_FAILED = "Connection failed";
     public static final String DB_CONN_FAILED = "Connection with database failed";
     public static final String ERR_EXEC_STMT = "Error executing statement ";
