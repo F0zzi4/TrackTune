@@ -3,7 +3,6 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
-import app.tracktune.controller.authenticatedUser.DiscoverController;
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.author.Author;

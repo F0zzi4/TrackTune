@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<StackPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../style/authors-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.authenticatedUser.ActivitiesViewController">
+    <children>
+        <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="split-pane-divider">
+
+            <Label prefHeight="19.0" prefWidth="240.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Activities">
+                <graphic>
+                    <FontIcon iconLiteral="mdi2i-image-filter-frames" iconSize="30" />
+                </graphic>
+            </Label>
+
+            <VBox fx:id="authorsContainer" spacing="10.0" />
+
+            <HBox alignment="CENTER" spacing="20.0" style="-fx-padding: 20 0 0 0;">
+                <Button fx:id="prevButton" styleClass="switch-button" text="Previous">
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2a-arrow-left-drop-circle" iconSize="20" />
+                    </graphic>
+                </Button>
+                <Button fx:id="nextButton" styleClass="switch-button" text="Next">
+                    <graphic>
+                        <FontIcon iconLiteral="mdi2a-arrow-right-drop-circle" iconSize="20" />
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </children>
+</StackPane>
