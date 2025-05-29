@@ -9,18 +9,20 @@ public class Resource {
     private final Timestamp creationDate;
     private final boolean isMultimedia;
     private final int trackID;
+    private final int userID;
 
-    public Resource(Integer id, ResourceTypeEnum type, byte[] data, Timestamp creationDate, boolean isMultimedia, int trackID) {
+    public Resource(Integer id, ResourceTypeEnum type, byte[] data, Timestamp creationDate, boolean isMultimedia, int trackID, int  userID) {
         this.id = id;
         this.type = type;
         this.data = data;
         this.creationDate = creationDate;
         this.isMultimedia = isMultimedia;
         this.trackID = trackID;
+        this.userID = userID;
     }
 
-    public Resource(ResourceTypeEnum type, byte[] data, Timestamp creationDate, boolean isMultimedia, int trackID) {
-        this(null, type, data, creationDate, isMultimedia, trackID);
+    public Resource(ResourceTypeEnum type, byte[] data, Timestamp creationDate, boolean isMultimedia, int trackID, int userID) {
+        this(null, type, data, creationDate, isMultimedia, trackID, userID);
     }
 
     public Integer getId() {
@@ -46,4 +48,6 @@ public class Resource {
     public int getTrackID() {
         return trackID;
     }
+
+    public int getUserID() {return userID; }
 }

@@ -71,6 +71,10 @@ public class TrackGenreDAO implements DAO<TrackGenre> {
         dbManager = Main.dbManager;
     }
 
+    public TrackGenreDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
     @Override
     public Integer insert(TrackGenre trackGenre) {
         boolean success = dbManager.executeUpdate(INSERT_TRACK_GENRE_STMT,

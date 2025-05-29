@@ -61,8 +61,8 @@ public class GenreDAO implements DAO<Genre> {
         WHERE tg.trackID = ?
     """;
 
-    public GenreDAO() {
-        dbManager = Main.dbManager;
+    public GenreDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
     }
 
     @Override

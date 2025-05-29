@@ -3,8 +3,8 @@ package app.tracktune.controller.admin;
 import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
-import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
@@ -33,11 +33,10 @@ public class InstrumentsController extends Controller implements Initializable {
     private List<MusicalInstrument> instruments = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 4;
-    private final MusicalInstrumentDAO instrumentDAO = new MusicalInstrumentDAO();
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-        instruments = instrumentDAO.getAll();
+        instruments = DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getAll();
 
         btnPrev.setOnAction(e -> {
             if (currentPage > 0) {
@@ -70,8 +69,8 @@ public class InstrumentsController extends Controller implements Initializable {
                     }
 
                     MusicalInstrument newInstrument = new MusicalInstrument(Controller.toTitleCase(name), description);
-                    instrumentDAO.insert(newInstrument);
-                    instruments = instrumentDAO.getAll();
+                    DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().insert(newInstrument);
+                    instruments = DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getAll();
 
                     txtName.clear();
                     txtDescription.clear();
@@ -162,7 +161,7 @@ public class InstrumentsController extends Controller implements Initializable {
         boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
         if (response)
             try {
-                instrumentDAO.deleteById(instrument.getId());
+                DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().deleteById(instrument.getId());
                 instruments.remove(instrument);
                 int maxPage = (int) Math.ceil((double) instruments.size() / itemsPerPage);
                 if (currentPage >= maxPage && currentPage > 0) {

@@ -77,8 +77,8 @@ public class CommentDAO implements DAO<Comment> {
             VALUES (?, ?)
     """;
 
-    public CommentDAO() {
-        this.dbManager = Main.dbManager;
+    public CommentDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
     }
 
     @Override

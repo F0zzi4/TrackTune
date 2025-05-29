@@ -1,6 +1,7 @@
 package app.tracktune.controller.admin;
 
 import app.tracktune.controller.Controller;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.user.*;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
@@ -32,11 +33,10 @@ public class RequestsController extends Controller implements Initializable {
     private int currentPage = 0;
     private final int itemsPerPage = 5;
 
-    private final PendingUserDAO pendingUserDAO = new PendingUserDAO();
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-        allRequests = new ArrayList<>(pendingUserDAO.getAll());
+        allRequests = new ArrayList<>(DatabaseManager.getDAOProvider().getPendingUserDAO().getAll());
         createTabsFromEnum();
 
         prevButton.setOnAction(e -> {
@@ -154,7 +154,7 @@ public class RequestsController extends Controller implements Initializable {
                     request.getRequestDate(),
                     AuthRequestStatusEnum.ACCEPTED
             );
-            pendingUserDAO.updateById(updatedRequest, request.getId());
+            DatabaseManager.getDAOProvider().getPendingUserDAO().updateById(updatedRequest, request.getId());
             allRequests = allRequests.stream()
                     .map(r -> Objects.equals(r.getId(), request.getId()) ? updatedRequest : r)
                     .collect(Collectors.toList());
@@ -167,7 +167,7 @@ public class RequestsController extends Controller implements Initializable {
                     UserStatusEnum.ACTIVE,
                     new Timestamp(System.currentTimeMillis())
             );
-            new UserDAO().insert(au);
+            DatabaseManager.getDAOProvider().getUserDAO().insert(au);
 
             removeRequestAndUpdate();
         } catch (Exception ex) {
@@ -186,7 +186,7 @@ public class RequestsController extends Controller implements Initializable {
                     request.getRequestDate(),
                     AuthRequestStatusEnum.REJECTED
             );
-            pendingUserDAO.updateById(updatedRequest, request.getId());
+            DatabaseManager.getDAOProvider().getPendingUserDAO().updateById(updatedRequest, request.getId());
 
             allRequests = allRequests.stream()
                     .map(r -> Objects.equals(r.getId(), request.getId()) ? updatedRequest : r)

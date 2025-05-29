@@ -63,8 +63,8 @@ public class AuthorDAO implements DAO<Author> {
         WHERE ta.trackID = ?
     """;
 
-    public AuthorDAO() {
-        dbManager = Main.dbManager;
+    public AuthorDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
     }
 
     @Override

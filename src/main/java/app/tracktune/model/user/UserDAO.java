@@ -67,6 +67,10 @@ public class UserDAO implements DAO<User> {
         this.dbManager = Main.dbManager;
     }
 
+    public UserDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
     @Override
     public Integer insert(User user) {
         boolean success = false;

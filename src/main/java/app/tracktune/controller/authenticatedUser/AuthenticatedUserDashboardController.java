@@ -20,7 +20,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AuthenticatedUserDashboardController extends Controller implements Initializable {
-    @FXML private MediaView mediaPlayerView;
     @FXML public StackPane mainContent;
     @FXML private Label LblWelcome;
     private MediaPlayer mediaPlayer;
@@ -88,20 +87,6 @@ public class AuthenticatedUserDashboardController extends Controller implements 
         }
     }
 
-    /**
-     * Loads and displays the activities view by updating the main content area.
-     * It's a log about the activities done by the logged user
-     */
-    @FXML
-    public void handleActivities(){
-        try{
-            ViewManager.setMainContent(Frames.ACTIVITIES_VIEW_PATH, mainContent, this);
-        }catch(Exception e){
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
-            System.err.println(e.getMessage());
-        }
-    }
-
     @FXML
     public void handleMe(){
         try{
@@ -123,26 +108,6 @@ public class AuthenticatedUserDashboardController extends Controller implements 
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
-        }
-    }
-
-    private void initMediaPlayer() {
-        try{
-            String videoPath = "C:\\Users\\ACER\\Videos\\test3.mp4";
-            Media media = new Media(new File(videoPath).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-            mediaPlayerView.setMediaPlayer(mediaPlayer);
-            mediaPlayer.play();
-        }catch(Exception e){
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.MEDIA_NOT_SUPPORTED, Strings.MEDIA_NOT_SUPPORTED, Alert.AlertType.ERROR);
-            System.err.println(e.getMessage());
-            disposeMediaPlayer();
-        }
-    }
-
-    public void disposeMediaPlayer() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
         }
     }
 }

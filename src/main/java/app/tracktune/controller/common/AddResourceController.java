@@ -3,8 +3,10 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.author.AuthorStatusEnum;
@@ -59,15 +61,6 @@ public class AddResourceController extends Controller implements Initializable {
     @FXML private HBox resourceDateBox;
     @FXML private ComboBox<Track> trackComboBox;
 
-    private final ResourceDAO resourceDAO = new ResourceDAO();
-    private final AuthorDAO authorDAO = new AuthorDAO();
-    private final GenreDAO genreDAO = new GenreDAO();
-    private final MusicalInstrumentDAO musicalInstrumentDAO = new MusicalInstrumentDAO();
-    private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
-    private final TrackGenreDAO trackGenreDAO = new TrackGenreDAO();
-    private final TrackInstrumentDAO trackInstrumentDAO = new TrackInstrumentDAO();
-    private final TrackDAO trackDAO = new TrackDAO();
-
     // Data set
     private final ObservableList<Track> allTracks = FXCollections.observableArrayList();
     private final ObservableList<Author> allAuthors = FXCollections.observableArrayList();
@@ -83,10 +76,10 @@ public class AddResourceController extends Controller implements Initializable {
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
-            allTracks.addAll(trackDAO.getAll());
-            allAuthors.addAll(authorDAO.getAllActive());
-            allGenres.addAll(genreDAO.getAll());
-            allMusicalInstruments.addAll(musicalInstrumentDAO.getAll());
+            allTracks.addAll(DatabaseManager.getDAOProvider().getTrackDAO().getAll());
+            allAuthors.addAll(DatabaseManager.getDAOProvider().getAuthorDAO().getAllActive());
+            allGenres.addAll(DatabaseManager.getDAOProvider().getGenreDAO().getAll());
+            allMusicalInstruments.addAll(DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getAll());
 
             trackComboBox.setConverter(new EntityToStringConverter<>());
             trackComboBox.setEditable(true);
@@ -151,25 +144,25 @@ public class AddResourceController extends Controller implements Initializable {
     private void loadTrackInfo(Track track){
         trackComboBox.getEditor().setText(track.getTitle());
 
-        List<TrackAuthor> trackAuthors = trackAuthorDAO.getByTrackId(track.getId());
-        List<TrackGenre> trackGenres = trackGenreDAO.getByTrackId(track.getId());
-        List<TrackInstrument> trackInstruments = trackInstrumentDAO.getByTrackId(track.getId());
+        List<TrackAuthor> trackAuthors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(track.getId());
+        List<TrackGenre> trackGenres = DatabaseManager.getDAOProvider().getTrackGenreDAO().getByTrackId(track.getId());
+        List<TrackInstrument> trackInstruments = DatabaseManager.getDAOProvider().getTrackInstrumentDAO().getByTrackId(track.getId());
 
         selectedAuthors.clear();
         for(TrackAuthor trackAuthor : trackAuthors){
-            selectedAuthors.add(authorDAO.getById(trackAuthor.getAuthorId()));
+            selectedAuthors.add(DatabaseManager.getDAOProvider().getAuthorDAO().getById(trackAuthor.getAuthorId()));
         }
         updateSelectedElements(selectedAuthorsPane, selectedAuthors);
 
         selectedGenres.clear();
         for(TrackGenre trackGenre : trackGenres){
-            selectedGenres.add(genreDAO.getById(trackGenre.getGenreId()));
+            selectedGenres.add(DatabaseManager.getDAOProvider().getGenreDAO().getById(trackGenre.getGenreId()));
         }
         updateSelectedElements(selectedGenresPane, selectedGenres);
 
         selectedInstruments.clear();
         for(TrackInstrument trackInstrument : trackInstruments){
-            selectedInstruments.add(musicalInstrumentDAO.getById(trackInstrument.getInstrumentId()));
+            selectedInstruments.add(DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getById(trackInstrument.getInstrumentId()));
         }
         updateSelectedElements(selectedInstrumentsPane, selectedInstruments);
     }
@@ -253,7 +246,7 @@ public class AddResourceController extends Controller implements Initializable {
 
             int trackId;
             if(selectedTracks.isEmpty())
-                trackId = trackDAO.insert(new Track(trackTitle,new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId()));
+                trackId = DatabaseManager.getDAOProvider().getTrackDAO().insert(new Track(trackTitle,new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId()));
             else
                 trackId = selectedTracks.getFirst().getId();
 
@@ -331,10 +324,10 @@ public class AddResourceController extends Controller implements Initializable {
         if (isMultimedia) {
             Time duration = ResourceManager.calcMediaDuration(data, type.toString());
             String location = txtLocation.getText();
-            result = resourceDAO.insert(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
-                    duration, location, Date.valueOf(resourceDate.getValue()), trackId));
+            result = DatabaseManager.getDAOProvider().getResourceDAO().insert(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
+                    duration, location, Date.valueOf(resourceDate.getValue()), trackId, SessionManager.getInstance().getUser().getId()));
         } else {
-            result = resourceDAO.insert(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId));
+            result = DatabaseManager.getDAOProvider().getResourceDAO().insert(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId, SessionManager.getInstance().getUser().getId()));
         }
         return result;
     }
@@ -347,20 +340,20 @@ public class AddResourceController extends Controller implements Initializable {
 
     private void manageTrackAuthorRelation(Integer[] authorIds, int trackId){
         for(int authorId : authorIds)
-            if(trackAuthorDAO.getByTrackIdAndAuthorId(trackId, authorId) == null)
-                trackAuthorDAO.insert(new TrackAuthor(trackId, authorId));
+            if(DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackIdAndAuthorId(trackId, authorId) == null)
+                DatabaseManager.getDAOProvider().getTrackAuthorDAO().insert(new TrackAuthor(trackId, authorId));
     }
 
     private void manageTrackGenreRelation(Integer[] genreIds, int trackId){
         for(int genreId: genreIds)
-            if(trackGenreDAO.getByTrackIdAndGenreId(trackId, genreId) == null)
-                trackGenreDAO.insert(new TrackGenre(trackId, genreId));
+            if(DatabaseManager.getDAOProvider().getTrackGenreDAO().getByTrackIdAndGenreId(trackId, genreId) == null)
+                DatabaseManager.getDAOProvider().getTrackGenreDAO().insert(new TrackGenre(trackId, genreId));
     }
 
     private void manageTrackInstrumentRelation(Integer[] instrumentIds, int trackId){
         for(int instrumentId : instrumentIds)
-            if(trackInstrumentDAO.getByTrackIdAndInstrumentId(trackId, instrumentId) == null)
-                trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId));
+            if(DatabaseManager.getDAOProvider().getTrackInstrumentDAO().getByTrackIdAndInstrumentId(trackId, instrumentId) == null)
+                DatabaseManager.getDAOProvider().getTrackInstrumentDAO().insert(new TrackInstrument(trackId, instrumentId));
     }
 
     @FXML
@@ -418,9 +411,9 @@ public class AddResourceController extends Controller implements Initializable {
             if(SQLiteScripts.checkForSQLInjection(authorString))
                 throw new TrackTuneException(Strings.ERR_SQL_INJECTION);
 
-            if(!authorDAO.existByAutorShipname(Controller.toTitleCase(authorString))){
+            if(!DatabaseManager.getDAOProvider().getAuthorDAO().existByAutorShipname(Controller.toTitleCase(authorString))){
                 Author newAuthor = new Author(Controller.toTitleCase(authorString), AuthorStatusEnum.ACTIVE);
-                if(authorDAO.insert(newAuthor) != null){
+                if(DatabaseManager.getDAOProvider().getAuthorDAO().insert(newAuthor) != null){
                     selectedAuthors.add(newAuthor);
                     allAuthors.add(newAuthor);
                     updateSelectedElements(selectedAuthorsPane, selectedAuthors);
@@ -437,6 +430,5 @@ public class AddResourceController extends Controller implements Initializable {
         }catch (TrackTuneException e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.AUTHOR_FAILED, e.getMessage(), Alert.AlertType.ERROR);
         }
-
     }
 }

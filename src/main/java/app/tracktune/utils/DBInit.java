@@ -97,7 +97,9 @@ public class DBInit {
             location TEXT,
             resourceDate TIMESTAMP,
             trackID INTEGER,
-            FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE
+            userID INTEGER,
+            FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE,
+            FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE
         );
     """;
 

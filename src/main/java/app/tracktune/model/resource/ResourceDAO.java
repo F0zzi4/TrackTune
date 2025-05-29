@@ -25,16 +25,17 @@ public class ResourceDAO implements DAO<Resource> {
     private static final String LOCATION = "location";
     private static final String RESOURCE_DATE = "resourceDate";
     private static final String TRACK_ID = "trackID";
+    private static final String USER_ID = "userID";
 
     // SQL STATEMENTS
     private static final String INSERT_RESOURCE_STMT = """
-        INSERT INTO Resources (type, data, creationDate, isMultimedia, duration, location, resourceDate, trackID)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Resources (type, data, creationDate, isMultimedia, duration, location, resourceDate, trackID, userID)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
     private static final String UPDATE_RESOURCE_STMT = """
         UPDATE Resources
-        SET type = ?, data = ?, creationDate = ?, isMultimedia = ?, duration = ?, location = ?, resourceDate = ?, trackID = ?
+        SET type = ?, data = ?, creationDate = ?, isMultimedia = ?, duration = ?, location = ?, resourceDate = ?, trackID = ?, userID = ?
         WHERE ID = ?
     """;
 
@@ -64,8 +65,19 @@ public class ResourceDAO implements DAO<Resource> {
         WHERE ID = ?
     """;
 
+    private static final String GET_RESOURCE_COMMENTS_BY_USER_ID_STMT = """
+            SELECT DISTINCT r.*
+            FROM Resources r
+            JOIN Comments c ON r.trackID = c.trackID
+            WHERE c.userID = ?
+    """;
+
     public ResourceDAO() {
         dbManager = Main.dbManager;
+    }
+
+    public ResourceDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
     }
 
     @Override
@@ -82,7 +94,8 @@ public class ResourceDAO implements DAO<Resource> {
                     multimedia.getDuration(),
                     multimedia.getLocation(),
                     multimedia.getResourceDate(),
-                    multimedia.getTrackID()
+                    multimedia.getTrackID(),
+                    multimedia.getUserID()
             );
         } else {
             success = dbManager.executeUpdate(
@@ -94,7 +107,8 @@ public class ResourceDAO implements DAO<Resource> {
                     null,
                     null,
                     null,
-                    resource.getTrackID()
+                    resource.getTrackID(),
+                    resource.getUserID()
             );
         }
 
@@ -106,7 +120,7 @@ public class ResourceDAO implements DAO<Resource> {
     }
 
     @Override
-    public void updateById(Resource resource, int id) {
+    public void updateById(Resource resource, int trackID) {
         boolean success;
 
         if (resource instanceof MultimediaResource multimedia) {
@@ -120,7 +134,8 @@ public class ResourceDAO implements DAO<Resource> {
                     multimedia.getLocation(),
                     multimedia.getResourceDate(),
                     multimedia.getTrackID(),
-                    id
+                    multimedia.getId(),
+                    trackID
             );
         } else {
             success = dbManager.executeUpdate(
@@ -133,7 +148,8 @@ public class ResourceDAO implements DAO<Resource> {
                     null,
                     null,
                     resource.getTrackID(),
-                    id
+                    resource.getUserID(),
+                    trackID
             );
         }
 
@@ -215,6 +231,22 @@ public class ResourceDAO implements DAO<Resource> {
         return resources;
     }
 
+    public List<Resource> getAllCommentedResourcesByUserID(int userId) {
+        List<Resource> resources = new ArrayList<>();
+
+        dbManager.executeQuery(
+                GET_RESOURCE_COMMENTS_BY_USER_ID_STMT,
+                rs -> {
+                    while (rs.next()) {
+                        resources.add(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, userId
+        );
+
+        return resources;
+    }
+
     public static Resource mapResultSetToEntity(ResultSet rs) throws SQLException {
         int id = rs.getInt(ID);
         ResourceTypeEnum type = ResourceTypeEnum.fromInt(rs.getInt(TYPE));
@@ -222,14 +254,15 @@ public class ResourceDAO implements DAO<Resource> {
         Timestamp creationDate = rs.getTimestamp(CREATION_DATE);
         boolean isMultimedia = rs.getInt(IS_MULTIMEDIA) == 1;
         int trackID = rs.getInt(TRACK_ID);
+        int userID = rs.getInt(USER_ID);
 
         if (isMultimedia) {
             Time duration = rs.getTime(DURATION);
             String location = rs.getString(LOCATION);
             Date resourceDate = rs.getDate(RESOURCE_DATE);
-            return new MultimediaResource(id, type, data, creationDate, true, duration, location, resourceDate, trackID);
+            return new MultimediaResource(id, type, data, creationDate, true, duration, location, resourceDate, trackID, userID);
         } else {
-            return new Resource(id, type, data, creationDate, false, trackID);
+            return new Resource(id, type, data, creationDate, false, trackID, userID);
         }
     }
 }
