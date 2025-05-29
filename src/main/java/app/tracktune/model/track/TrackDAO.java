@@ -80,6 +80,12 @@ public class TrackDAO implements DAO<Track> {
             WHERE r.ID = ?
     """;
 
+    private static final String GET_TRACK_BY_TITLE = """
+            SELECT *
+            FROM Tracks
+            WHERE title = ?
+    """;
+
 
     public TrackDAO() {
         dbManager = Main.dbManager;
@@ -146,6 +152,27 @@ public class TrackDAO implements DAO<Track> {
         return result.get();
     }
 
+    public Track getByTitle(String title) {
+        AtomicReference<Track> result = new AtomicReference<>();
+
+        boolean success = dbManager.executeQuery(
+                GET_TRACK_BY_TITLE,
+                rs -> {
+                    if (rs.next()) {
+                        result.set(mapResultSetToEntity(rs));
+                        return true;
+                    }
+                    return false;
+                },
+                title
+        );
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+
+        return result.get();
+    }
 
     public List<Track> getAllByAuthorId(int id) {
         List<Track> tracks = new ArrayList<>();

@@ -1,5 +1,6 @@
 package app.tracktune.controller.common;
 
+import app.tracktune.Main;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
@@ -19,6 +20,7 @@ import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -71,6 +73,7 @@ public class ResourceFileController extends Controller implements Initializable 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            Platform.runLater(() -> Main.root.setOnCloseRequest(event -> disposeMediaPlayer()));
             resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight());
             boolean isMultimedia = resourceNode instanceof MediaView;
 

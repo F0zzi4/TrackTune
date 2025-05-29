@@ -169,7 +169,7 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
     public TrackAuthor getByTrackIdAndAuthorId(int trackId, int authorId) {
         AtomicReference<TrackAuthor> result = new AtomicReference<>();
 
-        boolean success = dbManager.executeQuery(GET_TRACK_AUTHOR_BY_TRACK_AND_AUTHOR_ID,
+        dbManager.executeQuery(GET_TRACK_AUTHOR_BY_TRACK_AND_AUTHOR_ID,
                 rs -> {
                     if (rs.next()) {
                         result.set(mapResultSetToEntity(rs));

@@ -6,13 +6,9 @@ import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardCont
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
-import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.resource.Resource;
-import app.tracktune.model.resource.ResourceDAO;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackAuthor;
-import app.tracktune.model.track.TrackAuthorDAO;
-import app.tracktune.model.track.TrackDAO;
 import app.tracktune.model.user.Administrator;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;

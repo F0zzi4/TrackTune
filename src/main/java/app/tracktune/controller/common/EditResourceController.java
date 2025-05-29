@@ -7,15 +7,11 @@ import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
-import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.model.genre.Genre;
-import app.tracktune.model.genre.GenreDAO;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
-import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.model.resource.MultimediaResource;
 import app.tracktune.model.resource.Resource;
-import app.tracktune.model.resource.ResourceDAO;
 import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.*;
 import app.tracktune.utils.Frames;
@@ -33,13 +29,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.util.StringConverter;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class EditResourceController extends Controller implements Initializable {
@@ -161,9 +157,15 @@ public class EditResourceController extends Controller implements Initializable 
     private <T> void updateSelectedElements(FlowPane selectedElementsPane, ObservableList<T> selectedList) {
         selectedElementsPane.getChildren().clear();
         for (T element : selectedList) {
-            Label tag = new Label(element.toString());
-            tag.getStyleClass().add("author-tag");
-            selectedElementsPane.getChildren().add(tag);
+            Button button = new Button(element.toString());
+            button.getStyleClass().add("author-tag");
+            button.setOnAction(e -> {
+                selectedList.remove(element);
+                updateSelectedElements(selectedElementsPane, selectedList);
+            });
+            FontIcon closeIcon = new FontIcon("fas-times");
+            button.setGraphic(closeIcon);
+            selectedElementsPane.getChildren().add(button);
         }
     }
 
@@ -210,8 +212,7 @@ public class EditResourceController extends Controller implements Initializable 
             int trackId = resource.getTrackID();
 
             Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
-            if(!track.getTitle().equals(trackName))
-                trackId = manageTrackEntity(trackName, ViewManager.getSessionUser().getId(), authorIds, genreIds, instrumentIds);
+            trackId = manageTrackEntity(trackName, ViewManager.getSessionUser().getId(), authorIds, genreIds, instrumentIds);
 
             manageResourceEntity(type, data, trackId, isMultimedia);
 
@@ -264,7 +265,12 @@ public class EditResourceController extends Controller implements Initializable 
     }
 
     private int manageTrackEntity(String title, int userId, Integer[] authorIds, Integer[] genreIds, Integer[] instrumentIds) {
-        int trackId = DatabaseManager.getDAOProvider().getTrackDAO().insert(new Track(title, new Timestamp(System.currentTimeMillis()), userId));
+        Track track = DatabaseManager.getDAOProvider().getTrackDAO().getByTitle(title);
+        int trackId;
+        if(track == null)
+            trackId = DatabaseManager.getDAOProvider().getTrackDAO().insert(new Track(title, new Timestamp(System.currentTimeMillis()), userId));
+        else
+            trackId = track.getId();
         manageTrackAuthorRelation(authorIds, trackId);
         manageTrackGenreRelation(genreIds, trackId);
         manageTrackInstrumentRelation(instrumentIds, trackId);
@@ -272,18 +278,33 @@ public class EditResourceController extends Controller implements Initializable 
     }
 
     private void manageTrackAuthorRelation(Integer[] authorIds, int trackId){
-        for(int authorId : authorIds)
-            DatabaseManager.getDAOProvider().getTrackAuthorDAO().insert(new TrackAuthor(trackId, authorId));
+        List<TrackAuthor> trackAuthors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(trackId);
+
+        for(int authorId : authorIds){
+            if(DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackIdAndAuthorId(trackId, authorId) == null)
+                DatabaseManager.getDAOProvider().getTrackAuthorDAO().insert(new TrackAuthor(trackId, authorId));
+        }
+
+        Set<Integer> newAuthorIdSet = new HashSet<>(Arrays.asList(authorIds));
+        for (TrackAuthor ta : trackAuthors) {
+            if (!newAuthorIdSet.contains(ta.getAuthorId())) {
+                DatabaseManager.getDAOProvider().getTrackAuthorDAO().deleteById(ta.getId());
+            }
+        }
     }
 
     private void manageTrackGenreRelation(Integer[] genreIds, int trackId){
-        for(int genreId: genreIds)
-            DatabaseManager.getDAOProvider().getTrackGenreDAO().insert(new TrackGenre(trackId, genreId));
+        for(int genreId: genreIds){
+            if(DatabaseManager.getDAOProvider().getTrackGenreDAO().getByTrackIdAndGenreId(trackId, genreId) == null)
+                DatabaseManager.getDAOProvider().getTrackGenreDAO().insert(new TrackGenre(trackId, genreId));
+        }
     }
 
     private void manageTrackInstrumentRelation(Integer[] instrumentIds, int trackId){
-        for(int instrumentId : instrumentIds)
-            DatabaseManager.getDAOProvider().getTrackInstrumentDAO().insert(new TrackInstrument(trackId, instrumentId));
+        for(int instrumentId : instrumentIds){
+            if(DatabaseManager.getDAOProvider().getTrackInstrumentDAO().getByTrackIdAndInstrumentId(trackId, instrumentId) == null)
+                DatabaseManager.getDAOProvider().getTrackInstrumentDAO().insert(new TrackInstrument(trackId, instrumentId));
+        }
     }
 
     @FXML
