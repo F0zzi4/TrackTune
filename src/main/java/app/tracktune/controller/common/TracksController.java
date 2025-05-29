@@ -56,11 +56,6 @@ public class TracksController extends Controller implements Initializable {
     private int currentPage = 0;
     private static final int ITEMS_PER_PAGE = 6;
 
-    private final TrackDAO trackDAO = new TrackDAO();
-    private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
-    private final AuthorDAO authorDAO = new AuthorDAO();
-    private final GenreDAO genreDAO = new GenreDAO();
-    private final MusicalInstrumentDAO instrumentDAO = new MusicalInstrumentDAO();
 
     protected Resource resource;
 
@@ -82,7 +77,7 @@ public class TracksController extends Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        allTracks = trackDAO.getAll();
+        allTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAll();
         filteredTracks = new ArrayList<>(allTracks);
 
         setupFilterComboBox();
@@ -143,9 +138,9 @@ public class TracksController extends Controller implements Initializable {
         filterControlsContainer.getChildren().remove(1, filterControlsContainer.getChildren().size());
 
         switch (filter) {
-            case "Author" -> setupEntityFilter(authorDAO.getAll());
-            case "Genre" -> setupEntityFilter(genreDAO.getAllUsed());
-            case "Instrument" -> setupEntityFilter(instrumentDAO.getAll());
+            case "Author" -> setupEntityFilter(DatabaseManager.getDAOProvider().getAuthorDAO().getAll());
+            case "Genre" -> setupEntityFilter(DatabaseManager.getDAOProvider().getGenreDAO().getAllUsed());
+            case "Instrument" -> setupEntityFilter(DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getAll());
             case "Title" -> setupTitleFilter();
             default -> filteredTracks = new ArrayList<>(allTracks);
         }
@@ -215,11 +210,11 @@ public class TracksController extends Controller implements Initializable {
         comboBox.setOnAction(e -> {
             T selected = comboBox.getValue();
             if (selected instanceof Author author) {
-                filteredTracks = trackDAO.getAllByAuthorId(author.getId());
+                filteredTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAllByAuthorId(author.getId());
             } else if (selected instanceof Genre genre) {
-                filteredTracks = trackDAO.getAllByTrackId(genre.getId());
+                filteredTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAllByTrackId(genre.getId());
             } else if (selected instanceof MusicalInstrument instrument) {
-                filteredTracks = trackDAO.getAllByInstrumentId(instrument.getId());
+                filteredTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAllByInstrumentId(instrument.getId());
             }
             updateTracks();
         });
@@ -276,13 +271,13 @@ public class TracksController extends Controller implements Initializable {
      * @return the HBox representing the track item
      */
     private HBox createTrackItemBox(Track track) {
-        List<TrackAuthor> authors = trackAuthorDAO.getByTrackId(track.getId());
+        List<TrackAuthor> authors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(track.getId());
 
         Label titleLabel = new Label(track.getTitle());
         titleLabel.getStyleClass().add("request-item-title");
 
         String authorNames = authors.stream()
-                .map(ta -> authorDAO.getById(ta.getAuthorId()).getAuthorshipName())
+                .map(ta -> DatabaseManager.getDAOProvider().getAuthorDAO().getById(ta.getAuthorId()).getAuthorshipName())
                 .collect(Collectors.joining(", "));
 
         Label authorLabel = new Label("Authors: " + authorNames);

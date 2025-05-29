@@ -3,6 +3,7 @@ package app.tracktune.controller.admin;
 import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.genre.Genre;
 import app.tracktune.model.genre.GenreDAO;
 import app.tracktune.utils.SQLiteScripts;
@@ -29,11 +30,10 @@ public class GenresController extends Controller implements Initializable {
     private List<Genre> genres = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 4;
-    private final GenreDAO genreDAO = new GenreDAO();
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-        genres = genreDAO.getAll();
+        genres = DatabaseManager.getDAOProvider().getGenreDAO().getAll();
 
         btnPrev.setOnAction(e -> {
             if (currentPage > 0) {
@@ -63,8 +63,8 @@ public class GenresController extends Controller implements Initializable {
 
                     if (!exists) {
                         Genre newGenre = new Genre(Controller.toTitleCase(name), description);
-                        genreDAO.insert(newGenre);
-                        genres = genreDAO.getAll();
+                        DatabaseManager.getDAOProvider().getGenreDAO().insert(newGenre);
+                        genres = DatabaseManager.getDAOProvider().getGenreDAO().getAll();
                         txtName.clear();
                         txtDescription.clear();
                         lblCharCount.setText("0/300");
@@ -156,7 +156,7 @@ public class GenresController extends Controller implements Initializable {
         boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
         if (response)
             try {
-                genreDAO.deleteById(genre.getId());
+                DatabaseManager.getDAOProvider().getGenreDAO().deleteById(genre.getId());
                 genres.remove(genre);
                 int maxPage = (int) Math.ceil((double) genres.size() / itemsPerPage);
                 if (currentPage >= maxPage && currentPage > 0) {

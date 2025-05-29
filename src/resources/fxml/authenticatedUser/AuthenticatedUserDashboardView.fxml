@@ -38,12 +38,6 @@
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />
-                <Button onMouseClicked="#handleActivities" prefHeight="38.0" prefWidth="356.0" styleClass="sidebar-button" text="Activities">
-                    <graphic>
-                        <FontIcon iconLiteral="mdi2i-image-filter-frames" iconSize="20" />
-                    </graphic>
-                </Button>
-                <Separator prefWidth="200.0" />
                 <Button onMouseClicked="#handleTracks" prefHeight="38.0" prefWidth="271.0" styleClass="sidebar-button" text="Tracks">
                     <graphic>
                         <FontIcon iconLiteral="mdi2m-music-clef-treble" iconSize="21" />

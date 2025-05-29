@@ -5,21 +5,16 @@ import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
-import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.comments.Comment;
-import app.tracktune.model.comments.CommentDAO;
 import app.tracktune.model.genre.Genre;
-import app.tracktune.model.genre.GenreDAO;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
-import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.model.resource.MultimediaResource;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.model.track.Track;
-import app.tracktune.model.track.TrackDAO;
 import app.tracktune.model.user.Administrator;
 import app.tracktune.model.user.User;
-import app.tracktune.model.user.UserDAO;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
@@ -56,8 +51,6 @@ public class ResourceFileController extends Controller implements Initializable 
 
 
     private final ResourceManager resourceManager;
-    private final CommentDAO commentDAO = new CommentDAO();
-    public final UserDAO userDAO = new UserDAO();
     private MediaPlayer mediaPlayer;
     private Node resourceNode;
     private Track track;
@@ -90,6 +83,7 @@ public class ResourceFileController extends Controller implements Initializable 
                 videoToolBox.setVisible(false);
                 metadataBox.getChildren().add(setDetailsInfo());
                 metadataBox.setAlignment(Pos.CENTER);
+                setComments();
                 return;
             }
 
@@ -134,11 +128,14 @@ public class ResourceFileController extends Controller implements Initializable 
     }
 
     private void setComments() {
+        System.out.println("test");
         if (track != null) {
-            for (Comment comment : commentDAO.getAllCommentByTrack(track.getId())) {
-                User user = userDAO.getById(comment.getUserID());
+            System.out.println("test");
+            for (Comment comment : DatabaseManager.getDAOProvider().getCommentDAO().getAllCommentByTrack(track.getId())) {
+                User user = DatabaseManager.getDAOProvider().getUserDAO().getById(comment.getUserID());
+                System.out.println("comment: " + comment.getDescription()  +"\n");
                 if(user != null)
-                    addCommentOnView(comment, user.getName(), user.getSurname());
+                    addCommentOnView(comment, user);
             }
         }
     }
@@ -147,26 +144,22 @@ public class ResourceFileController extends Controller implements Initializable 
         VBox box = new VBox();
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(5);
-        TrackDAO trackDAO = new TrackDAO();
-        AuthorDAO authorDAO = new AuthorDAO();
-        GenreDAO genreDAO = new GenreDAO();
-        MusicalInstrumentDAO instrumentDAO = new MusicalInstrumentDAO();
 
-        track = trackDAO.getTrackByResourceId(resourceManager.resource.getId());
+        track = DatabaseManager.getDAOProvider().getTrackDAO().getTrackByResourceId(resourceManager.resource.getId());
         String title = track.getTitle();
         box.getChildren().add(createMetadataRow(Strings.TRACKS, title));
 
-        String authors = authorDAO.getAllAuthorsByTrackId(track.getId()).stream()
+        String authors = DatabaseManager.getDAOProvider().getAuthorDAO().getAllAuthorsByTrackId(track.getId()).stream()
                 .map(Author::getAuthorshipName)
                 .collect(Collectors.joining(", "));
         box.getChildren().add(createMetadataRow(Strings.AUTHORS, authors));
 
-        String genres = genreDAO.getAllGenresByTrackId(track.getId()).stream()
+        String genres = DatabaseManager.getDAOProvider().getGenreDAO().getAllGenresByTrackId(track.getId()).stream()
                 .map(Genre::getName)
                 .collect(Collectors.joining(", "));
         box.getChildren().add(createMetadataRow(Strings.GENRES, genres));
 
-        String instruments = instrumentDAO.getAllInstrumentByTrackId(track.getId()).stream()
+        String instruments = DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getAllInstrumentByTrackId(track.getId()).stream()
                 .map(MusicalInstrument::getName)
                 .collect(Collectors.joining(", "));
         box.getChildren().add(createMetadataRow(Strings.INSTRUMENTS, instruments));
@@ -180,6 +173,9 @@ public class ResourceFileController extends Controller implements Initializable 
                 metadataBox.getChildren().add(createMetadataRow(Strings.REGISTERED_DATA, multimediaResource.getResourceDate().toString()));
             });
         }
+
+        User user = DatabaseManager.getDAOProvider().getUserDAO().getById(resourceManager.resource.getUserID());
+        box.getChildren().add(createMetadataRow(Strings.UPLOADED, user.getName() + " " + user.getSurname()));
 
         return box;
     }
@@ -467,20 +463,20 @@ public class ResourceFileController extends Controller implements Initializable 
         Comment c;
         if (commentText != null && !commentText.trim().isEmpty()) {
             c = new Comment(commentText, new Time(new Date().getTime()), new Time(new Date().getTime()), new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), track.getId());
-            int id = commentDAO.insert(c);
+            int id = DatabaseManager.getDAOProvider().getCommentDAO().insert(c);
             c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), track.getId());
-            addCommentOnView(c, ViewManager.getSessionUser().getName(), ViewManager.getSessionUser().getSurname());
+            addCommentOnView(c, ViewManager.getSessionUser());
             commentField.clear();
         }
     }
 
-    private void addCommentOnView(Comment comment, String name, String surname) {
-        VBox commentNode = createCommentNode(comment, name, surname, 0);
+    private void addCommentOnView(Comment comment, User user) {
+        VBox commentNode = createCommentNode(comment, user, 0);
         commentVBox.getChildren().add(commentNode);
     }
 
-    private VBox createCommentNode(Comment comment, String name, String surname, int indentLevel) {
-        Label nameLabel = new Label(name + " " + surname);
+    private VBox createCommentNode(Comment comment, User user, int indentLevel) {
+        Label nameLabel = new Label(user.getName() + " " + user.getSurname());
         nameLabel.setWrapText(true);
         nameLabel.getStyleClass().add("comment-author");
 
@@ -496,7 +492,7 @@ public class ResourceFileController extends Controller implements Initializable 
         deleteButton.setGraphic(deleteIcon);
         deleteButton.getStyleClass().add("delete-comment");
 
-        HBox buttonsBox = (ViewManager.getSessionUser() instanceof Administrator || track.getUserID() == ViewManager.getSessionUser().getId())
+        HBox buttonsBox = (ViewManager.getSessionUser() instanceof Administrator || resourceManager.resource.getUserID() == ViewManager.getSessionUser().getId() || Objects.equals(comment.getUserID(), ViewManager.getSessionUser().getId()))
                 ? new HBox(5, replyButton, deleteButton)
                 : new HBox(5, replyButton);
         buttonsBox.setAlignment(Pos.CENTER_RIGHT);
@@ -542,13 +538,33 @@ public class ResourceFileController extends Controller implements Initializable 
         Region spacer3 = new Region();
         HBox.setHgrow(spacer3, Priority.ALWAYS);
         HBox replies_date = new HBox(repliesLabel, spacer3, dateLabel);
-
-        VBox commentBox = new VBox(topBox, commentLabel, replies_date);
+        VBox commentBox = new VBox();
         commentBox.setSpacing(5);
         commentBox.setPadding(new Insets(10));
-        commentBox.getStyleClass().add("comment-box");
-        commentBox.setMaxWidth(280);
 
+        Label roleLB;
+
+        if(user instanceof Administrator){
+            commentBox.getStyleClass().add("comment-box-admin");
+            roleLB = new Label(Strings.ADMIN);
+            roleLB.getStyleClass().add("comment-author-admin");
+
+        }
+        else if(resourceManager.resource.getUserID() == user.getId()){
+            commentBox.getStyleClass().add("comment-box-uploader");
+            roleLB = new Label(Strings.UPLOADER);
+            roleLB.getStyleClass().add("comment-author-uploader");
+        }
+        else {
+            commentBox.getStyleClass().add("comment-box");
+            roleLB = new Label(Strings.USER);
+            roleLB.getStyleClass().add("comment-author-user");
+        }
+
+        commentBox.setMaxWidth(280);
+        HBox role =  new HBox(roleLB);
+        role.setAlignment(Pos.CENTER);
+        commentBox.getChildren().addAll(role, topBox, commentLabel, replies_date);
         VBox indentedBox = new VBox(commentBox, repliesBox);
         indentedBox.setPadding(new Insets(0, 0, 0, indentLevel == 0 ? 0 : 15));
 
@@ -573,8 +589,8 @@ public class ResourceFileController extends Controller implements Initializable 
                         track.getId()
                 );
 
-                int replyID = commentDAO.insert(reply);
-                commentDAO.insertReply(comment.getID(), replyID);
+                int replyID = DatabaseManager.getDAOProvider().getCommentDAO().insert(reply);
+                DatabaseManager.getDAOProvider().getCommentDAO().insertReply(comment.getID(), replyID);
 
                 Comment newReply = new Comment(
                         replyID,
@@ -588,8 +604,7 @@ public class ResourceFileController extends Controller implements Initializable 
 
                 VBox replyNode = createCommentNode(
                         newReply,
-                        SessionManager.getInstance().getUser().getName(),
-                        SessionManager.getInstance().getUser().getSurname(),
+                        SessionManager.getInstance().getUser(),
                         1
                 );
 
@@ -602,14 +617,13 @@ public class ResourceFileController extends Controller implements Initializable 
             });
         });
 
-        List<Comment> replies = commentDAO.getAllReplies(comment.getID());
+        List<Comment> replies = DatabaseManager.getDAOProvider().getCommentDAO().getAllReplies(comment.getID());
         if (replies != null && !replies.isEmpty()) {
             repliesLabel.setVisible(true);
             for (Comment reply : replies) {
                 VBox replyNode = createCommentNode(
                         reply,
-                        getUserName(reply.getUserID()),
-                        getUserSurname(reply.getUserID()),
+                        getUser(reply.getUserID()),
                         1
                 );
                 repliesBox.getChildren().add(replyNode);
@@ -620,20 +634,17 @@ public class ResourceFileController extends Controller implements Initializable 
             boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
             if(response){
                 ((VBox) container.getParent()).getChildren().remove(container);
-                commentDAO.deleteById(comment.getID());
+                DatabaseManager.getDAOProvider().getCommentDAO().deleteById(comment.getID());
             }
         });
 
         return container;
     }
 
-    private String getUserName(int userId) {
-        return userDAO.getById(userId).getName();
+    private User getUser(int userId) {
+        return DatabaseManager.getDAOProvider().getUserDAO().getById(userId);
     }
 
-    private String getUserSurname(int userId) {
-        return userDAO.getById(userId).getSurname();
-    }
 }
 
 

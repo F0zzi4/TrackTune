@@ -63,6 +63,10 @@ public class PendingUserDAO implements DAO<PendingUser> {
         this.dbManager = Main.dbManager;
     }
 
+    public PendingUserDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
     @Override
     public Integer insert(PendingUser pendingUser) {
         boolean success = dbManager.executeUpdate(

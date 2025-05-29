@@ -4,8 +4,8 @@ import app.tracktune.controller.Controller;
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.user.AuthenticatedUser;
-import app.tracktune.model.user.UserDAO;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
@@ -28,7 +28,6 @@ public class MeController extends Controller implements Initializable {
     @FXML private Button editRole;
     @FXML private Label lblStatus;
 
-    private final UserDAO userDAO = new UserDAO();
     private AuthenticatedUser user;
     private boolean editable = false;
 
@@ -64,7 +63,7 @@ public class MeController extends Controller implements Initializable {
                         throw new SQLInjectionException(Strings.ERR_SQL_INJECTION);
                     }
 
-                    AuthenticatedUser existingUser = (AuthenticatedUser) userDAO.getActiveUserByUsername(username);
+                    AuthenticatedUser existingUser = (AuthenticatedUser) DatabaseManager.getDAOProvider().getUserDAO().getActiveUserByUsername(username);
                     if (existingUser != null && !existingUser.getId().equals(user.getId())) {
                         throw new TrackTuneException(Strings.ERR_USER_ALREADY_EXISTS);
                     }
@@ -79,7 +78,7 @@ public class MeController extends Controller implements Initializable {
                             user.getCreationDate()
                     );
 
-                    userDAO.updateById(authenticatedUser, user.getId());
+                    DatabaseManager.getDAOProvider().getUserDAO().updateById(authenticatedUser, user.getId());
 
                     SessionManager.reset();
                     ViewManager.initSessionManager(authenticatedUser);

@@ -3,6 +3,8 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.controller.authentication.SessionManager;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.resource.Resource;
@@ -11,6 +13,7 @@ import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackAuthor;
 import app.tracktune.model.track.TrackAuthorDAO;
 import app.tracktune.model.track.TrackDAO;
+import app.tracktune.model.user.Administrator;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
@@ -43,17 +46,13 @@ public class TrackResourcesController extends Controller implements Initializabl
     private int currentPage = 0;
     private final int itemsPerPage = 6;
     private final Track track;
-    private final ResourceDAO resourceDAO = new ResourceDAO();
-    private final TrackDAO trackDAO = new TrackDAO();
-    private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
-    private final AuthorDAO authorDAO = new AuthorDAO();
     protected Resource resource;
 
     public TrackResourcesController(Track track) {this.track = track;}
 
     @Override
     public void initialize(URL location, ResourceBundle res) {
-        resources = resourceDAO.getAllByTrackID(track.getId());
+        resources = DatabaseManager.getDAOProvider().getResourceDAO().getAllByTrackID(track.getId());
 
         btnPrev.setOnAction(e -> {
             if (currentPage > 0) {
@@ -86,7 +85,6 @@ public class TrackResourcesController extends Controller implements Initializabl
         }
     }
 
-    @FXML
     private void viewResource(Resource resource) {
         try{
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
@@ -107,7 +105,6 @@ public class TrackResourcesController extends Controller implements Initializabl
         }
     }
 
-    @FXML
     private void editResource(Resource resource) {
         try{
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCE_VIEW_PATH));
@@ -173,15 +170,15 @@ public class TrackResourcesController extends Controller implements Initializabl
     }
 
     private HBox createRequestItem(Resource resource) {
-        Track track = trackDAO.getById(resource.getTrackID());
-        List<TrackAuthor> trackAuthors = trackAuthorDAO.getByTrackId(resource.getTrackID());
+        Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
+        List<TrackAuthor> trackAuthors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(resource.getTrackID());
 
         Label trackLabel = new Label(track.getTitle());
         trackLabel.getStyleClass().add("request-item-title");
 
         StringBuilder authorNames = new StringBuilder();
         for (TrackAuthor trackAuthor : trackAuthors) {
-            Author author = authorDAO.getById(trackAuthor.getAuthorId());
+            Author author = DatabaseManager.getDAOProvider().getAuthorDAO().getById(trackAuthor.getAuthorId());
             authorNames.append(author.getAuthorshipName()).append(", ");
         }
 
@@ -221,7 +218,13 @@ public class TrackResourcesController extends Controller implements Initializabl
         viewBtn.setOnAction(e -> viewResource(resource));
         viewBtn.setMinWidth(80);
 
-        HBox buttonBox = new HBox(10, viewBtn,editBtn, deleteBtn);
+        HBox buttonBox;
+        if(SessionManager.getInstance().getUser() instanceof Administrator || resource.getUserID() == SessionManager.getInstance().getUser().getId()){
+            buttonBox = new HBox(10, viewBtn,editBtn, deleteBtn);
+        }
+        else{
+            buttonBox = new HBox(10, viewBtn);
+        }
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
         Region spacer = new Region();
@@ -241,7 +244,7 @@ public class TrackResourcesController extends Controller implements Initializabl
         boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
         if (response)
             try {
-                resourceDAO.deleteById(resource.getId());
+                DatabaseManager.getDAOProvider().getResourceDAO().deleteById(resource.getId());
                 resources.remove(resource);
                 int maxPage = (int) Math.ceil((double) resources.size() / itemsPerPage);
                 if (currentPage >= maxPage && currentPage > 0) {

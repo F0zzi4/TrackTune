@@ -3,9 +3,12 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
+import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.model.genre.Genre;
 import app.tracktune.model.genre.GenreDAO;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
@@ -17,6 +20,7 @@ import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.*;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
+import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import io.github.palexdev.materialfx.controls.MFXToggleButton;
@@ -50,16 +54,8 @@ public class EditResourceController extends Controller implements Initializable 
     @FXML private TextField txtLocation;
     @FXML private DatePicker resourceDate;
     @FXML private HBox resourceDateBox;
-    @FXML private TextField txtTrack;
+    @FXML private TextField trackComboBox;
 
-    private final ResourceDAO resourceDAO = new ResourceDAO();
-    private final AuthorDAO authorDAO = new AuthorDAO();
-    private final GenreDAO genreDAO = new GenreDAO();
-    private final MusicalInstrumentDAO musicalInstrumentDAO = new MusicalInstrumentDAO();
-    private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
-    private final TrackGenreDAO trackGenreDAO = new TrackGenreDAO();
-    private final TrackInstrumentDAO trackInstrumentDAO = new TrackInstrumentDAO();
-    private final TrackDAO trackDAO = new TrackDAO();
     private final Resource resource;
 
     // Data set
@@ -79,9 +75,9 @@ public class EditResourceController extends Controller implements Initializable 
         try {
             loadResource(resource);
 
-            allAuthors.addAll(authorDAO.getAll());
-            allGenres.addAll(genreDAO.getAll());
-            allMusicalInstruments.addAll(musicalInstrumentDAO.getAll());
+            allAuthors.addAll(DatabaseManager.getDAOProvider().getAuthorDAO().getAll());
+            allGenres.addAll(DatabaseManager.getDAOProvider().getGenreDAO().getAll());
+            allMusicalInstruments.addAll(DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getAll());
 
             authorComboBox.setConverter(new EditResourceController.EntityToStringConverter<>());
             genreComboBox.setConverter(new EditResourceController.EntityToStringConverter<>());
@@ -110,25 +106,25 @@ public class EditResourceController extends Controller implements Initializable 
     }
 
     private void loadResource(Resource resource){
-        Track track = trackDAO.getById(resource.getTrackID());
-        txtTrack.setText(track.getTitle());
+        Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
+        trackComboBox.setText(track.getTitle());
 
-        List<TrackAuthor> trackAuthors = trackAuthorDAO.getByTrackId(resource.getTrackID());
-        List<TrackGenre> trackGenres = trackGenreDAO.getByTrackId(resource.getTrackID());
-        List<TrackInstrument> trackInstruments = trackInstrumentDAO.getByTrackId(resource.getTrackID());
+        List<TrackAuthor> trackAuthors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(resource.getTrackID());
+        List<TrackGenre> trackGenres = DatabaseManager.getDAOProvider().getTrackGenreDAO().getByTrackId(resource.getTrackID());
+        List<TrackInstrument> trackInstruments = DatabaseManager.getDAOProvider().getTrackInstrumentDAO().getByTrackId(resource.getTrackID());
 
         for(TrackAuthor trackAuthor : trackAuthors){
-            selectedAuthors.add(authorDAO.getById(trackAuthor.getAuthorId()));
+            selectedAuthors.add(DatabaseManager.getDAOProvider().getAuthorDAO().getById(trackAuthor.getAuthorId()));
         }
         updateSelectedElements(selectedAuthorsPane, selectedAuthors);
 
         for(TrackGenre trackGenre : trackGenres){
-            selectedGenres.add(genreDAO.getById(trackGenre.getGenreId()));
+            selectedGenres.add(DatabaseManager.getDAOProvider().getGenreDAO().getById(trackGenre.getGenreId()));
         }
         updateSelectedElements(selectedGenresPane, selectedGenres);
 
         for(TrackInstrument trackInstrument : trackInstruments){
-            selectedInstruments.add(musicalInstrumentDAO.getById(trackInstrument.getInstrumentId()));
+            selectedInstruments.add(DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getById(trackInstrument.getInstrumentId()));
         }
         updateSelectedElements(selectedInstrumentsPane, selectedInstruments);
 
@@ -192,7 +188,7 @@ public class EditResourceController extends Controller implements Initializable 
             if (!checkInput()) {
                 throw new TrackTuneException(Strings.FIELD_EMPTY);
             }
-            String trackName = txtTrack.getText();
+            String trackName = trackComboBox.getText();
             ResourceTypeEnum type = resource.getType();
 
             Integer[] authorIds = selectedAuthors.stream()
@@ -213,7 +209,7 @@ public class EditResourceController extends Controller implements Initializable 
 
             int trackId = resource.getTrackID();
 
-            Track track = trackDAO.getById(resource.getTrackID());
+            Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
             if(!track.getTitle().equals(trackName))
                 trackId = manageTrackEntity(trackName, ViewManager.getSessionUser().getId(), authorIds, genreIds, instrumentIds);
 
@@ -230,7 +226,7 @@ public class EditResourceController extends Controller implements Initializable 
 
     private boolean checkInput() {
         try {
-            if (txtTrack.getText().isEmpty()) {
+            if (trackComboBox.getText().isEmpty()) {
                 return false;
             }
 
@@ -260,15 +256,15 @@ public class EditResourceController extends Controller implements Initializable 
         if (isMultimedia) {
             Time duration = ResourceManager.calcMediaDuration(data, type.toString());
             String location = txtLocation.getText();
-            resourceDAO.updateById(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
-                    duration, location, Date.valueOf(resourceDate.getValue()), trackId), resource.getId());
+            DatabaseManager.getDAOProvider().getResourceDAO().updateById(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
+                    duration, location, Date.valueOf(resourceDate.getValue()), trackId, resource.getUserID()), resource.getId());
         } else {
-            resourceDAO.updateById(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId), resource.getId());
+            DatabaseManager.getDAOProvider().getResourceDAO().updateById(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId, resource.getUserID()), resource.getId());
         }
     }
 
     private int manageTrackEntity(String title, int userId, Integer[] authorIds, Integer[] genreIds, Integer[] instrumentIds) {
-        int trackId = trackDAO.insert(new Track(title, new Timestamp(System.currentTimeMillis()), userId));
+        int trackId = DatabaseManager.getDAOProvider().getTrackDAO().insert(new Track(title, new Timestamp(System.currentTimeMillis()), userId));
         manageTrackAuthorRelation(authorIds, trackId);
         manageTrackGenreRelation(genreIds, trackId);
         manageTrackInstrumentRelation(instrumentIds, trackId);
@@ -277,17 +273,17 @@ public class EditResourceController extends Controller implements Initializable 
 
     private void manageTrackAuthorRelation(Integer[] authorIds, int trackId){
         for(int authorId : authorIds)
-            trackAuthorDAO.insert(new TrackAuthor(trackId, authorId));
+            DatabaseManager.getDAOProvider().getTrackAuthorDAO().insert(new TrackAuthor(trackId, authorId));
     }
 
     private void manageTrackGenreRelation(Integer[] genreIds, int trackId){
         for(int genreId: genreIds)
-            trackGenreDAO.insert(new TrackGenre(trackId, genreId));
+            DatabaseManager.getDAOProvider().getTrackGenreDAO().insert(new TrackGenre(trackId, genreId));
     }
 
     private void manageTrackInstrumentRelation(Integer[] instrumentIds, int trackId){
         for(int instrumentId : instrumentIds)
-            trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId));
+            DatabaseManager.getDAOProvider().getTrackInstrumentDAO().insert(new TrackInstrument(trackId, instrumentId));
     }
 
     @FXML
@@ -296,7 +292,7 @@ public class EditResourceController extends Controller implements Initializable 
     }
 
     private void resetFields() {
-        txtTrack.clear();
+        trackComboBox.clear();
         txtLocation.clear();
         resourceDate.setValue(null);
         selectedAuthors.clear();
@@ -322,6 +318,41 @@ public class EditResourceController extends Controller implements Initializable 
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Handles the add author button click.
+     */
+    @FXML
+    private void handleAddAuthor(){
+        try{
+            if(authorComboBox.getEditor().getText().isEmpty())
+                throw new TrackTuneException(Strings.INSERT_VALID_AUTHOR);
+
+            String authorString = authorComboBox.getEditor().getText();
+
+            if(SQLiteScripts.checkForSQLInjection(authorString))
+                throw new TrackTuneException(Strings.ERR_SQL_INJECTION);
+
+            if(!DatabaseManager.getDAOProvider().getAuthorDAO().existByAutorShipname(Controller.toTitleCase(authorString))){
+                Author newAuthor = new Author(Controller.toTitleCase(authorString), AuthorStatusEnum.ACTIVE);
+                if(DatabaseManager.getDAOProvider().getAuthorDAO().insert(newAuthor) != null){
+                    selectedAuthors.add(newAuthor);
+                    allAuthors.add(newAuthor);
+                    updateSelectedElements(selectedAuthorsPane, selectedAuthors);
+                    authorComboBox.getEditor().clear();
+                    authorComboBox.setItems(allAuthors);
+                }
+                else{
+                    throw new TrackTuneException(Strings.ERR_DATABASE);
+                }
+            }
+            else{
+                throw new AuthorAlreadyExixtsExeption(Strings.ERR_AUTHOR_ALREADY_EXISTS);
+            }
+        }catch (TrackTuneException e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.AUTHOR_FAILED, e.getMessage(), Alert.AlertType.ERROR);
         }
     }
 }
