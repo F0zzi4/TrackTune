@@ -31,7 +31,7 @@
                             </Button>
                             <Region prefHeight="51.0" prefWidth="43.0" />
 
-                            <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Add Resource">
+                            <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Edit Resource">
                                 <graphic>
                                     <FontIcon iconLiteral="mdi2f-file-music" iconSize="27" />
                                 </graphic>
