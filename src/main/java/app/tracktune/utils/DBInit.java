@@ -122,17 +122,6 @@ public class DBInit {
         );
     """;
 
-    private static final String CREATE_RESOURCES_AUTHORS_TABLE_STMT = """  
-        CREATE TABLE IF NOT EXISTS ResourcesAuthors (
-            ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            resourceID INTEGER NOT NULL,
-            authorID INTEGER NOT NULL,
-            UNIQUE (resourceID, authorID),
-            FOREIGN KEY (resourceID) REFERENCES resources(ID) ON DELETE CASCADE,
-            FOREIGN KEY (authorID) REFERENCES authors(ID) ON DELETE CASCADE
-        );
-    """;
-
     private static final String CREATE_GENRES_TABLE_STMT = """  
         CREATE TABLE IF NOT EXISTS Genres (
             ID INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -164,7 +153,7 @@ public class DBInit {
             "admin",                      // username
             "admin12345",                 // password
             "Admin",                      // name
-            "Admin",                           // surname
+            "Admin",                      // surname
             0,                            // status
             currTimestamp,                // creationDate
             1                             // isAdmin
@@ -182,7 +171,6 @@ public class DBInit {
                 CREATE_AUTHORS_TABLE_STMT + ";" +
                 CREATE_TRACKS_AUTHORS_TABLE_STMT + ";" +
                 CREATE_GENRES_TABLE_STMT + ";"+
-                CREATE_TRACKS_GENRES_TABLE_STMT + ";" +
-                CREATE_RESOURCES_AUTHORS_TABLE_STMT;
+                CREATE_TRACKS_GENRES_TABLE_STMT + ";";
     }
 }

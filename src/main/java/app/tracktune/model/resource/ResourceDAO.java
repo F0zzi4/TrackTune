@@ -66,10 +66,11 @@ public class ResourceDAO implements DAO<Resource> {
     """;
 
     private static final String GET_RESOURCE_COMMENTS_BY_USER_ID_STMT = """
-            SELECT DISTINCT r.*
-            FROM Resources r
-            JOIN Comments c ON r.trackID = c.trackID
-            WHERE c.userID = ?
+        SELECT DISTINCT r.*
+        FROM Resources r
+        JOIN Comments c ON r.trackID = c.trackID
+        WHERE c.userID = ?
+        ORDER BY C.creationDate DESC
     """;
 
     public ResourceDAO() {

@@ -295,7 +295,7 @@ public class TracksController extends Controller implements Initializable {
         viewBtn.getStyleClass().add("view-button");
         viewBtn.setOnAction(e -> viewTrack(track));
         HBox buttonBox;
-        if(ViewManager.getSessionUser() instanceof Administrator){
+        if(ViewManager.getSessionUser() instanceof Administrator || track.getUserID() == ViewManager.getSessionUser().getId()) {
             Button deleteBtn = new Button(Strings.DELETE);
             deleteBtn.getStyleClass().add("reject-button");
             deleteBtn.setOnAction(e -> deleteTrack(track));

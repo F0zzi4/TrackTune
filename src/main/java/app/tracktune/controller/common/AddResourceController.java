@@ -3,6 +3,7 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.controller.authenticatedUser.UserResourcesController;
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
 import app.tracktune.exceptions.TrackTuneException;
@@ -385,8 +386,9 @@ public class AddResourceController extends Controller implements Initializable {
         try {
             if (parentController instanceof AuthenticatedUserDashboardController authController) {
                 ViewManager.setMainContent(Frames.MY_RESOURCES_VIEW_PATH, authController.mainContent, parentController);
-            }else if(parentController instanceof AdminDashboardController adminController){
-                ViewManager.setMainContent(Frames.TRACKS_VIEW_PATH_VIEW_PATH, adminController.mainContent, parentController);
+            }
+            else if(parentController instanceof AdminDashboardController adminController){
+                ViewManager.setMainContent(Frames.MY_RESOURCES_VIEW_PATH, adminController.mainContent, parentController);
             }
         } catch (Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
