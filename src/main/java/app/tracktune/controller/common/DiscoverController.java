@@ -4,6 +4,7 @@ import app.tracktune.Main;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.resource.Resource;
@@ -36,10 +37,6 @@ public class DiscoverController extends Controller implements Initializable {
     @FXML private Tab tabMostRecent;
     @FXML private Tab tabMostPopular;
     @FXML private Tab tabMostCommented;
-
-    private final TrackDAO trackDAO = new TrackDAO();
-    private final TrackAuthorDAO trackAuthorDAO = new TrackAuthorDAO();
-    private final AuthorDAO authorDAO = new AuthorDAO();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -87,15 +84,15 @@ public class DiscoverController extends Controller implements Initializable {
     }
 
     private HBox createRequestItem(Resource resource) {
-        Track track = trackDAO.getById(resource.getTrackID());
-        List<TrackAuthor> trackAuthors = trackAuthorDAO.getByTrackId(resource.getTrackID());
+        Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
+        List<TrackAuthor> trackAuthors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(resource.getTrackID());
 
         Label trackLabel = new Label(track.getTitle());
         trackLabel.getStyleClass().add("request-item-title");
 
         StringBuilder authorNames = new StringBuilder();
         for (TrackAuthor trackAuthor : trackAuthors) {
-            Author author = authorDAO.getById(trackAuthor.getAuthorId());
+            Author author = DatabaseManager.getDAOProvider().getAuthorDAO().getById(trackAuthor.getAuthorId());
             authorNames.append(author.getAuthorshipName()).append(", ");
         }
 
@@ -159,10 +156,5 @@ public class DiscoverController extends Controller implements Initializable {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
         }
-    }
-
-    @FXML
-    private void handleSearch(){
-
     }
 }

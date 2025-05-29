@@ -4,6 +4,7 @@ import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.exceptions.UserNotFoundException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.user.*;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
@@ -14,20 +15,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class LoginController extends Controller {
-    private final UserDAO userDAO;
-    private final PendingUserDAO pendingUserDAO;
     @FXML
     private TextField TxtUsername;
     @FXML
     private PasswordField TxtPassword;
-
-    /**
-     * Default constructor to instance the user data access object
-     */
-    public LoginController() {
-        pendingUserDAO = new PendingUserDAO();
-        userDAO = new UserDAO();
-    }
+    
 
     /**
      * Access button handler for login
@@ -47,7 +39,7 @@ public class LoginController extends Controller {
             }
 
             // Check if it's an admin or authenticated user
-            User user = userDAO.getActiveUserByUsername(username);
+            User user = DatabaseManager.getDAOProvider().getUserDAO().getActiveUserByUsername(username);
             if (user != null && user.getPassword().equals(password)) {
                 if(user instanceof Administrator admin){
                     ViewManager.initSessionManager(admin);
@@ -60,7 +52,7 @@ public class LoginController extends Controller {
             }
 
             // Check if it's a pending user
-            PendingUser pendingUser = pendingUserDAO.getByUsername(username);
+            PendingUser pendingUser = DatabaseManager.getDAOProvider().getPendingUserDAO().getByUsername(username);
             if (pendingUser != null && pendingUser.getPassword().equals(password)) {
                 ViewManager.initSessionManager(pendingUser);
                 ViewManager.navigateToPendingUserDashboard();

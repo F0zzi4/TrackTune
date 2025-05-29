@@ -85,6 +85,10 @@ public class TrackDAO implements DAO<Track> {
         dbManager = Main.dbManager;
     }
 
+    public TrackDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
     @Override
     public Integer insert(Track track) {
         boolean success = dbManager.executeUpdate(INSERT_TRACK_STMT,
