@@ -3,6 +3,7 @@ package app.tracktune.controller.admin;
 import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.model.user.*;
@@ -39,14 +40,13 @@ public class UsersController extends Controller implements Initializable {
     private int currentPage = 0;
     private final int itemsPerPage = 4;
 
-    private final UserDAO userDAO = new UserDAO();
 
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         users.clear();
         users.addAll(
-                userDAO.getAll().stream()
+                DatabaseManager.getDAOProvider().getUserDAO().getAll().stream()
                         .filter(u -> u instanceof AuthenticatedUser)
                         .map(u -> (AuthenticatedUser) u)
                         .toList()
@@ -196,7 +196,7 @@ public class UsersController extends Controller implements Initializable {
     private void restoreUser (AuthenticatedUser user) {
         try {
             user.setStatus(UserStatusEnum.ACTIVE);
-            userDAO.updateById(user, user.getId());
+            DatabaseManager.getDAOProvider().getUserDAO().updateById(user, user.getId());
             int index = users.indexOf(user);
             if (index >= 0) users.set(index, user);
             adjustPageAfterUpdate();
@@ -209,7 +209,7 @@ public class UsersController extends Controller implements Initializable {
     private void removeUser(AuthenticatedUser user) {
         try {
             user.setStatus(UserStatusEnum.REMOVED);
-            userDAO.updateById(user, user.getId());
+            DatabaseManager.getDAOProvider().getUserDAO().updateById(user, user.getId());
             int index = users.indexOf(user);
             if (index >= 0) users.set(index, user);
             adjustPageAfterUpdate();
@@ -227,7 +227,7 @@ public class UsersController extends Controller implements Initializable {
     private void suspendUser(AuthenticatedUser user) {
         try {
             user.setStatus(UserStatusEnum.SUSPENDED);
-            userDAO.updateById(user, user.getId());
+            DatabaseManager.getDAOProvider().getUserDAO().updateById(user, user.getId());
             int index = users.indexOf(user);
             if (index >= 0) users.set(index, user);
             adjustPageAfterUpdate();
@@ -245,7 +245,7 @@ public class UsersController extends Controller implements Initializable {
     private void makeAdmin(AuthenticatedUser user) {
         try {
             Administrator ad = new Administrator(user.getId(), user.getUsername(), user.getPassword(), user.getName(), user.getSurname(), user.getStatus(), user.getCreationDate());
-            userDAO.updateById(ad, user.getId());
+            DatabaseManager.getDAOProvider().getUserDAO().updateById(ad, user.getId());
             int index = users.indexOf(user);
             if (index >= 0) users.set(index, ad);
             adjustPageAfterUpdate();

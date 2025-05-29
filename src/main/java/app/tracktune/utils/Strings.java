@@ -23,8 +23,6 @@ public class Strings {
     public static final String MEDIA_ERROR = "Media error";
     public static final String MEDIA_NOT_SUPPORTED = "Media type not supported";
     public static final String ERR_ACCOUNT_REQUEST = "Account request failed";
-    public static final String ERR_ENTITY_ALREADY_EXISTS = "There is already an element of this entity";
-    public static final String ERR_USER_NOT_ALLOWED = "User not allowed";
     public static final String ERR_SQL_INJECTION = "SQL injection detected";
     public static final String ERR_GENRE_ALREADY_EXISTS = "Genre already exists";
     public static final String ERR_MUSICAL_INSTRUMENT_ALREADY_EXISTS = "Musical instrument already exists";
@@ -70,4 +68,6 @@ public class Strings {
     public static final String WRITE_YOUR_REPLY = "Write your reply";
     public static final String REPLIES = "[replies]";
     public static final String HIDE_REPLIES = "[hide replies]";
+    public static final String UPLOADED = "Uploaded by: ";
+    public static final String UPLOADER = "UPLOADER";
 }

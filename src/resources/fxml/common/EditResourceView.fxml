@@ -18,57 +18,65 @@
 
 <StackPane prefHeight="770.0" prefWidth="800.0" styleClass="split-pane-divider" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.EditResourceController">
     <children>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="582.0" prefHeight="710.0" prefWidth="582.0" style="-fx-background-color: transparent;" vbarPolicy="AS_NEEDED">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" maxWidth="550.0" style="-fx-background-color: transparent;">
             <content>
                 <VBox alignment="CENTER" maxWidth="566.0" prefHeight="673.0" prefWidth="566.0" spacing="12">
-               <HBox prefHeight="68.0" prefWidth="548.0">
-                  <children>
-                     <Region prefHeight="68.0" prefWidth="5.0" />
-                     <Button mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="50.0" prefWidth="40.0" styleClass="back-button" stylesheets="@../../style/account_request-style.css">
-                        <graphic>
-                           <FontIcon iconLiteral="mdi2a-arrow-left-thick" iconSize="22" />
-                        </graphic>
-                     </Button>
-                     <Region prefHeight="68.0" prefWidth="69.0" />
-      
-                          <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Edit Resource">
-                              <graphic>
-                                  <FontIcon iconLiteral="mdi2c-content-save-edit" iconSize="27" />
-                              </graphic>
-                          </Label>
-                  </children>
-               </HBox>
-                    <HBox alignment="CENTER_LEFT" prefHeight="53.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
+                    <HBox alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="548.0" spacing="10" style="-fx-alignment: center;">
                         <children>
-                            <Label prefHeight="25.0" prefWidth="54.0" styleClass="label-title" text="Track:" />
-                            <TextField fx:id="txtTrack" prefHeight="43.0" prefWidth="242.0" styleClass="nameField" />
-                            <Region prefHeight="43.0" prefWidth="40.0" />
-                        </children>
-                    </HBox>
-                    <Region prefHeight="10.0" prefWidth="548.0" />
+                            <Region prefHeight="51.0" prefWidth="0.0" />
+                            <Button mnemonicParsing="false" onMouseClicked="#handleReturn" prefHeight="50.0" prefWidth="40.0" styleClass="back-button" stylesheets="@../../style/account_request-style.css">
+                                <graphic>
+                                    <FontIcon iconLiteral="mdi2a-arrow-left-thick" iconSize="22" />
+                                </graphic>
+                            </Button>
+                            <Region prefHeight="51.0" prefWidth="43.0" />
 
-                    <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
-                        <Label prefHeight="25.0" prefWidth="65.0" styleClass="label-title" text="Authors:" />
-                        <ComboBox fx:id="authorComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search authors..." />
-                        <Region prefHeight="40.0" prefWidth="49.0" />
-                    </HBox>
-                    <FlowPane fx:id="selectedAuthorsPane" hgap="10" prefHeight="33.0" prefWidth="548.0" vgap="10" />
-                    <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
-                        <children>
-                            <Label prefHeight="25.0" prefWidth="65.0" styleClass="label-title" text="Genres:" />
-                            <ComboBox fx:id="genreComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search genres..." />
-                            <Region prefHeight="40.0" prefWidth="49.0" />
+                            <Label prefHeight="44.0" prefWidth="323.0" styleClass="section-title-label" text="Add Resource">
+                                <graphic>
+                                    <FontIcon iconLiteral="mdi2f-file-music" iconSize="27" />
+                                </graphic>
+                            </Label>
+                            <Region prefHeight="51.0" prefWidth="112.0" />
                         </children>
                     </HBox>
-                    <FlowPane fx:id="selectedGenresPane" hgap="10" prefHeight="36.0" prefWidth="548.0" vgap="10" />
-                    <HBox alignment="CENTER_LEFT" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;">
+                    <Region prefHeight="16.0" prefWidth="548.0" />
+
+                    <HBox alignment="CENTER_LEFT" spacing="20">
                         <children>
-                            <Label prefHeight="25.0" prefWidth="98.0" styleClass="label-title" text="Instruments:" />
-                            <ComboBox fx:id="instrumentComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search instruments..." />
-                            <Region prefHeight="40.0" prefWidth="80.0" />
+                            <VBox spacing="5">
+                                <Label styleClass="label-title" text="Track:" />
+                                <TextField fx:id="trackComboBox" prefHeight="43.0" prefWidth="213.0" promptText="Search track..." styleClass="nameField" />
+                                <FlowPane fx:id="selectedTrackPane" hgap="10" prefHeight="21.0" prefWidth="548.0" vgap="10" />
+                            </VBox>
+                            <VBox alignment="CENTER_LEFT" spacing="5">
+                                <Label styleClass="label-title" text="Authors:" />
+                                <HBox alignment="CENTER" prefHeight="40.0" prefWidth="275.0" spacing="5">
+                                    <ComboBox fx:id="authorComboBox" prefHeight="40.0" prefWidth="254.0" promptText="Search authors..." />
+                                    <Button onMouseClicked="#handleAddAuthor" prefHeight="32" prefWidth="35" styleClass="add-button">
+                                        <graphic>
+                                            <FontIcon iconLiteral="mdi2p-plus" iconSize="18" />
+                                        </graphic>
+                                    </Button>
+                                </HBox>
+                                <FlowPane fx:id="selectedAuthorsPane" hgap="10" prefHeight="27.0" prefWidth="548.0" vgap="10" />
+                            </VBox>
                         </children>
                     </HBox>
-                    <FlowPane fx:id="selectedInstrumentsPane" hgap="10" prefHeight="37.0" prefWidth="548.0" vgap="10" />
+
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <children>
+                            <VBox spacing="5">
+                                <Label styleClass="label-title" text="Genres:" />
+                                <ComboBox fx:id="genreComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search genres..." />
+                                <FlowPane fx:id="selectedGenresPane" hgap="10" prefHeight="29.0" prefWidth="548.0" vgap="10" />
+                            </VBox>
+                            <VBox spacing="5">
+                                <Label styleClass="label-title" text="Instruments:" />
+                                <ComboBox fx:id="instrumentComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search instruments..." />
+                                <FlowPane fx:id="selectedInstrumentsPane" hgap="10" prefHeight="21.0" prefWidth="548.0" vgap="10" />
+                            </VBox>
+                        </children>
+                    </HBox>
                     <MFXToggleButton fx:id="btnIsMultimedia" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Multimedia">
                         <effect>
                             <InnerShadow />

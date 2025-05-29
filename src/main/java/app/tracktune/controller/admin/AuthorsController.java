@@ -3,6 +3,7 @@ package app.tracktune.controller.admin;
 import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.author.AuthorStatusEnum;
@@ -41,13 +42,12 @@ public class AuthorsController extends Controller implements Initializable {
     private int currentPage = 0;
     private final int itemsPerPage = 4;
 
-    private final AuthorDAO authorDAO = new AuthorDAO();
 
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         authors.clear();
-        authors.addAll(authorDAO.getAll());
+        authors.addAll(DatabaseManager.getDAOProvider().getAuthorDAO().getAll());
         createTabsFromEnum();
 
         prevButton.setOnAction(e -> {
@@ -162,7 +162,7 @@ public class AuthorsController extends Controller implements Initializable {
         if (response)
             try {
                 Author updatedAuthor = new Author(author.getAuthorshipName(), AuthorStatusEnum.ACTIVE);
-                authorDAO.updateById(updatedAuthor, author.getId());
+                DatabaseManager.getDAOProvider().getAuthorDAO().updateById(updatedAuthor, author.getId());
                 int index = authors.indexOf(author);
                 if (index >= 0) authors.set(index, updatedAuthor);
                 adjustPageAfterUpdate();
@@ -177,7 +177,7 @@ public class AuthorsController extends Controller implements Initializable {
         if (response)
             try {
                 Author updatedAuthor = new Author(author.getAuthorshipName(), AuthorStatusEnum.REMOVED);
-                authorDAO.updateById(updatedAuthor, author.getId());
+                DatabaseManager.getDAOProvider().getAuthorDAO().updateById(updatedAuthor, author.getId());
                 int index = authors.indexOf(author);
                 if (index >= 0) authors.set(index, updatedAuthor);
                 adjustPageAfterUpdate();
@@ -210,9 +210,9 @@ public class AuthorsController extends Controller implements Initializable {
 
                 if (!exists) {
                     Author newAuthor = new Author(name, AuthorStatusEnum.ACTIVE);
-                    authorDAO.insert(newAuthor);
+                    DatabaseManager.getDAOProvider().getAuthorDAO().insert(newAuthor);
                     authors.clear();
-                    authors.addAll(authorDAO.getAll());
+                    authors.addAll(DatabaseManager.getDAOProvider().getAuthorDAO().getAll());
                     TxtName.clear();
                     updateAuthors();
                 } else {

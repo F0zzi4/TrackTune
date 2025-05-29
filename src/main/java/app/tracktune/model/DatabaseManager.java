@@ -15,6 +15,7 @@ public class DatabaseManager {
     private static DatabaseManager instance;
     private Connection dbConnection;
     private String dbUrl;
+    private static DAOProvider DAOprovider;
 
     /**
      * Create the instance of the database manager following singleton pattern
@@ -40,6 +41,13 @@ public class DatabaseManager {
             instance = new DatabaseManager();
         }
         return instance;
+    }
+
+    public static synchronized DAOProvider getDAOProvider() {
+        if (DAOprovider == null) {
+            DAOprovider = new DAOProvider();
+        }
+        return DAOprovider;
     }
 
     /**

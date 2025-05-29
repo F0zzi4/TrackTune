@@ -60,6 +60,10 @@ public class MusicalInstrumentDAO implements DAO<MusicalInstrument> {
         this.dbManager = Main.dbManager;
     }
 
+    public MusicalInstrumentDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
     @Override
     public Integer insert(MusicalInstrument instrument) {
         boolean success = dbManager.executeUpdate(

@@ -70,6 +70,10 @@ public class TrackInstrumentDAO implements DAO<TrackInstrument> {
         dbManager = Main.dbManager;
     }
 
+    public TrackInstrumentDAO(DatabaseManager dbManager) {
+        this.dbManager = dbManager;
+    }
+
     @Override
     public Integer insert(TrackInstrument ti) {
         boolean success = dbManager.executeUpdate(INSERT_TRACK_INSTRUMENT_STMT,

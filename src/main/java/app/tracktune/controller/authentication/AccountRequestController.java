@@ -4,6 +4,7 @@ import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.EntityAlreadyExistsException;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
+import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.user.*;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
@@ -15,8 +16,6 @@ import javafx.scene.control.TextField;
 import java.sql.Timestamp;
 
 public class AccountRequestController extends Controller {
-    private final PendingUserDAO pendingUserDAO = new PendingUserDAO();
-    private final UserDAO userDAO = new UserDAO();
     @FXML
     private TextField TxtUsername;
     @FXML
@@ -43,11 +42,11 @@ public class AccountRequestController extends Controller {
             if(SQLiteScripts.checkForSQLInjection(username, password, name, surname))
                 throw new SQLInjectionException(Strings.ERR_SQL_INJECTION);
 
-            if(pendingUserDAO.getByUsername(username) != null)
+            if(DatabaseManager.getDAOProvider().getPendingUserDAO().getByUsername(username) != null)
                 throw new EntityAlreadyExistsException(Strings.ERR_REQUEST_ALREADY_EXISTS);
 
-            System.out.println(userDAO.getActiveUserByUsername(username));
-            if(userDAO.getActiveUserByUsername(username) != null)
+            System.out.println(DatabaseManager.getDAOProvider().getUserDAO().getActiveUserByUsername(username));
+            if(DatabaseManager.getDAOProvider().getUserDAO().getActiveUserByUsername(username) != null)
                 throw new EntityAlreadyExistsException(Strings.ERR_USER_ALREADY_EXISTS);
             PendingUser pendingUser = new PendingUser(
                     username,
@@ -58,7 +57,7 @@ public class AccountRequestController extends Controller {
                     AuthRequestStatusEnum.CREATED
             );
             System.out.println("TEST 4");
-            pendingUserDAO.insert(pendingUser);
+            DatabaseManager.getDAOProvider().getPendingUserDAO().insert(pendingUser);
             ViewManager.initSessionManager(pendingUser);
             ViewManager.navigateToPendingUserDashboard();
         }catch(TrackTuneException e) {
