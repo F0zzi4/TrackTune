@@ -294,16 +294,34 @@ public class EditResourceController extends Controller implements Initializable 
     }
 
     private void manageTrackGenreRelation(Integer[] genreIds, int trackId){
+        List<TrackGenre> trackGenres = DatabaseManager.getDAOProvider().getTrackGenreDAO().getByTrackId(trackId);
+
         for(int genreId: genreIds){
             if(DatabaseManager.getDAOProvider().getTrackGenreDAO().getByTrackIdAndGenreId(trackId, genreId) == null)
                 DatabaseManager.getDAOProvider().getTrackGenreDAO().insert(new TrackGenre(trackId, genreId));
         }
+
+        Set<Integer> newAuthorIdSet = new HashSet<>(Arrays.asList(genreIds));
+        for (TrackGenre tg : trackGenres) {
+            if (!newAuthorIdSet.contains(tg.getGenreId())) {
+                DatabaseManager.getDAOProvider().getTrackGenreDAO().deleteById(tg.getId());
+            }
+        }
     }
 
     private void manageTrackInstrumentRelation(Integer[] instrumentIds, int trackId){
+        List<TrackInstrument> trackInstruments = DatabaseManager.getDAOProvider().getTrackInstrumentDAO().getByTrackId(trackId);
+
         for(int instrumentId : instrumentIds){
             if(DatabaseManager.getDAOProvider().getTrackInstrumentDAO().getByTrackIdAndInstrumentId(trackId, instrumentId) == null)
                 DatabaseManager.getDAOProvider().getTrackInstrumentDAO().insert(new TrackInstrument(trackId, instrumentId));
+        }
+
+        Set<Integer> newAuthorIdSet = new HashSet<>(Arrays.asList(instrumentIds));
+        for (TrackInstrument ti : trackInstruments) {
+            if (!newAuthorIdSet.contains(ti.getInstrumentId())) {
+                DatabaseManager.getDAOProvider().getTrackInstrumentDAO().deleteById(ti.getId());
+            }
         }
     }
 
