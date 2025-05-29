@@ -38,6 +38,12 @@
                     </graphic>
                 </Button>
             <Separator prefWidth="200.0" />
+            <Button onMouseClicked="#handleResources" prefHeight="38.0" prefWidth="271.0" styleClass="sidebar-button" text="Resources">
+               <graphic>
+                  <FontIcon iconLiteral="mdi2m-music-box-multiple" iconSize="21" />
+               </graphic>
+            </Button>
+            <Separator prefWidth="200.0" />
                 <Button onMouseClicked="#handleTracks" prefHeight="38.0" prefWidth="271.0" styleClass="sidebar-button" text="Tracks">
                     <graphic>
                         <FontIcon iconLiteral="mdi2m-music-clef-treble" iconSize="21" />

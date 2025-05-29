@@ -9,66 +9,59 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane prefHeight="307.0" prefWidth="1054.0" stylesheets="@../../style/discover-style.css"
-            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="app.tracktune.controller.common.DiscoverController">
-    <AnchorPane prefHeight="221.0" prefWidth="1054.0" styleClass="split-pane-divider" AnchorPane.leftAnchor="0.0"
-                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-        <VBox alignment="CENTER" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-            <Label prefHeight="49.0" prefWidth="511.0" style="-fx-font-size: 35; -fx-alignment: center;"
-                   styleClass="section-title-label" text="Discover Community">
+<AnchorPane prefHeight="307.0" prefWidth="1054.0" stylesheets="@../../style/discover-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.DiscoverController">
+    <AnchorPane prefHeight="221.0" prefWidth="1054.0" styleClass="split-pane-divider" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <VBox alignment="CENTER" layoutX="-7.0" layoutY="14.0" spacing="10.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="-7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="14.0">
+            <Label prefHeight="49.0" prefWidth="511.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Discover Community">
                 <graphic>
-                    <FontIcon iconLiteral="mdi2a-account-group" iconSize="30"/>
+                    <FontIcon iconLiteral="mdi2a-account-group" iconSize="30" />
                 </graphic>
             </Label>
-            <Region prefHeight="9.0" prefWidth="1054.0"/>
+            <Region prefHeight="9.0" prefWidth="1054.0" />
             <HBox alignment="CENTER" prefHeight="47.0" prefWidth="446.0" style="-fx-alignment: center;">
-                <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" wrappingWidth="43.0"/>
-                <Label prefHeight="30.0" prefWidth="784.0" style="-fx-font-size: 22; -fx-alignment: center;"
-                       styleClass="section-subtitle-label"
-                       text="Take a look at what community posted about their favorite tracks"/>
-                <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" textAlignment="RIGHT"
-                          wrappingWidth="43.0"/>
+                <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" wrappingWidth="43.0" />
+                <Label prefHeight="30.0" prefWidth="784.0" style="-fx-font-size: 22; -fx-alignment: center;" styleClass="section-subtitle-label" text="Take a look at what community posted about their favorite tracks" />
+                <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" textAlignment="RIGHT" wrappingWidth="43.0" />
             </HBox>
-            <Region prefHeight="16.0" prefWidth="1054.0"/>
+            <Region prefHeight="16.0" prefWidth="1054.0" />
         </VBox>
     </AnchorPane>
-    <AnchorPane layoutY="221.0" prefHeight="86.0" prefWidth="1054.0" styleClass="split-pane-divider"
-                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                AnchorPane.topAnchor="221.0">
+    <AnchorPane layoutY="221.0" prefHeight="86.0" prefWidth="1054.0" styleClass="split-pane-divider" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="221.0">
         <children>
-            <TabPane layoutX="43.0" layoutY="-22.0" prefHeight="75.0" prefWidth="1054.0" styleClass="split-pane-divider"
-                     tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                     AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <TabPane layoutX="43.0" layoutY="-22.0" prefHeight="75.0" prefWidth="1054.0" styleClass="split-pane-divider" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                 <tabs>
                     <Tab fx:id="tabMostRecent" text="Most recent">
                         <graphic>
-                            <FontIcon iconLiteral="mdi2s-sort-calendar-ascending" iconSize="20"/>
+                            <FontIcon iconLiteral="mdi2s-sort-calendar-ascending" iconSize="20" />
                         </graphic>
                         <content>
-                            <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                            <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         </content>
                     </Tab>
                     <Tab fx:id="tabMostPopular" text="Most popular">
                         <graphic>
-                            <FontIcon iconLiteral="mdi2s-star-box" iconSize="20" text="󰩳"/>
+                            <FontIcon iconLiteral="mdi2s-star-box" iconSize="20" text="󰩳" />
                         </graphic>
                         <content>
-                            <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                            <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         </content>
                     </Tab>
                     <Tab fx:id="tabMostCommented" text="Most discussed">
                         <graphic>
-                            <FontIcon iconLiteral="mdi2c-comment-search" iconSize="20"/>
+                            <FontIcon iconLiteral="mdi2c-comment-search" iconSize="20" />
                         </graphic>
                         <content>
-                            <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                            <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         </content>
                     </Tab>
+               <Tab fx:id="tabMostCommented2" text="Recently commented">
+                  <graphic>
+                     <FontIcon iconLiteral="mdi2c-comment-search" iconSize="20" />
+                  </graphic>
+                  <content>
+                     <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  </content>
+               </Tab>
                 </tabs>
             </TabPane>
         </children>
