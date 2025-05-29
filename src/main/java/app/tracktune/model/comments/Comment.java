@@ -22,6 +22,16 @@ public class Comment {
         this.trackID = trackID;
     }
 
+    public Comment(String description, Timestamp creationDate, int userID, int trackID){
+        this.ID = null;
+        this.description = description;
+        this.startTrackInterval = null;
+        this.endTrackInterval = null;
+        this.creationDate = creationDate;
+        this.userID = userID;
+        this.trackID = trackID;
+    }
+
     public Comment(String description, Time startTrackInterval, Time endTrackInterval, Timestamp creationDate, Integer userID, Integer trackID){
         this.ID = null;
         this.description = description;

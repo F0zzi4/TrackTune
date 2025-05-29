@@ -12,10 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DialogPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
@@ -25,6 +22,7 @@ import javafx.util.Duration;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static app.tracktune.Main.root;
 
@@ -147,6 +145,22 @@ public class ViewManager {
         dialogPane.getStyleClass().add("custom-alert");
 
         return confirmAlert.showAndWait().filter(response -> response == yesButton).isPresent();
+    }
+
+    public static Optional<String> showReplyDialog() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle(Strings.REPLY_TO_COMMENT);
+        dialog.setHeaderText(null);
+        dialog.setContentText(Strings.WRITE_YOUR_REPLY);
+        dialog.initOwner(root);
+
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getStylesheets().add(
+                Main.class.getResource("/style/alert-style.css").toExternalForm()
+        );
+        dialogPane.getStyleClass().add("custom-alert");
+
+        return dialog.showAndWait();
     }
 
     public static void navigateToLogin(){

@@ -35,6 +35,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
@@ -131,12 +132,9 @@ public class ResourceFileController extends Controller implements Initializable 
     }
 
     private void setComments() {
-        System.out.println("test");
         if (track != null) {
-            System.out.println("test");
             for (Comment comment : DatabaseManager.getDAOProvider().getCommentDAO().getAllCommentByTrack(track.getId())) {
                 User user = DatabaseManager.getDAOProvider().getUserDAO().getById(comment.getUserID());
-                System.out.println("comment: " + comment.getDescription()  +"\n");
                 if(user != null)
                     addCommentOnView(comment, user);
             }
@@ -279,6 +277,11 @@ public class ResourceFileController extends Controller implements Initializable 
             mediaPlayer.stop();
             mediaPlayer.dispose();
         }
+    }
+
+    private Duration timeToDuration(Time time) {
+        long totalMillis = time.getTime() % (24 * 60 * 60 * 1000); // rimuove data se presente
+        return Duration.millis(totalMillis);
     }
 
     /**
@@ -465,7 +468,7 @@ public class ResourceFileController extends Controller implements Initializable 
         String commentText = commentField.getText();
         Comment c;
         if (commentText != null && !commentText.trim().isEmpty()) {
-            c = new Comment(commentText, new Time(new Date().getTime()), new Time(new Date().getTime()), new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), track.getId());
+            c = new Comment(commentText,new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), track.getId());
             int id = DatabaseManager.getDAOProvider().getCommentDAO().insert(c);
             c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), track.getId());
             addCommentOnView(c, ViewManager.getSessionUser());
@@ -564,10 +567,26 @@ public class ResourceFileController extends Controller implements Initializable 
             roleLB.getStyleClass().add("comment-author-user");
         }
 
+
         commentBox.setMaxWidth(280);
         HBox role =  new HBox(roleLB);
         role.setAlignment(Pos.CENTER);
-        commentBox.getChildren().addAll(role, topBox, commentLabel, replies_date);
+        if(comment.getEndTrackInterval() != null && comment.getStartTrackInterval() != null && !comment.getEndTrackInterval().equals(comment.getStartTrackInterval())){
+            //TODO - completare con lo stile! (mettere tempo cliccabile che porta lo slider in quella posizione (esiste in teoria già qualcosa di mezzo pronto)
+            Label start = new Label(formatDuration(timeToDuration(comment.getStartTrackInterval())));
+            Label trattino = new Label("-");
+            Label end = new Label(formatDuration(timeToDuration(comment.getEndTrackInterval())));
+            HBox intervals = new HBox();
+            if(comment.getEndTrackInterval() != null){
+                intervals.getChildren().addAll(start, trattino, end);
+            }
+            else{
+                intervals.getChildren().addAll(start);
+            }
+            commentBox.getChildren().addAll(role, topBox, commentLabel, replies_date, intervals);
+        }
+        else
+            commentBox.getChildren().addAll(role, topBox, commentLabel, replies_date);
         VBox indentedBox = new VBox(commentBox, repliesBox);
         indentedBox.setPadding(new Insets(0, 0, 0, indentLevel == 0 ? 0 : 15));
 
@@ -575,48 +594,48 @@ public class ResourceFileController extends Controller implements Initializable 
         container.setPadding(new Insets(5, 0, 5, 0));
 
         replyButton.setOnAction(e -> {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle(Strings.REPLY_TO_COMMENT);
-            dialog.setHeaderText(null);
-            dialog.setContentText(Strings.WRITE_YOUR_REPLY);
-
-            Optional<String> result = dialog.showAndWait();
+            Optional<String> result = ViewManager.showReplyDialog();
             result.ifPresent(responseText -> {
-                Timestamp now = new Timestamp(System.currentTimeMillis());
-                Comment reply = new Comment(
-                        responseText,
-                        new Time(now.getTime()),
-                        new Time(now.getTime()),
-                        now,
-                        ViewManager.getSessionUser().getId(),
-                        track.getId()
-                );
+                if(responseText.trim().isEmpty()){
+                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_REPLY, Strings.FIELD_EMPTY, Alert.AlertType.ERROR);
+                }
+                else{
+                    Timestamp now = new Timestamp(System.currentTimeMillis());
+                    Comment reply = new Comment(
+                            responseText,
+                            new Time(now.getTime()),
+                            new Time(now.getTime()),
+                            now,
+                            ViewManager.getSessionUser().getId(),
+                            track.getId()
+                    );
 
-                int replyID = DatabaseManager.getDAOProvider().getCommentDAO().insert(reply);
-                DatabaseManager.getDAOProvider().getCommentDAO().insertReply(comment.getID(), replyID);
+                    int replyID = DatabaseManager.getDAOProvider().getCommentDAO().insert(reply);
+                    DatabaseManager.getDAOProvider().getCommentDAO().insertReply(comment.getID(), replyID);
 
-                Comment newReply = new Comment(
-                        replyID,
-                        reply.getDescription(),
-                        reply.getStartTrackInterval(),
-                        reply.getEndTrackInterval(),
-                        reply.getCreationDate(),
-                        reply.getUserID(),
-                        track.getId()
-                );
+                    Comment newReply = new Comment(
+                            replyID,
+                            reply.getDescription(),
+                            reply.getStartTrackInterval(),
+                            reply.getEndTrackInterval(),
+                            reply.getCreationDate(),
+                            reply.getUserID(),
+                            track.getId()
+                    );
 
-                VBox replyNode = createCommentNode(
-                        newReply,
-                        SessionManager.getInstance().getUser(),
-                        1
-                );
+                    VBox replyNode = createCommentNode(
+                            newReply,
+                            SessionManager.getInstance().getUser(),
+                            1
+                    );
 
-                repliesBox.getChildren().add(replyNode);
-                repliesBox.setVisible(true);
-                repliesBox.setManaged(true);
-                repliesLabel.setText(Strings.HIDE_REPLIES);
-                repliesLabel.getStyleClass().removeAll("replies-toggle-closed");
-                repliesLabel.getStyleClass().add("replies-toggle-open");
+                    repliesBox.getChildren().add(replyNode);
+                    repliesBox.setVisible(true);
+                    repliesBox.setManaged(true);
+                    repliesLabel.setText(Strings.HIDE_REPLIES);
+                    repliesLabel.getStyleClass().removeAll("replies-toggle-closed");
+                    repliesLabel.getStyleClass().add("replies-toggle-open");
+                }
             });
         });
 
@@ -646,6 +665,11 @@ public class ResourceFileController extends Controller implements Initializable 
 
     private User getUser(int userId) {
         return DatabaseManager.getDAOProvider().getUserDAO().getById(userId);
+    }
+
+    @FXML
+    private void addSegmentComment(){
+        //TODO -- modale che si apre (chiede tempo di inizio (obbligatorio) tempo di fine (non obbligatorio --> già gestito nella visualizzazione) inoltre il tempo deve essere COMPATIBILE COL TIPO DURATION!!
     }
 
 }

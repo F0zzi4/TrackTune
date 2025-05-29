@@ -39,6 +39,7 @@ public class Strings {
     public static final String AUTHORS = "Authors:";
     public static final String GENRES = "Genres:";
     public static final String INSTRUMENTS = "Instruments:";
+    public static final String ERR_REPLY = "Reply Erro";
     public static final String FILE_FORMAT = "File format:";
     public static final String RESOURCE_SIZE = "Resource Size:";
     public static final String DURATION = "Duration:";

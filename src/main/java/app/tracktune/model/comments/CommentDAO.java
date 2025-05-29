@@ -48,6 +48,11 @@ public class CommentDAO implements DAO<Comment> {
         WHERE ID = ?
     """;
 
+    private static final String DELETE_INTERACTIONS_BY_COMMENT_STMT = """
+        DELETE FROM Interactions
+        WHERE commentID = ? OR replyID = ?
+    """;
+
     private static final String GET_ALL_COMMENTS_STMT = """
         SELECT * FROM Comments
     """;
@@ -132,18 +137,19 @@ public class CommentDAO implements DAO<Comment> {
     @Override
     public void deleteById(int id) {
         List<Comment> replies = getAllReplies(id);
-
         for (Comment reply : replies) {
             deleteById(reply.getID());
         }
-
-        dbManager.executeUpdate(DELETE_REPLY_STMT, id);
-
-        boolean success = dbManager.executeUpdate(DELETE_COMMENT_STMT, id);
+        boolean success = dbManager.executeUpdate(DELETE_INTERACTIONS_BY_COMMENT_STMT, id, id);
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+        success = dbManager.executeUpdate(DELETE_COMMENT_STMT, id);
         if (!success) {
             throw new SQLiteException(Strings.ERR_DATABASE);
         }
     }
+
 
     private void deleteReplies(List<Comment> comments) {
         if(comments == null || comments.isEmpty()){
