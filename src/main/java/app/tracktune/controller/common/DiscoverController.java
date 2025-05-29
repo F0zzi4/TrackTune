@@ -4,6 +4,7 @@ import app.tracktune.Main;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
@@ -37,12 +38,14 @@ public class DiscoverController extends Controller implements Initializable {
     @FXML private Tab tabMostRecent;
     @FXML private Tab tabMostPopular;
     @FXML private Tab tabMostCommented;
+    @FXML private Tab tabMostCommented2;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateTab(tabMostRecent, SQLiteScripts.getMostRecentResources(Main.dbManager));
         populateTab(tabMostPopular, SQLiteScripts.getMostPopularResources(Main.dbManager));
         populateTab(tabMostCommented, SQLiteScripts.getMostCommentedResources(Main.dbManager));
+        populateTab(tabMostCommented2, DatabaseManager.getDAOProvider().getResourceDAO().getAllCommentedResourcesByUserID(SessionManager.getInstance().getUser().getId()));
     }
 
     private void populateTab(Tab tab, List<Resource> resources) {

@@ -133,4 +133,17 @@ public class AdminDashboardController extends Controller implements Initializabl
             System.err.println(e.getMessage());
         }
     }
+
+    /**
+     * Loads and displays the tracks view by updating the main content area
+     */
+    @FXML
+    public void handleResources(){
+        try{
+            ViewManager.setMainContent(Frames.MY_RESOURCES_VIEW_PATH, mainContent, this);
+        }catch(Exception e){
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            System.err.println(e.getMessage());
+        }
+    }
 }

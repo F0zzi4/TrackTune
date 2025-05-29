@@ -1,6 +1,7 @@
 package app.tracktune.controller.authenticatedUser;
 
 import app.tracktune.controller.Controller;
+import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.controller.common.EditResourceController;
 import app.tracktune.controller.common.ResourceFileController;
@@ -9,6 +10,7 @@ import app.tracktune.model.author.Author;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackAuthor;
+import app.tracktune.model.user.Administrator;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
@@ -42,7 +44,7 @@ public class UserResourcesController extends Controller implements Initializable
 
     @Override
     public void initialize(URL location, ResourceBundle res) {
-        resources = DatabaseManager.getDAOProvider().getResourceDAO().getAllByUserID(SessionManager.getInstance().getUser().getId());
+            resources = DatabaseManager.getDAOProvider().getResourceDAO().getAllByUserID(SessionManager.getInstance().getUser().getId());
 
         btnPrev.setOnAction(e -> {
             if (currentPage > 0) {
@@ -66,6 +68,9 @@ public class UserResourcesController extends Controller implements Initializable
         try{
             if(parentController instanceof AuthenticatedUserDashboardController authController){
                 ViewManager.setMainContent(Frames.ADD_RESOURCE_VIEW_PATH, authController.mainContent, parentController);
+            }
+            else if(parentController instanceof AdminDashboardController adminController){
+                ViewManager.setMainContent(Frames.ADD_RESOURCE_VIEW_PATH, adminController.mainContent, parentController);
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
