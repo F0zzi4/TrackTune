@@ -502,7 +502,6 @@
 .comment-text {
     -fx-font-size: 14px;
     -fx-text-fill: #4a280f;
-    -fx-font-weight: bold;
     -fx-padding: 0 0 0 6;
 }
 
@@ -553,27 +552,27 @@
 }
 
 .comment-box-admin {
-    -fx-background-color: linear-gradient(to right, #ffe6e6, #ffcccc);
+    -fx-background-color: linear-gradient(to right, #fae7c1, #fac2a4);
     -fx-padding: 10;
     -fx-background-radius: 10;
-    -fx-border-color: #881414;
+    -fx-border-color: #a61313;
     -fx-border-width: 2;
     -fx-border-radius: 10;
 }
 
 .comment-box-uploader {
-    -fx-background-color: linear-gradient(to right, #f9e4c9, #c97530); /* gradiente più soft */
+    -fx-background-color: linear-gradient(to right, #fae7c1, #fdde9d);
     -fx-padding: 10;
     -fx-background-radius: 10;
-    -fx-border-color: #7a4510; /* bordo più scuro ma meno aggressivo */
+    -fx-border-color: #bc6713;
     -fx-border-width: 2;
     -fx-border-radius: 10;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 4, 0.2, 0, 2); /* ombra leggera */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 4, 0.2, 0, 2);
 }
 
 .comment-author-uploader {
     -fx-font-weight: bold;
-    -fx-text-fill: #a65b00; /* colore testo meno acceso */
+    -fx-text-fill: #a65b00;
     -fx-font-size: 14px;
 }
 
@@ -585,7 +584,7 @@
 
 .comment-author-user {
     -fx-font-weight: bold;
-    -fx-text-fill: #272525; /* colore testo meno acceso */
+    -fx-text-fill: #272525;
     -fx-font-size: 14px;
 }
 
@@ -620,12 +619,35 @@
 .segment-text {
     -fx-font-size: 13px;
     -fx-text-fill: #4a90e2;
-    -fx-font-style: bold;
-    -fx-cursor: hand; /* mostra la mano al passaggio */
-    -fx-underline: false; /* opzionale: disabilita sottolineatura di default */
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-underline: false;
 }
 
 .segment-text:hover {
-    -fx-underline: true; /* sottolinea al passaggio */
-    -fx-text-fill: #2a70c2; /* colore leggermente più scuro opzionale */
+    -fx-underline: true;
+    -fx-text-fill: #2a70c2;
+}
+
+.segment-button{
+    -fx-background-color: linear-gradient(to right, #ffb74d, #ffa726);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 6, 0.4, 0, 3);
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #4a280f;
+    -fx-font-size: 15px;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.resource-link-label{
+    -fx-alignment: center;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a280f;
+    -fx-background-color: linear-gradient(to right, #fae3b4, #fadea4);
+    -fx-background-radius: 10;
+    -fx-padding: 3;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0.4, 0, 3);
 }

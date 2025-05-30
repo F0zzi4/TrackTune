@@ -7,16 +7,11 @@ import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardCont
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
-import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.resource.Resource;
+import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackAuthor;
-import app.tracktune.model.track.TrackAuthorDAO;
-import app.tracktune.model.track.TrackDAO;
-import app.tracktune.utils.Frames;
-import app.tracktune.utils.ResourceManager;
-import app.tracktune.utils.SQLiteScripts;
-import app.tracktune.utils.Strings;
+import app.tracktune.utils.*;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +26,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.layout.*;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -72,7 +68,7 @@ public class DiscoverController extends Controller implements Initializable {
         int previewHeight = 100;
 
         ResourceManager resourceManager = new ResourceManager(resource);
-        Node preview = resourceManager.createMediaNode(previewWidth, previewHeight);
+        Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
 
         HBox requestItemBox = createRequestItem(resource);
 
@@ -143,17 +139,22 @@ public class DiscoverController extends Controller implements Initializable {
     @FXML
     private void viewResource(Resource resource) {
         try{
-            FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
-            loader.setControllerFactory(param -> new ResourceFileController(resource));
-            Parent view = loader.load();
+            if(resource.getType().equals(ResourceTypeEnum.link)){
+                String url = new String(resource.getData(), StandardCharsets.UTF_8);
+                BrowserManager.browse(url);
+            }else {
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
+                loader.setControllerFactory(param -> new ResourceFileController(resource));
+                Parent view = loader.load();
 
-            Controller controller = loader.getController();
-            controller.setParentController(this);
+                Controller controller = loader.getController();
+                controller.setParentController(this);
 
-            if(parentController instanceof AuthenticatedUserDashboardController authController){
-                authController.mainContent.getChildren().setAll(view);
-            }else if(parentController instanceof AdminDashboardController adminController){
-                adminController.mainContent.getChildren().setAll(view);
+                if (parentController instanceof AuthenticatedUserDashboardController authController) {
+                    authController.mainContent.getChildren().setAll(view);
+                } else if (parentController instanceof AdminDashboardController adminController) {
+                    adminController.mainContent.getChildren().setAll(view);
+                }
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);

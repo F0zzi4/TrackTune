@@ -56,7 +56,6 @@ public class ResourceFileController extends Controller implements Initializable 
     @FXML private VBox commentVBox;
     @FXML private Button segmentButton;
 
-
     private final ResourceManager resourceManager;
     private MediaPlayer mediaPlayer;
     private Node resourceNode;
@@ -79,7 +78,7 @@ public class ResourceFileController extends Controller implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         try {
             Platform.runLater(() -> Main.root.setOnCloseRequest(event -> disposeMediaPlayer()));
-            resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight());
+            resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight(), false);
             boolean isMultimedia = resourceNode instanceof MediaView;
 
             if (!isMultimedia) {
@@ -584,14 +583,13 @@ public class ResourceFileController extends Controller implements Initializable 
             roleLB.getStyleClass().add("comment-author-user");
         }
 
-
         commentBox.setMaxWidth(280);
         HBox role =  new HBox(roleLB);
         role.setAlignment(Pos.CENTER);
         if(comment.getEndTrackInterval() != 0 && comment.getEndTrackInterval() != comment.getStartTrackInterval()){
             //TODO - completare con lo stile! (mettere tempo cliccabile che porta lo slider in quella posizione (esiste in teoria già qualcosa di mezzo pronto)
             Label start = new Label(formatDuration(new Duration(comment.getStartTrackInterval()*1000)));
-            Label trattino = new Label("- ");
+            Label dash = new Label("- ");
             Label end = new Label(formatDuration(new Duration(comment.getEndTrackInterval()*1000)));
             HBox intervals = new HBox();
 
@@ -599,7 +597,7 @@ public class ResourceFileController extends Controller implements Initializable 
                 seekTo(new Duration(comment.getStartTrackInterval() * 1000));;
             });
             if(comment.getEndTrackInterval() != 0){
-                intervals.getChildren().addAll(start, trattino, end);
+                intervals.getChildren().addAll(start, dash, end);
                 end.setOnMouseClicked(event -> {
                     seekTo(new Duration(comment.getEndTrackInterval() * 1000));;
                 });
@@ -610,7 +608,7 @@ public class ResourceFileController extends Controller implements Initializable 
             }
             intervals.setAlignment(Pos.CENTER);
             start.getStyleClass().add("segment-text");
-            trattino.getStyleClass().add("comment-text");
+            dash.getStyleClass().add("comment-text");
             end.getStyleClass().add("segment-text");
             commentBox.getChildren().addAll(role, topBox, commentLabel, replies_date, intervals);
         }
@@ -704,16 +702,16 @@ public class ResourceFileController extends Controller implements Initializable 
             String comment = data[2];
 
             if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf)){
-                //TODO - gestione pdf quando ci sarà
+                //TODO - pdf management
             }
             else {
                 try {
                     int startDuration = parseToSeconds(start);
                     int endDuration = 0;
 
-                    if(new Duration(startDuration *1000).greaterThan(mediaPlayer.getTotalDuration()) || startDuration < 0)
+                    if(new Duration(startDuration * 1000).greaterThan(mediaPlayer.getTotalDuration()) || startDuration < 0)
                         throw new TrackTuneException(Strings.ERROR_ENDTIME_GREATER_DURATION);
-                    if(new Duration(endDuration *1000).greaterThan(mediaPlayer.getTotalDuration()) || endDuration < 0)
+                    if(new Duration(endDuration * 1000).greaterThan(mediaPlayer.getTotalDuration()) || endDuration < 0)
                         throw new TrackTuneException(Strings.ERROR_ENDTIME_GREATER_DURATION);
 
                     if(!end.isEmpty()){
@@ -734,10 +732,10 @@ public class ResourceFileController extends Controller implements Initializable 
                     c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), track.getId());
                     addCommentOnView(c, ViewManager.getSessionUser());
                 } catch (DateTimeParseException ex) {
-                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, "Formato tempo non valido: " + ex.getParsedString(), Alert.AlertType.ERROR); //sistemare
+                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.INVALID_TIME_FORMAT + ex.getParsedString(), Alert.AlertType.ERROR);
                 }
                 catch (TrackTuneException e){
-                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR); //sistemare
+                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR);
                 }
             }
         });
@@ -761,13 +759,13 @@ public class ResourceFileController extends Controller implements Initializable 
             } else if (parts.length == 1) {
                 seconds = Integer.parseInt(parts[0]);
             } else {
-                throw new DateTimeParseException("Formato non valido", timeString, 0);
+                throw new DateTimeParseException(Strings.INVALID_TIME_FORMAT, timeString, 0);
             }
 
             return hours * 3600 + minutes * 60 + seconds;
 
         } catch (NumberFormatException e) {
-            throw new DateTimeParseException("Formato non valido (parte non numerica)", timeString, 0);
+            throw new DateTimeParseException(Strings.INVALID_TIME_FORMAT, timeString, 0);
         }
     }
 

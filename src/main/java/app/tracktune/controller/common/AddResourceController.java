@@ -3,7 +3,6 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
-import app.tracktune.controller.authenticatedUser.UserResourcesController;
 import app.tracktune.controller.authentication.SessionManager;
 import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
 import app.tracktune.exceptions.TrackTuneException;
@@ -30,11 +29,13 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
 import javafx.util.StringConverter;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -43,7 +44,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class AddResourceController extends Controller implements Initializable {
-    @FXML private TextField txtFilePathField;
+    @FXML private TextField txtFilePath;
     @FXML private Button btnBrowseFile;
     @FXML private FlowPane selectedTrackPane;
     @FXML private ComboBox<Author> authorComboBox;
@@ -58,6 +59,10 @@ public class AddResourceController extends Controller implements Initializable {
     @FXML private DatePicker resourceDate;
     @FXML private HBox resourceDateBox;
     @FXML private ComboBox<Track> trackComboBox;
+    @FXML private MFXToggleButton btnIsLink;
+    @FXML private HBox resourceLinkBox;
+    @FXML private TextField txtResourceLink;
+    @FXML private HBox filePathBox;
 
     // Data set
     private final ObservableList<Track> allTracks = FXCollections.observableArrayList();
@@ -107,6 +112,7 @@ public class AddResourceController extends Controller implements Initializable {
 
             setSearchFileListener();
             setIsMultimediaListener();
+            setIsLinkListener();
         } catch (Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
@@ -180,9 +186,15 @@ public class AddResourceController extends Controller implements Initializable {
     private <T> void updateSelectedElements(FlowPane selectedElementsPane, ObservableList<T> selectedList) {
         selectedElementsPane.getChildren().clear();
         for (T element : selectedList) {
-            Label tag = new Label(element.toString());
-            tag.getStyleClass().add("author-tag");
-            selectedElementsPane.getChildren().add(tag);
+            Button button = new Button(element.toString());
+            button.getStyleClass().add("author-tag");
+            button.setOnAction(e -> {
+                selectedList.remove(element);
+                updateSelectedElements(selectedElementsPane, selectedList);
+            });
+            FontIcon closeIcon = new FontIcon("fas-times");
+            button.setGraphic(closeIcon);
+            selectedElementsPane.getChildren().add(button);
         }
     }
 
@@ -191,29 +203,56 @@ public class AddResourceController extends Controller implements Initializable {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select Audio File");
             fileChooser.getExtensionFilters().addAll(
-                    new FileChooser.ExtensionFilter("Audio Files", "*.mp3", "*.wav", "*.mp4", "*.pdf", "*.midi", "*.jpg", "*.png"),
+                    new FileChooser.ExtensionFilter("Audio Files", ResourceTypeEnum.getExtensions()),
                     new FileChooser.ExtensionFilter("All Files", "*.*")
             );
             File selectedFile = fileChooser.showOpenDialog(btnBrowseFile.getScene().getWindow());
             if (selectedFile != null) {
-                txtFilePathField.setText(selectedFile.getAbsolutePath());
+                txtFilePath.setText(selectedFile.getAbsolutePath());
             }
         });
     }
 
     private void setIsMultimediaListener() {
         btnIsMultimedia.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-            locationBox.setVisible(isSelected);
-            locationBox.setManaged(isSelected);
-            resourceDateBox.setVisible(isSelected);
-            resourceDateBox.setManaged(isSelected);
+            setMultimediaAssociatedControls(isSelected);
         });
 
         boolean isSelected = btnIsMultimedia.isSelected();
+        setMultimediaAssociatedControls(isSelected);
+    }
+
+    private void setMultimediaAssociatedControls(boolean isSelected) {
+        resourceLinkBox.setVisible(btnIsLink.isSelected() && !isSelected);
+        resourceLinkBox.setManaged(btnIsLink.isSelected() && !isSelected);
         locationBox.setVisible(isSelected);
         locationBox.setManaged(isSelected);
         resourceDateBox.setVisible(isSelected);
         resourceDateBox.setManaged(isSelected);
+        btnIsLink.setVisible(!isSelected);
+        btnIsLink.setManaged(!isSelected);
+    }
+
+    private void setIsLinkListener() {
+        btnIsLink.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+            setLinkAssociatedControls(isSelected);
+        });
+
+        boolean isSelected = btnIsLink.isSelected();
+        setLinkAssociatedControls(isSelected);
+    }
+
+    private void setLinkAssociatedControls(boolean isSelected){
+        locationBox.setVisible(btnIsMultimedia.isSelected() && !isSelected);
+        locationBox.setManaged(btnIsMultimedia.isSelected() && !isSelected);
+        resourceDateBox.setVisible(btnIsMultimedia.isSelected() && !isSelected);
+        resourceDateBox.setManaged(btnIsMultimedia.isSelected() && !isSelected);
+        resourceLinkBox.setVisible(isSelected);
+        resourceLinkBox.setManaged(isSelected);
+        filePathBox.setVisible(!isSelected);
+        filePathBox.setManaged(!isSelected);
+        btnIsMultimedia.setVisible(!isSelected);
+        btnIsMultimedia.setManaged(!isSelected);
     }
 
     @FXML
@@ -237,10 +276,13 @@ public class AddResourceController extends Controller implements Initializable {
                     .map(MusicalInstrument::getId)
                     .toArray(Integer[]::new);
 
-            String filePath = txtFilePathField.getText();
-            byte[] data = createFileFromPath(filePath);
+            String filePath = txtFilePath.getText();
 
-            boolean isMultimedia = btnIsMultimedia.isSelected();
+            byte[] data;
+            if(btnIsLink.isSelected())
+                data = txtResourceLink.getText().getBytes(StandardCharsets.UTF_8);
+            else
+                data = createBytesFromPath(filePath);
 
             int trackId;
             if(selectedTracks.isEmpty())
@@ -249,7 +291,7 @@ public class AddResourceController extends Controller implements Initializable {
                 trackId = selectedTracks.getFirst().getId();
 
             manageTrackEntity(trackId, authorIds, genreIds, instrumentIds);
-            Integer result = manageResourceEntity(type, data, trackId, isMultimedia);
+            Integer result = manageResourceEntity(type, data, trackId, btnIsMultimedia.isSelected());
 
             if (result != null){
                 ViewManager.setAndShowAlert(Strings.SUCCESS, Strings.RESULT, Strings.RESOURCE_UPLOADED, Alert.AlertType.INFORMATION);
@@ -279,13 +321,16 @@ public class AddResourceController extends Controller implements Initializable {
                 return false;
             }
 
-            return txtFilePathField.getText() != null && !txtFilePathField.getText().trim().isEmpty();
+            if(btnIsLink.isSelected())
+                return txtFilePath.getText() != null && !txtResourceLink.getText().trim().isEmpty();
+            else
+                return txtFilePath.getText() != null && !txtFilePath.getText().trim().isEmpty();
         } catch (Exception e) {
             return false;
         }
     }
 
-    public byte[] createFileFromPath(String filePath) throws IOException {
+    public byte[] createBytesFromPath(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists() || !file.isFile()) {
             throw new IOException(Strings.ERR_FILE_NOT_FOUND);
@@ -312,22 +357,26 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private ResourceTypeEnum getFileExtensionToEnum() {
-        String fileName = txtFilePathField.getText();
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        return ResourceTypeEnum.valueOf(extension.toLowerCase());
+        if(btnIsLink.isSelected()){
+            return ResourceTypeEnum.link;
+        }else{
+            String fileName = txtFilePath.getText();
+            String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
+            return ResourceTypeEnum.valueOf(extension.toLowerCase());
+        }
     }
 
     private Integer manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
-        Integer result;
+        Resource resource;
         if (isMultimedia) {
             Time duration = ResourceManager.calcMediaDuration(data, type.toString());
             String location = txtLocation.getText();
-            result = DatabaseManager.getDAOProvider().getResourceDAO().insert(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
-                    duration, location, Date.valueOf(resourceDate.getValue()), trackId, SessionManager.getInstance().getUser().getId()));
+            resource = new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
+                    duration, location, Date.valueOf(resourceDate.getValue()), trackId, SessionManager.getInstance().getUser().getId());
         } else {
-            result = DatabaseManager.getDAOProvider().getResourceDAO().insert(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId, SessionManager.getInstance().getUser().getId()));
+            resource = new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId, SessionManager.getInstance().getUser().getId());
         }
-        return result;
+        return DatabaseManager.getDAOProvider().getResourceDAO().insert(resource);
     }
 
     private void manageTrackEntity(int trackId, Integer[] authorIds, Integer[] genreIds, Integer[] instrumentIds) {
@@ -360,8 +409,9 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private void resetFields() {
+        txtResourceLink.clear();
         trackComboBox.setValue(null);
-        txtFilePathField.clear();
+        txtFilePath.clear();
         txtLocation.clear();
         resourceDate.setValue(null);
         selectedTracks.clear();
@@ -372,6 +422,7 @@ public class AddResourceController extends Controller implements Initializable {
         genreComboBox.getEditor().clear();
         instrumentComboBox.getEditor().clear();
         btnIsMultimedia.setSelected(false);
+        btnIsLink.setSelected(false);
         selectedTrackPane.getChildren().clear();
         selectedAuthorsPane.getChildren().clear();
         selectedGenresPane.getChildren().clear();

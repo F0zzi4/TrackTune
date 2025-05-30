@@ -8,9 +8,10 @@ import app.tracktune.controller.common.ResourceFileController;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.resource.Resource;
+import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackAuthor;
-import app.tracktune.model.user.Administrator;
+import app.tracktune.utils.BrowserManager;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
@@ -28,6 +29,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -82,14 +84,19 @@ public class UserResourcesController extends Controller implements Initializable
     private void viewResource(Resource resource) {
         try{
             if(parentController instanceof AuthenticatedUserDashboardController authController){
-                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
-                loader.setControllerFactory(param -> new ResourceFileController(resource));
-                Parent view = loader.load();
+                if(resource.getType().equals(ResourceTypeEnum.link)){
+                    String url = new String(resource.getData(), StandardCharsets.UTF_8);
+                    BrowserManager.browse(url);
+                }else{
+                    FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
+                    loader.setControllerFactory(param -> new ResourceFileController(resource));
+                    Parent view = loader.load();
 
-                Controller controller = loader.getController();
-                controller.setParentController(parentController);
+                    Controller controller = loader.getController();
+                    controller.setParentController(parentController);
 
-                authController.mainContent.getChildren().setAll(view);
+                    authController.mainContent.getChildren().setAll(view);
+                }
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
@@ -143,11 +150,11 @@ public class UserResourcesController extends Controller implements Initializable
     }
 
     private HBox createResourceItemBox(Resource resource) {
-        int previewWidth = 100;
-        int previewHeight = 100;
+        int previewWidth = 140;
+        int previewHeight = 120;
 
         ResourceManager resourceManager = new ResourceManager(resource);
-        Node preview = resourceManager.createMediaNode(previewWidth, previewHeight);
+        Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
 
         HBox requestItemBox = createRequestItem(resource);
 

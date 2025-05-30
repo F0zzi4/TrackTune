@@ -1,5 +1,7 @@
 package app.tracktune.model.resource;
 
+import java.util.Arrays;
+
 public enum ResourceTypeEnum {
     mp3(1),
     mp4(2),
@@ -26,5 +28,12 @@ public enum ResourceTypeEnum {
             }
         }
         throw new IllegalArgumentException("Unexpected value: " + i);
+    }
+
+    public static String[] getExtensions() {
+        return Arrays.stream(ResourceTypeEnum.values())
+                .filter(type -> type != link)   // link does not have file extension
+                .map(type -> "*." + type.name())
+                .toArray(String[]::new);
     }
 }
