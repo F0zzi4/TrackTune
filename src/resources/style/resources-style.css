@@ -655,3 +655,11 @@
 .textField {
     -fx-font-weight: bold;
 }
+
+.audio-label{
+    -fx-alignment: center;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a280f;
+    -fx-padding: 3;
+}
