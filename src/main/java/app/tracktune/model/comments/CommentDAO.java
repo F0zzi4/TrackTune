@@ -5,11 +5,13 @@ import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.utils.Strings;
+import javafx.util.Duration;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -46,6 +48,11 @@ public class CommentDAO implements DAO<Comment> {
     private static final String DELETE_REPLY_STMT = """
         DELETE FROM Interactions
         WHERE ID = ?
+    """;
+
+    private static final String DELETE_INTERACTIONS_BY_COMMENT_STMT = """
+        DELETE FROM Interactions
+        WHERE commentID = ? OR replyID = ?
     """;
 
     private static final String GET_ALL_COMMENTS_STMT = """
@@ -132,18 +139,19 @@ public class CommentDAO implements DAO<Comment> {
     @Override
     public void deleteById(int id) {
         List<Comment> replies = getAllReplies(id);
-
         for (Comment reply : replies) {
             deleteById(reply.getID());
         }
-
-        dbManager.executeUpdate(DELETE_REPLY_STMT, id);
-
-        boolean success = dbManager.executeUpdate(DELETE_COMMENT_STMT, id);
+        boolean success = dbManager.executeUpdate(DELETE_INTERACTIONS_BY_COMMENT_STMT, id, id);
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+        success = dbManager.executeUpdate(DELETE_COMMENT_STMT, id);
         if (!success) {
             throw new SQLiteException(Strings.ERR_DATABASE);
         }
     }
+
 
     private void deleteReplies(List<Comment> comments) {
         if(comments == null || comments.isEmpty()){
@@ -232,14 +240,19 @@ public class CommentDAO implements DAO<Comment> {
         return comments;
     }
 
+
     private Comment mapResultSetToEntity(ResultSet rs) throws SQLException {
         int id = rs.getInt(ID);
         String description = rs.getString(DESCRIPTION);
-        Time startTrackInterval = rs.getTime(START_TRACK_INTERVAL);
-        Time endTrackInterval = rs.getTime(END_TRACK_INTERVAL);
+
+        // Start duration
+        int startTrackInterval = rs.getInt(START_TRACK_INTERVAL);
+        int endTrackInterval = rs.getInt(END_TRACK_INTERVAL);
         Timestamp creationDate = rs.getTimestamp(CREATION_DATE);
         int userID = rs.getInt(USER_ID);
         int trackID = rs.getInt(TRACK_ID);
+
         return new Comment(id, description, startTrackInterval, endTrackInterval, creationDate, userID, trackID);
     }
+
 }
