@@ -142,4 +142,7 @@ public final class ResourceManager {
         return mediaView;
     }
 
+    public Resource getResource() {
+        return resource;
+    }
 }

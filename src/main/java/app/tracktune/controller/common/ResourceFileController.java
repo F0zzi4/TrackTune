@@ -59,7 +59,6 @@ public class ResourceFileController extends Controller implements Initializable 
     private final ResourceManager resourceManager;
     private MediaPlayer mediaPlayer;
     private Node resourceNode;
-    private Track track;
 
     //CONSTANTS
     private final int defaultSkipTime = 10;
@@ -137,8 +136,8 @@ public class ResourceFileController extends Controller implements Initializable 
     }
 
     private void setComments() {
-        if (track != null) {
-            for (Comment comment : DatabaseManager.getDAOProvider().getCommentDAO().getAllCommentByTrack(track.getId())) {
+        if (resourceManager.getResource() != null) {
+            for (Comment comment : DatabaseManager.getDAOProvider().getCommentDAO().getAllCommentByResource(resourceManager.getResource().getId())) {
                 User user = DatabaseManager.getDAOProvider().getUserDAO().getById(comment.getUserID());
                 if(user != null)
                     addCommentOnView(comment, user);
@@ -151,7 +150,7 @@ public class ResourceFileController extends Controller implements Initializable 
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(5);
 
-        track = DatabaseManager.getDAOProvider().getTrackDAO().getTrackByResourceId(resourceManager.resource.getId());
+        Track track = DatabaseManager.getDAOProvider().getTrackDAO().getTrackByResourceId(resourceManager.resource.getId());
         String title = track.getTitle();
         box.getChildren().add(createMetadataRow(Strings.TRACKS, title));
 
@@ -484,9 +483,9 @@ public class ResourceFileController extends Controller implements Initializable 
         String commentText = commentField.getText();
         Comment c;
         if (commentText != null && !commentText.trim().isEmpty()) {
-            c = new Comment(commentText,new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), track.getId());
+            c = new Comment(commentText,new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), resourceManager.getResource().getId());
             int id = DatabaseManager.getDAOProvider().getCommentDAO().insert(c);
-            c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), track.getId());
+            c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), resourceManager.getResource().getId());
             addCommentOnView(c, ViewManager.getSessionUser());
             commentField.clear();
         }
@@ -587,19 +586,18 @@ public class ResourceFileController extends Controller implements Initializable 
         HBox role =  new HBox(roleLB);
         role.setAlignment(Pos.CENTER);
         if(comment.getEndTrackInterval() != 0 && comment.getEndTrackInterval() != comment.getStartTrackInterval()){
-            //TODO - completare con lo stile! (mettere tempo cliccabile che porta lo slider in quella posizione (esiste in teoria già qualcosa di mezzo pronto)
             Label start = new Label(formatDuration(new Duration(comment.getStartTrackInterval()*1000)));
             Label dash = new Label("- ");
             Label end = new Label(formatDuration(new Duration(comment.getEndTrackInterval()*1000)));
             HBox intervals = new HBox();
 
             start.setOnMouseClicked(event -> {
-                seekTo(new Duration(comment.getStartTrackInterval() * 1000));;
+                seekTo(new Duration(comment.getStartTrackInterval() * 1000));
             });
             if(comment.getEndTrackInterval() != 0){
                 intervals.getChildren().addAll(start, dash, end);
                 end.setOnMouseClicked(event -> {
-                    seekTo(new Duration(comment.getEndTrackInterval() * 1000));;
+                    seekTo(new Duration(comment.getEndTrackInterval() * 1000));
                 });
 
             }
@@ -634,7 +632,7 @@ public class ResourceFileController extends Controller implements Initializable 
                             0,
                             now,
                             ViewManager.getSessionUser().getId(),
-                            track.getId()
+                            resourceManager.getResource().getId()
                     );
 
                     int replyID = DatabaseManager.getDAOProvider().getCommentDAO().insert(reply);
@@ -647,7 +645,7 @@ public class ResourceFileController extends Controller implements Initializable 
                             reply.getEndTrackInterval(),
                             reply.getCreationDate(),
                             reply.getUserID(),
-                            track.getId()
+                            resourceManager.getResource().getId()
                     );
 
                     VBox replyNode = createCommentNode(
@@ -710,9 +708,9 @@ public class ResourceFileController extends Controller implements Initializable 
                     int endDuration = 0;
 
                     if(new Duration(startDuration * 1000).greaterThan(mediaPlayer.getTotalDuration()) || startDuration < 0)
-                        throw new TrackTuneException(Strings.ERROR_ENDTIME_GREATER_DURATION);
+                        throw new TrackTuneException(Strings.ERROR_START_TIME_GREATER_DURATION);
                     if(new Duration(endDuration * 1000).greaterThan(mediaPlayer.getTotalDuration()) || endDuration < 0)
-                        throw new TrackTuneException(Strings.ERROR_ENDTIME_GREATER_DURATION);
+                        throw new TrackTuneException(Strings.ERROR_END_TIME_GREATER_DURATION);
 
                     if(!end.isEmpty()){
                         endDuration = parseToSeconds(end);
@@ -723,13 +721,11 @@ public class ResourceFileController extends Controller implements Initializable 
                             endDuration,
                             Timestamp.from(Instant.now()),
                             SessionManager.getInstance().getUser().getId(),
-                            track.getId()
+                            resourceManager.getResource().getId()
                     );
 
-                    System.out.println(c.getStartTrackInterval() + " - " + c.getEndTrackInterval());
-                    System.out.println("UserID: " + c.getUserID() + " TrackID: " + c.getTrackID());
                     int id = DatabaseManager.getDAOProvider().getCommentDAO().insert(c);
-                    c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), track.getId());
+                    c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), resourceManager.getResource().getId());
                     addCommentOnView(c, ViewManager.getSessionUser());
                 } catch (DateTimeParseException ex) {
                     ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.INVALID_TIME_FORMAT + ex.getParsedString(), Alert.AlertType.ERROR);

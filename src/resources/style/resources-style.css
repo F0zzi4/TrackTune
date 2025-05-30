@@ -651,3 +651,7 @@
     -fx-padding: 3;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0.4, 0, 3);
 }
+
+.textField {
+    -fx-font-weight: bold;
+}
