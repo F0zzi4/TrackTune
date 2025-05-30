@@ -51,9 +51,9 @@ public class DBInit {
             endTrackInterval TIME,
             creationDate TIMESTAMP NOT NULL,
             userID INTEGER,
-            trackID INTEGER,
+            resourceID INTEGER,
             FOREIGN KEY (userID) REFERENCES Users(ID) ON DELETE CASCADE,
-            FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE
+            FOREIGN KEY (resourceID) REFERENCES Resources(ID) ON DELETE CASCADE
         );
     """;
 
