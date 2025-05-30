@@ -13,11 +13,18 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import javafx.geometry.Insets;
 
 import java.awt.*;
 import java.io.IOException;
@@ -163,6 +170,56 @@ public class ViewManager {
         return dialog.showAndWait();
     }
 
+    public static Optional<String[]> showSegmentCommentDialog() {
+        Dialog<String[]> dialog = new Dialog<>();
+        dialog.setTitle(Strings.COMMENT_ADD);
+        dialog.setHeaderText(null);
+        dialog.initOwner(root);
+
+        // Campi input
+        TextField startField = new TextField();
+        startField.setPromptText(Strings.START_SEGMENT_PLACEHOLDER);
+        startField.getStyleClass().add("textField");
+
+        TextField endField = new TextField();
+        endField.setPromptText(Strings.END_SEGMENT_PLACEHOLDER);
+        endField.getStyleClass().add("textField");
+
+        TextArea commentArea = new TextArea();
+        commentArea.setPromptText(Strings.PLACEHOLDER_COMMENT_TEXTAREA);
+        commentArea.setPrefRowCount(3);
+        commentArea.setWrapText(true);
+        commentArea.getStyleClass().add("textArea");
+
+        VBox content = new VBox(10,
+                new Label(Strings.START_SEGMENT), startField,
+                new Label(Strings.END_SEGMENT), endField,
+                new Label(Strings.COMMENT), commentArea
+        );
+        content.setPadding(new Insets(10, 0, 0, 0));
+        dialog.getDialogPane().setContent(content);
+
+        // Stile opzionale
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.getStylesheets().add(Main.class.getResource("/style/alert-style.css").toExternalForm());
+        dialogPane.getStyleClass().add("custom-alert");
+
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == ButtonType.OK) {
+                return new String[]{
+                        startField.getText().trim(),
+                        endField.getText().trim(),
+                        commentArea.getText().trim()
+                };
+            }
+            return null;
+        });
+
+        return dialog.showAndWait();
+    }
+
     public static void navigateToLogin(){
         root.setResizable(false);
         root.setFullScreen(false);
@@ -208,7 +265,7 @@ public class ViewManager {
 
             mainContent.getChildren().setAll(view);
         } catch (IOException e) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR);
             System.err.println(e.getMessage());
         }
     }

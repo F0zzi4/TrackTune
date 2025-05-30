@@ -616,3 +616,16 @@
 .text-field{
     fx-padding: 0 28 0 8;
 }
+
+.segment-text {
+    -fx-font-size: 13px;
+    -fx-text-fill: #4a90e2;
+    -fx-font-style: bold;
+    -fx-cursor: hand; /* mostra la mano al passaggio */
+    -fx-underline: false; /* opzionale: disabilita sottolineatura di default */
+}
+
+.segment-text:hover {
+    -fx-underline: true; /* sottolinea al passaggio */
+    -fx-text-fill: #2a70c2; /* colore leggermente più scuro opzionale */
+}

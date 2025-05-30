@@ -71,4 +71,12 @@ public class Strings {
     public static final String HIDE_REPLIES = "[hide replies]";
     public static final String UPLOADED = "Uploaded by: ";
     public static final String UPLOADER = "UPLOADER";
+    public static final String COMMENT_ADD = "Add your comment into the segment";
+    public static final String START_SEGMENT = "Start time";
+    public static final String END_SEGMENT = "End time (optional)";
+    public static final String COMMENT = "Comment";
+    public static final String START_SEGMENT_PLACEHOLDER = "Start time - hh:mm:ss";
+    public static final String END_SEGMENT_PLACEHOLDER = "Start time - hh:mm:ss";
+    public static final String PLACEHOLDER_COMMENT_TEXTAREA = "Write your comment";
+    public static final String ERROR_ENDTIME_GREATER_DURATION = "End time greater duration of video";
 }

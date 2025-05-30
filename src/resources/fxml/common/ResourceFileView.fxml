@@ -119,7 +119,7 @@
                         </VBox>
                         <HBox alignment="CENTER" layoutX="17.0" layoutY="748.0" prefHeight="50.0" prefWidth="303.0" spacing="5.0">
                            <children>
-                              <Button contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#addSegmentComment" styleClass="search-button" text="Write a segment comment..." />
+                              <Button fx:id="segmentButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#addSegmentComment" styleClass="search-button" text="Write a segment comment..." visible="false" />
                            </children>
                         </HBox>
                      </children>
