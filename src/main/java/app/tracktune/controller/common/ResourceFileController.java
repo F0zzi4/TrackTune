@@ -13,6 +13,7 @@ import app.tracktune.model.genre.Genre;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
 import app.tracktune.model.resource.MultimediaResource;
 import app.tracktune.model.resource.Resource;
+import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.user.Administrator;
 import app.tracktune.model.user.User;
@@ -41,6 +42,8 @@ import org.kordamp.ikonli.javafx.FontIcon;
 import java.net.URL;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +54,7 @@ public class ResourceFileController extends Controller implements Initializable 
     @FXML private VBox metadataBox;
     @FXML private TextField commentField;
     @FXML private VBox commentVBox;
+    @FXML private Button segmentButton;
 
 
     private final ResourceManager resourceManager;
@@ -88,9 +92,11 @@ public class ResourceFileController extends Controller implements Initializable 
                 metadataBox.getChildren().add(setDetailsInfo());
                 metadataBox.setAlignment(Pos.CENTER);
                 setComments();
+                if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf))
+                    segmentButton.setVisible(true);
                 return;
             }
-
+            segmentButton.setVisible(true);
             setupMediaPlayer();
             metadataBox.getChildren().add(setDetailsInfo());
             setComments();
@@ -246,6 +252,17 @@ public class ResourceFileController extends Controller implements Initializable 
         if (total > 0) {
             double seekTime = (sliderProgress.getValue() / 100) * total;
             mediaPlayer.seek(javafx.util.Duration.seconds(seekTime));
+        }
+    }
+
+    private void seekTo(Duration time) {
+        if (mediaPlayer != null && time != null) {
+            mediaPlayer.seek(time); // 'time' è un javafx.util.Duration
+            double total = mediaPlayer.getTotalDuration().toSeconds();
+            if (total > 0) {
+                double percent = (time.toSeconds() / total) * 100;
+                sliderProgress.setValue(percent); // aggiorna anche lo slider
+            }
         }
     }
 
@@ -571,18 +588,30 @@ public class ResourceFileController extends Controller implements Initializable 
         commentBox.setMaxWidth(280);
         HBox role =  new HBox(roleLB);
         role.setAlignment(Pos.CENTER);
-        if(comment.getEndTrackInterval() != null && comment.getStartTrackInterval() != null && !comment.getEndTrackInterval().equals(comment.getStartTrackInterval())){
+        if(comment.getEndTrackInterval() != 0 && comment.getEndTrackInterval() != comment.getStartTrackInterval()){
             //TODO - completare con lo stile! (mettere tempo cliccabile che porta lo slider in quella posizione (esiste in teoria già qualcosa di mezzo pronto)
-            Label start = new Label(formatDuration(timeToDuration(comment.getStartTrackInterval())));
-            Label trattino = new Label("-");
-            Label end = new Label(formatDuration(timeToDuration(comment.getEndTrackInterval())));
+            Label start = new Label(formatDuration(new Duration(comment.getStartTrackInterval()*1000)));
+            Label trattino = new Label("- ");
+            Label end = new Label(formatDuration(new Duration(comment.getEndTrackInterval()*1000)));
             HBox intervals = new HBox();
-            if(comment.getEndTrackInterval() != null){
+
+            start.setOnMouseClicked(event -> {
+                seekTo(new Duration(comment.getStartTrackInterval() * 1000));;
+            });
+            if(comment.getEndTrackInterval() != 0){
                 intervals.getChildren().addAll(start, trattino, end);
+                end.setOnMouseClicked(event -> {
+                    seekTo(new Duration(comment.getEndTrackInterval() * 1000));;
+                });
+
             }
             else{
                 intervals.getChildren().addAll(start);
             }
+            intervals.setAlignment(Pos.CENTER);
+            start.getStyleClass().add("segment-text");
+            trattino.getStyleClass().add("comment-text");
+            end.getStyleClass().add("segment-text");
             commentBox.getChildren().addAll(role, topBox, commentLabel, replies_date, intervals);
         }
         else
@@ -603,8 +632,8 @@ public class ResourceFileController extends Controller implements Initializable 
                     Timestamp now = new Timestamp(System.currentTimeMillis());
                     Comment reply = new Comment(
                             responseText,
-                            new Time(now.getTime()),
-                            new Time(now.getTime()),
+                            0,
+                            0,
                             now,
                             ViewManager.getSessionUser().getId(),
                             track.getId()
@@ -668,8 +697,78 @@ public class ResourceFileController extends Controller implements Initializable 
     }
 
     @FXML
-    private void addSegmentComment(){
-        //TODO -- modale che si apre (chiede tempo di inizio (obbligatorio) tempo di fine (non obbligatorio --> già gestito nella visualizzazione) inoltre il tempo deve essere COMPATIBILE COL TIPO DURATION!!
+    private void addSegmentComment() {
+        ViewManager.showSegmentCommentDialog().ifPresent(data -> {
+            String start = data[0];
+            String end = data[1];
+            String comment = data[2];
+
+            if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf)){
+                //TODO - gestione pdf quando ci sarà
+            }
+            else {
+                try {
+                    int startDuration = parseToSeconds(start);
+                    int endDuration = 0;
+
+                    if(new Duration(startDuration *1000).greaterThan(mediaPlayer.getTotalDuration()) || startDuration < 0)
+                        throw new TrackTuneException(Strings.ERROR_ENDTIME_GREATER_DURATION);
+                    if(new Duration(endDuration *1000).greaterThan(mediaPlayer.getTotalDuration()) || endDuration < 0)
+                        throw new TrackTuneException(Strings.ERROR_ENDTIME_GREATER_DURATION);
+
+                    if(!end.isEmpty()){
+                        endDuration = parseToSeconds(end);
+                    }
+                    Comment c = new Comment(
+                            comment,
+                            startDuration,
+                            endDuration,
+                            Timestamp.from(Instant.now()),
+                            SessionManager.getInstance().getUser().getId(),
+                            track.getId()
+                    );
+
+                    System.out.println(c.getStartTrackInterval() + " - " + c.getEndTrackInterval());
+                    System.out.println("UserID: " + c.getUserID() + " TrackID: " + c.getTrackID());
+                    int id = DatabaseManager.getDAOProvider().getCommentDAO().insert(c);
+                    c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), track.getId());
+                    addCommentOnView(c, ViewManager.getSessionUser());
+                } catch (DateTimeParseException ex) {
+                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, "Formato tempo non valido: " + ex.getParsedString(), Alert.AlertType.ERROR); //sistemare
+                }
+                catch (TrackTuneException e){
+                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR); //sistemare
+                }
+            }
+        });
+    }
+
+    private int parseToSeconds(String timeString) throws DateTimeParseException {
+        String[] parts = timeString.split(":");
+
+        try {
+            int hours = 0;
+            int minutes = 0;
+            int seconds = 0;
+
+            if (parts.length == 3) {
+                hours = Integer.parseInt(parts[0]);
+                minutes = Integer.parseInt(parts[1]);
+                seconds = Integer.parseInt(parts[2]);
+            } else if (parts.length == 2) {
+                minutes = Integer.parseInt(parts[0]);
+                seconds = Integer.parseInt(parts[1]);
+            } else if (parts.length == 1) {
+                seconds = Integer.parseInt(parts[0]);
+            } else {
+                throw new DateTimeParseException("Formato non valido", timeString, 0);
+            }
+
+            return hours * 3600 + minutes * 60 + seconds;
+
+        } catch (NumberFormatException e) {
+            throw new DateTimeParseException("Formato non valido (parte non numerica)", timeString, 0);
+        }
     }
 
 }

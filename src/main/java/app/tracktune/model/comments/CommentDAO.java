@@ -5,11 +5,13 @@ import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.utils.Strings;
+import javafx.util.Duration;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -238,14 +240,19 @@ public class CommentDAO implements DAO<Comment> {
         return comments;
     }
 
+
     private Comment mapResultSetToEntity(ResultSet rs) throws SQLException {
         int id = rs.getInt(ID);
         String description = rs.getString(DESCRIPTION);
-        Time startTrackInterval = rs.getTime(START_TRACK_INTERVAL);
-        Time endTrackInterval = rs.getTime(END_TRACK_INTERVAL);
+
+        // Start duration
+        int startTrackInterval = rs.getInt(START_TRACK_INTERVAL);
+        int endTrackInterval = rs.getInt(END_TRACK_INTERVAL);
         Timestamp creationDate = rs.getTimestamp(CREATION_DATE);
         int userID = rs.getInt(USER_ID);
         int trackID = rs.getInt(TRACK_ID);
+
         return new Comment(id, description, startTrackInterval, endTrackInterval, creationDate, userID, trackID);
     }
+
 }
