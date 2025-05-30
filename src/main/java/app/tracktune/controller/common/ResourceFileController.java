@@ -126,7 +126,7 @@ public class ResourceFileController extends Controller implements Initializable 
 
         VBox videoLayout = new VBox();
         if (resourceManager.resource.getType().equals(ResourceTypeEnum.mp3)) {
-            Label label = new Label("This is an audio-only file.");
+            Label label = new Label(Strings.AUDIO_FILE);
             label.setWrapText(true);
             label.getStyleClass().add("audio-label");
 

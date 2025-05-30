@@ -82,4 +82,5 @@ public class Strings {
     public static final String ERROR_END_TIME_GREATER_DURATION = "End time greater duration of video";
     public static final String ERROR_DURING_OPEN_BROWSER = "Error during opening browser";
     public static final String INVALID_TIME_FORMAT = "Invalid time format: ";
+    public static final String AUDIO_FILE = "Audio-only file: no video content available..";
 }
