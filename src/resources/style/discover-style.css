@@ -167,3 +167,14 @@
     -fx-background-color: linear-gradient(to right, #f8a028, #ff9316);
     -fx-text-fill: #3e2609;
 }
+
+.resource-link-label{
+    -fx-alignment: center;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4a280f;
+    -fx-background-color: linear-gradient(to right, #fae3b4, #fadea4);
+    -fx-background-radius: 10;
+    -fx-padding: 3;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0.4, 0, 3);
+}

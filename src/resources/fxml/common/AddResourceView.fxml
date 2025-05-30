@@ -43,7 +43,7 @@
 
             <HBox alignment="CENTER_LEFT" spacing="20">
                 <children>
-                    <VBox spacing="5">
+                    <VBox prefHeight="103.0" prefWidth="479.0" spacing="5">
                         <Label styleClass="label-title" text="Track:" />
                         <ComboBox fx:id="trackComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search track..." />
                         <FlowPane fx:id="selectedTrackPane" hgap="10" prefHeight="21.0" prefWidth="548.0" vgap="10" />
@@ -65,27 +65,38 @@
 
             <HBox alignment="CENTER_LEFT" spacing="20">
                 <children>
-                    <VBox spacing="5">
+                    <VBox prefHeight="105.0" prefWidth="479.0" spacing="5">
                         <Label styleClass="label-title" text="Genres:" />
                         <ComboBox fx:id="genreComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search genres..." />
                         <FlowPane fx:id="selectedGenresPane" hgap="10" prefHeight="29.0" prefWidth="548.0" vgap="10" />
                     </VBox>
                     <VBox spacing="5">
                         <Label styleClass="label-title" text="Instruments:" />
-                        <ComboBox fx:id="instrumentComboBox" prefHeight="40.0" prefWidth="240.0" promptText="Search instruments..." />
+                        <ComboBox fx:id="instrumentComboBox" prefHeight="40.0" prefWidth="254.0" promptText="Search instruments..." />
                         <FlowPane fx:id="selectedInstrumentsPane" hgap="10" prefHeight="21.0" prefWidth="548.0" vgap="10" />
                     </VBox>
                 </children>
             </HBox>
-        <HBox alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="505.0" spacing="10" style="-fx-alignment: center;">
+               <MFXToggleButton fx:id="btnIsLink" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Link Resource">
+                  <effect>
+                     <InnerShadow />
+                  </effect>
+               </MFXToggleButton>
+        <HBox fx:id="filePathBox" alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="505.0" spacing="10" style="-fx-alignment: center;">
             <Label prefHeight="25.0" prefWidth="68.0" style="-fx-alignment: center;" styleClass="label-title" text="File:" />
-            <TextField fx:id="txtFilePathField" editable="false" prefHeight="31.0" prefWidth="240.0" promptText="Choose a file..." styleClass="fileField" />
+            <TextField fx:id="txtFilePath" editable="false" prefHeight="31.0" prefWidth="240.0" promptText="Choose a file..." styleClass="fileField" />
             <Button fx:id="btnBrowseFile" prefHeight="38.0" prefWidth="50.0" styleClass="switch-button">
                 <graphic>
                     <FontIcon iconLiteral="mdi2f-file-find" iconSize="18" />
                 </graphic>
             </Button>
         </HBox>
+       <HBox fx:id="resourceLinkBox" alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="505.0" spacing="10" style="-fx-alignment: center;">
+          <children>
+             <Label prefHeight="25.0" prefWidth="68.0" style="-fx-alignment: center;" styleClass="label-title" text="URL:" />
+             <TextField fx:id="txtResourceLink" prefHeight="31.0" prefWidth="240.0" promptText="https://..." styleClass="fileField" />
+          </children>
+       </HBox>
          <MFXToggleButton fx:id="btnIsMultimedia" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Multimedia">
             <effect>
                <InnerShadow />

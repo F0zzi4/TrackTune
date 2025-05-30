@@ -79,4 +79,6 @@ public class Strings {
     public static final String END_SEGMENT_PLACEHOLDER = "Start time - hh:mm:ss";
     public static final String PLACEHOLDER_COMMENT_TEXTAREA = "Write your comment";
     public static final String ERROR_ENDTIME_GREATER_DURATION = "End time greater duration of video";
+    public static final String ERROR_DURING_OPEN_BROWSER = "Error during opening browser";
+    public static final String INVALID_TIME_FORMAT = "Invalid time format: ";
 }

@@ -176,7 +176,6 @@ public class ViewManager {
         dialog.setHeaderText(null);
         dialog.initOwner(root);
 
-        // Campi input
         TextField startField = new TextField();
         startField.setPromptText(Strings.START_SEGMENT_PLACEHOLDER);
         startField.getStyleClass().add("textField");
@@ -199,7 +198,6 @@ public class ViewManager {
         content.setPadding(new Insets(10, 0, 0, 0));
         dialog.getDialogPane().setContent(content);
 
-        // Stile opzionale
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getStylesheets().add(Main.class.getResource("/style/alert-style.css").toExternalForm());
         dialogPane.getStyleClass().add("custom-alert");
@@ -228,6 +226,7 @@ public class ViewManager {
 
     public static void navigateToAccountRequest(){
         root.setResizable(false);
+        root.setFullScreen(false);
         redirectView(Frames.ACCOUNT_REQUEST_VIEW_PATH, Frames.ACCOUNT_REQUEST_FRAME_WIDTH, Frames.ACCOUNT_REQUEST_FRAME_HEIGHT);
     }
 
@@ -243,7 +242,6 @@ public class ViewManager {
 
     public static void navigateToPendingUserDashboard(){
         root.setResizable(true);
-        root.setFullScreen(true);
         redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
     }
 

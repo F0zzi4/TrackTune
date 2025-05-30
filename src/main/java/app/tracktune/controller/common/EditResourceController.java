@@ -10,6 +10,7 @@ import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.model.genre.Genre;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
+import app.tracktune.model.resource.AudioVideoFileEnum;
 import app.tracktune.model.resource.MultimediaResource;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.model.resource.ResourceTypeEnum;
@@ -70,6 +71,7 @@ public class EditResourceController extends Controller implements Initializable 
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
             loadResource(resource);
+            btnIsMultimedia.setVisible(AudioVideoFileEnum.isSupported(resource.getType().toString()));
 
             allAuthors.addAll(DatabaseManager.getDAOProvider().getAuthorDAO().getAll());
             allGenres.addAll(DatabaseManager.getDAOProvider().getGenreDAO().getAll());
@@ -209,10 +211,7 @@ public class EditResourceController extends Controller implements Initializable 
 
             boolean isMultimedia = btnIsMultimedia.isSelected();
 
-            int trackId = resource.getTrackID();
-
-            Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
-            trackId = manageTrackEntity(trackName, ViewManager.getSessionUser().getId(), authorIds, genreIds, instrumentIds);
+            int trackId = manageTrackEntity(trackName, ViewManager.getSessionUser().getId(), authorIds, genreIds, instrumentIds);
 
             manageResourceEntity(type, data, trackId, isMultimedia);
 

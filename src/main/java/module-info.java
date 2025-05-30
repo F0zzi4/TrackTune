@@ -9,6 +9,7 @@ module app.tracktune {
     requires java.sql.rowset;
     requires org.kordamp.ikonli.javafx;
     requires jdk.compiler;
+    requires org.apache.pdfbox;
 
     opens app.tracktune to javafx.fxml;
     opens app.tracktune.controller to javafx.fxml;

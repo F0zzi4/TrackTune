@@ -8,6 +8,7 @@ public enum ImageFileEnum {
     JPEG("jpeg"),
     GIF("gif"),
     BMP("bmp"),
+    PDF("pdf"),
     WBMP("wbmp");
 
     private final String extension;
