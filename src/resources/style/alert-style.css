@@ -44,3 +44,51 @@
     -fx-background-color: #f16f15;
     -fx-text-fill: #fff;
 }
+
+.textField {
+    -fx-font-size: 15px;
+    -fx-background-color: #ffebc8;
+    -fx-border-color: #ff9159;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 12;
+    -fx-prompt-text-fill: #4a280f;
+    -fx-text-fill: #4a280f;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
+}
+
+.text-field {
+    -fx-font-size: 15px;
+    -fx-background-color: #ffebc8;
+    -fx-border-color: #ff9159;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 12;
+    -fx-prompt-text-fill: #4a280f;
+    -fx-text-fill: #4a280f;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
+}
+
+.textArea {
+    -fx-font-size: 15px;
+    -fx-border-color: #ff9159;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-prompt-text-fill: #4a280f;
+    -fx-text-fill: #4a280f;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 4, 0.2, 0, 2);
+}
+
+.textArea .content {
+    -fx-background-color: #ffebc8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 12;
+}
+
+.textArea .viewport {
+    -fx-background-color: transparent;
+}
+
+.textArea .scroll-bar {
+    -fx-background-color: transparent;
+}

@@ -110,13 +110,18 @@
                         </HBox>
                         <VBox layoutX="10.0" layoutY="94.0" prefHeight="583.0" prefWidth="315.0">
                            <children>
-                              <ScrollPane hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" prefHeight="601.0" prefWidth="315.0">
+                              <ScrollPane hbarPolicy="NEVER" prefHeight="601.0" prefWidth="315.0" vbarPolicy="AS_NEEDED">
                                  <content>
-                                    <VBox fx:id="commentVBox" prefHeight="579.0" prefWidth="304.0" spacing="10.0" style="-fx-padding: 10;"/>
+                                    <VBox fx:id="commentVBox" prefHeight="579.0" prefWidth="304.0" spacing="10.0" style="-fx-padding: 10;" />
                                  </content>
                               </ScrollPane>
                            </children>
                         </VBox>
+                        <HBox alignment="CENTER" layoutX="17.0" layoutY="748.0" prefHeight="50.0" prefWidth="303.0" spacing="5.0">
+                           <children>
+                              <Button fx:id="segmentButton" contentDisplay="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onMouseClicked="#addSegmentComment" styleClass="search-button" text="Write a segment comment..." visible="false" />
+                           </children>
+                        </HBox>
                      </children>
                   </AnchorPane>
                </children>

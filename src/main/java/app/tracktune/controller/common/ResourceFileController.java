@@ -13,6 +13,7 @@ import app.tracktune.model.genre.Genre;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
 import app.tracktune.model.resource.MultimediaResource;
 import app.tracktune.model.resource.Resource;
+import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.user.Administrator;
 import app.tracktune.model.user.User;
@@ -35,11 +36,14 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -50,6 +54,7 @@ public class ResourceFileController extends Controller implements Initializable 
     @FXML private VBox metadataBox;
     @FXML private TextField commentField;
     @FXML private VBox commentVBox;
+    @FXML private Button segmentButton;
 
 
     private final ResourceManager resourceManager;
@@ -87,9 +92,11 @@ public class ResourceFileController extends Controller implements Initializable 
                 metadataBox.getChildren().add(setDetailsInfo());
                 metadataBox.setAlignment(Pos.CENTER);
                 setComments();
+                if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf))
+                    segmentButton.setVisible(true);
                 return;
             }
-
+            segmentButton.setVisible(true);
             setupMediaPlayer();
             metadataBox.getChildren().add(setDetailsInfo());
             setComments();
@@ -131,12 +138,9 @@ public class ResourceFileController extends Controller implements Initializable 
     }
 
     private void setComments() {
-        System.out.println("test");
         if (track != null) {
-            System.out.println("test");
             for (Comment comment : DatabaseManager.getDAOProvider().getCommentDAO().getAllCommentByTrack(track.getId())) {
                 User user = DatabaseManager.getDAOProvider().getUserDAO().getById(comment.getUserID());
-                System.out.println("comment: " + comment.getDescription()  +"\n");
                 if(user != null)
                     addCommentOnView(comment, user);
             }
@@ -251,6 +255,17 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    private void seekTo(Duration time) {
+        if (mediaPlayer != null && time != null) {
+            mediaPlayer.seek(time); // 'time' è un javafx.util.Duration
+            double total = mediaPlayer.getTotalDuration().toSeconds();
+            if (total > 0) {
+                double percent = (time.toSeconds() / total) * 100;
+                sliderProgress.setValue(percent); // aggiorna anche lo slider
+            }
+        }
+    }
+
     private void updateSliderStyle(double progress) {
         String css = String.format(Locale.US,
                 "-fx-background-color: linear-gradient(to right, " +
@@ -279,6 +294,11 @@ public class ResourceFileController extends Controller implements Initializable 
             mediaPlayer.stop();
             mediaPlayer.dispose();
         }
+    }
+
+    private Duration timeToDuration(Time time) {
+        long totalMillis = time.getTime() % (24 * 60 * 60 * 1000); // rimuove data se presente
+        return Duration.millis(totalMillis);
     }
 
     /**
@@ -465,7 +485,7 @@ public class ResourceFileController extends Controller implements Initializable 
         String commentText = commentField.getText();
         Comment c;
         if (commentText != null && !commentText.trim().isEmpty()) {
-            c = new Comment(commentText, new Time(new Date().getTime()), new Time(new Date().getTime()), new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), track.getId());
+            c = new Comment(commentText,new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), track.getId());
             int id = DatabaseManager.getDAOProvider().getCommentDAO().insert(c);
             c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), track.getId());
             addCommentOnView(c, ViewManager.getSessionUser());
@@ -564,10 +584,38 @@ public class ResourceFileController extends Controller implements Initializable 
             roleLB.getStyleClass().add("comment-author-user");
         }
 
+
         commentBox.setMaxWidth(280);
         HBox role =  new HBox(roleLB);
         role.setAlignment(Pos.CENTER);
-        commentBox.getChildren().addAll(role, topBox, commentLabel, replies_date);
+        if(comment.getEndTrackInterval() != 0 && comment.getEndTrackInterval() != comment.getStartTrackInterval()){
+            //TODO - completare con lo stile! (mettere tempo cliccabile che porta lo slider in quella posizione (esiste in teoria già qualcosa di mezzo pronto)
+            Label start = new Label(formatDuration(new Duration(comment.getStartTrackInterval()*1000)));
+            Label trattino = new Label("- ");
+            Label end = new Label(formatDuration(new Duration(comment.getEndTrackInterval()*1000)));
+            HBox intervals = new HBox();
+
+            start.setOnMouseClicked(event -> {
+                seekTo(new Duration(comment.getStartTrackInterval() * 1000));;
+            });
+            if(comment.getEndTrackInterval() != 0){
+                intervals.getChildren().addAll(start, trattino, end);
+                end.setOnMouseClicked(event -> {
+                    seekTo(new Duration(comment.getEndTrackInterval() * 1000));;
+                });
+
+            }
+            else{
+                intervals.getChildren().addAll(start);
+            }
+            intervals.setAlignment(Pos.CENTER);
+            start.getStyleClass().add("segment-text");
+            trattino.getStyleClass().add("comment-text");
+            end.getStyleClass().add("segment-text");
+            commentBox.getChildren().addAll(role, topBox, commentLabel, replies_date, intervals);
+        }
+        else
+            commentBox.getChildren().addAll(role, topBox, commentLabel, replies_date);
         VBox indentedBox = new VBox(commentBox, repliesBox);
         indentedBox.setPadding(new Insets(0, 0, 0, indentLevel == 0 ? 0 : 15));
 
@@ -575,48 +623,48 @@ public class ResourceFileController extends Controller implements Initializable 
         container.setPadding(new Insets(5, 0, 5, 0));
 
         replyButton.setOnAction(e -> {
-            TextInputDialog dialog = new TextInputDialog();
-            dialog.setTitle(Strings.REPLY_TO_COMMENT);
-            dialog.setHeaderText(null);
-            dialog.setContentText(Strings.WRITE_YOUR_REPLY);
-
-            Optional<String> result = dialog.showAndWait();
+            Optional<String> result = ViewManager.showReplyDialog();
             result.ifPresent(responseText -> {
-                Timestamp now = new Timestamp(System.currentTimeMillis());
-                Comment reply = new Comment(
-                        responseText,
-                        new Time(now.getTime()),
-                        new Time(now.getTime()),
-                        now,
-                        ViewManager.getSessionUser().getId(),
-                        track.getId()
-                );
+                if(responseText.trim().isEmpty()){
+                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_REPLY, Strings.FIELD_EMPTY, Alert.AlertType.ERROR);
+                }
+                else{
+                    Timestamp now = new Timestamp(System.currentTimeMillis());
+                    Comment reply = new Comment(
+                            responseText,
+                            0,
+                            0,
+                            now,
+                            ViewManager.getSessionUser().getId(),
+                            track.getId()
+                    );
 
-                int replyID = DatabaseManager.getDAOProvider().getCommentDAO().insert(reply);
-                DatabaseManager.getDAOProvider().getCommentDAO().insertReply(comment.getID(), replyID);
+                    int replyID = DatabaseManager.getDAOProvider().getCommentDAO().insert(reply);
+                    DatabaseManager.getDAOProvider().getCommentDAO().insertReply(comment.getID(), replyID);
 
-                Comment newReply = new Comment(
-                        replyID,
-                        reply.getDescription(),
-                        reply.getStartTrackInterval(),
-                        reply.getEndTrackInterval(),
-                        reply.getCreationDate(),
-                        reply.getUserID(),
-                        track.getId()
-                );
+                    Comment newReply = new Comment(
+                            replyID,
+                            reply.getDescription(),
+                            reply.getStartTrackInterval(),
+                            reply.getEndTrackInterval(),
+                            reply.getCreationDate(),
+                            reply.getUserID(),
+                            track.getId()
+                    );
 
-                VBox replyNode = createCommentNode(
-                        newReply,
-                        SessionManager.getInstance().getUser(),
-                        1
-                );
+                    VBox replyNode = createCommentNode(
+                            newReply,
+                            SessionManager.getInstance().getUser(),
+                            1
+                    );
 
-                repliesBox.getChildren().add(replyNode);
-                repliesBox.setVisible(true);
-                repliesBox.setManaged(true);
-                repliesLabel.setText(Strings.HIDE_REPLIES);
-                repliesLabel.getStyleClass().removeAll("replies-toggle-closed");
-                repliesLabel.getStyleClass().add("replies-toggle-open");
+                    repliesBox.getChildren().add(replyNode);
+                    repliesBox.setVisible(true);
+                    repliesBox.setManaged(true);
+                    repliesLabel.setText(Strings.HIDE_REPLIES);
+                    repliesLabel.getStyleClass().removeAll("replies-toggle-closed");
+                    repliesLabel.getStyleClass().add("replies-toggle-open");
+                }
             });
         });
 
@@ -646,6 +694,81 @@ public class ResourceFileController extends Controller implements Initializable 
 
     private User getUser(int userId) {
         return DatabaseManager.getDAOProvider().getUserDAO().getById(userId);
+    }
+
+    @FXML
+    private void addSegmentComment() {
+        ViewManager.showSegmentCommentDialog().ifPresent(data -> {
+            String start = data[0];
+            String end = data[1];
+            String comment = data[2];
+
+            if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf)){
+                //TODO - gestione pdf quando ci sarà
+            }
+            else {
+                try {
+                    int startDuration = parseToSeconds(start);
+                    int endDuration = 0;
+
+                    if(new Duration(startDuration *1000).greaterThan(mediaPlayer.getTotalDuration()) || startDuration < 0)
+                        throw new TrackTuneException(Strings.ERROR_ENDTIME_GREATER_DURATION);
+                    if(new Duration(endDuration *1000).greaterThan(mediaPlayer.getTotalDuration()) || endDuration < 0)
+                        throw new TrackTuneException(Strings.ERROR_ENDTIME_GREATER_DURATION);
+
+                    if(!end.isEmpty()){
+                        endDuration = parseToSeconds(end);
+                    }
+                    Comment c = new Comment(
+                            comment,
+                            startDuration,
+                            endDuration,
+                            Timestamp.from(Instant.now()),
+                            SessionManager.getInstance().getUser().getId(),
+                            track.getId()
+                    );
+
+                    System.out.println(c.getStartTrackInterval() + " - " + c.getEndTrackInterval());
+                    System.out.println("UserID: " + c.getUserID() + " TrackID: " + c.getTrackID());
+                    int id = DatabaseManager.getDAOProvider().getCommentDAO().insert(c);
+                    c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), track.getId());
+                    addCommentOnView(c, ViewManager.getSessionUser());
+                } catch (DateTimeParseException ex) {
+                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, "Formato tempo non valido: " + ex.getParsedString(), Alert.AlertType.ERROR); //sistemare
+                }
+                catch (TrackTuneException e){
+                    ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR); //sistemare
+                }
+            }
+        });
+    }
+
+    private int parseToSeconds(String timeString) throws DateTimeParseException {
+        String[] parts = timeString.split(":");
+
+        try {
+            int hours = 0;
+            int minutes = 0;
+            int seconds = 0;
+
+            if (parts.length == 3) {
+                hours = Integer.parseInt(parts[0]);
+                minutes = Integer.parseInt(parts[1]);
+                seconds = Integer.parseInt(parts[2]);
+            } else if (parts.length == 2) {
+                minutes = Integer.parseInt(parts[0]);
+                seconds = Integer.parseInt(parts[1]);
+            } else if (parts.length == 1) {
+                seconds = Integer.parseInt(parts[0]);
+            } else {
+                throw new DateTimeParseException("Formato non valido", timeString, 0);
+            }
+
+            return hours * 3600 + minutes * 60 + seconds;
+
+        } catch (NumberFormatException e) {
+            throw new DateTimeParseException("Formato non valido (parte non numerica)", timeString, 0);
+        }
     }
 
 }
