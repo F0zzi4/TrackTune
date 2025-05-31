@@ -34,16 +34,18 @@ public final class ResourceManager {
     }
 
     public Node createMediaNode(double width, double height, boolean isPreview) throws TrackTuneException {
-        String extension = resource.getType().toString();
+        ResourceTypeEnum type = resource.getType();
+        String extension = type.toString();
 
-        if (resource.getType().equals(ResourceTypeEnum.link)) {
-            Label linkLabel = new Label("Link");
+        if (type.equals(ResourceTypeEnum.link)) {
+            Label linkLabel = new Label(extension.toUpperCase());
             linkLabel.setPrefWidth(width);
             linkLabel.setPrefHeight(height / 2);
             linkLabel.getStyleClass().add("resource-link-label");
+            linkLabel.getStyleClass().add("fx-font-style: underline;");
             return linkLabel;
         } else if (ImageFileEnum.isSupported(extension)) {
-            if (resource.getType().equals(ResourceTypeEnum.pdf)) {
+            if (type.equals(ResourceTypeEnum.pdf)) {
                 // Pdf images
                 try {
                     InputStream input = new ByteArrayInputStream(resource.getData());
@@ -99,7 +101,7 @@ public final class ResourceManager {
             }
         } else if (AudioVideoFileEnum.isSupported(extension)) {
             // Audio/Videos
-            if(resource.getType().equals(ResourceTypeEnum.mp3) && isPreview) {
+            if(type.equals(ResourceTypeEnum.mp3) && isPreview) {
                 Label linkLabel = new Label(".MP3");
                 linkLabel.setPrefWidth(width);
                 linkLabel.setPrefHeight(height / 2);
