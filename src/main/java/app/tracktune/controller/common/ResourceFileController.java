@@ -92,12 +92,13 @@ public class ResourceFileController extends Controller implements Initializable 
                 setComments();
                 if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf))
                     segmentButton.setVisible(true);
-                return;
             }
-            segmentButton.setVisible(true);
-            setupMediaPlayer();
-            metadataBox.getChildren().add(setDetailsInfo());
-            setComments();
+            else{
+                segmentButton.setVisible(true);
+                setupMediaPlayer();
+                metadataBox.getChildren().add(setDetailsInfo());
+                setComments();
+            }
         } catch (TrackTuneException ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, ex.getMessage(), Alert.AlertType.ERROR);
             disposeMediaPlayer();
@@ -123,7 +124,20 @@ public class ResourceFileController extends Controller implements Initializable 
         videoControls.setPadding(new Insets(10));
         applyStyles();
 
-        VBox videoLayout = new VBox(resourceNode, videoControls);
+        VBox videoLayout = new VBox();
+        if (resourceManager.resource.getType().equals(ResourceTypeEnum.mp3)) {
+            Label label = new Label(Strings.AUDIO_FILE);
+            label.setWrapText(true);
+            label.getStyleClass().add("audio-label");
+
+            VBox audioLayout = new VBox(10, label, videoControls);
+            audioLayout.setAlignment(Pos.CENTER);
+            audioLayout.setPadding(new Insets(10));
+            videoLayout.getChildren().add(audioLayout);
+        }
+        else{
+            videoLayout = new VBox(resourceNode, videoControls);
+        }
         videoLayout.setAlignment(Pos.CENTER);
 
         fileContainer.getChildren().add(videoLayout);
@@ -292,11 +306,6 @@ public class ResourceFileController extends Controller implements Initializable 
             mediaPlayer.stop();
             mediaPlayer.dispose();
         }
-    }
-
-    private Duration timeToDuration(Time time) {
-        long totalMillis = time.getTime() % (24 * 60 * 60 * 1000); // rimuove data se presente
-        return Duration.millis(totalMillis);
     }
 
     /**
