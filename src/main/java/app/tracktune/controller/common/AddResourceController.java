@@ -63,6 +63,7 @@ public class AddResourceController extends Controller implements Initializable {
     @FXML private HBox resourceLinkBox;
     @FXML private TextField txtResourceLink;
     @FXML private HBox filePathBox;
+    @FXML private MFXToggleButton btnIsAuthor;
 
     // Data set
     private final ObservableList<Track> allTracks = FXCollections.observableArrayList();
@@ -372,9 +373,9 @@ public class AddResourceController extends Controller implements Initializable {
             Time duration = ResourceManager.calcMediaDuration(data, type.toString());
             String location = txtLocation.getText();
             resource = new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
-                    duration, location, Date.valueOf(resourceDate.getValue()), trackId, SessionManager.getInstance().getUser().getId());
+                    duration, location, Date.valueOf(resourceDate.getValue()), btnIsAuthor.isSelected(), trackId, SessionManager.getInstance().getUser().getId());
         } else {
-            resource = new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId, SessionManager.getInstance().getUser().getId());
+            resource = new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, btnIsAuthor.isSelected(),trackId, SessionManager.getInstance().getUser().getId());
         }
         return DatabaseManager.getDAOProvider().getResourceDAO().insert(resource);
     }
@@ -423,6 +424,7 @@ public class AddResourceController extends Controller implements Initializable {
         instrumentComboBox.getEditor().clear();
         btnIsMultimedia.setSelected(false);
         btnIsLink.setSelected(false);
+        btnIsAuthor.setSelected(false);
         selectedTrackPane.getChildren().clear();
         selectedAuthorsPane.getChildren().clear();
         selectedGenresPane.getChildren().clear();

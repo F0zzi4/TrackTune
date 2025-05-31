@@ -96,6 +96,7 @@ public class DBInit {
             duration TIME,
             location TEXT,
             resourceDate TIMESTAMP,
+            isAuthor INTEGER CHECK (isAuthor IN (0, 1)) NOT NULL DEFAULT 0,
             trackID INTEGER,
             userID INTEGER,
             FOREIGN KEY (trackID) REFERENCES Tracks(ID) ON DELETE CASCADE,

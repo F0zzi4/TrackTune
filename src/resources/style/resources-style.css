@@ -488,7 +488,7 @@
 }
 
 .icon-button {
-    -fx-background-color: transparent;
+    -fx-background-color: linear-gradient(to right, #ffcc80, #ffb74d);;
     -fx-cursor: hand;
     -fx-padding: 0 5 0 5;
 }
@@ -560,7 +560,7 @@
     -fx-border-radius: 10;
 }
 
-.comment-box-uploader {
+.comment-box-author-interpreter {
     -fx-background-color: linear-gradient(to right, #fae7c1, #fdde9d);
     -fx-padding: 10;
     -fx-background-radius: 10;
@@ -570,7 +570,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 4, 0.2, 0, 2);
 }
 
-.comment-author-uploader {
+.comment-author-interpreter {
     -fx-font-weight: bold;
     -fx-text-fill: #a65b00;
     -fx-font-size: 14px;
@@ -660,6 +660,6 @@
     -fx-alignment: center;
     -fx-font-size: 20px;
     -fx-font-weight: bold;
-    -fx-text-fill: #4a280f;
+    -fx-text-fill: #fae3b4;
     -fx-padding: 3;
 }

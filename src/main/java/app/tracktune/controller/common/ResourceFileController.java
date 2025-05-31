@@ -38,9 +38,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
-
 import java.net.URL;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
@@ -134,6 +132,9 @@ public class ResourceFileController extends Controller implements Initializable 
             audioLayout.setAlignment(Pos.CENTER);
             audioLayout.setPadding(new Insets(10));
             videoLayout.getChildren().add(audioLayout);
+            fileContainer.setStyle("-fx-background-color: #000000");
+            lblTimer.setStyle("-fx-text-fill: #fae3b4");
+            lblDuration.setStyle("-fx-text-fill: #fae3b4");
         }
         else{
             videoLayout = new VBox(resourceNode, videoControls);
@@ -303,8 +304,12 @@ public class ResourceFileController extends Controller implements Initializable 
      */
     public void disposeMediaPlayer() {
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
+            MediaPlayer.Status status = mediaPlayer.getStatus();
+            if (status != MediaPlayer.Status.UNKNOWN && status != MediaPlayer.Status.DISPOSED) {
+                mediaPlayer.stop();
+            }
             mediaPlayer.dispose();
+            mediaPlayer = null;
         }
     }
 
@@ -580,10 +585,10 @@ public class ResourceFileController extends Controller implements Initializable 
             roleLB.getStyleClass().add("comment-author-admin");
 
         }
-        else if(resourceManager.resource.getUserID() == user.getId()){
-            commentBox.getStyleClass().add("comment-box-uploader");
-            roleLB = new Label(Strings.UPLOADER);
-            roleLB.getStyleClass().add("comment-author-uploader");
+        else if(resourceManager.resource.isAuthor()){
+            commentBox.getStyleClass().add("comment-box-author-interpreter");
+            roleLB = new Label(Strings.AUTHOR_INTERPRETER);
+            roleLB.getStyleClass().add("comment-author-interpreter");
         }
         else {
             commentBox.getStyleClass().add("comment-box");

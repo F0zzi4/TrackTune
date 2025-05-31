@@ -70,7 +70,7 @@ public class Strings {
     public static final String REPLIES = "[replies]";
     public static final String HIDE_REPLIES = "[hide replies]";
     public static final String UPLOADED = "Uploaded by: ";
-    public static final String UPLOADER = "UPLOADER";
+    public static final String AUTHOR_INTERPRETER = "AUTHOR/INTERPRETER";
     public static final String COMMENT_ADD = "Add your comment into the segment";
     public static final String START_SEGMENT = "Start time";
     public static final String END_SEGMENT = "End time (optional)";
@@ -82,5 +82,5 @@ public class Strings {
     public static final String ERROR_END_TIME_GREATER_DURATION = "End time greater duration of video";
     public static final String ERROR_DURING_OPEN_BROWSER = "Error during opening browser";
     public static final String INVALID_TIME_FORMAT = "Invalid time format: ";
-    public static final String AUDIO_FILE = "Audio-only file: no video content available..";
+    public static final String AUDIO_FILE = "MP3 File";
 }

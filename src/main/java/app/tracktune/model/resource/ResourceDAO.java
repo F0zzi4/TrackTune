@@ -24,18 +24,27 @@ public class ResourceDAO implements DAO<Resource> {
     private static final String DURATION = "duration";
     private static final String LOCATION = "location";
     private static final String RESOURCE_DATE = "resourceDate";
+    private static final String IS_AUTHOR = "isAuthor";
     private static final String TRACK_ID = "trackID";
     private static final String USER_ID = "userID";
 
     // SQL STATEMENTS
     private static final String INSERT_RESOURCE_STMT = """
-        INSERT INTO Resources (type, data, creationDate, isMultimedia, duration, location, resourceDate, trackID, userID)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Resources (type, data, creationDate, isMultimedia, duration, location, resourceDate, isAuthor, trackID, userID)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
     private static final String UPDATE_RESOURCE_STMT = """
         UPDATE Resources
-        SET type = ?, data = ?, creationDate = ?, isMultimedia = ?, duration = ?, location = ?, resourceDate = ?, trackID = ?, userID = ?
+        SET type = ?, data = ?,
+        creationDate = ?,
+        isMultimedia = ?,
+        duration = ?,
+        location = ?,
+        resourceDate = ?,
+        isAuthor = ?,
+        trackID = ?,
+        userID = ?
         WHERE ID = ?
     """;
 
@@ -68,9 +77,10 @@ public class ResourceDAO implements DAO<Resource> {
     private static final String GET_RESOURCE_COMMENTS_BY_USER_ID_STMT = """
         SELECT DISTINCT r.*
         FROM Resources r
-        JOIN Comments c ON r.trackID = c.trackID
+        JOIN Comments c ON r.ID = c.resourceID
         WHERE c.userID = ?
         ORDER BY C.creationDate DESC
+        LIMIT 5
     """;
 
     public ResourceDAO() {
@@ -95,6 +105,7 @@ public class ResourceDAO implements DAO<Resource> {
                     multimedia.getDuration(),
                     multimedia.getLocation(),
                     multimedia.getResourceDate(),
+                    multimedia.isAuthor(),
                     multimedia.getTrackID(),
                     multimedia.getUserID()
             );
@@ -108,6 +119,7 @@ public class ResourceDAO implements DAO<Resource> {
                     null,
                     null,
                     null,
+                    resource.isAuthor(),
                     resource.getTrackID(),
                     resource.getUserID()
             );
@@ -134,6 +146,7 @@ public class ResourceDAO implements DAO<Resource> {
                     multimedia.getDuration(),
                     multimedia.getLocation(),
                     multimedia.getResourceDate(),
+                    multimedia.isAuthor(),
                     multimedia.getTrackID(),
                     multimedia.getId(),
                     trackID
@@ -148,6 +161,7 @@ public class ResourceDAO implements DAO<Resource> {
                     null,
                     null,
                     null,
+                    resource.isAuthor(),
                     resource.getTrackID(),
                     resource.getUserID(),
                     trackID
@@ -171,7 +185,7 @@ public class ResourceDAO implements DAO<Resource> {
     public Resource getById(int id) {
         AtomicReference<Resource> result = new AtomicReference<>();
 
-        boolean success = dbManager.executeQuery(GET_RESOURCE_BY_ID_STMT,
+        dbManager.executeQuery(GET_RESOURCE_BY_ID_STMT,
                 rs -> {
                     if (rs.next()) {
                         result.set(mapResultSetToEntity(rs));
@@ -254,6 +268,7 @@ public class ResourceDAO implements DAO<Resource> {
         byte[] data = rs.getBytes(DATA);
         Timestamp creationDate = rs.getTimestamp(CREATION_DATE);
         boolean isMultimedia = rs.getInt(IS_MULTIMEDIA) == 1;
+        boolean isAuthor = rs.getInt(IS_AUTHOR) == 1;
         int trackID = rs.getInt(TRACK_ID);
         int userID = rs.getInt(USER_ID);
 
@@ -261,9 +276,9 @@ public class ResourceDAO implements DAO<Resource> {
             Time duration = rs.getTime(DURATION);
             String location = rs.getString(LOCATION);
             Date resourceDate = rs.getDate(RESOURCE_DATE);
-            return new MultimediaResource(id, type, data, creationDate, true, duration, location, resourceDate, trackID, userID);
+            return new MultimediaResource(id, type, data, creationDate, true, duration, location, resourceDate, isAuthor, trackID, userID);
         } else {
-            return new Resource(id, type, data, creationDate, false, trackID, userID);
+            return new Resource(id, type, data, creationDate, false, isAuthor, trackID, userID);
         }
     }
 }
