@@ -18,10 +18,11 @@ public class MultimediaResource extends Resource {
             Time duration,
             String location,
             Date resourceDate,
+            boolean isAuthor,
             int trackID,
             int userID
     ) {
-        super(id, type, data, creationDate, isMultimedia, trackID, userID);
+        super(id, type, data, creationDate, isMultimedia, isAuthor, trackID, userID);
         this.duration = duration;
         this.location = location;
         this.resourceDate = resourceDate;
@@ -35,10 +36,11 @@ public class MultimediaResource extends Resource {
             Time duration,
             String location,
             Date resourceDate,
+            boolean isAuthor,
             int trackID,
             int userID
     ) {
-        super(null, type, data, creationDate, isMultimedia, trackID, userID);
+        super(null, type, data, creationDate, isMultimedia, isAuthor, trackID, userID);
         this.duration = duration;
         this.location = location;
         this.resourceDate = resourceDate;

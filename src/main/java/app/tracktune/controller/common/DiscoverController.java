@@ -34,14 +34,14 @@ public class DiscoverController extends Controller implements Initializable {
     @FXML private Tab tabMostRecent;
     @FXML private Tab tabMostPopular;
     @FXML private Tab tabMostCommented;
-    @FXML private Tab tabMostCommented2;
+    @FXML private Tab tabLastCommented;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         populateTab(tabMostRecent, SQLiteScripts.getMostRecentResources(Main.dbManager));
         populateTab(tabMostPopular, SQLiteScripts.getMostPopularResources(Main.dbManager));
         populateTab(tabMostCommented, SQLiteScripts.getMostCommentedResources(Main.dbManager));
-        populateTab(tabMostCommented2, DatabaseManager.getDAOProvider().getResourceDAO().getAllCommentedResourcesByUserID(SessionManager.getInstance().getUser().getId()));
+        populateTab(tabLastCommented, DatabaseManager.getDAOProvider().getResourceDAO().getAllCommentedResourcesByUserID(SessionManager.getInstance().getUser().getId()));
     }
 
     private void populateTab(Tab tab, List<Resource> resources) {

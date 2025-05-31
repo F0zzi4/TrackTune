@@ -99,10 +99,18 @@ public final class ResourceManager {
             }
         } else if (AudioVideoFileEnum.isSupported(extension)) {
             // Audio/Videos
-            MediaView mediaView = createMediaPlayer(resource.getData(), extension);
-            mediaView.setFitWidth(width);
-            mediaView.setFitHeight(height);
-            return mediaView;
+            if(resource.getType().equals(ResourceTypeEnum.mp3) && isPreview) {
+                Label linkLabel = new Label(".MP3");
+                linkLabel.setPrefWidth(width);
+                linkLabel.setPrefHeight(height / 2);
+                linkLabel.getStyleClass().add("resource-link-label");
+                return linkLabel;
+            }else{
+                MediaView mediaView = createMediaPlayer(resource.getData(), extension);
+                mediaView.setFitWidth(width);
+                mediaView.setFitHeight(height);
+                return mediaView;
+            }
         } else {
             throw new MediaNotSupportedException(Strings.MEDIA_NOT_SUPPORTED);
         }

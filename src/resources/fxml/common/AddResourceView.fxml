@@ -63,7 +63,7 @@
                 </children>
             </HBox>
 
-            <HBox alignment="CENTER_LEFT" spacing="20">
+            <HBox alignment="CENTER_LEFT" prefHeight="101.0" prefWidth="548.0" spacing="20">
                 <children>
                     <VBox prefHeight="105.0" prefWidth="479.0" spacing="5">
                         <Label styleClass="label-title" text="Genres:" />
@@ -77,11 +77,25 @@
                     </VBox>
                 </children>
             </HBox>
-               <MFXToggleButton fx:id="btnIsLink" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Link Resource">
+               <HBox alignment="CENTER" prefHeight="16.0" prefWidth="548.0">
+                  <children>
+                     <MFXToggleButton fx:id="btnIsLink" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Link Resource">
+                        <effect>
+                           <InnerShadow />
+                        </effect>
+                     </MFXToggleButton>
+               <MFXToggleButton fx:id="btnIsMultimedia" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Multimedia">
                   <effect>
                      <InnerShadow />
                   </effect>
-               </MFXToggleButton>
+                     </MFXToggleButton>
+                     <MFXToggleButton fx:id="btnIsAuthor" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Author/Interpreter">
+                        <effect>
+                           <InnerShadow />
+                        </effect>
+                     </MFXToggleButton>
+                  </children>
+               </HBox>
         <HBox fx:id="filePathBox" alignment="CENTER_LEFT" prefHeight="46.0" prefWidth="505.0" spacing="10" style="-fx-alignment: center;">
             <Label prefHeight="25.0" prefWidth="68.0" style="-fx-alignment: center;" styleClass="label-title" text="File:" />
             <TextField fx:id="txtFilePath" editable="false" prefHeight="31.0" prefWidth="240.0" promptText="Choose a file..." styleClass="fileField" />
@@ -97,10 +111,6 @@
              <TextField fx:id="txtResourceLink" prefHeight="31.0" prefWidth="240.0" promptText="https://..." styleClass="fileField" />
           </children>
        </HBox>
-         <MFXToggleButton fx:id="btnIsMultimedia" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Multimedia">
-            <effect>
-               <InnerShadow />
-            </effect></MFXToggleButton>
          <ProgressBar id="custom-progress" prefHeight="9.0" prefWidth="371.0" progress="0.0" />
         <HBox fx:id="locationBox" alignment="CENTER_LEFT" managed="false" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;" visible="false">
             <children>

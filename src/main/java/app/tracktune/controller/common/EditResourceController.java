@@ -52,6 +52,7 @@ public class EditResourceController extends Controller implements Initializable 
     @FXML private DatePicker resourceDate;
     @FXML private HBox resourceDateBox;
     @FXML private TextField trackComboBox;
+    @FXML private MFXToggleButton btnIsAuthor;
 
     private final Resource resource;
 
@@ -257,9 +258,9 @@ public class EditResourceController extends Controller implements Initializable 
             Time duration = ResourceManager.calcMediaDuration(data, type.toString());
             String location = txtLocation.getText();
             DatabaseManager.getDAOProvider().getResourceDAO().updateById(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
-                    duration, location, Date.valueOf(resourceDate.getValue()), trackId, resource.getUserID()), resource.getId());
+                    duration, location, Date.valueOf(resourceDate.getValue()), resource.isAuthor(), trackId, resource.getUserID()), resource.getId());
         } else {
-            DatabaseManager.getDAOProvider().getResourceDAO().updateById(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, trackId, resource.getUserID()), resource.getId());
+            DatabaseManager.getDAOProvider().getResourceDAO().updateById(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, resource.isAuthor(), trackId, resource.getUserID()), resource.getId());
         }
     }
 
@@ -340,6 +341,7 @@ public class EditResourceController extends Controller implements Initializable 
         genreComboBox.getEditor().clear();
         instrumentComboBox.getEditor().clear();
         btnIsMultimedia.setSelected(false);
+        btnIsAuthor.setSelected(false);
         selectedAuthorsPane.getChildren().clear();
         selectedGenresPane.getChildren().clear();
         selectedInstrumentsPane.getChildren().clear();

@@ -121,35 +121,7 @@ public class SQLiteScripts {
         String query = """
             SELECT R.*
             FROM Resources R
-            JOIN Tracks T ON R.trackID = T.ID
-            LEFT JOIN Comments C ON T.ID = C.trackID
-            GROUP BY R.ID
-            ORDER BY COUNT(C.ID) DESC
-            LIMIT 5
-        """;
-
-        List<Resource> resources = new ArrayList<>();
-
-        dbManager.executeQuery(
-                query,
-                rs -> {
-                    while (rs.next()) {
-                        resources.add(ResourceDAO.mapResultSetToEntity(rs));
-                    }
-                    return null;
-                },
-                null
-        );
-
-        return resources;
-    }
-
-    public static List<Resource> getMostRecentlyCommentedResources(DatabaseManager dbManager) {
-        String query = """
-            SELECT R.*
-            FROM Resources R
-            JOIN Tracks T ON R.trackID = T.ID
-            LEFT JOIN Comments C ON T.ID = C.trackID
+            LEFT JOIN Comments C ON R.ID = C.resourceID
             GROUP BY R.ID
             ORDER BY COUNT(C.ID) DESC
             LIMIT 5

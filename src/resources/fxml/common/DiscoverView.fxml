@@ -54,7 +54,7 @@
                             <AnchorPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                         </content>
                     </Tab>
-               <Tab fx:id="tabMostCommented2" text="Recently commented">
+               <Tab fx:id="tabLastCommented" text="Recently commented">
                   <graphic>
                      <FontIcon iconLiteral="mdi2c-comment-search" iconSize="20" />
                   </graphic>

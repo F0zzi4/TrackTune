@@ -46,7 +46,7 @@
                             <VBox spacing="5">
                                 <Label styleClass="label-title" text="Track:" />
                                 <TextField fx:id="trackComboBox" prefHeight="43.0" prefWidth="213.0" promptText="Search track..." styleClass="nameField" />
-                                <FlowPane fx:id="selectedTrackPane" hgap="10" prefHeight="21.0" prefWidth="548.0" vgap="10" />
+                                <FlowPane hgap="10" prefHeight="21.0" prefWidth="548.0" vgap="10" />
                             </VBox>
                             <VBox alignment="CENTER_LEFT" spacing="5">
                                 <Label styleClass="label-title" text="Authors:" />
@@ -77,10 +77,20 @@
                             </VBox>
                         </children>
                     </HBox>
-                    <MFXToggleButton fx:id="btnIsMultimedia" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Multimedia">
+               <HBox alignment="CENTER" prefHeight="0.0" prefWidth="548.0">
+                  <children>
+                          <MFXToggleButton fx:id="btnIsMultimedia" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Multimedia">
+                              <effect>
+                                  <InnerShadow />
+                              </effect>
+                     </MFXToggleButton>
+                     <MFXToggleButton fx:id="btnIsAuthor" contentDisposition="RIGHT" prefHeight="41.0" prefWidth="156.0" text="Author/Interpreter">
                         <effect>
-                            <InnerShadow />
-                        </effect></MFXToggleButton>
+                           <InnerShadow />
+                        </effect>
+                     </MFXToggleButton>
+                  </children>
+               </HBox>
                     <ProgressBar id="custom-progress" prefHeight="9.0" prefWidth="371.0" progress="0.0" />
                     <HBox fx:id="locationBox" alignment="CENTER_LEFT" managed="false" prefHeight="40.0" prefWidth="471.0" spacing="10" style="-fx-alignment: center;" visible="false">
                         <children>
