@@ -118,12 +118,7 @@ public final class ResourceManager {
         }
     }
 
-    public static Time calcMediaDuration(byte[] data, String extension){
-        MediaView mediaView = ResourceManager.createMediaPlayer(data, extension);
-        Duration duration = mediaView.getMediaPlayer().getTotalDuration();
-        long millis = Math.round(duration.toMillis());
-        return new Time(millis);
-    }
+
 
     /**
      * Initializes the media player with a video file located at a specific path.
