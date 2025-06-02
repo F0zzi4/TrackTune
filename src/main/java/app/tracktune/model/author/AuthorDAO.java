@@ -1,6 +1,5 @@
 package app.tracktune.model.author;
 
-import app.tracktune.Main;
 import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;
@@ -123,7 +122,7 @@ public class AuthorDAO implements DAO<Author> {
         return result.get();
     }
 
-    public boolean existByAutorShipname(String id) {
+    public boolean existByAuthorshipName(String id) {
         AtomicReference<Author> result = new AtomicReference<>();
 
         boolean success = dbManager.executeQuery(GET_AUTHOR_BY_AUTHORSHIP_NAME_STMT,
@@ -135,7 +134,7 @@ public class AuthorDAO implements DAO<Author> {
                     return false;
                 }, id);
 
-        return success;
+        return !success;
     }
 
     @Override

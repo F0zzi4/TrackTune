@@ -11,26 +11,19 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 
-import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AuthenticatedUserDashboardController extends Controller implements Initializable {
     @FXML public StackPane mainContent;
     @FXML private Label LblWelcome;
-    private MediaPlayer mediaPlayer;
-    private AuthenticatedUser authUser;
     private Node dashboardContent;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         dashboardContent = mainContent.getChildren().getFirst();
         if (ViewManager.getSessionUser() instanceof AuthenticatedUser authenticatedUser) {
-            this.authUser = authenticatedUser;
             LblWelcome.setText(LblWelcome.getText() + " " + authenticatedUser.getName()+" "+authenticatedUser.getSurname());
         }
     }

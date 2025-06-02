@@ -74,7 +74,7 @@ public class ResourceFileController extends Controller implements Initializable 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            Platform.runLater(() -> Main.root.setOnCloseRequest(event -> disposeMediaPlayer()));
+            Platform.runLater(() -> Main.root.setOnCloseRequest(_ -> disposeMediaPlayer()));
             resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight(), false);
             boolean isMultimedia = resourceNode instanceof MediaView;
 
@@ -143,7 +143,7 @@ public class ResourceFileController extends Controller implements Initializable 
 
         fileContainer.getChildren().add(videoLayout);
 
-        mediaPlayer.currentTimeProperty().addListener((obs, oldTime, newTime) -> updateTimeLabels(newTime));
+        mediaPlayer.currentTimeProperty().addListener((_, _, newTime) -> updateTimeLabels(newTime));
         mediaPlayer.setOnReady(() -> sliderProgress.setDisable(false));
 
         videoToolBox.setVisible(true);
@@ -240,13 +240,13 @@ public class ResourceFileController extends Controller implements Initializable 
     }
 
     private void setupSliderListeners() {
-        sliderProgress.valueChangingProperty().addListener((obs, wasChanging, isChanging) -> {
+        sliderProgress.valueChangingProperty().addListener((_, _, isChanging) -> {
             if (!isChanging) {
                 seekToSliderPosition();
             }
         });
 
-        sliderProgress.valueProperty().addListener((obs, oldVal, newVal) -> updateSliderStyle(newVal.doubleValue()));
+        sliderProgress.valueProperty().addListener((_, _, newVal) -> updateSliderStyle(newVal.doubleValue()));
     }
 
     private void updateTimeLabels(javafx.util.Duration newTime) {
@@ -270,11 +270,11 @@ public class ResourceFileController extends Controller implements Initializable 
 
     private void seekTo(Duration time) {
         if (mediaPlayer != null && time != null) {
-            mediaPlayer.seek(time); // 'time' è un javafx.util.Duration
+            mediaPlayer.seek(time);
             double total = mediaPlayer.getTotalDuration().toSeconds();
             if (total > 0) {
                 double percent = (time.toSeconds() / total) * 100;
-                sliderProgress.setValue(percent); // aggiorna anche lo slider
+                sliderProgress.setValue(percent);
             }
         }
     }
@@ -480,9 +480,7 @@ public class ResourceFileController extends Controller implements Initializable 
                 }
             });
 
-            fullStage.setOnCloseRequest(event -> {
-                fullStage = null;
-            });
+            fullStage.setOnCloseRequest(_ -> fullStage = null);
 
             fullStage.show();
 
@@ -561,7 +559,7 @@ public class ResourceFileController extends Controller implements Initializable 
         repliesLabel.setVisible(false);
         repliesLabel.getStyleClass().add("replies-toggle-closed");
         repliesLabel.setCursor(Cursor.HAND);
-        repliesLabel.setOnMouseClicked(event -> {
+        repliesLabel.setOnMouseClicked(_ -> {
             boolean isVisible = repliesBox.isVisible();
             repliesBox.setVisible(!isVisible);
             repliesBox.setManaged(!isVisible);
@@ -605,15 +603,10 @@ public class ResourceFileController extends Controller implements Initializable 
             Label end = new Label(formatDuration(new Duration(comment.getEndTrackInterval()*1000)));
             HBox intervals = new HBox();
 
-            start.setOnMouseClicked(event -> {
-                seekTo(new Duration(comment.getStartTrackInterval() * 1000));
-            });
+            start.setOnMouseClicked(_ -> seekTo(new Duration(comment.getStartTrackInterval() * 1000)));
             if(comment.getEndTrackInterval() != 0){
                 intervals.getChildren().addAll(start, dash, end);
-                end.setOnMouseClicked(event -> {
-                    seekTo(new Duration(comment.getEndTrackInterval() * 1000));
-                });
-
+                end.setOnMouseClicked(_ -> seekTo(new Duration(comment.getEndTrackInterval() * 1000)));
             }
             else{
                 intervals.getChildren().addAll(start);
@@ -632,7 +625,7 @@ public class ResourceFileController extends Controller implements Initializable 
         VBox container = new VBox(indentedBox);
         container.setPadding(new Insets(5, 0, 5, 0));
 
-        replyButton.setOnAction(e -> {
+        replyButton.setOnAction(_ -> {
             Optional<String> result = ViewManager.showReplyDialog();
             result.ifPresent(responseText -> {
                 if(responseText.trim().isEmpty()){
@@ -691,7 +684,7 @@ public class ResourceFileController extends Controller implements Initializable 
             }
         }
 
-        deleteButton.setOnAction(e -> {
+        deleteButton.setOnAction(_ -> {
             boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
             if(response){
                 ((VBox) container.getParent()).getChildren().remove(container);
@@ -713,16 +706,16 @@ public class ResourceFileController extends Controller implements Initializable 
             String end = data[1];
             String comment = data[2];
 
-            if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf)){
-                //TODO - pdf management
-            }
-            else {
+//            if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf)){
+//                // do nothing
+//            }
+//            else {
                 try {
                     int startInt = parseToSeconds(start);
                     int endInt = parseToSeconds(end);
                     Duration startDuration = new Duration(startInt * 1000);
                     Duration mediaDuration = mediaPlayer.getTotalDuration();
-                    Duration endDuration = new Duration(0);
+                    Duration endDuration;
 
                     if(!end.equals("0")){
                         if (startDuration.greaterThan(mediaDuration) || startDuration.lessThan(Duration.ZERO))
@@ -758,7 +751,7 @@ public class ResourceFileController extends Controller implements Initializable 
                 catch (TrackTuneException e){
                     ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR);
                 }
-            }
+            //}
         });
     }
 
@@ -768,7 +761,7 @@ public class ResourceFileController extends Controller implements Initializable 
         try {
             int hours = 0;
             int minutes = 0;
-            int seconds = 0;
+            int seconds;
 
             if (parts.length == 3) {
                 hours = Integer.parseInt(parts[0]);

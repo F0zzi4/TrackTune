@@ -1,7 +1,5 @@
 package app.tracktune.model.author;
 
-import java.util.Objects;
-
 public class Author {
     private final Integer id;
     private final String authorshipName;

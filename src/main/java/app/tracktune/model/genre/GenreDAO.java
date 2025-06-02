@@ -1,6 +1,5 @@
 package app.tracktune.model.genre;
 
-import app.tracktune.Main;
 import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.model.DatabaseManager;

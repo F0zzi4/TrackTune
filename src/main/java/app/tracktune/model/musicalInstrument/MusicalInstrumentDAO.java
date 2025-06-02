@@ -49,7 +49,7 @@ public class MusicalInstrumentDAO implements DAO<MusicalInstrument> {
         WHERE ID = ?
     """;
 
-    private static final String GET_MUSICAL_INSTRUMENT_BY_TRACK_IDSTMT = """
+    private static final String GET_MUSICAL_INSTRUMENT_BY_TRACK_ID_STMT = """
     SELECT m.*
     FROM MusicalInstruments m
          JOIN TracksInstruments ti ON ti.instrumentID = m.ID
@@ -125,7 +125,7 @@ public class MusicalInstrumentDAO implements DAO<MusicalInstrument> {
     public List<MusicalInstrument> getAllInstrumentByTrackId(int id) {
         List<MusicalInstrument> instruments = new ArrayList<>();
 
-        dbManager.executeQuery(GET_MUSICAL_INSTRUMENT_BY_TRACK_IDSTMT,
+        dbManager.executeQuery(GET_MUSICAL_INSTRUMENT_BY_TRACK_ID_STMT,
                 rs -> {
                     while (rs.next()) {
                         MusicalInstrument instrument = mapResultSetToEntity(rs);

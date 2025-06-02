@@ -3,7 +3,6 @@ package app.tracktune.controller.admin;
 import app.tracktune.controller.Controller;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.user.*;
-import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;

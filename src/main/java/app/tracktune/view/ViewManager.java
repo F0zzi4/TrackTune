@@ -69,7 +69,7 @@ public class ViewManager {
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
 
-        fadeOut.setOnFinished(e -> {
+        fadeOut.setOnFinished(_ -> {
             try {
                 // Load the new scene
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource(viewPath));

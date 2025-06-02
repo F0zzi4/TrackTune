@@ -5,7 +5,6 @@ import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.genre.Genre;
-import app.tracktune.model.genre.GenreDAO;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;

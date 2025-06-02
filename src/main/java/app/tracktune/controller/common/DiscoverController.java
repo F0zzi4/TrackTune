@@ -118,7 +118,7 @@ public class DiscoverController extends Controller implements Initializable {
 
         Button viewBtn = new Button(Strings.VIEW);
         viewBtn.getStyleClass().add("view-button");
-        viewBtn.setOnAction(e -> viewResource(resource));
+        viewBtn.setOnAction(_ -> viewResource(resource));
         viewBtn.setMinWidth(80);
 
         HBox buttonBox = new HBox(10, viewBtn);
@@ -144,7 +144,7 @@ public class DiscoverController extends Controller implements Initializable {
                 BrowserManager.browse(url);
             }else {
                 FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
-                loader.setControllerFactory(param -> new ResourceFileController(resource));
+                loader.setControllerFactory(_ -> new ResourceFileController(resource));
                 Parent view = loader.load();
 
                 Controller controller = loader.getController();

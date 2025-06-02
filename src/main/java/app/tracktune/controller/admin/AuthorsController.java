@@ -1,11 +1,10 @@
 package app.tracktune.controller.admin;
 
 import app.tracktune.controller.Controller;
-import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
+import app.tracktune.exceptions.AuthorAlreadyExistsException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
-import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
@@ -216,7 +215,7 @@ public class AuthorsController extends Controller implements Initializable {
                     TxtName.clear();
                     updateAuthors();
                 } else {
-                    throw new AuthorAlreadyExixtsExeption(Strings.ERR_AUTHOR_ALREADY_EXISTS);
+                    throw new AuthorAlreadyExistsException(Strings.ERR_AUTHOR_ALREADY_EXISTS);
                 }
             } else {
                 throw new TrackTuneException(Strings.FIELD_EMPTY);

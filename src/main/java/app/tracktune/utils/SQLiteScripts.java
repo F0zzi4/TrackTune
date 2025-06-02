@@ -12,9 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SQLiteScripts {
-    public static final String SELECT_PENDING_USERS_BY_USERNAME = "SELECT * FROM PendingUsers WHERE username = ?";
-    public static final String SELECT_USER_BY_USERNAME = "SELECT * FROM Users WHERE username = ?";
-
     /**
      * Method to avoid SQL Injection
      * @param texts texts input from the user

@@ -94,10 +94,10 @@ public class TracksController extends Controller implements Initializable {
         filterTypeComboBox.setItems(filterTypes);
         filterTypeComboBox.setValue("All");
 
-        filterTypeComboBox.setCellFactory(cb -> createFilterListCell());
+        filterTypeComboBox.setCellFactory(_ -> createFilterListCell());
         filterTypeComboBox.setButtonCell(createFilterListCell());
 
-        filterTypeComboBox.setOnAction(event -> {
+        filterTypeComboBox.setOnAction(_ -> {
             filteredTracks = new ArrayList<>(allTracks);
             applyFilter(filterTypeComboBox.getValue());
         });
@@ -156,7 +156,7 @@ public class TracksController extends Controller implements Initializable {
         titleField.setPromptText("Enter title...");
         titleField.getStyleClass().add("textField");
 
-        titleField.setOnKeyReleased(e -> {
+        titleField.setOnKeyReleased(_ -> {
             String input = titleField.getText().toLowerCase();
             filteredTracks = allTracks.stream()
                     .filter(t -> t.getTitle().toLowerCase().contains(input))
@@ -191,7 +191,7 @@ public class TracksController extends Controller implements Initializable {
      * @param <T>      the type of elements in the ComboBox
      */
     private <T> void setupSearchableComboBox(ComboBox<T> comboBox) {
-        comboBox.getEditor().addEventFilter(KeyEvent.KEY_RELEASED, e -> {
+        comboBox.getEditor().addEventFilter(KeyEvent.KEY_RELEASED, _ -> {
             String input = comboBox.getEditor().getText().toLowerCase();
             ObservableList<T> items = comboBox.getItems().filtered(item ->
                     item.toString().toLowerCase().contains(input));
@@ -207,7 +207,7 @@ public class TracksController extends Controller implements Initializable {
      * @param <T>      the type of the selected entity
      */
     private <T> void setupComboBoxAction(ComboBox<T> comboBox) {
-        comboBox.setOnAction(e -> {
+        comboBox.setOnAction(_ -> {
             T selected = comboBox.getValue();
             if (selected instanceof Author author) {
                 filteredTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAllByAuthorId(author.getId());
@@ -224,14 +224,14 @@ public class TracksController extends Controller implements Initializable {
      * Configures the event handlers for the "Previous" and "Next" pagination buttons.
      */
     private void setupPaginationButtons() {
-        btnPrev.setOnAction(e -> {
+        btnPrev.setOnAction(_ -> {
             if (currentPage > 0) {
                 currentPage--;
                 updateTracks();
             }
         });
 
-        btnNext.setOnAction(e -> {
+        btnNext.setOnAction(_ -> {
             if ((currentPage + 1) * ITEMS_PER_PAGE < filteredTracks.size()) {
                 currentPage++;
                 updateTracks();
@@ -293,12 +293,12 @@ public class TracksController extends Controller implements Initializable {
 
         Button viewBtn = new Button(Strings.LINKED_RESOURCES);
         viewBtn.getStyleClass().add("view-button");
-        viewBtn.setOnAction(e -> viewTrack(track));
+        viewBtn.setOnAction(_ -> viewTrack(track));
         HBox buttonBox;
         if(ViewManager.getSessionUser() instanceof Administrator || track.getUserID() == ViewManager.getSessionUser().getId()) {
             Button deleteBtn = new Button(Strings.DELETE);
             deleteBtn.getStyleClass().add("reject-button");
-            deleteBtn.setOnAction(e -> deleteTrack(track));
+            deleteBtn.setOnAction(_ -> deleteTrack(track));
 
             buttonBox = new HBox(10, viewBtn, deleteBtn);
             buttonBox.setAlignment(Pos.CENTER_RIGHT);
@@ -325,7 +325,7 @@ public class TracksController extends Controller implements Initializable {
         try{
             if(parentController instanceof AdminDashboardController adminController){
                 FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCES_COMMON_VIEW_PATH));
-                loader.setControllerFactory(param -> new TrackResourcesController(track));
+                loader.setControllerFactory(_ -> new TrackResourcesController(track));
                 Parent view = loader.load();
 
                 Controller controller = loader.getController();
@@ -334,7 +334,7 @@ public class TracksController extends Controller implements Initializable {
                 adminController.mainContent.getChildren().setAll(view);
             }else if(parentController instanceof AuthenticatedUserDashboardController authController){
                 FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCES_COMMON_VIEW_PATH));
-                loader.setControllerFactory(param -> new TrackResourcesController(track));
+                loader.setControllerFactory(_ -> new TrackResourcesController(track));
                 Parent view = loader.load();
 
                 Controller controller = loader.getController();

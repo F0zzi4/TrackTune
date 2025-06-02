@@ -54,14 +54,14 @@ public class TrackResourcesController extends Controller implements Initializabl
     public void initialize(URL location, ResourceBundle res) {
         resources = DatabaseManager.getDAOProvider().getResourceDAO().getAllByTrackID(track.getId());
 
-        btnPrev.setOnAction(e -> {
+        btnPrev.setOnAction(_ -> {
             if (currentPage > 0) {
                 currentPage--;
                 updateResources();
             }
         });
 
-        btnNext.setOnAction(e -> {
+        btnNext.setOnAction(_ -> {
             if ((currentPage + 1) * itemsPerPage < resources.size()) {
                 currentPage++;
                 updateResources();
@@ -92,7 +92,7 @@ public class TrackResourcesController extends Controller implements Initializabl
                 BrowserManager.browse(url);
             }else{
                 FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
-                loader.setControllerFactory(param -> new ResourceFileController(resource));
+                loader.setControllerFactory(_ -> new ResourceFileController(resource));
                 Parent view = loader.load();
 
                 Controller controller = loader.getController();
@@ -113,7 +113,7 @@ public class TrackResourcesController extends Controller implements Initializabl
     private void editResource(Resource resource) {
         try{
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCE_VIEW_PATH));
-            loader.setControllerFactory(param -> new EditResourceController(resource));
+            loader.setControllerFactory(_ -> new EditResourceController(resource));
             Parent view = loader.load();
 
             Controller controller = loader.getController();
@@ -210,17 +210,17 @@ public class TrackResourcesController extends Controller implements Initializabl
 
         Button deleteBtn = new Button(Strings.DELETE);
         deleteBtn.getStyleClass().add("reject-button");
-        deleteBtn.setOnAction(e -> deleteResource(resource));
+        deleteBtn.setOnAction(_ -> deleteResource(resource));
         deleteBtn.setMinWidth(80);
 
         Button editBtn = new Button(Strings.EDIT);
         editBtn.getStyleClass().add("switch-button");
-        editBtn.setOnAction(e -> editResource(resource));
+        editBtn.setOnAction(_ -> editResource(resource));
         editBtn.setMinWidth(80);
 
         Button viewBtn = new Button(Strings.VIEW);
         viewBtn.getStyleClass().add("view-button");
-        viewBtn.setOnAction(e -> viewResource(resource));
+        viewBtn.setOnAction(_ -> viewResource(resource));
         viewBtn.setMinWidth(80);
 
         HBox buttonBox;
