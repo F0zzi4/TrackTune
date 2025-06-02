@@ -21,7 +21,6 @@ public class ResourceDAO implements DAO<Resource> {
     private static final String DATA = "data";
     private static final String CREATION_DATE = "creationDate";
     private static final String IS_MULTIMEDIA = "isMultimedia";
-    private static final String DURATION = "duration";
     private static final String LOCATION = "location";
     private static final String RESOURCE_DATE = "resourceDate";
     private static final String IS_AUTHOR = "isAuthor";
@@ -30,8 +29,8 @@ public class ResourceDAO implements DAO<Resource> {
 
     // SQL STATEMENTS
     private static final String INSERT_RESOURCE_STMT = """
-        INSERT INTO Resources (type, data, creationDate, isMultimedia, duration, location, resourceDate, isAuthor, trackID, userID)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO Resources (type, data, creationDate, isMultimedia, location, resourceDate, isAuthor, trackID, userID)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
     private static final String UPDATE_RESOURCE_STMT = """
@@ -39,7 +38,6 @@ public class ResourceDAO implements DAO<Resource> {
         SET type = ?, data = ?,
         creationDate = ?,
         isMultimedia = ?,
-        duration = ?,
         location = ?,
         resourceDate = ?,
         isAuthor = ?,
@@ -60,8 +58,7 @@ public class ResourceDAO implements DAO<Resource> {
     private static final String GET_ALL_RESOURCES_BY_USERID_STMT = """
         SELECT R.*
         FROM Resources R
-        JOIN Tracks T ON R.trackID = T.ID
-        WHERE T.userID = ?;
+        WHERE R.userID = ?;
     """;
 
     private static final String GET_ALL_RESOURCES_BY_TRACK_ID_STMT = """
@@ -102,7 +99,6 @@ public class ResourceDAO implements DAO<Resource> {
                     multimedia.getData(),
                     multimedia.getCreationDate(),
                     multimedia.isMultimedia(),
-                    multimedia.getDuration(),
                     multimedia.getLocation(),
                     multimedia.getResourceDate(),
                     multimedia.isAuthor(),
@@ -116,7 +112,6 @@ public class ResourceDAO implements DAO<Resource> {
                     resource.getData(),
                     resource.getCreationDate(),
                     resource.isMultimedia(),
-                    null,
                     null,
                     null,
                     resource.isAuthor(),
@@ -143,12 +138,11 @@ public class ResourceDAO implements DAO<Resource> {
                     multimedia.getData(),
                     multimedia.getCreationDate(),
                     multimedia.isMultimedia(),
-                    multimedia.getDuration(),
                     multimedia.getLocation(),
                     multimedia.getResourceDate(),
                     multimedia.isAuthor(),
                     multimedia.getTrackID(),
-                    multimedia.getId(),
+                    multimedia.getUserID(),
                     trackID
             );
         } else {
@@ -158,7 +152,6 @@ public class ResourceDAO implements DAO<Resource> {
                     resource.getData(),
                     resource.getCreationDate(),
                     resource.isMultimedia(),
-                    null,
                     null,
                     null,
                     resource.isAuthor(),
@@ -273,10 +266,9 @@ public class ResourceDAO implements DAO<Resource> {
         int userID = rs.getInt(USER_ID);
 
         if (isMultimedia) {
-            Time duration = rs.getTime(DURATION);
             String location = rs.getString(LOCATION);
             Date resourceDate = rs.getDate(RESOURCE_DATE);
-            return new MultimediaResource(id, type, data, creationDate, true, duration, location, resourceDate, isAuthor, trackID, userID);
+            return new MultimediaResource(id, type, data, creationDate, true, location, resourceDate, isAuthor, trackID, userID);
         } else {
             return new Resource(id, type, data, creationDate, false, isAuthor, trackID, userID);
         }

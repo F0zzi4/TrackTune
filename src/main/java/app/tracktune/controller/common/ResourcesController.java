@@ -1,10 +1,9 @@
-package app.tracktune.controller.authenticatedUser;
+package app.tracktune.controller.common;
 
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
+import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
 import app.tracktune.controller.authentication.SessionManager;
-import app.tracktune.controller.common.EditResourceController;
-import app.tracktune.controller.common.ResourceFileController;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.resource.Resource;
@@ -34,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class UserResourcesController extends Controller implements Initializable {
+public class ResourcesController extends Controller implements Initializable {
     @FXML private VBox resourcesContainer;
     @FXML private Button btnPrev;
     @FXML private Button btnNext;
@@ -83,19 +82,21 @@ public class UserResourcesController extends Controller implements Initializable
     @FXML
     private void viewResource(Resource resource) {
         try{
-            if(parentController instanceof AuthenticatedUserDashboardController authController){
-                if(resource.getType().equals(ResourceTypeEnum.link)){
-                    String url = new String(resource.getData(), StandardCharsets.UTF_8);
-                    BrowserManager.browse(url);
-                }else{
-                    FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
-                    loader.setControllerFactory(param -> new ResourceFileController(resource));
-                    Parent view = loader.load();
+            if(resource.getType().equals(ResourceTypeEnum.link)){
+                String url = new String(resource.getData(), StandardCharsets.UTF_8);
+                BrowserManager.browse(url);
+            }else{
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
+                loader.setControllerFactory(param -> new ResourceFileController(resource));
+                Parent view = loader.load();
 
-                    Controller controller = loader.getController();
-                    controller.setParentController(parentController);
+                Controller controller = loader.getController();
+                controller.setParentController(parentController);
 
+                if(parentController instanceof AuthenticatedUserDashboardController authController){
                     authController.mainContent.getChildren().setAll(view);
+                }else if(parentController instanceof AdminDashboardController adminController){
+                    adminController.mainContent.getChildren().setAll(view);
                 }
             }
         }catch(Exception e){
@@ -107,15 +108,16 @@ public class UserResourcesController extends Controller implements Initializable
     @FXML
     private void editResource(Resource resource) {
         try{
+            FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCE_VIEW_PATH));
+            loader.setControllerFactory(param -> new EditResourceController(resource));
+            Parent view = loader.load();
+
+            Controller controller = loader.getController();
+            controller.setParentController(parentController);
             if(parentController instanceof AuthenticatedUserDashboardController authController){
-                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCE_VIEW_PATH));
-                loader.setControllerFactory(param -> new EditResourceController(resource));
-                Parent view = loader.load();
-
-                Controller controller = loader.getController();
-                controller.setParentController(parentController);
-
                 authController.mainContent.getChildren().setAll(view);
+            }else if(parentController instanceof AdminDashboardController adminController){
+                adminController.mainContent.getChildren().setAll(view);
             }
         }catch(Exception e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
