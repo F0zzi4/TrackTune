@@ -208,7 +208,7 @@ public class ViewManager {
             if (dialogButton == ButtonType.OK) {
                 return new String[]{
                         startField.getText().trim(),
-                        endField.getText().trim(),
+                        endField.getText().trim().isEmpty() ? "0" : endField.getText().trim(),
                         commentArea.getText().trim()
                 };
             }

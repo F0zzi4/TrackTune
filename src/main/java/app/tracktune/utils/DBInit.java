@@ -93,7 +93,6 @@ public class DBInit {
             data BLOB NOT NULL,
             creationDate TIMESTAMP NOT NULL,
             isMultimedia INTEGER CHECK (isMultimedia IN (0, 1)) NOT NULL,
-            duration TIME,
             location TEXT,
             resourceDate TIMESTAMP,
             isAuthor INTEGER CHECK (isAuthor IN (0, 1)) NOT NULL DEFAULT 0,

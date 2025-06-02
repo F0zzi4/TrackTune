@@ -599,7 +599,7 @@ public class ResourceFileController extends Controller implements Initializable 
         commentBox.setMaxWidth(280);
         HBox role =  new HBox(roleLB);
         role.setAlignment(Pos.CENTER);
-        if(comment.getEndTrackInterval() != 0 && comment.getEndTrackInterval() != comment.getStartTrackInterval()){
+        if(comment.getStartTrackInterval() != 0 && comment.getEndTrackInterval() != comment.getStartTrackInterval()){
             Label start = new Label(formatDuration(new Duration(comment.getStartTrackInterval()*1000)));
             Label dash = new Label("- ");
             Label end = new Label(formatDuration(new Duration(comment.getEndTrackInterval()*1000)));
@@ -718,21 +718,32 @@ public class ResourceFileController extends Controller implements Initializable 
             }
             else {
                 try {
-                    int startDuration = parseToSeconds(start);
-                    int endDuration = 0;
+                    int startInt = parseToSeconds(start);
+                    int endInt = parseToSeconds(end);
+                    Duration startDuration = new Duration(startInt * 1000);
+                    Duration mediaDuration = mediaPlayer.getTotalDuration();
+                    Duration endDuration = new Duration(0);
 
-                    if(new Duration(startDuration * 1000).greaterThan(mediaPlayer.getTotalDuration()) || startDuration < 0)
-                        throw new TrackTuneException(Strings.ERROR_START_TIME_GREATER_DURATION);
-                    if(new Duration(endDuration * 1000).greaterThan(mediaPlayer.getTotalDuration()) || endDuration < 0)
-                        throw new TrackTuneException(Strings.ERROR_END_TIME_GREATER_DURATION);
+                    if(!end.equals("0")){
+                        if (startDuration.greaterThan(mediaDuration) || startDuration.lessThan(Duration.ZERO))
+                            throw new TrackTuneException(Strings.ERROR_START_TIME_GREATER_DURATION);
 
-                    if(!end.isEmpty()){
-                        endDuration = parseToSeconds(end);
+                        endDuration = new Duration(endInt * 1000);
+                        if (endDuration.greaterThan(mediaDuration) || endDuration.lessThanOrEqualTo(Duration.ZERO))
+                            throw new TrackTuneException(Strings.ERROR_END_TIME_GREATER_DURATION);
+
+                        if (endDuration.lessThan(startDuration))
+                            throw new TrackTuneException(Strings.ERROR_START_TIME_GREATER_END_TIME);
                     }
+                    else{
+                        if (startDuration.greaterThan(mediaDuration) || startDuration.lessThan(Duration.ZERO))
+                            throw new TrackTuneException(Strings.ERROR_START_TIME_GREATER_DURATION);
+                    }
+
                     Comment c = new Comment(
                             comment,
-                            startDuration,
-                            endDuration,
+                            startInt,
+                            endInt,
                             Timestamp.from(Instant.now()),
                             SessionManager.getInstance().getUser().getId(),
                             resourceManager.getResource().getId()
