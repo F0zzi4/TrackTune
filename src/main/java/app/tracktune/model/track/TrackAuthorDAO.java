@@ -55,12 +55,6 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
         WHERE trackID = ?
     """;
 
-    private static final String GET_TRACK_AUTHOR_BY_AUTHOR_ID_STMT = """
-        SELECT *
-        FROM TracksAuthors
-        WHERE authorID = ?
-    """;
-
     private static final String GET_TRACK_AUTHOR_BY_TRACK_AND_AUTHOR_ID = """
         SELECT *
         FROM TracksAuthors
@@ -140,24 +134,6 @@ public class TrackAuthorDAO implements DAO<TrackAuthor> {
                     }
                     return true;
                 }, trackId);
-
-        if (!success) {
-            throw new SQLiteException(Strings.ERR_DATABASE);
-        }
-
-        return trackAuthors;
-    }
-
-    public List<TrackAuthor> getByAuthorId(int authorId) {
-        List<TrackAuthor> trackAuthors = new ArrayList<>();
-
-        boolean success = dbManager.executeQuery(GET_TRACK_AUTHOR_BY_AUTHOR_ID_STMT,
-                rs -> {
-                    while (rs.next()) {
-                        trackAuthors.add(mapResultSetToEntity(rs));
-                    }
-                    return true;
-                }, authorId);
 
         if (!success) {
             throw new SQLiteException(Strings.ERR_DATABASE);

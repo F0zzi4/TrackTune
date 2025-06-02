@@ -1,8 +1,6 @@
 package app.tracktune.model.user;
 
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 
 public class PendingUser extends User {
     private final Timestamp requestDate;

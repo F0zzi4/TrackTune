@@ -4,7 +4,7 @@ import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
 import app.tracktune.controller.authentication.SessionManager;
-import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
+import app.tracktune.exceptions.AuthorAlreadyExistsException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
@@ -14,7 +14,6 @@ import app.tracktune.model.musicalInstrument.MusicalInstrument;
 import app.tracktune.model.resource.*;
 import app.tracktune.model.track.*;
 import app.tracktune.utils.Frames;
-import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
@@ -37,7 +36,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -121,7 +119,7 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private <T> void setDynamicResearchListener(ComboBox<T> comboBox, ObservableList<T> allElements) {
-        comboBox.getEditor().addEventFilter(KeyEvent.KEY_RELEASED, e -> {
+        comboBox.getEditor().addEventFilter(KeyEvent.KEY_RELEASED, _ -> {
             String input = comboBox.getEditor().getText().toLowerCase();
             List<T> filtered = allElements.stream()
                     .filter(obj -> obj.toString().toLowerCase().contains(input))
@@ -132,7 +130,7 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private <T> void setTrackAddingElementListener(ComboBox<T> comboBox, FlowPane selectedElementsPane, ObservableList<T> selectedElements) {
-        comboBox.setOnAction(e -> {
+        comboBox.setOnAction(_ -> {
             T selected = comboBox.getValue();
             if (selected != null && !selectedElements.contains(selected)) {
                 selectedElements.clear();
@@ -173,7 +171,7 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private <T> void setAddingElementListener(ComboBox<T> comboBox, FlowPane selectedElementsPane, ObservableList<T> selectedElements) {
-        comboBox.setOnAction(e -> {
+        comboBox.setOnAction(_ -> {
             T selected = comboBox.getValue();
             if (selected != null && !selectedElements.contains(selected)) {
                 selectedElements.add(selected);
@@ -189,7 +187,7 @@ public class AddResourceController extends Controller implements Initializable {
         for (T element : selectedList) {
             Button button = new Button(element.toString());
             button.getStyleClass().add("author-tag");
-            button.setOnAction(e -> {
+            button.setOnAction(_ -> {
                 selectedList.remove(element);
                 updateSelectedElements(selectedElementsPane, selectedList);
             });
@@ -200,7 +198,7 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private void setSearchFileListener() {
-        btnBrowseFile.setOnAction(e -> {
+        btnBrowseFile.setOnAction(_ -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select Audio File");
             fileChooser.getExtensionFilters().addAll(
@@ -215,9 +213,7 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private void setIsMultimediaListener() {
-        btnIsMultimedia.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-            setMultimediaAssociatedControls(isSelected);
-        });
+        btnIsMultimedia.selectedProperty().addListener((_, _, isSelected) -> setMultimediaAssociatedControls(isSelected));
 
         boolean isSelected = btnIsMultimedia.isSelected();
         setMultimediaAssociatedControls(isSelected);
@@ -235,9 +231,7 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     private void setIsLinkListener() {
-        btnIsLink.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
-            setLinkAssociatedControls(isSelected);
-        });
+        btnIsLink.selectedProperty().addListener((_, _, isSelected) -> setLinkAssociatedControls(isSelected));
 
         boolean isSelected = btnIsLink.isSelected();
         setLinkAssociatedControls(isSelected);
@@ -462,7 +456,7 @@ public class AddResourceController extends Controller implements Initializable {
             if(SQLiteScripts.checkForSQLInjection(authorString))
                 throw new TrackTuneException(Strings.ERR_SQL_INJECTION);
 
-            if(!DatabaseManager.getDAOProvider().getAuthorDAO().existByAutorShipname(Controller.toTitleCase(authorString))){
+            if(DatabaseManager.getDAOProvider().getAuthorDAO().existByAuthorshipName(Controller.toTitleCase(authorString))){
                 Author newAuthor = new Author(Controller.toTitleCase(authorString), AuthorStatusEnum.ACTIVE);
                 if(DatabaseManager.getDAOProvider().getAuthorDAO().insert(newAuthor) != null){
                     selectedAuthors.add(newAuthor);
@@ -476,7 +470,7 @@ public class AddResourceController extends Controller implements Initializable {
                 }
             }
             else{
-                throw new AuthorAlreadyExixtsExeption(Strings.ERR_AUTHOR_ALREADY_EXISTS);
+                throw new AuthorAlreadyExistsException(Strings.ERR_AUTHOR_ALREADY_EXISTS);
             }
         }catch (TrackTuneException e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.AUTHOR_FAILED, e.getMessage(), Alert.AlertType.ERROR);

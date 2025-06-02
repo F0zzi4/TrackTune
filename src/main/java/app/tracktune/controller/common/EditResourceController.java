@@ -3,7 +3,7 @@ package app.tracktune.controller.common;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
-import app.tracktune.exceptions.AuthorAlreadyExixtsExeption;
+import app.tracktune.exceptions.AuthorAlreadyExistsException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.author.Author;
@@ -16,7 +16,6 @@ import app.tracktune.model.resource.Resource;
 import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.*;
 import app.tracktune.utils.Frames;
-import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
@@ -34,7 +33,6 @@ import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -135,7 +133,7 @@ public class EditResourceController extends Controller implements Initializable 
     }
 
     private <T> void setDynamicResearchListener(ComboBox<T> comboBox, ObservableList<T> allElements) {
-        comboBox.getEditor().addEventFilter(KeyEvent.KEY_RELEASED, e -> {
+        comboBox.getEditor().addEventFilter(KeyEvent.KEY_RELEASED, _ -> {
             String input = comboBox.getEditor().getText().toLowerCase();
             List<T> filtered = allElements.stream()
                     .filter(obj -> obj.toString().toLowerCase().contains(input))
@@ -146,7 +144,7 @@ public class EditResourceController extends Controller implements Initializable 
     }
 
     private <T> void setAddingElementListener(ComboBox<T> comboBox, FlowPane selectedElementsPane, ObservableList<T> selectedElements) {
-        comboBox.setOnAction(e -> {
+        comboBox.setOnAction(_ -> {
             T selected = comboBox.getValue();
             if (selected != null && !selectedElements.contains(selected)) {
                 selectedElements.add(selected);
@@ -162,7 +160,7 @@ public class EditResourceController extends Controller implements Initializable 
         for (T element : selectedList) {
             Button button = new Button(element.toString());
             button.getStyleClass().add("author-tag");
-            button.setOnAction(e -> {
+            button.setOnAction(_ -> {
                 selectedList.remove(element);
                 updateSelectedElements(selectedElementsPane, selectedList);
             });
@@ -173,7 +171,7 @@ public class EditResourceController extends Controller implements Initializable 
     }
 
     private void setIsMultimediaListener() {
-        btnIsMultimedia.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+        btnIsMultimedia.selectedProperty().addListener((_, _, isSelected) -> {
             locationBox.setVisible(isSelected);
             locationBox.setManaged(isSelected);
             resourceDateBox.setVisible(isSelected);
@@ -373,7 +371,7 @@ public class EditResourceController extends Controller implements Initializable 
             if(SQLiteScripts.checkForSQLInjection(authorString))
                 throw new TrackTuneException(Strings.ERR_SQL_INJECTION);
 
-            if(!DatabaseManager.getDAOProvider().getAuthorDAO().existByAutorShipname(Controller.toTitleCase(authorString))){
+            if(DatabaseManager.getDAOProvider().getAuthorDAO().existByAuthorshipName(Controller.toTitleCase(authorString))){
                 Author newAuthor = new Author(Controller.toTitleCase(authorString), AuthorStatusEnum.ACTIVE);
                 if(DatabaseManager.getDAOProvider().getAuthorDAO().insert(newAuthor) != null){
                     selectedAuthors.add(newAuthor);
@@ -387,7 +385,7 @@ public class EditResourceController extends Controller implements Initializable 
                 }
             }
             else{
-                throw new AuthorAlreadyExixtsExeption(Strings.ERR_AUTHOR_ALREADY_EXISTS);
+                throw new AuthorAlreadyExistsException(Strings.ERR_AUTHOR_ALREADY_EXISTS);
             }
         }catch (TrackTuneException e){
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.AUTHOR_FAILED, e.getMessage(), Alert.AlertType.ERROR);

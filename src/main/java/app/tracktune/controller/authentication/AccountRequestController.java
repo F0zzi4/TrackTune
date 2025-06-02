@@ -13,8 +13,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-
-import java.io.IOException;
 import java.sql.Timestamp;
 
 public class AccountRequestController extends Controller {
@@ -71,7 +69,7 @@ public class AccountRequestController extends Controller {
     }
 
     @FXML
-    private void handleReturn() throws IOException {
+    private void handleReturn() {
         ViewManager.navigateToLogin();
     }
 

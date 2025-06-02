@@ -1,7 +1,6 @@
 package app.tracktune.model.resource;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 public class MultimediaResource extends Resource {
@@ -20,7 +19,7 @@ public class MultimediaResource extends Resource {
             int trackID,
             int userID
     ) {
-        super(id, type, data, creationDate, isMultimedia, isAuthor, trackID, userID);;
+        super(id, type, data, creationDate, isMultimedia, isAuthor, trackID, userID);
         this.location = location;
         this.resourceDate = resourceDate;
     }

@@ -1,7 +1,5 @@
 package app.tracktune.model.genre;
 
-import app.tracktune.model.author.Author;
-
 public class Genre {
     private final Integer id;
     private final String name;
