@@ -1,0 +1,134 @@
+% ----- Codifica, lingua, font -----
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+
+% ----- Layout e impaginazione -----
+\usepackage{geometry}
+\geometry{a4paper, top=3cm, bottom=3cm, left=3cm, right=3cm}
+
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\setlength{\parindent}{0pt}
+\usepackage{booktabs}
+\usepackage{csquotes}
+\usepackage[table]{xcolor}
+
+% ----- Numerazione sezioni fino al 4° livello -----
+\setcounter{secnumdepth}{5}
+\setcounter{tocdepth}{5}
+
+% ----- Sezione fino al 4° livello (subsubsubsection) -----
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand{\thesubsubsubsection}{\thesubsubsection.\arabic{subsubsubsection}}
+\newcommand{\subsubsubsection}[1]{%
+  \refstepcounter{subsubsubsection}%
+  \addcontentsline{toc}{subparagraph}{\thesubsubsubsection\quad #1}%
+  \vspace{1ex}\noindent\textbf{\thesubsubsubsection\quad #1}\par\nopagebreak\vspace{0.5ex}
+}
+
+% ----- Intestazione/Piè di pagina -----
+\pagestyle{fancy}
+\fancyhead[L]{\nouppercase{\leftmark}}
+\fancyhead[R]{\nouppercase{\rightmark}}
+\fancyfoot[C]{\thepage}
+
+% ----- Stile titoli sezione -----
+\titleformat{\section}
+  {\normalfont\Large\bfseries\centering}
+  {\makebox[0pt][r]{\textcolor{gray}{\fontsize{40}{40}\selectfont\thesection\hspace{0.3em}}}}
+  {0pt}
+  {\Huge}
+  [\vspace{1em}\titlerule]
+
+\titlespacing*{\section}{0pt}{45pt}{20pt}
+
+% Interruzione automatica prima di ogni sezione
+\let\oldsection\section
+\renewcommand\section{\newpage\oldsection}
+
+% ----- Colori personalizzati -----
+\definecolor{verde}{RGB}{0, 153, 0}
+\arrayrulecolor[HTML]{808080}
+
+% ----- Tipografia matematica -----
+\usepackage{amsmath, amssymb, amsthm, mathtools}
+\usepackage{mdframed}
+\newmdtheoremenv{theo}{Teorema}
+
+% ----- Codice e pseudocodice -----
+\usepackage{listings}
+\lstdefinelanguage{Pseudocode}{
+    keywordstyle=\color{blue}\bfseries,
+    keywords={if, else, while, for, function, return, end},
+    ndkeywords={input, output, var},
+    sensitive=false,
+    comment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    basicstyle=\ttfamily,
+    stringstyle=\color{red},
+    commentstyle=\color{green!60!black},
+}
+\lstdefinestyle{modern}{
+  backgroundcolor=\color{blue!5},
+  commentstyle=\color{gray!70},
+  keywordstyle=\color{blue}\bfseries,
+  stringstyle=\color{green!70},
+  basicstyle=\ttfamily\small,
+  numberstyle=\tiny\color{blue},
+  numbers=left,
+  stepnumber=1,
+  frame=single,
+  framesep=3pt,
+  frameround=tttt,
+  rulecolor=\color{blue!35},
+  breakatwhitespace=false,
+  tabsize=2,
+  captionpos=b,
+  escapeinside={(*@}{@*)},
+  mathescape=true,
+}
+
+% ----- Grafici e figure -----
+\usepackage{tikz}
+\usetikzlibrary{shapes.misc}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepgfplotslibrary{fillbetween}
+\usepackage{pgf-pie}
+
+% ----- Citazioni, bibliografia, note -----
+\usepackage{quoting}
+\usepackage[
+  backend=biber,
+  style=alphabetic,
+  sorting=ynt
+]{biblatex}
+\addbibresource{bibliografia.bib}
+
+% ----- Hyperlink (nascosti ma attivi) -----
+\usepackage[hidelinks]{hyperref}
+
+% ----- Titolo con sottotitolo -----
+\usepackage[cc]{titlepic}
+\makeatletter
+\providecommand{\subtitle}[1]{%
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+
+% ----- Spaziatura tabelle -----
+\setlength{\arrayrulewidth}{0.3mm}
+\setlength{\tabcolsep}{18pt}
+\renewcommand{\arraystretch}{1.5}
+\newcolumntype{s}{>{\columncolor[HTML]{FFFFFF}} p{3cm}}
+
+% ----- Comandi personalizzati -----
+\newcommand{\lapl}{\mathcal{L}}
+\colorlet{stepnote}{black}
+\newcommand{\stepnote}[1]{&&\text{\color{stepnote}#1}}
