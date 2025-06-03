@@ -61,6 +61,30 @@ Test per la classe `GenreDAO` che gestisce le operazioni CRUD per i generi music
 ### TrackGenreDAOTest
 Test per la classe `TrackGenreDAO` che gestisce le relazioni tra tracce e generi musicali.
 
+### TrackDAOTest
+Test per la classe `TrackDAO` che gestisce le operazioni CRUD per le tracce musicali.
+
+### TrackAuthorDAOTest
+Test per la classe `TrackAuthorDAO` che gestisce le relazioni tra tracce e autori.
+
+### ResourceDAOTest
+Test per la classe `ResourceDAO` che gestisce le operazioni CRUD per le risorse multimediali.
+
+### CommentDAOTest
+Test per la classe `CommentDAO` che gestisce le operazioni CRUD per i commenti.
+
+### MusicalInstrumentDAOTest
+Test per la classe `MusicalInstrumentDAO` che gestisce le operazioni CRUD per gli strumenti musicali.
+
+### TrackInstrumentDAOTest
+Test per la classe `TrackInstrumentDAO` che gestisce le relazioni tra tracce e strumenti musicali.
+
+### PendingUserDAOTest
+Test per la classe `PendingUserDAO` che gestisce le operazioni CRUD per gli utenti in attesa di approvazione.
+
+### UserDAOTest
+Test per la classe `UserDAO` che gestisce le operazioni CRUD per gli utenti autenticati e gli amministratori.
+
 ## Approccio al Testing
 
 ### Test di Integrazione

@@ -16,21 +16,19 @@ public class AuthorDAOTest {
 
     private DatabaseManager db;
     private AuthorDAO authorDAO;
+    private Connection connection;
 
     @BeforeAll
     void setup() throws Exception {
-        // Usa un database temporaneo in memoria per i test
-        String url = "jdbc:sqlite::memory:";
-        Connection connection = DriverManager.getConnection(url);
+        connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
         String[] ddl = DBInit.getDBInitStatement().split(";");
         for (String query : ddl) {
             if (!query.trim().isEmpty()) stmt.execute(query.trim() + ";");
         }
-        connection.close();
 
-        // Override manuale della connessione per i test
+        DatabaseManager.setTestConnection(connection);
         db = DatabaseManager.getInstance();
         authorDAO = new AuthorDAO(db);
     }
