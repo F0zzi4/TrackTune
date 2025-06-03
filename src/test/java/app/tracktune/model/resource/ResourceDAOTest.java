@@ -24,8 +24,7 @@ public class ResourceDAOTest {
     private ResourceDAO resourceDAO;
     private TrackDAO trackDAO;
 
-    // Store IDs for test data
-    private int userId; // Use the admin user that's created by default
+    private int userId;
     private int trackId;
 
     @BeforeAll
@@ -44,28 +43,27 @@ public class ResourceDAOTest {
         trackDAO = new TrackDAO(db);
         UserDAO userDAO = new UserDAO(db);
 
-        // Inserisci utente di test
         Administrator testUser = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
         userId = userDAO.insert(testUser);
 
-        // Inserisci traccia collegata all'utente
         Track track = new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userId);
         trackId = trackDAO.insert(track);
+    }
 
-        System.out.println("[DEBUG_LOG] User ID: " + userId);
-        System.out.println("[DEBUG_LOG] Track ID: " + trackId);
+    @BeforeEach
+    void clearTables() {
+        db.executeUpdate("DELETE FROM Resources");
     }
 
     @Test
     void testInsertAndGetById() {
-        // Create a resource
-        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3}, 
+        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3},
                 new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
         Integer id = resourceDAO.insert(resource);
         assertNotNull(id);
 
-        // Get the resource by ID
         Resource fetched = resourceDAO.getById(id);
+        assertNotNull(fetched);
         assertEquals(ResourceTypeEnum.pdf, fetched.getType());
         assertEquals(trackId, fetched.getTrackID());
         assertEquals(userId, fetched.getUserID());
@@ -75,88 +73,70 @@ public class ResourceDAOTest {
 
     @Test
     void testUpdate() {
-        // Create a resource
-        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3}, 
+        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3},
                 new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
         Integer id = resourceDAO.insert(resource);
 
-        // Update the resource
-        Resource updated = new Resource(id, ResourceTypeEnum.mp3, new byte[]{4, 5, 6}, 
+        Resource updated = new Resource(id, ResourceTypeEnum.mp3, new byte[]{4, 5, 6},
                 new Timestamp(System.currentTimeMillis()), true, true, trackId, userId);
         resourceDAO.updateById(updated, id);
 
-        // Get the updated resource
         Resource result = resourceDAO.getById(id);
+        assertNotNull(result);
         assertEquals(ResourceTypeEnum.mp3, result.getType());
         assertTrue(result.isAuthor());
     }
 
     @Test
     void testDelete() {
-        // Create a resource
-        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3}, 
+        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3},
                 new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
         Integer id = resourceDAO.insert(resource);
 
-        // Delete the resource
         resourceDAO.deleteById(id);
 
-        // The getById method should return null when the resource is not found
         Resource result = resourceDAO.getById(id);
         assertNull(result);
     }
 
     @Test
     void testGetAll() {
-        // Create multiple resources
-        Resource r1 = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3}, 
-                new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
-        Resource r2 = new Resource(null, ResourceTypeEnum.mp3, new byte[]{4, 5, 6}, 
-                new Timestamp(System.currentTimeMillis()), true, true, trackId, userId);
-        resourceDAO.insert(r1);
-        resourceDAO.insert(r2);
+        resourceDAO.insert(new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3},
+                new Timestamp(System.currentTimeMillis()), true, false, trackId, userId));
+        resourceDAO.insert(new Resource(null, ResourceTypeEnum.mp3, new byte[]{4, 5, 6},
+                new Timestamp(System.currentTimeMillis()), true, true, trackId, userId));
 
-        // Get all resources
         List<Resource> all = resourceDAO.getAll();
-        assertTrue(all.size() >= 2);
+        assertNotNull(all);
+        assertEquals(2, all.size());
     }
 
     @Test
     void testGetAllByUserID() {
-        // Create resources for a specific user
-        Resource r1 = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3}, 
-                new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
-        Resource r2 = new Resource(null, ResourceTypeEnum.mp3, new byte[]{4, 5, 6}, 
-                new Timestamp(System.currentTimeMillis()), true, true, trackId, userId);
-        resourceDAO.insert(r1);
-        resourceDAO.insert(r2);
+        resourceDAO.insert(new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3},
+                new Timestamp(System.currentTimeMillis()), true, false, trackId, userId));
+        resourceDAO.insert(new Resource(null, ResourceTypeEnum.mp3, new byte[]{4, 5, 6},
+                new Timestamp(System.currentTimeMillis()), true, true, trackId, userId));
 
-        // Get all resources for the user
         List<Resource> resources = resourceDAO.getAllByUserID(userId);
         assertNotNull(resources);
-        assertTrue(resources.size() >= 2);
+        assertEquals(2, resources.size());
     }
 
     @Test
     void testGetAllByTrackID() {
-        // Create resources for a specific track
-        Resource r1 = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3}, 
-                new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
-        Resource r2 = new Resource(null, ResourceTypeEnum.mp3, new byte[]{4, 5, 6}, 
-                new Timestamp(System.currentTimeMillis()), true, true, trackId, userId);
-        resourceDAO.insert(r1);
-        resourceDAO.insert(r2);
+        resourceDAO.insert(new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3},
+                new Timestamp(System.currentTimeMillis()), true, false, trackId, userId));
+        resourceDAO.insert(new Resource(null, ResourceTypeEnum.mp3, new byte[]{4, 5, 6},
+                new Timestamp(System.currentTimeMillis()), true, true, trackId, userId));
 
-        // Get all resources for the track
         List<Resource> resources = resourceDAO.getAllByTrackID(trackId);
         assertNotNull(resources);
-        assertTrue(resources.size() >= 2);
+        assertEquals(2, resources.size());
     }
 
     @Test
     void testGetAllCommentedResourcesByUserID() {
-        // This test would require setting up comments first
-        // For now, we'll just test that the method doesn't throw an exception
         List<Resource> resources = resourceDAO.getAllCommentedResourcesByUserID(userId);
         assertNotNull(resources);
     }

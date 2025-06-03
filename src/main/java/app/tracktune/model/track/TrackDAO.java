@@ -67,10 +67,10 @@ public class TrackDAO implements DAO<Track> {
     """;
 
     private static final String GET_ALL_TRACK_BY_INSTRUMENT_ID_STMT = """
-    SELECT t.*
-    FROM Tracks t
-    JOIN TracksInstruments ta ON ta.instrumentID = t.ID
-    WHERE ta.instrumentID = ?;
+        SELECT t.*
+        FROM Tracks t
+        JOIN TracksInstruments ta ON ta.trackID = t.ID
+        WHERE ta.instrumentID = ?;
     """;
 
     private static final String GET_TRACK_BY_RESOURCE_ID_STMT = """
@@ -191,7 +191,7 @@ public class TrackDAO implements DAO<Track> {
     public List<Track> getAllByTrackId(int id) {
         List<Track> tracks = new ArrayList<>();
 
-        dbManager.executeQuery(GET_ALL_TRACK_BY_GENRE_ID_STMT,
+        dbManager.executeQuery(GET_TRACK_BY_ID_STMT,
                 rs -> {
                     while (rs.next()) {
                         tracks.add(mapResultSetToEntity(rs));
