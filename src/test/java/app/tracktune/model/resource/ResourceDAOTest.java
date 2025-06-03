@@ -3,6 +3,9 @@ package app.tracktune.model.resource;
 import app.tracktune.model.DatabaseManager;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackDAO;
+import app.tracktune.model.user.Administrator;
+import app.tracktune.model.user.UserDAO;
+import app.tracktune.model.user.UserStatusEnum;
 import app.tracktune.utils.DBInit;
 import org.junit.jupiter.api.*;
 
@@ -22,28 +25,30 @@ public class ResourceDAOTest {
     private TrackDAO trackDAO;
 
     // Store IDs for test data
-    private final int userId = 1; // Use the admin user that's created by default
+    private int userId; // Use the admin user that's created by default
     private int trackId;
 
     @BeforeAll
     void setup() throws Exception {
-        // Use an in-memory database for testing
-        String url = "jdbc:sqlite::memory:";
-        Connection connection = DriverManager.getConnection(url);
+        Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
         String[] ddl = DBInit.getDBInitStatement().split(";");
         for (String query : ddl) {
             if (!query.trim().isEmpty()) stmt.execute(query.trim() + ";");
         }
-        connection.close();
 
-        // Manual override of the connection for testing
+        DatabaseManager.setTestConnection(connection);
         db = DatabaseManager.getInstance();
         resourceDAO = new ResourceDAO(db);
         trackDAO = new TrackDAO(db);
+        UserDAO userDAO = new UserDAO(db);
 
-        // Create a test track to use in the tests
+        // Inserisci utente di test
+        Administrator testUser = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
+        userId = userDAO.insert(testUser);
+
+        // Inserisci traccia collegata all'utente
         Track track = new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userId);
         trackId = trackDAO.insert(track);
 

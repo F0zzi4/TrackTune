@@ -31,21 +31,19 @@ public class CommentDAOTest {
     private final int userId = 1; // Use the admin user that's created by default
     private int trackId;
     private int resourceId;
+    private Connection connection;
 
     @BeforeAll
     void setup() throws Exception {
-        // Use an in-memory database for testing
-        String url = "jdbc:sqlite::memory:";
-        Connection connection = DriverManager.getConnection(url);
+        connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
         String[] ddl = DBInit.getDBInitStatement().split(";");
         for (String query : ddl) {
             if (!query.trim().isEmpty()) stmt.execute(query.trim() + ";");
         }
-        connection.close();
 
-        // Manual override of the connection for testing
+        DatabaseManager.setTestConnection(connection);
         db = DatabaseManager.getInstance();
         commentDAO = new CommentDAO(db);
         resourceDAO = new ResourceDAO(db);

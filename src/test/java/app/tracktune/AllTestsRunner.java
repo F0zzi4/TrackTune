@@ -22,6 +22,12 @@ public class AllTestsRunner {
         System.out.println("3. TrackGenreDAOTest - Tests for the TrackGenreDAO class");
         System.out.println("4. TrackDAOTest - Tests for the TrackDAO class");
         System.out.println("5. TrackAuthorDAOTest - Tests for the TrackAuthorDAO class");
+        System.out.println("6. ResourceDAOTest - Tests for the ResourceDAO class");
+        System.out.println("7. CommentDAOTest - Tests for the CommentDAO class");
+        System.out.println("8. MusicalInstrumentDAOTest - Tests for the MusicalInstrumentDAO class");
+        System.out.println("9. TrackInstrumentDAOTest - Tests for the TrackInstrumentDAO class");
+        System.out.println("10. PendingUserDAOTest - Tests for the PendingUserDAO class");
+        System.out.println("11. UserDAOTest - Tests for the UserDAO class");
         System.out.println("\nTo run all tests, use the IDE's built-in test runner or a build tool like Maven.");
     }
 }

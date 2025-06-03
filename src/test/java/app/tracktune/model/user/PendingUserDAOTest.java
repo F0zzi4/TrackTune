@@ -20,18 +20,15 @@ public class PendingUserDAOTest {
 
     @BeforeAll
     void setup() throws Exception {
-        // Use an in-memory database for testing
-        String url = "jdbc:sqlite::memory:";
-        Connection connection = DriverManager.getConnection(url);
+        Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
         String[] ddl = DBInit.getDBInitStatement().split(";");
         for (String query : ddl) {
             if (!query.trim().isEmpty()) stmt.execute(query.trim() + ";");
         }
-        connection.close();
 
-        // Manual override of the connection for testing
+        DatabaseManager.setTestConnection(connection);
         db = DatabaseManager.getInstance();
         pendingUserDAO = new PendingUserDAO(db);
     }
