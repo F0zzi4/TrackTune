@@ -18,8 +18,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test class for TrackInstrumentDAO.
- * It tests CRUD operations on the TrackInstrument entity which links tracks and musical instruments.
+ * Unit tests for the TrackInstrumentDAO class.
+ * Verifies CRUD operations and queries involving TrackInstrument entities.
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -32,21 +32,15 @@ public class TrackInstrumentDAOTest {
     private UserDAO userDAO;
 
     private int userID;
-    private int trackId;
-    private int trackId2;
-    private int trackId3;
-    private int trackId4;
-    private int instrumentId1;
-    private int instrumentId2;
-    private int instrumentId3;
+    private int trackId, trackId2;
+    private int instrumentId1, instrumentId2, instrumentId3;
 
     @BeforeAll
     void setup() throws Exception {
         Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
-        String[] ddl = DBInit.getDBInitStatement().split(";");
-        for (String query : ddl) {
+        for (String query : DBInit.getDBInitStatement().split(";")) {
             if (!query.trim().isEmpty()) {
                 stmt.execute(query.trim() + ";");
             }
@@ -59,43 +53,32 @@ public class TrackInstrumentDAOTest {
         instrumentDAO = new MusicalInstrumentDAO(db);
         userDAO = new UserDAO(db);
 
-        Administrator testUser = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
-        userID = userDAO.insert(testUser);
+        Administrator user = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
+        userID = userDAO.insert(user);
 
-        Track track = new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userID);
-        trackId = trackDAO.insert(track);
+        trackId = trackDAO.insert(new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userID));
+        trackId2 = trackDAO.insert(new Track(null, "Test Track 2", new Timestamp(System.currentTimeMillis()), userID));
 
-        Track track2 = new Track(null, "Test Track 2", new Timestamp(System.currentTimeMillis()), userID);
-        Track track3 = new Track(null, "Test Track 3", new Timestamp(System.currentTimeMillis()), userID);
-        Track track4 = new Track(null, "Test Track 4", new Timestamp(System.currentTimeMillis()), userID);
-        trackId2 = trackDAO.insert(track2);
-        trackId3 = trackDAO.insert(track3);
-        trackId4 = trackDAO.insert(track4);
-
-        MusicalInstrument instrument1 = new MusicalInstrument("Test Instrument 1", "Test Description 1");
-        MusicalInstrument instrument2 = new MusicalInstrument("Test Instrument 2", "Test Description 2");
-        MusicalInstrument instrument3 = new MusicalInstrument("Test Instrument 3", "Test Description 3");
-        instrumentId1 = instrumentDAO.insert(instrument1);
-        instrumentId2 = instrumentDAO.insert(instrument2);
-        instrumentId3 = instrumentDAO.insert(instrument3);
+        instrumentId1 = instrumentDAO.insert(new MusicalInstrument("Test Instrument 1", "Test Description 1"));
+        instrumentId2 = instrumentDAO.insert(new MusicalInstrument("Test Instrument 2", "Test Description 2"));
+        instrumentId3 = instrumentDAO.insert(new MusicalInstrument("Test Instrument 3", "Test Description 3"));
     }
 
     @BeforeEach
     void cleanTrackInstruments() {
-        List<TrackInstrument> all = trackInstrumentDAO.getAll();
-        for (TrackInstrument ti : all) {
+        for (TrackInstrument ti : trackInstrumentDAO.getAll()) {
             trackInstrumentDAO.deleteById(ti.getId());
         }
     }
 
     /**
-     * Tests insertion of a TrackInstrument and retrieval by ID.
+     * Verifies that a TrackInstrument can be inserted and retrieved by ID.
      */
     @Test
     @Order(1)
     void testInsertAndGetById() {
-        TrackInstrument trackInstrument = new TrackInstrument(trackId, instrumentId1);
-        Integer id = trackInstrumentDAO.insert(trackInstrument);
+        TrackInstrument ti = new TrackInstrument(trackId, instrumentId1);
+        Integer id = trackInstrumentDAO.insert(ti);
         assertNotNull(id);
 
         TrackInstrument fetched = trackInstrumentDAO.getById(id);
@@ -104,14 +87,12 @@ public class TrackInstrumentDAOTest {
     }
 
     /**
-     * Tests updating an existing TrackInstrument record.
+     * Verifies that a TrackInstrument can be updated by ID.
      */
     @Test
     @Order(2)
     void testUpdate() {
-        TrackInstrument trackInstrument = new TrackInstrument(trackId, instrumentId1);
-        Integer id = trackInstrumentDAO.insert(trackInstrument);
-
+        Integer id = trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId1));
         TrackInstrument updated = new TrackInstrument(id, trackId, instrumentId2);
         trackInstrumentDAO.updateById(updated, id);
 
@@ -121,14 +102,12 @@ public class TrackInstrumentDAOTest {
     }
 
     /**
-     * Tests deletion of a TrackInstrument record by ID.
+     * Verifies that a TrackInstrument can be deleted by ID.
      */
     @Test
     @Order(3)
     void testDelete() {
-        TrackInstrument trackInstrument = new TrackInstrument(trackId, instrumentId1);
-        Integer id = trackInstrumentDAO.insert(trackInstrument);
-
+        Integer id = trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId1));
         trackInstrumentDAO.deleteById(id);
 
         assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
@@ -137,48 +116,43 @@ public class TrackInstrumentDAOTest {
     }
 
     /**
-     * Tests retrieval of all TrackInstrument records.
+     * Verifies that all TrackInstruments can be retrieved.
      */
     @Test
     @Order(4)
     void testGetAll() {
-        TrackInstrument ti1 = new TrackInstrument(trackId, instrumentId1);
-        TrackInstrument ti2 = new TrackInstrument(trackId2, instrumentId2);
-        trackInstrumentDAO.insert(ti1);
-        trackInstrumentDAO.insert(ti2);
+        trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId1));
+        trackInstrumentDAO.insert(new TrackInstrument(trackId2, instrumentId2));
 
         List<TrackInstrument> all = trackInstrumentDAO.getAll();
         assertTrue(all.size() >= 2);
     }
 
     /**
-     * Tests retrieval of TrackInstrument records filtered by track ID.
+     * Verifies retrieval of TrackInstruments by track ID.
      */
     @Test
     @Order(5)
     void testGetByTrackId() {
-        TrackInstrument ti1 = new TrackInstrument(trackId, instrumentId1);
-        TrackInstrument ti2 = new TrackInstrument(trackId, instrumentId2);
-        trackInstrumentDAO.insert(ti1);
-        trackInstrumentDAO.insert(ti2);
+        trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId1));
+        trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId2));
 
-        List<TrackInstrument> byTrackId = trackInstrumentDAO.getByTrackId(trackId);
-        assertTrue(byTrackId.size() >= 2);
-        for (TrackInstrument ti : byTrackId) {
+        List<TrackInstrument> results = trackInstrumentDAO.getByTrackId(trackId);
+        assertEquals(2, results.size());
+        for (TrackInstrument ti : results) {
             assertEquals(trackId, ti.getTrackId());
         }
     }
 
     /**
-     * Tests retrieval of a TrackInstrument record filtered by track ID and instrument ID.
+     * Verifies retrieval of a TrackInstrument by track ID and instrument ID.
      */
     @Test
     @Order(6)
     void testGetByTrackIdAndInstrumentId() {
-        TrackInstrument ti = new TrackInstrument(trackId, instrumentId3);
-        trackInstrumentDAO.insert(ti);
-
+        trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId3));
         TrackInstrument result = trackInstrumentDAO.getByTrackIdAndInstrumentId(trackId, instrumentId3);
+
         assertNotNull(result);
         assertEquals(trackId, result.getTrackId());
         assertEquals(instrumentId3, result.getInstrumentId());

@@ -18,6 +18,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the TrackAuthorDAO class, which handles the mapping between tracks and authors.
+ * Uses an in-memory SQLite database to isolate test cases.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TrackAuthorDAOTest {
 
@@ -26,19 +30,20 @@ public class TrackAuthorDAOTest {
     private TrackDAO trackDAO;
     private AuthorDAO authorDAO;
 
-    // Store the IDs of the test data
     private int trackId;
     private int authorId1;
     private int authorId2;
     private int authorId3;
 
+    /**
+     * Initializes the in-memory database, runs DDL statements, and inserts test data.
+     */
     @BeforeAll
     void setup() throws Exception {
         Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
-        String[] ddl = DBInit.getDBInitStatement().split(";");
-        for (String query : ddl) {
+        for (String query : DBInit.getDBInitStatement().split(";")) {
             if (!query.trim().isEmpty()) stmt.execute(query.trim() + ";");
         }
 
@@ -47,43 +52,35 @@ public class TrackAuthorDAOTest {
         trackAuthorDAO = new TrackAuthorDAO(db);
         trackDAO = new TrackDAO(db);
         authorDAO = new AuthorDAO(db);
-
         UserDAO userDAO = new UserDAO(db);
 
-        // Inserisci utente di test
-        Administrator testUser = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
+        Administrator testUser = new Administrator(
+                "testuser", "password", "nome", "cognome",
+                UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis())
+        );
         int userId = userDAO.insert(testUser);
 
-        // Inserisci traccia collegata all'utente
         Track track = new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userId);
         trackId = trackDAO.insert(track);
 
-        // Create test authors to use in the tests
-        Author author1 = new Author(null, "Test Author 1", AuthorStatusEnum.ACTIVE);
-        Author author2 = new Author(null, "Test Author 2", AuthorStatusEnum.ACTIVE);
-        Author author3 = new Author(null, "Test Author 3", AuthorStatusEnum.ACTIVE);
-        authorId1 = authorDAO.insert(author1);
-        authorId2 = authorDAO.insert(author2);
-        authorId3 = authorDAO.insert(author3);
-
-        System.out.println("[DEBUG_LOG] Track ID: " + trackId);
-        System.out.println("[DEBUG_LOG] Author ID 1: " + authorId1);
-        System.out.println("[DEBUG_LOG] Author ID 2: " + authorId2);
-        System.out.println("[DEBUG_LOG] Author ID 3: " + authorId3);
+        authorId1 = authorDAO.insert(new Author(null, "Test Author 1", AuthorStatusEnum.ACTIVE));
+        authorId2 = authorDAO.insert(new Author(null, "Test Author 2", AuthorStatusEnum.ACTIVE));
+        authorId3 = authorDAO.insert(new Author(null, "Test Author 3", AuthorStatusEnum.ACTIVE));
     }
 
+    /**
+     * Cleans up the track-author relationships after each test to avoid test interference.
+     */
     @AfterEach
     void cleanup() {
-        // Clean up any track-author relationships created in the tests
-        List<TrackAuthor> all = trackAuthorDAO.getAll();
-        for (TrackAuthor ta : all) {
-            trackAuthorDAO.deleteById(ta.getId());
-        }
+        trackAuthorDAO.getAll().forEach(ta -> trackAuthorDAO.deleteById(ta.getId()));
     }
 
+    /**
+     * Tests insertion of a TrackAuthor relationship and retrieval by its ID.
+     */
     @Test
     void testInsertAndGetById() {
-        // Create a track-author relationship using the actual IDs
         TrackAuthor trackAuthor = new TrackAuthor(trackId, authorId1);
         Integer id = trackAuthorDAO.insert(trackAuthor);
         assertNotNull(id);
@@ -93,13 +90,14 @@ public class TrackAuthorDAOTest {
         assertEquals(authorId1, fetched.getAuthorId());
     }
 
+    /**
+     * Tests updating an existing TrackAuthor relationship with a different author ID.
+     */
     @Test
     void testUpdate() {
-        // Create a track-author relationship
-        TrackAuthor trackAuthor = new TrackAuthor(trackId, authorId1);
-        Integer id = trackAuthorDAO.insert(trackAuthor);
+        TrackAuthor original = new TrackAuthor(trackId, authorId1);
+        Integer id = trackAuthorDAO.insert(original);
 
-        // Update it to use a different author
         TrackAuthor updated = new TrackAuthor(id, trackId, authorId2);
         trackAuthorDAO.updateById(updated, id);
 
@@ -108,6 +106,9 @@ public class TrackAuthorDAOTest {
         assertEquals(authorId2, result.getAuthorId());
     }
 
+    /**
+     * Tests deletion of a TrackAuthor relationship and verifies it is no longer retrievable.
+     */
     @Test
     void testDelete() {
         TrackAuthor trackAuthor = new TrackAuthor(trackId, authorId1);
@@ -115,38 +116,39 @@ public class TrackAuthorDAOTest {
 
         trackAuthorDAO.deleteById(id);
 
-        // The getById method throws an exception when the track-author relationship is not found
-        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
-            trackAuthorDAO.getById(id);
-        });
+        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> trackAuthorDAO.getById(id));
     }
 
+    /**
+     * Tests retrieving all TrackAuthor relationships in the database.
+     */
     @Test
     void testGetAll() {
-        TrackAuthor ta1 = new TrackAuthor(trackId, authorId1);
-        TrackAuthor ta2 = new TrackAuthor(trackId, authorId2);
-        trackAuthorDAO.insert(ta1);
-        trackAuthorDAO.insert(ta2);
+        trackAuthorDAO.insert(new TrackAuthor(trackId, authorId1));
+        trackAuthorDAO.insert(new TrackAuthor(trackId, authorId2));
 
         List<TrackAuthor> all = trackAuthorDAO.getAll();
         assertTrue(all.size() >= 2);
     }
 
+    /**
+     * Tests retrieving all TrackAuthor relationships for a specific track.
+     */
     @Test
     void testGetByTrackId() {
-        TrackAuthor ta1 = new TrackAuthor(trackId, authorId1);
-        TrackAuthor ta2 = new TrackAuthor(trackId, authorId2);
-        trackAuthorDAO.insert(ta1);
-        trackAuthorDAO.insert(ta2);
+        trackAuthorDAO.insert(new TrackAuthor(trackId, authorId1));
+        trackAuthorDAO.insert(new TrackAuthor(trackId, authorId2));
 
-        List<TrackAuthor> byTrackId = trackAuthorDAO.getByTrackId(trackId);
-        assertTrue(byTrackId.size() >= 2);
+        List<TrackAuthor> results = trackAuthorDAO.getByTrackId(trackId);
+        assertTrue(results.size() >= 2);
     }
 
+    /**
+     * Tests retrieving a TrackAuthor relationship by both track ID and author ID.
+     */
     @Test
     void testGetByTrackIdAndAuthorId() {
-        TrackAuthor ta = new TrackAuthor(trackId, authorId3);
-        trackAuthorDAO.insert(ta);
+        trackAuthorDAO.insert(new TrackAuthor(trackId, authorId3));
 
         TrackAuthor result = trackAuthorDAO.getByTrackIdAndAuthorId(trackId, authorId3);
         assertNotNull(result);

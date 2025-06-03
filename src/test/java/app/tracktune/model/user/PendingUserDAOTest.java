@@ -12,7 +12,12 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for PendingUserDAO.
+ * It verifies the correctness of CRUD operations on pending users.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PendingUserDAOTest {
 
     private DatabaseManager db;
@@ -25,7 +30,9 @@ public class PendingUserDAOTest {
         stmt.execute("PRAGMA foreign_keys = ON;");
         String[] ddl = DBInit.getDBInitStatement().split(";");
         for (String query : ddl) {
-            if (!query.trim().isEmpty()) stmt.execute(query.trim() + ";");
+            if (!query.trim().isEmpty()) {
+                stmt.execute(query.trim() + ";");
+            }
         }
 
         DatabaseManager.setTestConnection(connection);
@@ -33,15 +40,17 @@ public class PendingUserDAOTest {
         pendingUserDAO = new PendingUserDAO(db);
     }
 
+    /**
+     * Tests insertion and retrieval of a PendingUser by ID.
+     */
     @Test
+    @Order(1)
     void testInsertAndGetById() {
-        // Create a pending user
         Timestamp now = new Timestamp(System.currentTimeMillis());
         PendingUser user = new PendingUser("testuser", "password123", "Test", "User", now, AuthRequestStatusEnum.CREATED);
         Integer id = pendingUserDAO.insert(user);
         assertNotNull(id);
 
-        // Get the user by ID
         PendingUser fetched = pendingUserDAO.getById(id);
         assertEquals("testuser", fetched.getUsername());
         assertEquals("password123", fetched.getPassword());
@@ -50,18 +59,19 @@ public class PendingUserDAOTest {
         assertEquals(AuthRequestStatusEnum.CREATED, fetched.getStatus());
     }
 
+    /**
+     * Tests updating a PendingUser record.
+     */
     @Test
+    @Order(2)
     void testUpdate() {
-        // Create a pending user
         Timestamp now = new Timestamp(System.currentTimeMillis());
         PendingUser user = new PendingUser("updateuser", "initialpass", "Initial", "User", now, AuthRequestStatusEnum.CREATED);
         Integer id = pendingUserDAO.insert(user);
 
-        // Update the user
         PendingUser updated = new PendingUser(id, "updateuser", "updatedpass", "Updated", "User", now, AuthRequestStatusEnum.ACCEPTED);
         pendingUserDAO.updateById(updated, id);
 
-        // Get the updated user
         PendingUser result = pendingUserDAO.getById(id);
         assertEquals("updateuser", result.getUsername());
         assertEquals("updatedpass", result.getPassword());
@@ -69,45 +79,50 @@ public class PendingUserDAOTest {
         assertEquals(AuthRequestStatusEnum.ACCEPTED, result.getStatus());
     }
 
+    /**
+     * Tests deletion of a PendingUser record.
+     */
     @Test
+    @Order(3)
     void testDelete() {
-        // Create a pending user
         Timestamp now = new Timestamp(System.currentTimeMillis());
         PendingUser user = new PendingUser("deleteuser", "password123", "Delete", "User", now, AuthRequestStatusEnum.CREATED);
         Integer id = pendingUserDAO.insert(user);
 
-        // Delete the user
         pendingUserDAO.deleteById(id);
 
-        // The getById method should throw an exception when the user is not found
         assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
             pendingUserDAO.getById(id);
         });
     }
 
+    /**
+     * Tests retrieval of all PendingUser records.
+     */
     @Test
+    @Order(4)
     void testGetAll() {
-        // Create multiple pending users
         Timestamp now = new Timestamp(System.currentTimeMillis());
         PendingUser user1 = new PendingUser("user1", "password1", "User", "One", now, AuthRequestStatusEnum.CREATED);
         PendingUser user2 = new PendingUser("user2", "password2", "User", "Two", now, AuthRequestStatusEnum.REJECTED);
         pendingUserDAO.insert(user1);
         pendingUserDAO.insert(user2);
 
-        // Get all pending users
         List<PendingUser> all = pendingUserDAO.getAll();
         assertTrue(all.size() >= 2);
     }
 
+    /**
+     * Tests retrieval of a PendingUser by username.
+     */
     @Test
+    @Order(5)
     void testGetByUsername() {
-        // Create a pending user with a unique username
         String uniqueUsername = "unique" + System.currentTimeMillis();
         Timestamp now = new Timestamp(System.currentTimeMillis());
         PendingUser user = new PendingUser(uniqueUsername, "password123", "Unique", "User", now, AuthRequestStatusEnum.CREATED);
         pendingUserDAO.insert(user);
 
-        // Get the user by username
         PendingUser fetched = pendingUserDAO.getByUsername(uniqueUsername);
         assertNotNull(fetched);
         assertEquals(uniqueUsername, fetched.getUsername());

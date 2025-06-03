@@ -41,42 +41,35 @@ class TrackDAOTest {
 
     @BeforeAll
     void setup() throws Exception {
-        // Creo la connessione e abilito foreign keys
         Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
 
-        // Eseguo gli script di creazione tabelle
         String[] ddl = DBInit.getDBInitStatement().split(";");
         for (String query : ddl) {
             if (!query.trim().isEmpty()) stmt.execute(query.trim() + ";");
         }
 
-        // Setto la connessione nel DatabaseManager
         DatabaseManager.setTestConnection(connection);
         db = DatabaseManager.getInstance();
 
-        // Inizializzo DAO con la stessa istanza db
         trackDAO = new TrackDAO(db);
         authorDAO = new AuthorDAO(db);
         instrumentDAO = new MusicalInstrumentDAO(db);
         trackAuthorDAO = new TrackAuthorDAO(db);
         trackInstrumentDAO = new TrackInstrumentDAO(db);
         resourceDAO = new ResourceDAO(db);
-        UserDAO userDAO = new UserDAO(db);
+        userDAO = new UserDAO(db);
 
-        // Inserisci utente di test
         Administrator testUser = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
         userId = userDAO.insert(testUser);
 
-        // Inserisco dati di base
         authorId = authorDAO.insert(new Author(null, "Test Author", AuthorStatusEnum.ACTIVE));
         instrumentId = instrumentDAO.insert(new MusicalInstrument("Test Instrument", "Test Description"));
     }
 
     @BeforeEach
     void clearTables() {
-        // Ordine corretto per evitare errori di FK
         db.executeUpdate("DELETE FROM Resources");
         db.executeUpdate("DELETE FROM TracksAuthors");
         db.executeUpdate("DELETE FROM TracksInstruments");
@@ -84,11 +77,13 @@ class TrackDAOTest {
         db.executeUpdate("DELETE FROM MusicalInstruments");
         db.executeUpdate("DELETE FROM Authors");
 
-        // Reinserisco dati di base dopo la pulizia
         authorId = authorDAO.insert(new Author(null, "Test Author", AuthorStatusEnum.ACTIVE));
         instrumentId = instrumentDAO.insert(new MusicalInstrument("Test Instrument", "Test Description"));
     }
 
+    /**
+     * Tests inserting and retrieving a track by ID.
+     */
     @Test
     void testInsertAndGetById() {
         Track track = new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userId);
@@ -101,6 +96,9 @@ class TrackDAOTest {
         assertEquals(userId, fetched.getUserID());
     }
 
+    /**
+     * Tests updating a track's title.
+     */
     @Test
     void testUpdate() {
         Track track = new Track(null, "Initial", new Timestamp(System.currentTimeMillis()), userId);
@@ -113,19 +111,21 @@ class TrackDAOTest {
         assertEquals("Updated", result.getTitle());
     }
 
+    /**
+     * Tests deleting a track.
+     */
     @Test
     void testDelete() {
         Track track = new Track(null, "To Delete", new Timestamp(System.currentTimeMillis()), userId);
         Integer id = trackDAO.insert(track);
 
         trackDAO.deleteById(id);
-
-        // Dopo cancellazione, il getById dovrebbe restituire null oppure lanciare eccezione,
-        // dipende dall'implementazione di getById.
-        // Se lancia eccezione specifica, usala:
         assertThrows(RuntimeException.class, () -> trackDAO.getById(id));
     }
 
+    /**
+     * Tests retrieving a track by its unique title.
+     */
     @Test
     void testGetByTitle() {
         String title = "Unique Title " + System.nanoTime();
@@ -137,6 +137,9 @@ class TrackDAOTest {
         assertEquals(title, fetched.getTitle());
     }
 
+    /**
+     * Tests retrieving all tracks.
+     */
     @Test
     void testGetAll() {
         trackDAO.insert(new Track(null, "Track 1", new Timestamp(System.currentTimeMillis()), userId));
@@ -146,6 +149,9 @@ class TrackDAOTest {
         assertTrue(all.size() >= 2);
     }
 
+    /**
+     * Tests retrieving tracks by author ID.
+     */
     @Test
     void testGetAllByAuthorId() {
         Track track = new Track(null, "By Author", new Timestamp(System.currentTimeMillis()), userId);
@@ -157,6 +163,9 @@ class TrackDAOTest {
         assertTrue(tracks.stream().anyMatch(t -> t.getId().equals(trackId)));
     }
 
+    /**
+     * Tests retrieving tracks by instrument ID.
+     */
     @Test
     void testGetAllByInstrumentId() {
         Track track = new Track(null, "By Instrument", new Timestamp(System.currentTimeMillis()), userId);
@@ -165,17 +174,18 @@ class TrackDAOTest {
         trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId));
 
         List<Track> tracks = trackDAO.getAllByInstrumentId(instrumentId);
-        System.out.println("Tracks by instrumentId=" + instrumentId + ": " + tracks);;
         assertTrue(tracks.stream().anyMatch(t -> t.getId().equals(trackId)));
     }
 
+    /**
+     * Tests retrieving a track by resource ID.
+     */
     @Test
     void testGetTrackByResourceId() {
         Track track = new Track(null, "With Resource", new Timestamp(System.currentTimeMillis()), userId);
         Integer trackId = trackDAO.insert(track);
 
-        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2},
-                new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
+        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2}, new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
         Integer resourceId = resourceDAO.insert(resource);
 
         Track fetched = trackDAO.getTrackByResourceId(resourceId);
@@ -183,6 +193,9 @@ class TrackDAOTest {
         assertEquals(trackId, fetched.getId());
     }
 
+    /**
+     * Tests retrieving a track by its ID using getAllByTrackId.
+     */
     @Test
     void testGetAllByTrackId() {
         Track track = new Track(null, "TrackID Method", new Timestamp(System.currentTimeMillis()), userId);

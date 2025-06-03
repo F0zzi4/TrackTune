@@ -21,27 +21,30 @@ public class UserDAOTest {
     @BeforeAll
     void setup() throws Exception {
         Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
-        Statement stmt = connection.createStatement();
-        stmt.execute("PRAGMA foreign_keys = ON;");
-        String[] ddl = DBInit.getDBInitStatement().split(";");
-        for (String query : ddl) {
-            if (!query.trim().isEmpty()) stmt.execute(query.trim() + ";");
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("PRAGMA foreign_keys = ON;");
+            String[] ddl = DBInit.getDBInitStatement().split(";");
+            for (String query : ddl) {
+                if (!query.trim().isEmpty()) {
+                    stmt.execute(query.trim() + ";");
+                }
+            }
         }
-
         DatabaseManager.setTestConnection(connection);
         db = DatabaseManager.getInstance();
         userDAO = new UserDAO(db);
     }
 
+    /**
+     * Verifica l'inserimento e il recupero di un AuthenticatedUser tramite ID.
+     */
     @Test
-    void testInsertAndGetByIdAuthenticatedUser() {
-        // Create an authenticated user
+    void insertAndGetById_AuthenticatedUser() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         AuthenticatedUser user = new AuthenticatedUser(null, "testuser", "password123", "Test", "User", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(user);
         assertNotNull(id);
 
-        // Get the user by ID
         User fetched = userDAO.getById(id);
         assertTrue(fetched instanceof AuthenticatedUser);
         AuthenticatedUser authUser = (AuthenticatedUser) fetched;
@@ -53,15 +56,16 @@ public class UserDAOTest {
         assertFalse(fetched instanceof Administrator);
     }
 
+    /**
+     * Verifica l'inserimento e il recupero di un Administrator tramite ID.
+     */
     @Test
-    void testInsertAndGetByIdAdministrator() {
-        // Create an administrator
+    void insertAndGetById_Administrator() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Administrator admin = new Administrator(null, "adminuser", "adminpass", "Admin", "User", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(admin);
         assertNotNull(id);
 
-        // Get the user by ID
         User fetched = userDAO.getById(id);
         assertTrue(fetched instanceof Administrator);
         Administrator fetchedAdmin = (Administrator) fetched;
@@ -72,18 +76,18 @@ public class UserDAOTest {
         assertEquals(UserStatusEnum.ACTIVE, fetchedAdmin.getStatus());
     }
 
+    /**
+     * Verifica l'aggiornamento di un AuthenticatedUser esistente.
+     */
     @Test
-    void testUpdateAuthenticatedUser() {
-        // Create an authenticated user
+    void update_AuthenticatedUser() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         AuthenticatedUser user = new AuthenticatedUser(null, "updateuser", "initialpass", "Initial", "User", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(user);
 
-        // Update the user
         AuthenticatedUser updated = new AuthenticatedUser(id, "updateuser", "updatedpass", "Updated", "User", UserStatusEnum.SUSPENDED, now);
         userDAO.updateById(updated, id);
 
-        // Get the updated user
         User result = userDAO.getById(id);
         assertTrue(result instanceof AuthenticatedUser);
         AuthenticatedUser authUser = (AuthenticatedUser) result;
@@ -93,18 +97,18 @@ public class UserDAOTest {
         assertEquals(UserStatusEnum.SUSPENDED, authUser.getStatus());
     }
 
+    /**
+     * Verifica l'aggiornamento di un Administrator esistente.
+     */
     @Test
-    void testUpdateAdministrator() {
-        // Create an administrator
+    void update_Administrator() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         Administrator admin = new Administrator(null, "updateadmin", "initialpass", "Initial", "Admin", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(admin);
 
-        // Update the administrator
         Administrator updated = new Administrator(id, "updateadmin", "updatedpass", "Updated", "Admin", UserStatusEnum.SUSPENDED, now);
         userDAO.updateById(updated, id);
 
-        // Get the updated administrator
         User result = userDAO.getById(id);
         assertTrue(result instanceof Administrator);
         Administrator fetchedAdmin = (Administrator) result;
@@ -114,47 +118,49 @@ public class UserDAOTest {
         assertEquals(UserStatusEnum.SUSPENDED, fetchedAdmin.getStatus());
     }
 
+    /**
+     * Verifica la cancellazione di un utente tramite ID e che il recupero successivo lanci un'eccezione.
+     */
     @Test
-    void testDelete() {
-        // Create a user
+    void deleteById_UserNotFound() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         AuthenticatedUser user = new AuthenticatedUser(null, "deleteuser", "password123", "Delete", "User", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(user);
 
-        // Delete the user
         userDAO.deleteById(id);
 
-        // The getById method should throw an exception when the user is not found
         assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
             userDAO.getById(id);
         });
     }
 
+    /**
+     * Verifica che il metodo getAll restituisca tutti gli utenti inseriti.
+     */
     @Test
-    void testGetAll() {
-        // Create multiple users
+    void getAllUsers() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
         AuthenticatedUser user1 = new AuthenticatedUser(null, "user1", "password1", "User", "One", UserStatusEnum.ACTIVE, now);
         Administrator admin1 = new Administrator(null, "admin1", "password2", "Admin", "One", UserStatusEnum.ACTIVE, now);
         userDAO.insert(user1);
         userDAO.insert(admin1);
 
-        // Get all users
         List<User> all = userDAO.getAll();
         assertTrue(all.size() >= 2);
         assertTrue(all.stream().anyMatch(u -> u.getUsername().equals("user1")));
         assertTrue(all.stream().anyMatch(u -> u.getUsername().equals("admin1")));
     }
 
+    /**
+     * Verifica il recupero di un utente attivo tramite username.
+     */
     @Test
-    void testGetActiveUserByUsername() {
-        // Create a user with a unique username
+    void getActiveUserByUsername_ReturnsUser() {
         String uniqueUsername = "unique" + System.currentTimeMillis();
         Timestamp now = new Timestamp(System.currentTimeMillis());
         AuthenticatedUser user = new AuthenticatedUser(null, uniqueUsername, "password123", "Unique", "User", UserStatusEnum.ACTIVE, now);
         userDAO.insert(user);
 
-        // Get the user by username
         User fetched = userDAO.getActiveUserByUsername(uniqueUsername);
         assertNotNull(fetched);
         assertEquals(uniqueUsername, fetched.getUsername());
@@ -164,15 +170,16 @@ public class UserDAOTest {
         assertEquals(UserStatusEnum.ACTIVE, ((AuthenticatedUser) fetched).getStatus());
     }
 
+    /**
+     * Verifica che il recupero di un utente non attivo tramite username ritorni null.
+     */
     @Test
-    void testGetActiveUserByUsernameWithInactiveUser() {
-        // Create an inactive user with a unique username
+    void getActiveUserByUsername_InactiveUserReturnsNull() {
         String uniqueUsername = "inactive" + System.currentTimeMillis();
         Timestamp now = new Timestamp(System.currentTimeMillis());
         AuthenticatedUser user = new AuthenticatedUser(null, uniqueUsername, "password123", "Inactive", "User", UserStatusEnum.SUSPENDED, now);
         userDAO.insert(user);
 
-        // Get the user by username - should return null for inactive users
         User fetched = userDAO.getActiveUserByUsername(uniqueUsername);
         assertNull(fetched);
     }
