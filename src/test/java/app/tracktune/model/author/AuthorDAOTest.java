@@ -11,6 +11,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the AuthorDAO class.
+ * Tests include insertion, retrieval, update, deletion, and queries related to authors.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuthorDAOTest {
 
@@ -18,6 +22,9 @@ public class AuthorDAOTest {
     private AuthorDAO authorDAO;
     private Connection connection;
 
+    /**
+     * Initializes an in-memory SQLite database and sets up the AuthorDAO before all tests.
+     */
     @BeforeAll
     void setup() throws Exception {
         connection = DriverManager.getConnection("jdbc:sqlite::memory:");
@@ -33,6 +40,9 @@ public class AuthorDAOTest {
         authorDAO = new AuthorDAO(db);
     }
 
+    /**
+     * Tests insertion and retrieval of an Author by its ID.
+     */
     @Test
     void testInsertAndGetById() {
         Author author = new Author(null, "Test Author", AuthorStatusEnum.ACTIVE);
@@ -44,6 +54,9 @@ public class AuthorDAOTest {
         assertEquals(AuthorStatusEnum.ACTIVE, fetched.getStatus());
     }
 
+    /**
+     * Tests the update of an existing Author by ID.
+     */
     @Test
     void testUpdate() {
         Author author = new Author(null, "Initial Author", AuthorStatusEnum.ACTIVE);
@@ -57,6 +70,10 @@ public class AuthorDAOTest {
         assertEquals(AuthorStatusEnum.REMOVED, result.getStatus());
     }
 
+    /**
+     * Tests the deletion of an Author by ID.
+     * Expects an exception when trying to retrieve a deleted author.
+     */
     @Test
     void testDelete() {
         Author author = new Author(null, "To Delete", AuthorStatusEnum.ACTIVE);
@@ -64,12 +81,14 @@ public class AuthorDAOTest {
 
         authorDAO.deleteById(id);
 
-        // The getById method throws an exception when the author is not found
         assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
             authorDAO.getById(id);
         });
     }
 
+    /**
+     * Tests retrieval of all authors.
+     */
     @Test
     void testGetAll() {
         Author a1 = new Author(null, "A1", AuthorStatusEnum.ACTIVE);
@@ -81,6 +100,9 @@ public class AuthorDAOTest {
         assertTrue(all.size() >= 2);
     }
 
+    /**
+     * Tests retrieval of all active authors.
+     */
     @Test
     void testGetAllActive() {
         Author a1 = new Author(null, "Active1", AuthorStatusEnum.ACTIVE);
@@ -92,6 +114,9 @@ public class AuthorDAOTest {
         assertTrue(active.stream().allMatch(a -> a.getStatus() == AuthorStatusEnum.ACTIVE));
     }
 
+    /**
+     * Tests if the DAO correctly checks the existence of an author by name.
+     */
     @Test
     void testExistByAuthorshipName() {
         Author author = new Author(null, "UniqueName", AuthorStatusEnum.ACTIVE);
@@ -101,11 +126,12 @@ public class AuthorDAOTest {
         assertTrue(exists);
     }
 
+    /**
+     * Tests retrieval of all authors associated with a specific track ID.
+     * Currently checks that the method returns a non-null list.
+     */
     @Test
     void testGetAllAuthorsByTrackId() {
-        // Create a track and associate authors with it
-        // This test would require setting up a track first
-        // For now, we'll just test that the method doesn't throw an exception
         List<Author> authors = authorDAO.getAllAuthorsByTrackId(1);
         assertNotNull(authors);
     }

@@ -6,11 +6,12 @@ import app.tracktune.model.resource.ResourceDAO;
 import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackDAO;
+import app.tracktune.model.user.Administrator;
+import app.tracktune.model.user.UserDAO;
+import app.tracktune.model.user.UserStatusEnum;
 import app.tracktune.utils.DBInit;
 import org.junit.jupiter.api.*;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -19,6 +20,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * JUnit test class for {@link CommentDAO}.
+ * Tests CRUD operations and specific query methods for the Comment entity.
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CommentDAOTest {
 
@@ -27,8 +32,7 @@ public class CommentDAOTest {
     private ResourceDAO resourceDAO;
     private TrackDAO trackDAO;
 
-    // Store IDs for test data
-    private final int userId = 1; // Use the admin user that's created by default
+    private int userId;
     private int trackId;
     private int resourceId;
     private Connection connection;
@@ -48,116 +52,106 @@ public class CommentDAOTest {
         commentDAO = new CommentDAO(db);
         resourceDAO = new ResourceDAO(db);
         trackDAO = new TrackDAO(db);
+        UserDAO userDAO = new UserDAO(db);
 
-        // Create a test track to use in the tests
+        Administrator testUser = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
+        userId = userDAO.insert(testUser);
+
         Track track = new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userId);
         trackId = trackDAO.insert(track);
 
-        // Create a test resource to use in the tests
-        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3}, 
+        Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3},
                 new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
         resourceId = resourceDAO.insert(resource);
-
-        System.out.println("[DEBUG_LOG] User ID: " + userId);
-        System.out.println("[DEBUG_LOG] Track ID: " + trackId);
-        System.out.println("[DEBUG_LOG] Resource ID: " + resourceId);
     }
 
+    /**
+     * Tests inserting and retrieving a Comment by ID.
+     */
     @Test
     void testInsertAndGetById() {
-        // Create a comment
         Comment comment = new Comment("Test Comment", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         Integer id = commentDAO.insert(comment);
         assertNotNull(id);
 
-        // Get the comment by ID
         Comment fetched = commentDAO.getById(id);
         assertEquals("Test Comment", fetched.getDescription());
         assertEquals(userId, fetched.getUserID());
         assertEquals(resourceId, fetched.getResourceID());
     }
 
+    /**
+     * Tests updating a Comment.
+     */
     @Test
     void testUpdate() {
-        // Create a comment
         Comment comment = new Comment("Initial Comment", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         Integer id = commentDAO.insert(comment);
 
-        // Update the comment
         Comment updated = new Comment(id, "Updated Comment", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         commentDAO.updateById(updated, id);
 
-        // Get the updated comment
         Comment result = commentDAO.getById(id);
         assertEquals("Updated Comment", result.getDescription());
     }
 
+    /**
+     * Tests deleting a Comment by ID.
+     */
     @Test
     void testDelete() {
-        // Create a comment
         Comment comment = new Comment("To Delete", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         Integer id = commentDAO.insert(comment);
 
-        // Delete the comment
         commentDAO.deleteById(id);
 
-        // The getById method should throw an exception when the comment is not found
         assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
             commentDAO.getById(id);
         });
     }
 
+    /**
+     * Tests retrieving all Comments.
+     */
     @Test
     void testGetAll() {
-        // Create multiple comments
         Comment c1 = new Comment("Comment 1", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         Comment c2 = new Comment("Comment 2", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         commentDAO.insert(c1);
         commentDAO.insert(c2);
 
-        // Get all comments
         List<Comment> all = commentDAO.getAll();
         assertTrue(all.size() >= 2);
     }
 
+    /**
+     * Tests inserting a reply to a Comment and retrieving all replies.
+     */
     @Test
     void testInsertReplyAndGetAllReplies() {
-        // Create a parent comment
         Comment parent = new Comment("Parent Comment", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         Integer parentId = commentDAO.insert(parent);
 
-        // Create a reply comment
         Comment reply = new Comment("Reply Comment", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         Integer replyId = commentDAO.insert(reply);
 
-        // Link the reply to the parent
         commentDAO.insertReply(parentId, replyId);
 
-        // Get all replies for the parent
         List<Comment> replies = commentDAO.getAllReplies(parentId);
         assertNotNull(replies);
-        assertTrue(replies.size() >= 1);
-
-        // Verify the reply is in the list
-        boolean found = false;
-        for (Comment c : replies) {
-            if (c.getID().equals(replyId)) {
-                found = true;
-                break;
-            }
-        }
-        assertTrue(found);
+        assertTrue(replies.stream().anyMatch(c -> c.getID().equals(replyId)));
     }
 
+    /**
+     * Tests retrieving all Comments associated with a specific Resource.
+     */
     @Test
     void testGetAllCommentByResource() {
-        // Create comments for a specific resource
         Comment c1 = new Comment("Resource Comment 1", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         Comment c2 = new Comment("Resource Comment 2", 0, 0, new Timestamp(System.currentTimeMillis()), userId, resourceId);
         commentDAO.insert(c1);
         commentDAO.insert(c2);
 
-        // Get all comments for the resource
         List<Comment> comments = commentDAO.getAllCommentByResource(resourceId);
         assertNotNull(comments);
         assertTrue(comments.size() >= 2);
