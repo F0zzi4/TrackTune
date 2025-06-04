@@ -134,7 +134,7 @@ public class AuthorDAO implements DAO<Author> {
                     return false;
                 }, id);
 
-        return !success;
+        return success;
     }
 
     @Override
