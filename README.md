@@ -27,7 +27,7 @@
 ### 📦 Clone the Repository
 
 ```bash
-git clone https://github.com/YourUsername/TrackTune.git
+git clone https://github.com/F0zzi4/TrackTune.git
 cd TrackTune
 ```
 

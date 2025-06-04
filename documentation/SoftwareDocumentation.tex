@@ -1,0 +1,140 @@
+\documentclass[a4paper]{article}
+
+% Importazioni
+\usepackage{import}
+\input{./preamble.sty}
+
+\begin{document}
+
+% Titolo
+\input{title.tex}
+
+\tableofcontents
+\pagebreak
+
+% =======================
+\section{Introduzione}
+% =======================
+
+\subsection{Prefazione}
+
+Il presente documento definisce in modo esaustivo i requisiti, l'architettura e 
+le specifiche di progettazione del software \textit{TrackTune}, 
+una piattaforma applicativa dedicata alla gestione, condivisione e analisi 
+collaborativa di contenuti musicali.\\[2ex] 
+
+La documentazione è rivolta a sviluppatori, tester, amministratori di sistema e a 
+tutti gli stakeholder coinvolti nella realizzazione, manutenzione e gestione del 
+progetto.
+
+\subsection{Panoramica}
+
+La piattaforma si rivolge a musicisti, compositori, insegnanti, studenti e appassionati
+di musica, offrendo un ambiente digitale comodo per l’archiviazione, la collaborazione 
+e l’accesso a materiale musicale di vario genere, tra cui spartiti, testi, accordi, 
+file audio/video e link esterni (ad esempio YouTube).
+
+Essa si propone non solo come archivio digitale, 
+ma anche come spazio per l’approfondimento culturale, 
+lo scambio di interpretazioni e feedback tra utenti, favorendo la condivisione 
+di esperienze musicali, commenti critici e annotazioni esecutive su brani e 
+contenuti attinenti alla musica.
+
+% ==============================
+\section{Analisi dei requisiti}
+% ==============================
+
+\subsection{Descrizione del sistema}
+
+Si vuole progettare un sistema software per gestire la collezione e la condivisione 
+di spartiti, testi, accordi, MIDI, MP3, video, link e molto altro, relativamente a brani 
+musicali di diversa tipologia/genere.\\[2ex]
+
+Gli utenti, previa autorizzazione dell'amministratore, devono poter caricare, 
+scaricare, commentare e interagire con i vari contenuti. Per ogni risorsa il sistema deve
+consentire di specificare:
+\begin{itemize}
+    \item autori
+    \item genere/generi
+    \item strumenti musicali utilizzati
+\end{itemize}
+
+Inoltre, per le risorse multimediali (audio, video, ecc.) il sistema deve
+consentire di specificare il luogo e la data di registrazione.
+
+Ogni utente può aggiungere note di testo libero su segmenti specifici di esecuzione (MP3, MP4 o video YouTube).  
+Un segmento è definito dal momento di inizio e fine, e per ciascuno è possibile includere dettagli come assoli, esecutori, strumenti,
+ritmi e altre caratteristiche. I commenti possono essere arricchiti con ulteriori 
+risposte, consentendo una profondità illimitata di discussioni relativamente a quel 
+contenuto.\\[2ex]
+
+Un brano può essere inserito anche da un autore o un interprete. Deve essere possibile 
+quindi distinguere il proprio ruolo all’interno del brano e, nel caso di interpreti, 
+gli strumenti utilizzati. I commenti sulle modalità esecutive devono apparire in maniera 
+rilevante rispetto a quelli di altri utenti.\\[2ex]
+
+I video YouTube possono essere visualizzati direttamente nel software o nel browser, 
+ma tutti i commenti relativi sono gestiti dal sistema.\\[2ex]
+
+Gli utenti possono aggiungere commenti su spartiti, testi e accordi, 
+relativi alle modalità esecutive (come strumenti, ritmo, intensità, ecc.), sia su 
+specifiche parti del brano che sull'intero brano.\\[2ex]
+
+Un utente può richiedere la registrazione alla piattaforma tramite un form, che 
+l'amministratore valuterà e risponderà a seconda dell’esito.  
+L'amministratore gestisce gli utenti, ha il compito di rimuovere coloro che pubblicano contenuti non pertinenti 
+e di moderare i commenti. Inoltre, valuta le richieste di registrazione, il cui esito verrà comunicato 
+all’utente interessato.\\[2ex]
+
+Il sistema deve permettere la ricerca delle risorse tramite i seguenti filtri:
+\begin{itemize}
+    \item genere
+    \item titolo del brano
+    \item autore/i
+\end{itemize}
+
+Ogni risorsa per cui un utente ha lasciato un commento deve essere direttamente accessibile.
+
+Gli strumenti musicali, i generi, i titoli dei brani e i nomi degli autori vanno gestiti attraverso dizionari aggiornabili, da usare anche per le opportune ricerche.
+
+\subsection{Requisiti funzionali}
+
+\subsubsection{Gestione degli utenti}
+\begin{itemize}
+    \item Registrazione tramite form dedicato;
+    \item Valutazione da parte dell’amministratore delle richieste di registrazione e relativa comunicazione dell’esito;
+    \item Profilazione (distinzione tra utente/amministratore);
+    \item Autorizzazione al caricamento dei file per utente;
+\end{itemize}
+
+\subsubsection{Gestione dei contenuti}
+\begin{itemize}
+    \item Aggiunta, modifica e rimozione di contenuti multimediali
+    \begin{itemize}
+        \item La rimozione può essere eseguita solo dall’amministratore o dall’utente che ha caricato il contenuto
+    \end{itemize}
+    \item Visualizzazione delle risorse tramite software di terze parti o tramite l’applicativo stesso.
+    \item Moderazione degli utenti
+    \begin{itemize}
+        \item L’amministratore può rimuovere utenti;
+        \item L’amministratore può rimuovere commenti/risorse inappropriate.
+    \end{itemize}
+    \item Gestione dei dizionari aggiornabili (solo amministatore) relativi a:
+    \begin{itemize}
+        \item Autori;
+        \item Generi;
+        \item Strumenti musicali;
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Gestione dei commenti}
+\begin{itemize}
+    \item Possibilità di commentare brani;
+    \item Possibilità di rispondere ai commenti;
+    \item Possibilità di commentare su specifici segmenti di esecuzione;
+    \item Visualizzazione differenziata dei commenti per autori/esecutori del brano.
+\end{itemize}
+
+\subsection{Casi d'uso}
+L’applicazione sarà disponibile esclusivamente agli utenti abilitati dall’amministratore, il quale è anch’esso un utente ma con privilegi di amministrazione sui comportamenti del sistema. L’unica operazione che può effettuare un utente non registrato è la richiesta di creazione di un account.
+\end{document}

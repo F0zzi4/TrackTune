@@ -371,7 +371,7 @@ public class EditResourceController extends Controller implements Initializable 
             if(SQLiteScripts.checkForSQLInjection(authorString))
                 throw new TrackTuneException(Strings.ERR_SQL_INJECTION);
 
-            if(DatabaseManager.getDAOProvider().getAuthorDAO().existByAuthorshipName(Controller.toTitleCase(authorString))){
+            if(!DatabaseManager.getDAOProvider().getAuthorDAO().existByAuthorshipName(Controller.toTitleCase(authorString))){
                 Author newAuthor = new Author(Controller.toTitleCase(authorString), AuthorStatusEnum.ACTIVE);
                 if(DatabaseManager.getDAOProvider().getAuthorDAO().insert(newAuthor) != null){
                     selectedAuthors.add(newAuthor);
