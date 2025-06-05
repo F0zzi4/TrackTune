@@ -4,9 +4,12 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
@@ -15,12 +18,23 @@
     <children>
         <HBox prefHeight="74.0" prefWidth="626.0" spacing="20.0" style="-fx-padding: 10px; -fx-alignment: center;">
             <children>
-                <Label contentDisplay="CENTER" prefHeight="60.0" prefWidth="287.0" styleClass="label-title" text="TRACKTUNE" />
+            <HBox alignment="CENTER" prefHeight="62.0" prefWidth="352.0" styleClass="label-title">
+               <children>
+                  <ImageView fitHeight="56.0" fitWidth="81.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../assets/icon/appIcon.png" />
+                     </image>
+                  </ImageView>
+                  <Region prefHeight="56.0" prefWidth="9.0" />
+                      <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="43.0" prefWidth="218.0" styleClass="label-internal" text="TRACKTUNE" textAlignment="CENTER" />
+                  <Region prefHeight="56.0" prefWidth="24.0" />
+               </children>
+            </HBox>
             </children>
         </HBox>
-        <HBox prefHeight="44.0" prefWidth="631.0" style="-fx-padding: 10px; -fx-alignment: center;">
+        <HBox prefHeight="50.0" prefWidth="733.0" style="-fx-padding: 10px; -fx-alignment: center;">
             <children>
-                <Label prefHeight="57.0" prefWidth="549.0" style="-fx-alignment: center; -fx-font-size: 20; -fx-font-weight: bold;" styleClass="label-subtitle" text="Share your experiences with the music community" wrapText="true">
+                <Label prefHeight="30.0" prefWidth="608.0" style="-fx-alignment: center; -fx-font-size: 20; -fx-font-weight: bold;" styleClass="label-subtitle" text="Join the best music community, share files and thoughts" wrapText="true">
                     <graphic>
                         <FontIcon iconLiteral="mdi2a-account-group" iconSize="20" />
                     </graphic>
