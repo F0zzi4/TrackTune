@@ -24,7 +24,7 @@
                 <Separator prefWidth="200.0" />
                 <Button prefHeight="38.0" prefWidth="385.0" styleClass="sidebar-button" text="Discover">
                     <graphic>
-                        <FontIcon iconLiteral="mdi2a-account-group" iconSize="21" />
+                        <FontIcon iconLiteral="mdi2l-lumx" iconSize="21" />
                     </graphic>
                 </Button>
                 <Separator prefWidth="200.0" />

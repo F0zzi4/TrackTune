@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
 import java.net.URL;
@@ -21,7 +22,7 @@ import java.util.ResourceBundle;
  */
 public class AdminDashboardController extends Controller implements Initializable {
     @FXML public StackPane mainContent;
-    private Administrator admin;
+    @FXML private Label LblWelcome;
     private Node dashboardContent;
 
     /**
@@ -31,8 +32,8 @@ public class AdminDashboardController extends Controller implements Initializabl
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         dashboardContent = mainContent.getChildren().getFirst();
-        if (ViewManager.getSessionUser() instanceof Administrator administrator) {
-            admin = administrator;
+        if (ViewManager.getSessionUser() instanceof Administrator admin) {
+            LblWelcome.setText(LblWelcome.getText() + " " + admin.getName()+" "+admin.getSurname());
         }
     }
 

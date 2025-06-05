@@ -21,7 +21,7 @@
             <HBox alignment="CENTER" prefHeight="47.0" prefWidth="446.0" style="-fx-alignment: center;">
                 <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" wrappingWidth="43.0" />
                 <Label prefHeight="30.0" prefWidth="784.0" style="-fx-font-size: 22; -fx-alignment: center;" styleClass="section-subtitle-label" text="Take a look at what community posted about their favorite tracks" />
-                <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" textAlignment="RIGHT" wrappingWidth="43.0" />
+                <FontIcon iconLiteral="mdi2l-lumx" iconSize="28" textAlignment="RIGHT" wrappingWidth="40.0" />
             </HBox>
             <Region prefHeight="16.0" prefWidth="1054.0" />
         </VBox>
