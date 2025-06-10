@@ -34,10 +34,15 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.stage.FileChooser;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -57,8 +62,9 @@ public class ResourceFileController extends Controller implements Initializable 
     private final ResourceManager resourceManager;
     private MediaPlayer mediaPlayer;
     private Node resourceNode;
+    private Track track;
 
-    //CONSTANTS
+    // CONSTANTS
     private final int defaultSkipTime = 10;
     private boolean isPlaying = false;
     private Slider sliderProgress;
@@ -165,7 +171,7 @@ public class ResourceFileController extends Controller implements Initializable 
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(5);
 
-        Track track = DatabaseManager.getDAOProvider().getTrackDAO().getTrackByResourceId(resourceManager.resource.getId());
+        track = DatabaseManager.getDAOProvider().getTrackDAO().getTrackByResourceId(resourceManager.resource.getId());
         String title = track.getTitle();
         box.getChildren().add(createMetadataRow(Strings.TRACKS, title));
 
@@ -783,6 +789,26 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    @FXML
+    private void handleDownload() {
+        Resource r = resourceManager.getResource();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Downloading File");
+        fileChooser.setInitialFileName(track.getTitle()+"."+r.getType().toString());
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(r.getType().toString().toUpperCase(), "*."+r.getType().toString());
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File selectedFile = fileChooser.showSaveDialog(Main.root);
+        if (selectedFile != null) {
+            try (FileOutputStream fos = new FileOutputStream(selectedFile)) {
+                fos.write(r.getData());
+                ViewManager.setAndShowAlert(Strings.SUCCESS, Strings.SUCCESS, Strings.FILE_DOWNLOADED, Alert.AlertType.INFORMATION);
+            } catch (IOException e) {
+                System.out.println("Error saving file: " + e.getMessage());
+                ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, e.getMessage(), Alert.AlertType.ERROR);
+            }
+        }
+    }
 }
 
 
