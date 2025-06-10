@@ -45,7 +45,6 @@ public class AccountRequestController extends Controller {
             if(DatabaseManager.getDAOProvider().getPendingUserDAO().getByUsername(username) != null)
                 throw new EntityAlreadyExistsException(Strings.ERR_REQUEST_ALREADY_EXISTS);
 
-            System.out.println(DatabaseManager.getDAOProvider().getUserDAO().getActiveUserByUsername(username));
             if(DatabaseManager.getDAOProvider().getUserDAO().getActiveUserByUsername(username) != null)
                 throw new EntityAlreadyExistsException(Strings.ERR_USER_ALREADY_EXISTS);
             PendingUser pendingUser = new PendingUser(
@@ -56,7 +55,6 @@ public class AccountRequestController extends Controller {
                     new Timestamp(System.currentTimeMillis()),
                     AuthRequestStatusEnum.CREATED
             );
-            System.out.println("TEST 4");
             DatabaseManager.getDAOProvider().getPendingUserDAO().insert(pendingUser);
             ViewManager.initSessionManager(pendingUser);
             ViewManager.navigateToPendingUserDashboard();

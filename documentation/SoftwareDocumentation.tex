@@ -18,8 +18,7 @@
 
 \subsection{Prefazione}
 
-Il presente documento definisce in modo esaustivo i requisiti, l'architettura e 
-le specifiche di progettazione del software \textit{TrackTune}, 
+Il presente documento definisce in modo esaustivo i requisiti, l'architettura e le specifiche di progettazione del software \textit{TrackTune},
 una piattaforma applicativa dedicata alla gestione, condivisione e analisi 
 collaborativa di contenuti musicali.\\[2ex] 
 
@@ -137,4 +136,138 @@ Gli strumenti musicali, i generi, i titoli dei brani e i nomi degli autori vanno
 
 \subsection{Casi d'uso}
 L’applicazione sarà disponibile esclusivamente agli utenti abilitati dall’amministratore, il quale è anch’esso un utente ma con privilegi di amministrazione sui comportamenti del sistema. L’unica operazione che può effettuare un utente non registrato è la richiesta di creazione di un account.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./figures/use_cases}
+    \caption{Use Cases}
+    \label{fig:use_cases}
+\end{figure}
+\newpage
+\subsubsection{Utente non loggato}
+L'utente non autenticato può effettuare esclusivamente non operazioni:
+    \begin{enumerate}
+        \item Richiedere un account ad un amministratore
+        \item Effettuare l'accesso tramite un form di autenticazione
+    \end{enumerate}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|>{\bfseries}l|p{10cm}|}
+\hline
+\multicolumn{2}{|c|}{\textbf{Caso d'uso: Login}} \\
+\hline
+\textbf{Id} & UC$0$ \\ \hline
+\textbf{Attori} & Utente non loggato \\ \hline
+\textbf{Precondizioni} & L’utente non è autenticato sulla piattaforma. \\ \hline
+\textbf{Sequenza degli eventi} &
+\begin{enumerate}
+    \item L’utente compila i campi per effettuare l'autenticazione
+    \item Il sistema verifica i dati e gestisce le autorizzazioni dell'utente
+\end{enumerate}\\ \hline
+\textbf{Post condizioni} & Utente autenticato e correttamente gestito \\ \hline
+\end{tabular}
+\caption{Descrizione caso d'uso \textit{Login}}
+\label{tab:login-usecase}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Richiesta creazione account}} \\
+        \hline
+        \textbf{Id} & UC$1$ \\ \hline
+        \textbf{Attori} & Utente non loggato \\ \hline
+        \textbf{Precondizioni} & L’utente non è autenticato sulla piattaforma. \\
+        & L’utente accede alla sezione di registrazione. \\ \hline % Added a new line and an empty cell for proper alignment
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item Vengono compilati i dati relativi alla richiesta
+            \item La richiesta viene inviata
+            \item Il sistema registra la richiesta e la mette in stato di approvazione
+            \item L'account viene salvato come account provvisorio e viene inserita una password temporanea
+            \item Il sistema notifica l’amministratore della nuova richiesta
+        \end{enumerate}\\ \hline
+        \textbf{Sequenza alternativa } & Utente già esistente che comporta un messaggio di errore \\ \hline
+        \textbf{Post condizioni} & La richiesta di creazione dell'account deve essere approvata da un amministratore \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Richiesta creazione account}}
+    \label{tab:request_account-usecase}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{./figures/account_request_sd}
+    \caption{Sequence diagram del caso d'uso \textit{Richiesta creazione account}}
+    \label{fig:sd_request_account}
+\end{figure}
+    
+\subsubsection{Utente loggato}
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Ricerca risorsa}} \\
+        \hline
+        \textbf{Id} & UC2 \\ \hline
+        \textbf{Attori} & Utente loggato \\ \hline
+        \textbf{Precondizioni} & Utente autenticato \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item Il sistema invia i criteri di filtro disponibili
+            \item L'utente decide il filtro di ricerca
+            \item L'utente inserisce una parola chiave per ricercare una risorsa
+            \item Gli vengono restituite le risorse data quella ricerca
+        \end{enumerate}\\ \hline
+        \textbf{Sequenza alternativa 1} & Errore nella ricerca: messaggio di errore \\ \hline
+        \textbf{Post condizioni} & L'utente ha visualizzato la risorsa correttamente \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Ricerca risorsa}}
+    \label{tab:search_resource-usecase}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/ricerca_risorsa_sd}
+    \caption{Sequence diagram del caso d'uso \textit{Ricerca risorsa}}
+    \label{fig:sd_ricerca_risorsa}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Riproduci/Visualizza risorsa}} \\
+        \hline
+        \textbf{Id} & UC3 \\ \hline
+        \textbf{Attori} & User Logged \\ \hline
+        \textbf{Precondizioni} &
+        Utente autenticato \\& L'utente ha effettuato una ricerca o ne può selezionare una
+        \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'utente seleziona una risorsa dal risultato delle ricerca
+            \item Il sistema riconosce il tipo di risorsa
+            \item Se multimediale, lo riproduce
+            \item Se testuale, lo visualizza
+        \end{enumerate}\\ \hline
+        \textbf{Sequenza alternativa 1} & Errore nella riproduzione: messaggio di errore \\ \hline
+        \textbf{Post condizioni} & L'utente ha visualizzato la risorsa \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Riproduci/Visualizza risorsa}}
+    \label{tab:play_view_resource-usecase}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/visualizza_risorsa_sd}
+    \caption{Sequence diagram del caso d'uso \textit{Riproduci/Visualizza risorsa}}
+    \label{fig:sd_visualizza_risorsa}
+\end{figure}
 \end{document}
