@@ -14,6 +14,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \setlength{\parindent}{0pt}
+
 \usepackage{booktabs}
 \usepackage{csquotes}
 \usepackage[table]{xcolor}
@@ -26,9 +27,9 @@
 \newcounter{subsubsubsection}[subsubsection]
 \renewcommand{\thesubsubsubsection}{\thesubsubsection.\arabic{subsubsubsection}}
 \newcommand{\subsubsubsection}[1]{%
-  \refstepcounter{subsubsubsection}%
-  \addcontentsline{toc}{subparagraph}{\thesubsubsubsection\quad #1}%
-  \vspace{1ex}\noindent\textbf{\thesubsubsubsection\quad #1}\par\nopagebreak\vspace{0.5ex}
+    \refstepcounter{subsubsubsection}%
+    \addcontentsline{toc}{subparagraph}{\thesubsubsubsection\quad #1}%
+    \vspace{1ex}\noindent\textbf{\thesubsubsubsection\quad #1}\par\nopagebreak\vspace{0.5ex}
 }
 
 % ----- Intestazione/Piè di pagina -----
@@ -39,11 +40,11 @@
 
 % ----- Stile titoli sezione -----
 \titleformat{\section}
-  {\normalfont\Large\bfseries\centering}
-  {\makebox[0pt][r]{\textcolor{gray}{\fontsize{40}{40}\selectfont\thesection\hspace{0.3em}}}}
-  {0pt}
-  {\Huge}
-  [\vspace{1em}\titlerule]
+{\normalfont\Large\bfseries\centering}
+{\makebox[0pt][r]{\textcolor{gray}{\fontsize{40}{40}\selectfont\thesection\hspace{0.3em}}}}
+{0pt}
+{\Huge}
+[\vspace{1em}\titlerule]
 
 \titlespacing*{\section}{0pt}{45pt}{20pt}
 
@@ -75,23 +76,23 @@
     commentstyle=\color{green!60!black},
 }
 \lstdefinestyle{modern}{
-  backgroundcolor=\color{blue!5},
-  commentstyle=\color{gray!70},
-  keywordstyle=\color{blue}\bfseries,
-  stringstyle=\color{green!70},
-  basicstyle=\ttfamily\small,
-  numberstyle=\tiny\color{blue},
-  numbers=left,
-  stepnumber=1,
-  frame=single,
-  framesep=3pt,
-  frameround=tttt,
-  rulecolor=\color{blue!35},
-  breakatwhitespace=false,
-  tabsize=2,
-  captionpos=b,
-  escapeinside={(*@}{@*)},
-  mathescape=true,
+    backgroundcolor=\color{blue!5},
+    commentstyle=\color{gray!70},
+    keywordstyle=\color{blue}\bfseries,
+    stringstyle=\color{green!70},
+    basicstyle=\ttfamily\small,
+    numberstyle=\tiny\color{blue},
+    numbers=left,
+    stepnumber=1,
+    frame=single,
+    framesep=3pt,
+    frameround=tttt,
+    rulecolor=\color{blue!35},
+    breakatwhitespace=false,
+    tabsize=2,
+    captionpos=b,
+    escapeinside={(*@}{@*)},
+    mathescape=true,
 }
 
 % ----- Grafici e figure -----
@@ -105,20 +106,42 @@
 % ----- Citazioni, bibliografia, note -----
 \usepackage{quoting}
 \usepackage[
-  backend=biber,
-  style=alphabetic,
-  sorting=ynt
+    backend=biber,
+    style=alphabetic,
+    sorting=ynt
 ]{biblatex}
 \addbibresource{bibliografia.bib}
 
 % ----- Hyperlink (nascosti ma attivi) -----
-\usepackage[hidelinks]{hyperref}
+% Carica hyperref con le opzioni per i link interni (document links)
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,  % Rende i link colorati anziché avere un bordo
+    linkcolor=blue,   % Colore per i link interni (es. \ref, \autoref, \hyperlink)
+    citecolor=green,  % Colore per le citazioni
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Your Document Title}, % Aggiungi un titolo per il PDF
+    pdfauthor={Your Name}, % Aggiungi l'autore del PDF
+    pdfsubject={Your Subject}, % Aggiungi l'argomento del PDF
+    pdfkeywords={Keyword1, Keyword2}, % Aggiungi parole chiave
+}
+
+% Ridefinisce \tableofcontents per avere link invisibili
+\let\oldtableofcontents\tableofcontents
+\renewcommand{\tableofcontents}{%
+    \begingroup
+    \hypersetup{linkcolor=black, hidelinks=true} % Nasconde i link solo per l'indice
+    \oldtableofcontents
+    \endgroup
+}
+
 
 % ----- Titolo con sottotitolo -----
 \usepackage[cc]{titlepic}
 \makeatletter
 \providecommand{\subtitle}[1]{%
-  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+    \apptocmd{\@title}{\par {\large #1 \par}}{}{}
 }
 \makeatother
 

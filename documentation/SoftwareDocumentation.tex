@@ -270,4 +270,322 @@ L'utente non autenticato può effettuare esclusivamente non operazioni:
     \caption{Sequence diagram del caso d'uso \textit{Riproduci/Visualizza risorsa}}
     \label{fig:sd_visualizza_risorsa}
 \end{figure}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Scarica risorsa}} \\
+        \hline
+        \textbf{Id} & UC4 \\ \hline
+        \textbf{Attori} & User Logged \\ \hline
+        \textbf{Precondizioni} & Utente autenticato \\
+        & L'utente ha effettuato una ricerca o ne può selezionare una \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'utente seleziona una risorsa dal risultato delle ricerca
+            \item L'utente richiede il download della risorsa
+        \end{enumerate}\\ \hline
+        \textbf{Sequenza alternativa 1} & Errore nel download: messaggio di errore \\ \hline
+        \textbf{Post condizioni} & L'utente ha scaricato la risorsa correttamente \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Scarica risorsa}}
+    \label{tab:download_resource-usecase}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/scarica_sd}
+    \caption{Sequence diagram del caso d'uso \textit{Scarica risorsa}}
+    \label{fig:sd_download_resource}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Commenta risorse}} \\
+        \hline
+        \textbf{Id} & UC5 \\ \hline
+        \textbf{Attori} & User Logged \\ \hline
+        \textbf{Precondizioni} & Utente autenticato \\
+        & L'utente può visualizzare una risorsa \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'utente seleziona una risorsa dal risultato delle ricerca
+            \item L'utente può scrivere un commento
+            \item Il commento viene salvato dal sistema
+        \end{enumerate}\\ \hline
+        \textbf{Sequenza alternativa 1} & L'utente può rispondere ad un commento \\ \hline
+        \textbf{Post condizioni} & L'utente ha commentato la risorsa correttamente \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Commenta risorse}}
+    \label{tab:comment_resource-usecase}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/commenta_risorsa_sd}
+    \caption{Sequence diagram del caso d'uso \textit{Commenta risorse}}
+    \label{fig:sd_commenta_risorsa}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Aggiungi note a segmenti}} \\
+        \hline
+        \textbf{Id} & UC6 \\ \hline
+        \textbf{Attori} & User Logged \\ \hline
+        \textbf{Precondizioni} & Utente autenticato \\
+        & L'utente ha ricercato/può visualizzare una risorsa \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'utente seleziona un intervallo di tempo per inserire una nota/commento
+            \item Scrive la /commento desiderata
+            \item Invia la nota/commento al sistema
+            \item Il sistema registra la nota/commento
+        \end{enumerate}\\ \hline
+        \textbf{Post condizioni} & L'utente ha scritto una nota/commento su un segmento correttamente \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Aggiungi note a segmenti}}
+    \label{tab:add_notes_to_segments-usecase}
+\end{table}
+
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Carica Risorse}} \\
+        \hline
+        \textbf{Id} & UC7 \\ \hline
+        \textbf{Attori} & User Logged \\ \hline
+        \textbf{Precondizioni} & Utente autenticato \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'utente visualizza la schermata di upload dei file
+            \item Seleziona la risorsa da caricare
+            \item Inserisce i dati (file + metadati obbligatori)
+            \item Invia i dati al sistema
+            \item Il sistema li memorizza
+        \end{enumerate}\\ \hline
+        \textbf{Sequenza alternativa 1} & Errore di sistema: messaggio di errore \\ \hline
+        \textbf{Sequenza alternativa 2} & Errore nell'inserimento dei dati: messaggio di errore \\ \hline
+        \textbf{Post condizioni} & L'utente ha caricato la risorsa correttamente \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Carica Risorse}}
+    \label{tab:upload_resources-usecase}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/carica_risorsa_sd}
+    \caption{Sequence diagram del caso d'uso \textit{Carica Risorse}}
+    \label{fig:sd_carica_risorsa}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Cancellazione commenti delle proprie risorse}} \\
+        \hline
+        \textbf{Id} & UC8 \\ \hline
+        \textbf{Attori} & User Logged \\ \hline
+        \textbf{Precondizioni} & Utente autenticato e autorizzato \\
+        & L'utente sta visualizzando una propria risorsa caricata \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'utente desidera eliminare un qualsiasi commento della risorsa
+            \item Elimina il commento
+            \item Il sistema controlla che abbia i permessi necessari
+            \item In caso positivo effettua la rimozione
+            \item Vengono rimossi tutte le risposte a quel commento
+        \end{enumerate}\\ \hline
+        \textbf{Sequenza alternativa 1} & Errore Autorizzazioni: messaggio di errore \\ \hline
+        \textbf{Post condizioni} & L'utente ha eliminato il commento correttamente \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Cancellazione commenti delle proprie risorse}}
+    \label{tab:delete_comments_own_resources-usecase}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Modifica dei metadati delle risorse}} \\
+        \hline
+        \textbf{Id} & UC9 \\ \hline
+        \textbf{Attori} & User Logged Authorized \\ \hline
+        \textbf{Precondizioni} & Utente autenticato \\
+        & L'utente è il proprietario di quella risorsa \\
+        & L'utente sta visualizzando i dati di una risorsa \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'utente desidera modificare un qualsiasi metadato della risorsa
+            \item Modifica i metadati
+            \item Invia le modifiche al sistema
+            \item Il sistema effettua la modifica
+        \end{enumerate}\\ \hline
+        \textbf{Post condizioni} & L'utente ha modificato correttamente i metadati di una risorsa \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Modifica dei metadati delle risorse}}
+    \label{tab:modify_metadata_uc9-usecase}
+\end{table}
+
+    \subsubsection{Amministratore}
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Valuta registrazione utente}} \\
+        \hline
+        \textbf{Id} & UC10 \\ \hline
+        \textbf{Attori} & Administrator \\ \hline
+        \textbf{Precondizioni} & L'amministratore accede alla sezione di gestione delle registrazioni utente in attesa di valutazione \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'amministratore visualizza i dettagli
+            \item L'amministratore approva/rifiuta la richiesta
+            \item Il sistema elimina la richiesta e in caso di approvazione crea l'account
+            \item Il sistema notifica all'utente l'esito
+        \end{enumerate}\\ \hline
+        \textbf{Post condizioni} & L'utente è registrato e abilitato all'accesso al sistema (se approvato) o la sua richiesta di registrazione viene rifiutata \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Valuta registrazione utente}}
+    \label{tab:evaluate_user_registration-usecase}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/valuta_richieste}
+    \caption{Sequence diagram del caso d'uso \textit{Valuta registrazione utente}}
+    \label{fig:sd_valuta_richiesta}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Eliminazione utente}} \\
+        \hline
+        \textbf{Id} & UC11 \\ \hline
+        \textbf{Attori} & Administrator \\ \hline
+        \textbf{Precondizioni} & L'amministratore accede alla sezione di gestione degli utenti \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'amministratore seleziona l'utente che desidera eliminare
+            \item L'amministratore elimina l'utente
+            \item Rimuove l'utente
+        \end{enumerate}\\ \hline
+        \textbf{Post condizioni} & L'utente è stato cancellato correttamente \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Eliminazione utente}}
+    \label{tab:delete_user-usecase}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Elimina commenti e risorse di un utente}} \\
+        \hline
+        \textbf{Id} & UC12 \\ \hline
+        \textbf{Attori} & Administrator \\ \hline
+        \textbf{Precondizioni} & Caso d'uso \textit{Eliminazine Utente} (\autoref{tab:delete_user-usecase}) \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'amministratore comunica al server un utente
+            \item Le risorse e commenti di questo utente vengono eliminate
+        \end{enumerate}\\ \hline
+        \textbf{Post condizioni} & Le risorse/commenti sono stati cancellati correttamente \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Elimina commenti e risorse di un utente}}
+    \label{tab:delete_user_comments_resources-usecase}
+\end{table}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{|>{\bfseries}l|p{10cm}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{Caso d'uso: Elimina contenuti/commenti}} \\
+        \hline
+        \textbf{Id} & UC13 \\ \hline
+        \textbf{Attori} & Administrator \\ \hline
+        \textbf{Precondizioni} & Visualizzazione di una risorsa/commento \\ \hline
+        \textbf{Sequenza degli eventi} &
+        \begin{enumerate}
+            \item L'amministratore visualizza una risorsa
+            \item L'amministratore decide di eliminare la risorsa/commento
+            \item Invia la richiesta al sistema
+            \item Il sistema elimina la risorsa/commento
+        \end{enumerate}\\ \hline
+        \textbf{Post condizioni} & La risorsa/commento è stata eliminata correttamente \\ \hline
+    \end{tabular}
+    \caption{Descrizione caso d'uso \textit{Elimina contenuti/commenti}}
+    \label{tab:delete_content_comments-usecase}
+\end{table}
+
+
+\subsection{Glossario dei termini}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    % Modifica qui:
+    % Ad esempio, la prima colonna l'ho fatta p{0.25\textwidth}
+    % e la seconda p{0.65\textwidth}. La somma (0.25+0.65=0.90) lascia spazio per i bordi e tabcolsep.
+    \begin{tabular}{|>{\bfseries}p{0.28\textwidth}|p{0.62\textwidth}|}
+        \hline
+        \multicolumn{2}{|c|}{\textbf{GLOSSARIO DEI TERMINI}} \\
+        \hline
+        \textbf{TERMINE} & \textbf{DEFINIZIONE} \\
+        \hline
+        Contenuto musicale / Risorsa multimediale & Qualsiasi tipo di file audio, video o immagine caricato e reso disponibile sulla piattaforma. Può includere brani musicali, podcast, lezioni, video, ecc. \\
+        \hline
+        Autore / Esecutore / Interprete di un brano & L'individuo o il gruppo che ha contribuito in modo significativo alla creazione, composizione, esecuzione o interpretazione originale di un'opera musicale. \\
+        \hline
+        Segmento di un brano & Un sottoinsieme specifico di un contenuto multimediale (es. un brano musicale o un video), definito da un intervallo di tempo di inizio e fine, permettendo di focalizzare l'attenzione su una parte specifica. \\
+        \hline
+        Traccia & FOZZI SPIEGA TE BENE COSA INTENDI COSI SIAMO APPOSTO \\
+        \hline
+        Brano & Un'opera musicale originale completa e autonoma, che può essere parte di un album o una singola traccia, caratterizzata da una composizione unica. \\
+        \hline
+        Metadato & Un insieme di dati che descrivono e forniscono informazioni su altri dati (una risorsa). Per un brano, i metadati possono includere titolo, autore, genere, durata, data di pubblicazione, ecc. \\
+        \hline
+        Utente autenticato / Loggato & Un utente che ha completato con successo il processo di login fornendo credenziali valide ed è riconosciuto dal sistema, avendo accesso a funzionalità riservate. \\
+        \hline
+        Amministratore & Un utente con privilegi speciali all'interno della piattaforma, in grado di gestire utenti, contenuti, approvare richieste e monitorare le operazioni del sistema. \\
+        \hline
+        Richiesta di creazione account & La procedura iniziata da un utente non autenticato per ottenere un nuovo account sulla piattaforma, soggetta ad approvazione da parte di un amministratore. \\
+        \hline
+        Commento & Un testo o una nota aggiunta da un utente autenticato a una risorsa (o a un altro commento) per esprimere un'opinione, fornire feedback o interagire con altri utenti. \\
+        \hline
+        Nota a segmento & Un tipo specifico di commento o annotazione testuale associata a un intervallo di tempo preciso all'interno di una risorsa multimediale, permettendo di evidenziare o commentare una parte specifica del contenuto. \\
+        \hline
+    \end{tabular}
+    \caption{Glossario dei Termini}
+    \label{tab:glossary}
+\end{table}
+
+\subsection{Activity Diagrams}
+Questa sezione illustra i principali flussi di lavoro del sistema attraverso gli activity diagrams.
+
+
+% =======================
+\section{Developing}
+% =======================
+
 \end{document}
