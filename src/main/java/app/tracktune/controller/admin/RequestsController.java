@@ -35,7 +35,6 @@ public class RequestsController extends Controller implements Initializable {
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
-        allRequests = new ArrayList<>(DatabaseManager.getDAOProvider().getPendingUserDAO().getAll());
         createTabsFromEnum();
 
         prevButton.setOnAction(e -> {
@@ -81,6 +80,7 @@ public class RequestsController extends Controller implements Initializable {
     }
 
     private void updateRequests() {
+        allRequests = new ArrayList<>(DatabaseManager.getDAOProvider().getPendingUserDAO().getAll());
         filterRequests();
         requestsContainer.getChildren().clear();
 
