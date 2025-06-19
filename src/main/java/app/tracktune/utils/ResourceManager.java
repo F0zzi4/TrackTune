@@ -25,11 +25,9 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 public final class ResourceManager {
-    public final Resource resource;
+    public Resource resource;
 
-    public ResourceManager(Resource resource){
-        this.resource = resource;
-    }
+    public ResourceManager(){}
 
     public Node createMediaNode(double width, double height, boolean isPreview) throws TrackTuneException {
         ResourceTypeEnum type = resource.getType();
@@ -143,6 +141,10 @@ public final class ResourceManager {
             System.err.println(Strings.MEDIA_ERROR + e.getMessage());
         }
         return mediaView;
+    }
+
+    public void setResource(Resource resource) {
+        this.resource = resource;
     }
 
     public Resource getResource() {

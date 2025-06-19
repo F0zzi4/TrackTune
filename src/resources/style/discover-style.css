@@ -137,6 +137,7 @@
 .request-item-title {
     -fx-font-size: 18px;
     -fx-font-weight: bold;
+    -fx-text-fill: #4a280f;
 }
 
 .request-item-description {
@@ -177,4 +178,37 @@
     -fx-background-radius: 10;
     -fx-padding: 3;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 6, 0.4, 0, 3);
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .track {
+    -fx-background-color: #fdc06f;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #ffebc8;
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: "";
 }
