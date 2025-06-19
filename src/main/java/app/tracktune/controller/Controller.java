@@ -1,11 +1,31 @@
 package app.tracktune.controller;
 
+import app.tracktune.controller.common.ResourceFileController;
+import app.tracktune.model.resource.Resource;
+import app.tracktune.utils.ResourceManager;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.scene.Node;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+import javafx.util.Duration;
+
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 public class Controller {
     public Controller parentController;
+    private Timeline timer;
+    private int counter = 0;
+    private int readies = 0;
+    // CONSTANTS
+    protected static final int previewWidth = 140;
+    protected static final int previewHeight = 120;
 
     public void setParentController(Controller parentController){
         this.parentController = parentController;
@@ -43,5 +63,73 @@ public class Controller {
         }
 
         return titleCase.toString().trim();
+    }
+
+    protected void startTimer(Node container, List<Resource> resources, ResourceManager resourceManager) {
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), _ -> {
+            if(container instanceof VBox resourcesContainer){
+                for(Node resourceBox : resourcesContainer.getChildren()){
+                    if(resourceBox instanceof HBox hbox){
+                        if(hbox.getChildren().getFirst() instanceof MediaView mediaView){
+                            if(mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY){
+                                readies++;
+                            }
+                            else{
+                                resourceManager.setResource(resources.get(counter));
+                                Node node = resourceManager.createMediaNode(previewWidth, previewHeight, true);
+                                hbox.getChildren().set(0, node);
+                            }
+                        }
+                    }
+                    counter++;
+                }
+                if(readies == resources.size()){
+                    stopTimer();
+                }
+                readies = 0;
+                counter = 0;
+            }else if(container instanceof StackPane stackPane){
+                VBox vbox = (VBox) stackPane.getChildren().getFirst();
+                MediaView mediaView = (MediaView) vbox.getChildren().getFirst();
+                if(mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY || mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.PLAYING){
+                    stopTimer();
+                }else{
+                    resourceManager.setResource(resources.get(counter));
+                    Node node = resourceManager.createMediaNode(stackPane.getPrefWidth(), stackPane.getPrefHeight(), false);
+                    vbox.getChildren().set(counter, node);
+                    mediaView = (MediaView)node;
+                    if(mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY){
+                        if(this instanceof ResourceFileController controller){
+                            controller.resourceNode = mediaView;
+                            controller.mediaPlayer = mediaView.getMediaPlayer();
+                            controller.handlePlayPause();
+                            stopTimer();
+                        }
+                    }
+                }
+            }
+        }));
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.play();
+    }
+
+    protected void stopTimer() {
+        if (timer != null) {
+            timer.stop();
+        }
+    }
+
+    protected void dispose(VBox resourcesContainer) {
+        stopTimer();
+
+        for (Node node : resourcesContainer.getChildren()) {
+            if (node instanceof HBox hbox && hbox.getChildren().getFirst() instanceof MediaView mediaView) {
+                MediaPlayer player = mediaView.getMediaPlayer();
+                if (player != null) {
+                    player.stop();
+                    player.dispose();
+                }
+            }
+        }
     }
 }

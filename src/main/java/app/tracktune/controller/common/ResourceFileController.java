@@ -59,9 +59,9 @@ public class ResourceFileController extends Controller implements Initializable 
     @FXML private VBox commentVBox;
     @FXML private Button segmentButton;
 
-    private final ResourceManager resourceManager;
-    private MediaPlayer mediaPlayer;
-    private Node resourceNode;
+    private final ResourceManager resourceManager = new ResourceManager();
+    public MediaPlayer mediaPlayer;
+    public Node resourceNode;
     private Track track;
 
     // CONSTANTS
@@ -74,7 +74,7 @@ public class ResourceFileController extends Controller implements Initializable 
 
 
     public ResourceFileController(Resource resource) {
-        resourceManager = new ResourceManager(resource);
+        resourceManager.setResource(resource);
     }
 
     @Override
@@ -86,14 +86,15 @@ public class ResourceFileController extends Controller implements Initializable 
 
             if (!isMultimedia) {
                 int defaultGapTitle = 10;
-                lblTitle.setLayoutY(lblTitle.getLayoutY() + defaultGapTitle);
                 int defaultGapContainerToolBox = 30;
+
+                lblTitle.setLayoutY(lblTitle.getLayoutY() + defaultGapTitle);
                 fileContainer.setLayoutY(fileContainer.getLayoutY() + defaultGapContainerToolBox);
                 fileContainer.getChildren().add(resourceNode);
                 videoToolBox.setVisible(false);
                 metadataBox.getChildren().add(setDetailsInfo());
                 metadataBox.setAlignment(Pos.CENTER);
-                setComments();
+
                 if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf))
                     segmentButton.setVisible(true);
             }
@@ -101,8 +102,9 @@ public class ResourceFileController extends Controller implements Initializable 
                 segmentButton.setVisible(true);
                 setupMediaPlayer();
                 metadataBox.getChildren().add(setDetailsInfo());
-                setComments();
             }
+            startTimer(fileContainer, List.of(resourceManager.getResource()), resourceManager);
+            setComments();
         } catch (TrackTuneException ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, ex.getMessage(), Alert.AlertType.ERROR);
             disposeMediaPlayer();
@@ -114,14 +116,12 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
-    private void setupMediaPlayer() {
+    public void setupMediaPlayer() {
         mediaPlayer = ((MediaView) resourceNode).getMediaPlayer();
 
         initSlider();
         initLabels();
-
         setupSliderListeners();
-
 
         HBox videoControls = new HBox(10, lblTimer, sliderProgress, lblDuration);
         videoControls.setAlignment(Pos.CENTER);
@@ -324,7 +324,7 @@ public class ResourceFileController extends Controller implements Initializable 
      * If an error occurs during playback, an alert is shown and the media player is disposed.
      */
     @FXML
-    private void handlePlayPause() {
+    public void handlePlayPause() {
         try {
             if (mediaPlayer != null) {
                 Node node = videoToolBox.getChildren().getFirst();
@@ -357,6 +357,12 @@ public class ResourceFileController extends Controller implements Initializable 
         try {
             if (mediaPlayer != null) {
                 mediaPlayer.stop();
+                Node node = videoToolBox.getChildren().getFirst();
+
+                if (node instanceof Button button && button.getGraphic() instanceof FontIcon icon) {
+                    icon.setIconLiteral("mdi2p-play");
+                    isPlaying = false;
+                }
             }
         } catch (Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.MEDIA_ERROR, Alert.AlertType.ERROR);

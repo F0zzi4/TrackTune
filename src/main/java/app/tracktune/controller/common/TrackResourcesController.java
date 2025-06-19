@@ -1,5 +1,6 @@
 package app.tracktune.controller.common;
 
+import app.tracktune.Main;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
@@ -16,6 +17,7 @@ import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -41,6 +43,7 @@ public class TrackResourcesController extends Controller implements Initializabl
     @FXML private Button btnPrev;
     @FXML private Button btnNext;
 
+    private final ResourceManager resourceManager = new ResourceManager();
     private List<Resource> resources = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 6;
@@ -52,6 +55,7 @@ public class TrackResourcesController extends Controller implements Initializabl
 
     @Override
     public void initialize(URL location, ResourceBundle res) {
+        Platform.runLater(() -> Main.root.setOnCloseRequest(_ -> dispose(resourcesContainer)));
         resources = DatabaseManager.getDAOProvider().getResourceDAO().getAllByTrackID(track.getId());
 
         btnPrev.setOnAction(_ -> {
@@ -67,7 +71,7 @@ public class TrackResourcesController extends Controller implements Initializabl
                 updateResources();
             }
         });
-
+        startTimer(resourcesContainer, resources, resourceManager);
         updateResources();
     }
 
@@ -159,7 +163,7 @@ public class TrackResourcesController extends Controller implements Initializabl
         int previewWidth = 140;
         int previewHeight = 120;
 
-        ResourceManager resourceManager = new ResourceManager(resource);
+        resourceManager.setResource(resource);
         Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
 
         HBox requestItemBox = createRequestItem(resource);
