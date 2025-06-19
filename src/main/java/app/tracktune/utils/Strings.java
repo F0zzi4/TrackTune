@@ -6,6 +6,7 @@ package app.tracktune.utils;
 public class Strings {
     public static final String ERROR = "Error";
     public static final String SUCCESS = "Success";
+    public static final String FILE_DOWNLOADED = "File has been downloaded successfully";
     public static final String LOGIN_FAILED = "Login failed";
     public static final String USER_PWD_EMPTY = "Username or password is empty";
     public static final String FIELD_EMPTY = "One or more fields are empty";
@@ -39,7 +40,7 @@ public class Strings {
     public static final String AUTHORS = "Authors:";
     public static final String GENRES = "Genres:";
     public static final String INSTRUMENTS = "Instruments:";
-    public static final String ERR_REPLY = "Reply Erro";
+    public static final String ERR_REPLY = "Error during replying";
     public static final String FILE_FORMAT = "File format:";
     public static final String RESOURCE_SIZE = "Resource Size:";
     public static final String DURATION = "Duration:";
