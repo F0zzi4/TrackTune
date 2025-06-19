@@ -189,7 +189,7 @@ L'utente non autenticato può effettuare esclusivamente non operazioni:
             \item Vengono compilati i dati relativi alla richiesta
             \item La richiesta viene inviata
             \item Il sistema registra la richiesta e la mette in stato di approvazione
-            \item L'account viene salvato come account provvisorio e viene inserita una password temporanea
+            \item L'account viene salvato come account provvisorio
             \item Il sistema notifica l’amministratore della nuova richiesta
         \end{enumerate}\\ \hline
         \textbf{Sequenza alternativa } & Utente già esistente che comporta un messaggio di errore \\ \hline
@@ -559,7 +559,7 @@ L'utente non autenticato può effettuare esclusivamente non operazioni:
         \hline
         Segmento di un brano & Un sottoinsieme specifico di un contenuto multimediale (es. un brano musicale o un video), definito da un intervallo di tempo di inizio e fine, permettendo di focalizzare l'attenzione su una parte specifica. \\
         \hline
-        Traccia & FOZZI SPIEGA TE BENE COSA INTENDI COSI SIAMO APPOSTO \\
+        Traccia & Una traccia può contenere più risorse relative a quel contesto, ad esempio il relativo file PDF dello spartito + un'eventuale risorsa multimediale (mp4/mp3) \\
         \hline
         Brano & Un'opera musicale originale completa e autonoma, che può essere parte di un album o una singola traccia, caratterizzata da una composizione unica. \\
         \hline
@@ -583,9 +583,102 @@ L'utente non autenticato può effettuare esclusivamente non operazioni:
 \subsection{Activity Diagrams}
 Questa sezione illustra i principali flussi di lavoro del sistema attraverso gli activity diagrams.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/autenticazione_ac}
+    \caption{Activity Diagrams del caso d'uso \textit{Login}}
+    \label{fig:ac_login}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/eliminazione_utenti_ac}
+    \caption{Activity Diagrams del caso d'uso \textit{Elimina utenti}}
+    \label{fig:ac_eliminazione_utenti}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/account_request_ac}
+    \caption{Activity Diagrams del caso d'uso \textit{Richiesta creazione account}}
+    \label{fig:ac_account_request}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/segmenti_commenti_ac}
+    \caption{Activity Diagrams del caso d'uso \textit{Aggiungi note a segmenti}}
+    \label{fig:ac_note_segmenti}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/aggiungi_risorsa_ac}
+    \caption{Activity Diagrams del caso d'uso \textit{Carica risorse}}
+    \label{fig:ac_valuta_registrazione_utenti}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics{./figures/valutazione_richiesta_ac}
+    \caption{Activity Diagrams del caso d'uso \textit{Valuta registrazione utenti}}
+    \label{fig:ac_carica_risorsa}
+\end{figure}
+
+% =======================
+\section{Modello logico dei dati}
+La presente sezione descrive il modello logico dei dati adottato nel sistema, che rappresenta l’organizzazione e la struttura concettuale
+delle informazioni da gestire.
+
+% =======================
+\subsection{Diagramma E/R}
+IMMAGINE DIAGRAMMA ER PRIMA RISTRUTTURAZIONE
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.1 \textwidth]{./figures/diagramma_er_ristrutturato}
+    \caption{Diagramma E/R ristrutturato}
+    \label{fig:er_ristrutturato}
+\end{figure}
+
+\subsection{Descrizione delle entità}
+Descrizione delle entità principali (possiamo rimuoverlo volendo)
+
+% =======================
+\section{Architettura logica}
+% =======================
+Questa sezione presenta l’architettura logica del sistema, ovvero come sono organizzati i principali componenti software e come interagiscono tra loro. L’obiettivo è offrire una panoramica chiara della struttura del progetto, utile per guidare lo sviluppo e facilitare la manutenzione nel tempo.
+
+\subsection{Diagramma UML - Model}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.1 \textwidth]{./figures/uml_table_model}
+    \caption{Tabella UML delle classi relative al \textit{Model}}
+    \label{fig:uml_table_model}
+\end{figure}
+
+
+\subsection{Diagramma UML - Control}
+
+
+\subsection{Pattern architetturale}
+
 
 % =======================
 \section{Developing}
 % =======================
+\subsection{Design pattern utilizzati}
+
+\subsection{Struttura del progetto}
+[Albero dei file principali]
+
+
+% =======================
+\section{Fase di Test}
+% =======================
+\subsection{JUnit Test}
+\subsection{Test degli sviluppatori}
+
+\subsection{Test soggetti esterni}
+
 
 \end{document}
