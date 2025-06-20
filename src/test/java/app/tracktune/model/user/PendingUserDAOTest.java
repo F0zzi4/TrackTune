@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class PendingUserDAOTest {
 
-    private DatabaseManager db;
     private PendingUserDAO pendingUserDAO;
 
     @BeforeAll
@@ -36,7 +35,7 @@ public class PendingUserDAOTest {
         }
 
         DatabaseManager.setTestConnection(connection);
-        db = DatabaseManager.getInstance();
+        DatabaseManager db = DatabaseManager.getInstance();
         pendingUserDAO = new PendingUserDAO(db);
     }
 
@@ -47,12 +46,12 @@ public class PendingUserDAOTest {
     @Order(1)
     void testInsertAndGetById() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        PendingUser user = new PendingUser("testuser", "password123", "Test", "User", now, AuthRequestStatusEnum.CREATED);
+        PendingUser user = new PendingUser("testUser", "password123", "Test", "User", now, AuthRequestStatusEnum.CREATED);
         Integer id = pendingUserDAO.insert(user);
         assertNotNull(id);
 
         PendingUser fetched = pendingUserDAO.getById(id);
-        assertEquals("testuser", fetched.getUsername());
+        assertEquals("testUser", fetched.getUsername());
         assertEquals("password123", fetched.getPassword());
         assertEquals("Test", fetched.getName());
         assertEquals("User", fetched.getSurname());
@@ -66,15 +65,15 @@ public class PendingUserDAOTest {
     @Order(2)
     void testUpdate() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        PendingUser user = new PendingUser("updateuser", "initialpass", "Initial", "User", now, AuthRequestStatusEnum.CREATED);
+        PendingUser user = new PendingUser("updateUser", "initialPass", "Initial", "User", now, AuthRequestStatusEnum.CREATED);
         Integer id = pendingUserDAO.insert(user);
 
-        PendingUser updated = new PendingUser(id, "updateuser", "updatedpass", "Updated", "User", now, AuthRequestStatusEnum.ACCEPTED);
+        PendingUser updated = new PendingUser(id, "updateUser", "updatedPass", "Updated", "User", now, AuthRequestStatusEnum.ACCEPTED);
         pendingUserDAO.updateById(updated, id);
 
         PendingUser result = pendingUserDAO.getById(id);
-        assertEquals("updateuser", result.getUsername());
-        assertEquals("updatedpass", result.getPassword());
+        assertEquals("updateUser", result.getUsername());
+        assertEquals("updatedPass", result.getPassword());
         assertEquals("Updated", result.getName());
         assertEquals(AuthRequestStatusEnum.ACCEPTED, result.getStatus());
     }
@@ -86,14 +85,12 @@ public class PendingUserDAOTest {
     @Order(3)
     void testDelete() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        PendingUser user = new PendingUser("deleteuser", "password123", "Delete", "User", now, AuthRequestStatusEnum.CREATED);
+        PendingUser user = new PendingUser("deleteUser", "password123", "Delete", "User", now, AuthRequestStatusEnum.CREATED);
         Integer id = pendingUserDAO.insert(user);
 
         pendingUserDAO.deleteById(id);
 
-        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
-            pendingUserDAO.getById(id);
-        });
+        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> pendingUserDAO.getById(id));
     }
 
     /**

@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class GenreDAOTest {
 
-    private DatabaseManager db;
     private GenreDAO genreDAO;
 
     /**
@@ -35,7 +34,7 @@ public class GenreDAOTest {
         }
 
         DatabaseManager.setTestConnection(connection);
-        db = DatabaseManager.getInstance();
+        DatabaseManager db = DatabaseManager.getInstance();
         genreDAO = new GenreDAO(db);
     }
 
@@ -79,9 +78,7 @@ public class GenreDAOTest {
 
         genreDAO.deleteById(id);
 
-        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
-            genreDAO.getById(id);
-        });
+        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> genreDAO.getById(id));
     }
 
     /**

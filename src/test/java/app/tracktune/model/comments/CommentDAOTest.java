@@ -27,19 +27,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CommentDAOTest {
 
-    private DatabaseManager db;
     private CommentDAO commentDAO;
-    private ResourceDAO resourceDAO;
-    private TrackDAO trackDAO;
 
     private int userId;
-    private int trackId;
     private int resourceId;
-    private Connection connection;
 
     @BeforeAll
     void setup() throws Exception {
-        connection = DriverManager.getConnection("jdbc:sqlite::memory:");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
         String[] ddl = DBInit.getDBInitStatement().split(";");
@@ -48,17 +43,17 @@ public class CommentDAOTest {
         }
 
         DatabaseManager.setTestConnection(connection);
-        db = DatabaseManager.getInstance();
+        DatabaseManager db = DatabaseManager.getInstance();
         commentDAO = new CommentDAO(db);
-        resourceDAO = new ResourceDAO(db);
-        trackDAO = new TrackDAO(db);
+        ResourceDAO resourceDAO = new ResourceDAO(db);
+        TrackDAO trackDAO = new TrackDAO(db);
         UserDAO userDAO = new UserDAO(db);
 
-        Administrator testUser = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
+        Administrator testUser = new Administrator("testUser", "passwordHash", "name", "surname", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
         userId = userDAO.insert(testUser);
 
         Track track = new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userId);
-        trackId = trackDAO.insert(track);
+        int trackId = trackDAO.insert(track);
 
         Resource resource = new Resource(null, ResourceTypeEnum.pdf, new byte[]{1, 2, 3},
                 new Timestamp(System.currentTimeMillis()), true, false, trackId, userId);
@@ -105,9 +100,7 @@ public class CommentDAOTest {
 
         commentDAO.deleteById(id);
 
-        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
-            commentDAO.getById(id);
-        });
+        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> commentDAO.getById(id));
     }
 
     /**

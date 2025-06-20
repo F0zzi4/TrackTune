@@ -13,16 +13,14 @@ import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackAuthor;
 import app.tracktune.utils.*;
 import app.tracktune.view.ViewManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 
 import java.net.URL;
@@ -35,6 +33,7 @@ public class DiscoverController extends Controller implements Initializable {
     @FXML private Tab tabMostPopular;
     @FXML private Tab tabMostCommented;
     @FXML private Tab tabLastCommented;
+    private final ResourceManager resourceManager = new ResourceManager();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -53,21 +52,25 @@ public class DiscoverController extends Controller implements Initializable {
             contentBox.getChildren().add(createResourceItemBox(resource));
         }
 
-        AnchorPane anchor = new AnchorPane();
-        anchor.getChildren().add(contentBox);
-        AnchorPane.setTopAnchor(contentBox, 0.0);
-        AnchorPane.setLeftAnchor(contentBox, 0.0);
-        AnchorPane.setRightAnchor(contentBox, 0.0);
-        AnchorPane.setBottomAnchor(contentBox, 0.0);
+        ScrollPane scrollPane = new ScrollPane(contentBox);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setContent(contentBox);
 
+        AnchorPane anchor = new AnchorPane();
+        anchor.getChildren().add(scrollPane);
+        AnchorPane.setTopAnchor(scrollPane, 0.0);
+        AnchorPane.setLeftAnchor(scrollPane, 0.0);
+        AnchorPane.setRightAnchor(scrollPane, 0.0);
+        AnchorPane.setBottomAnchor(scrollPane, 0.0);
+
+        Platform.runLater(() -> Main.root.setOnCloseRequest(_ -> dispose(contentBox)));
+        startTimer(contentBox, resources, resourceManager);
         tab.setContent(anchor);
     }
 
     private HBox createResourceItemBox(Resource resource) {
-        int previewWidth = 100;
-        int previewHeight = 100;
-
-        ResourceManager resourceManager = new ResourceManager(resource);
+        resourceManager.setResource(resource);
         Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
 
         HBox requestItemBox = createRequestItem(resource);

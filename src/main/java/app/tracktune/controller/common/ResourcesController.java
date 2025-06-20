@@ -1,5 +1,6 @@
 package app.tracktune.controller.common;
 
+import app.tracktune.Main;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
@@ -15,6 +16,7 @@ import app.tracktune.utils.Frames;
 import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -38,6 +40,7 @@ public class ResourcesController extends Controller implements Initializable {
     @FXML private Button btnPrev;
     @FXML private Button btnNext;
 
+    private final ResourceManager resourceManager = new ResourceManager();
     private List<Resource> resources = new ArrayList<>();
     private int currentPage = 0;
     private final int itemsPerPage = 6;
@@ -45,7 +48,8 @@ public class ResourcesController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle res) {
-            resources = DatabaseManager.getDAOProvider().getResourceDAO().getAllByUserID(SessionManager.getInstance().getUser().getId());
+        Platform.runLater(() -> Main.root.setOnCloseRequest(_ -> dispose(resourcesContainer)));
+        resources = DatabaseManager.getDAOProvider().getResourceDAO().getAllByUserID(SessionManager.getInstance().getUser().getId());
 
         btnPrev.setOnAction(_ -> {
             if (currentPage > 0) {
@@ -61,6 +65,7 @@ public class ResourcesController extends Controller implements Initializable {
             }
         });
 
+        startTimer(resourcesContainer, resources, resourceManager);
         updateResources();
     }
 
@@ -152,10 +157,7 @@ public class ResourcesController extends Controller implements Initializable {
     }
 
     private HBox createResourceItemBox(Resource resource) {
-        int previewWidth = 140;
-        int previewHeight = 120;
-
-        ResourceManager resourceManager = new ResourceManager(resource);
+        resourceManager.setResource(resource);
         Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
 
         HBox requestItemBox = createRequestItem(resource);
