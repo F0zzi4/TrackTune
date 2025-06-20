@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UserDAOTest {
 
-    private DatabaseManager db;
     private UserDAO userDAO;
 
     @BeforeAll
@@ -31,24 +30,24 @@ public class UserDAOTest {
             }
         }
         DatabaseManager.setTestConnection(connection);
-        db = DatabaseManager.getInstance();
+        DatabaseManager db = DatabaseManager.getInstance();
         userDAO = new UserDAO(db);
     }
 
     /**
-     * Verifica l'inserimento e il recupero di un AuthenticatedUser tramite ID.
+     * Verifies the entry and retrieval of an AuthenticatedUser by ID.
      */
     @Test
     void insertAndGetById_AuthenticatedUser() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        AuthenticatedUser user = new AuthenticatedUser(null, "testuser", "password123", "Test", "User", UserStatusEnum.ACTIVE, now);
+        AuthenticatedUser user = new AuthenticatedUser(null, "testUser", "password123", "Test", "User", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(user);
         assertNotNull(id);
 
         User fetched = userDAO.getById(id);
-        assertTrue(fetched instanceof AuthenticatedUser);
+        assertInstanceOf(AuthenticatedUser.class, fetched);
         AuthenticatedUser authUser = (AuthenticatedUser) fetched;
-        assertEquals("testuser", authUser.getUsername());
+        assertEquals("testUser", authUser.getUsername());
         assertEquals("password123", authUser.getPassword());
         assertEquals("Test", authUser.getName());
         assertEquals("User", authUser.getSurname());
@@ -57,85 +56,83 @@ public class UserDAOTest {
     }
 
     /**
-     * Verifica l'inserimento e il recupero di un Administrator tramite ID.
+     * Verifies the entry and retrieval of an Administrator by ID.
      */
     @Test
     void insertAndGetById_Administrator() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        Administrator admin = new Administrator(null, "adminuser", "adminpass", "Admin", "User", UserStatusEnum.ACTIVE, now);
+        Administrator admin = new Administrator(null, "adminUser", "adminPass", "Admin", "User", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(admin);
         assertNotNull(id);
 
         User fetched = userDAO.getById(id);
-        assertTrue(fetched instanceof Administrator);
+        assertInstanceOf(Administrator.class, fetched);
         Administrator fetchedAdmin = (Administrator) fetched;
-        assertEquals("adminuser", fetchedAdmin.getUsername());
-        assertEquals("adminpass", fetchedAdmin.getPassword());
+        assertEquals("adminUser", fetchedAdmin.getUsername());
+        assertEquals("adminPass", fetchedAdmin.getPassword());
         assertEquals("Admin", fetchedAdmin.getName());
         assertEquals("User", fetchedAdmin.getSurname());
         assertEquals(UserStatusEnum.ACTIVE, fetchedAdmin.getStatus());
     }
 
     /**
-     * Verifica l'aggiornamento di un AuthenticatedUser esistente.
+     * Verify the update of an existing AuthenticatedUser.
      */
     @Test
     void update_AuthenticatedUser() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        AuthenticatedUser user = new AuthenticatedUser(null, "updateuser", "initialpass", "Initial", "User", UserStatusEnum.ACTIVE, now);
+        AuthenticatedUser user = new AuthenticatedUser(null, "updateUser", "initialPass", "Initial", "User", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(user);
 
-        AuthenticatedUser updated = new AuthenticatedUser(id, "updateuser", "updatedpass", "Updated", "User", UserStatusEnum.SUSPENDED, now);
+        AuthenticatedUser updated = new AuthenticatedUser(id, "updateUser", "updatedPass", "Updated", "User", UserStatusEnum.SUSPENDED, now);
         userDAO.updateById(updated, id);
 
         User result = userDAO.getById(id);
-        assertTrue(result instanceof AuthenticatedUser);
+        assertInstanceOf(AuthenticatedUser.class, result);
         AuthenticatedUser authUser = (AuthenticatedUser) result;
-        assertEquals("updateuser", authUser.getUsername());
-        assertEquals("updatedpass", authUser.getPassword());
+        assertEquals("updateUser", authUser.getUsername());
+        assertEquals("updatedPass", authUser.getPassword());
         assertEquals("Updated", authUser.getName());
         assertEquals(UserStatusEnum.SUSPENDED, authUser.getStatus());
     }
 
     /**
-     * Verifica l'aggiornamento di un Administrator esistente.
+     * Verify the update of an existing Administrator.
      */
     @Test
     void update_Administrator() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        Administrator admin = new Administrator(null, "updateadmin", "initialpass", "Initial", "Admin", UserStatusEnum.ACTIVE, now);
+        Administrator admin = new Administrator(null, "updateAdmin", "initialPass", "Initial", "Admin", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(admin);
 
-        Administrator updated = new Administrator(id, "updateadmin", "updatedpass", "Updated", "Admin", UserStatusEnum.SUSPENDED, now);
+        Administrator updated = new Administrator(id, "updateAdmin", "updatedPass", "Updated", "Admin", UserStatusEnum.SUSPENDED, now);
         userDAO.updateById(updated, id);
 
         User result = userDAO.getById(id);
-        assertTrue(result instanceof Administrator);
+        assertInstanceOf(Administrator.class, result);
         Administrator fetchedAdmin = (Administrator) result;
-        assertEquals("updateadmin", fetchedAdmin.getUsername());
-        assertEquals("updatedpass", fetchedAdmin.getPassword());
+        assertEquals("updateAdmin", fetchedAdmin.getUsername());
+        assertEquals("updatedPass", fetchedAdmin.getPassword());
         assertEquals("Updated", fetchedAdmin.getName());
         assertEquals(UserStatusEnum.SUSPENDED, fetchedAdmin.getStatus());
     }
 
     /**
-     * Verifica la cancellazione di un utente tramite ID e che il recupero successivo lanci un'eccezione.
+     * Verifies the deletion of a user by ID and that subsequent retrieval throws an exception.
      */
     @Test
     void deleteById_UserNotFound() {
         Timestamp now = new Timestamp(System.currentTimeMillis());
-        AuthenticatedUser user = new AuthenticatedUser(null, "deleteuser", "password123", "Delete", "User", UserStatusEnum.ACTIVE, now);
+        AuthenticatedUser user = new AuthenticatedUser(null, "deleteUser", "password123", "Delete", "User", UserStatusEnum.ACTIVE, now);
         Integer id = userDAO.insert(user);
 
         userDAO.deleteById(id);
 
-        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
-            userDAO.getById(id);
-        });
+        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> userDAO.getById(id));
     }
 
     /**
-     * Verifica che il metodo getAll restituisca tutti gli utenti inseriti.
+     * Verify that the getAll method returns all users entered.
      */
     @Test
     void getAllUsers() {
@@ -152,7 +149,7 @@ public class UserDAOTest {
     }
 
     /**
-     * Verifica il recupero di un utente attivo tramite username.
+     * Check recovery of an active user by username.
      */
     @Test
     void getActiveUserByUsername_ReturnsUser() {
@@ -166,12 +163,12 @@ public class UserDAOTest {
         assertEquals(uniqueUsername, fetched.getUsername());
         assertEquals("Unique", fetched.getName());
         assertEquals("User", fetched.getSurname());
-        assertTrue(fetched instanceof AuthenticatedUser);
+        assertInstanceOf(AuthenticatedUser.class, fetched);
         assertEquals(UserStatusEnum.ACTIVE, ((AuthenticatedUser) fetched).getStatus());
     }
 
     /**
-     * Verifica che il recupero di un utente non attivo tramite username ritorni null.
+     * Verifies that retrieving an inactive user by username returns null.
      */
     @Test
     void getActiveUserByUsername_InactiveUserReturnsNull() {

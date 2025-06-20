@@ -22,15 +22,13 @@ public class ResourceDAOTest {
 
     private DatabaseManager db;
     private ResourceDAO resourceDAO;
-    private TrackDAO trackDAO;
 
-    // ID dell'utente e della traccia usati nei test
     private int userId;
     private int trackId;
 
     /**
-     * Setup iniziale eseguito una volta prima di tutti i test.
-     * Inizializza il database in memoria, esegue le query DDL e crea un utente e una traccia di test.
+     * Initial setup performed once before all tests.
+     * It initializes the database in memory, executes DDL queries, and creates a user and a test trace.
      */
     @BeforeAll
     void setup() throws Exception {
@@ -45,10 +43,10 @@ public class ResourceDAOTest {
         DatabaseManager.setTestConnection(connection);
         db = DatabaseManager.getInstance();
         resourceDAO = new ResourceDAO(db);
-        trackDAO = new TrackDAO(db);
+        TrackDAO trackDAO = new TrackDAO(db);
         UserDAO userDAO = new UserDAO(db);
 
-        Administrator testUser = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
+        Administrator testUser = new Administrator("testUser", "passwordHash", "name", "surname", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
         userId = userDAO.insert(testUser);
 
         Track track = new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userId);
@@ -56,7 +54,7 @@ public class ResourceDAOTest {
     }
 
     /**
-     * Pulisce la tabella delle risorse prima di ogni test per evitare interferenze.
+     * Cleans the resource table before each test to avoid interference.
      */
     @BeforeEach
     void clearTables() {
@@ -64,7 +62,7 @@ public class ResourceDAOTest {
     }
 
     /**
-     * Testa l'inserimento e il recupero di una risorsa tramite il suo ID.
+     * Tests the insertion and retrieval of a resource by its ID.
      */
     @Test
     void testInsertAndGetById() {
@@ -83,7 +81,7 @@ public class ResourceDAOTest {
     }
 
     /**
-     * Testa l'aggiornamento di una risorsa e verifica che i dati siano stati modificati correttamente.
+     * Tests the update of a resource and verifies that the data have been changed correctly.
      */
     @Test
     void testUpdate() {
@@ -102,7 +100,7 @@ public class ResourceDAOTest {
     }
 
     /**
-     * Testa l'eliminazione di una risorsa e verifica che non sia più presente nel database.
+     * Test the deletion of a resource and verify that it is no longer in the database.
      */
     @Test
     void testDelete() {
@@ -117,7 +115,7 @@ public class ResourceDAOTest {
     }
 
     /**
-     * Testa il recupero di tutte le risorse presenti nel database.
+     * Tests the retrieval of all resources in the database.
      */
     @Test
     void testGetAll() {
@@ -132,7 +130,7 @@ public class ResourceDAOTest {
     }
 
     /**
-     * Testa il recupero di tutte le risorse associate a un determinato utente.
+     * Tests the recovery of all resources associated with a given user.
      */
     @Test
     void testGetAllByUserID() {
@@ -147,7 +145,7 @@ public class ResourceDAOTest {
     }
 
     /**
-     * Testa il recupero di tutte le risorse associate a una determinata traccia.
+     * Tests the recovery of all resources associated with a given track.
      */
     @Test
     void testGetAllByTrackID() {
@@ -162,8 +160,8 @@ public class ResourceDAOTest {
     }
 
     /**
-     * Testa il recupero di tutte le risorse commentate da un utente.
-     * Poiché non vengono inseriti commenti nel test, si verifica solo che non lanci eccezioni.
+     * Tests the retrieval of all resources commented on by a user.
+     * Since no comments are included in the test, it only checks that it does not throw exceptions.
      */
     @Test
     void testGetAllCommentedResourcesByUserID() {

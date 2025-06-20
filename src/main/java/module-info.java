@@ -19,6 +19,7 @@ module app.tracktune {
     opens app.tracktune.controller.common to javafx.fxml;
 
     exports app.tracktune;
+    exports app.tracktune.utils;
     exports app.tracktune.controller;
     exports app.tracktune.controller.admin;
     exports app.tracktune.controller.pendingUser;
