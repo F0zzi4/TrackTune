@@ -24,7 +24,7 @@ public class Frames {
     public static final String AUTHORS_PATH = "/fxml/admin/AuthorsView.fxml";
     public static final String INSTRUMENTS_PATH = "/fxml/admin/InstrumentsView.fxml";
     public static final String DISCOVER_VIEW_PATH = "/fxml/common/DiscoverView.fxml";
-    public static final String MY_RESOURCES_VIEW_PATH = "/fxml/common/UserResourcesView.fxml";
+    public static final String MY_RESOURCES_VIEW_PATH = "/fxml/common/ResourcesView.fxml";
     public static final String ADD_RESOURCE_VIEW_PATH = "/fxml/common/AddResourceView.fxml";
     public static final String EDIT_RESOURCE_VIEW_PATH = "/fxml/common/EditResourceView.fxml";
     public static final String RESOURCE_FILE_VIEW_PATH = "/fxml/common/ResourceFileView.fxml";

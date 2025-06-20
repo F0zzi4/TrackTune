@@ -19,7 +19,7 @@
 
             <ScrollPane fitToWidth="true" fitToHeight="true" VBox.vgrow="ALWAYS">
                 <content>
-                    <VBox fx:id="resourcesContainer" spacing="5.0" />
+                    <VBox fx:id="resourcesContainer" spacing="1.0" />
                 </content>
             </ScrollPane>
 

@@ -18,16 +18,14 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class AuthorDAOTest {
 
-    private DatabaseManager db;
     private AuthorDAO authorDAO;
-    private Connection connection;
 
     /**
      * Initializes an in-memory SQLite database and sets up the AuthorDAO before all tests.
      */
     @BeforeAll
     void setup() throws Exception {
-        connection = DriverManager.getConnection("jdbc:sqlite::memory:");
+        Connection connection = DriverManager.getConnection("jdbc:sqlite::memory:");
         Statement stmt = connection.createStatement();
         stmt.execute("PRAGMA foreign_keys = ON;");
         String[] ddl = DBInit.getDBInitStatement().split(";");
@@ -36,7 +34,7 @@ public class AuthorDAOTest {
         }
 
         DatabaseManager.setTestConnection(connection);
-        db = DatabaseManager.getInstance();
+        DatabaseManager db = DatabaseManager.getInstance();
         authorDAO = new AuthorDAO(db);
     }
 
@@ -81,9 +79,7 @@ public class AuthorDAOTest {
 
         authorDAO.deleteById(id);
 
-        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
-            authorDAO.getById(id);
-        });
+        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> authorDAO.getById(id));
     }
 
     /**
@@ -128,7 +124,7 @@ public class AuthorDAOTest {
 
     /**
      * Tests retrieval of all authors associated with a specific track ID.
-     * Currently checks that the method returns a non-null list.
+     * Currently, checks that the method returns a non-null list.
      */
     @Test
     void testGetAllAuthorsByTrackId() {
