@@ -92,8 +92,9 @@ public class Controller {
                 VBox vbox = (VBox) stackPane.getChildren().getFirst();
                 MediaView mediaView = (MediaView) vbox.getChildren().getFirst();
                 if(mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY || mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.PLAYING){
-                    if(this instanceof ResourceFileController controller){
+                    if(this instanceof ResourceFileController controller  && mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY){
                         controller.setupMediaPlayer(mediaView);
+                        controller.handlePlayPause();
                     }
                     stopTimer();
                 }else{
