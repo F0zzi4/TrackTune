@@ -18,10 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TrackGenreDAOTest {
 
-    private DatabaseManager db;
     private TrackGenreDAO trackGenreDAO;
-    private TrackDAO trackDAO;
-    private app.tracktune.model.genre.GenreDAO genreDAO;
 
     private int trackId;
     private int genreId1;
@@ -38,13 +35,13 @@ public class TrackGenreDAOTest {
         }
 
         DatabaseManager.setTestConnection(connection);
-        db = DatabaseManager.getInstance();
+        DatabaseManager db = DatabaseManager.getInstance();
         trackGenreDAO = new TrackGenreDAO(db);
-        trackDAO = new TrackDAO(db);
-        genreDAO = new app.tracktune.model.genre.GenreDAO(db);
+        TrackDAO trackDAO = new TrackDAO(db);
+        app.tracktune.model.genre.GenreDAO genreDAO = new app.tracktune.model.genre.GenreDAO(db);
         UserDAO userDAO = new UserDAO(db);
 
-        int userId = userDAO.insert(new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis())));
+        int userId = userDAO.insert(new Administrator("testUser", "passwordHash", "name", "surname", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis())));
         trackId = trackDAO.insert(new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userId));
 
         genreId1 = genreDAO.insert(new app.tracktune.model.genre.Genre("Test Genre 1", "Test Description 1"));

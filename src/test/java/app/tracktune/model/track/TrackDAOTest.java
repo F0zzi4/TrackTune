@@ -33,7 +33,6 @@ class TrackDAOTest {
     private TrackAuthorDAO trackAuthorDAO;
     private TrackInstrumentDAO trackInstrumentDAO;
     private ResourceDAO resourceDAO;
-    private UserDAO userDAO;
 
     private int userId;
     private int authorId;
@@ -59,9 +58,9 @@ class TrackDAOTest {
         trackAuthorDAO = new TrackAuthorDAO(db);
         trackInstrumentDAO = new TrackInstrumentDAO(db);
         resourceDAO = new ResourceDAO(db);
-        userDAO = new UserDAO(db);
+        UserDAO userDAO = new UserDAO(db);
 
-        Administrator testUser = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
+        Administrator testUser = new Administrator("testUser", "passwordHash", "name", "surname", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
         userId = userDAO.insert(testUser);
 
         authorId = authorDAO.insert(new Author(null, "Test Author", AuthorStatusEnum.ACTIVE));

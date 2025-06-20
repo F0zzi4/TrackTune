@@ -25,13 +25,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class TrackInstrumentDAOTest {
 
-    private DatabaseManager db;
     private TrackInstrumentDAO trackInstrumentDAO;
-    private TrackDAO trackDAO;
-    private MusicalInstrumentDAO instrumentDAO;
-    private UserDAO userDAO;
 
-    private int userID;
     private int trackId, trackId2;
     private int instrumentId1, instrumentId2, instrumentId3;
 
@@ -47,14 +42,14 @@ public class TrackInstrumentDAOTest {
         }
 
         DatabaseManager.setTestConnection(connection);
-        db = DatabaseManager.getInstance();
+        DatabaseManager db = DatabaseManager.getInstance();
         trackInstrumentDAO = new TrackInstrumentDAO(db);
-        trackDAO = new TrackDAO(db);
-        instrumentDAO = new MusicalInstrumentDAO(db);
-        userDAO = new UserDAO(db);
+        TrackDAO trackDAO = new TrackDAO(db);
+        MusicalInstrumentDAO instrumentDAO = new MusicalInstrumentDAO(db);
+        UserDAO userDAO = new UserDAO(db);
 
-        Administrator user = new Administrator("testuser", "passwordHash", "nome", "cognome", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
-        userID = userDAO.insert(user);
+        Administrator user = new Administrator("testUser", "passwordHash", "name", "surname", UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis()));
+        int userID = userDAO.insert(user);
 
         trackId = trackDAO.insert(new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userID));
         trackId2 = trackDAO.insert(new Track(null, "Test Track 2", new Timestamp(System.currentTimeMillis()), userID));
@@ -110,9 +105,7 @@ public class TrackInstrumentDAOTest {
         Integer id = trackInstrumentDAO.insert(new TrackInstrument(trackId, instrumentId1));
         trackInstrumentDAO.deleteById(id);
 
-        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> {
-            trackInstrumentDAO.getById(id);
-        });
+        assertThrows(app.tracktune.exceptions.SQLiteException.class, () -> trackInstrumentDAO.getById(id));
     }
 
     /**

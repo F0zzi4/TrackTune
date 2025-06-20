@@ -25,10 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TrackAuthorDAOTest {
 
-    private DatabaseManager db;
     private TrackAuthorDAO trackAuthorDAO;
-    private TrackDAO trackDAO;
-    private AuthorDAO authorDAO;
 
     private int trackId;
     private int authorId1;
@@ -48,14 +45,14 @@ public class TrackAuthorDAOTest {
         }
 
         DatabaseManager.setTestConnection(connection);
-        db = DatabaseManager.getInstance();
+        DatabaseManager db = DatabaseManager.getInstance();
         trackAuthorDAO = new TrackAuthorDAO(db);
-        trackDAO = new TrackDAO(db);
-        authorDAO = new AuthorDAO(db);
+        TrackDAO trackDAO = new TrackDAO(db);
+        AuthorDAO authorDAO = new AuthorDAO(db);
         UserDAO userDAO = new UserDAO(db);
 
         Administrator testUser = new Administrator(
-                "testuser", "password", "nome", "cognome",
+                "testUser", "password", "name", "surname",
                 UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis())
         );
         int userId = userDAO.insert(testUser);
