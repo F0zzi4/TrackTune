@@ -1,7 +1,7 @@
 package app.tracktune;
 
 import app.tracktune.exceptions.TrackTuneException;
-import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;

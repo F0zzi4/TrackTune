@@ -4,7 +4,7 @@ import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
 import app.tracktune.exceptions.UserNotFoundException;
-import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.model.user.*;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;

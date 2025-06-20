@@ -1,10 +1,10 @@
 package app.tracktune.controller.authenticatedUser;
 
 import app.tracktune.controller.Controller;
-import app.tracktune.controller.authentication.SessionManager;
+import app.tracktune.utils.SessionManager;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
-import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.model.user.AuthenticatedUser;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
