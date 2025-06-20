@@ -28,11 +28,8 @@ public class MusicalInstrumentDAOTest {
 
     private DatabaseManager db;
     private MusicalInstrumentDAO instrumentDAO;
-    private TrackDAO trackDAO;
     private TrackInstrumentDAO trackInstrumentDAO;
-    private UserDAO userDAO;
 
-    private int userId;
     private int trackId;
 
     /**
@@ -52,15 +49,15 @@ public class MusicalInstrumentDAOTest {
         DatabaseManager.setTestConnection(connection);
         db = DatabaseManager.getInstance();
         instrumentDAO = new MusicalInstrumentDAO(db);
-        trackDAO = new TrackDAO(db);
+        TrackDAO trackDAO = new TrackDAO(db);
         trackInstrumentDAO = new TrackInstrumentDAO(db);
-        userDAO = new UserDAO(db);
+        UserDAO userDAO = new UserDAO(db);
 
         Administrator testUser = new Administrator(
-                "testuser", "passwordHash", "nome", "cognome",
+                "testUser", "passwordHash", "name", "surname",
                 UserStatusEnum.ACTIVE, new Timestamp(System.currentTimeMillis())
         );
-        userId = userDAO.insert(testUser);
+        int userId = userDAO.insert(testUser);
 
         Track track = new Track(null, "Test Track", new Timestamp(System.currentTimeMillis()), userId);
         trackId = trackDAO.insert(track);
