@@ -92,20 +92,14 @@ public class Controller {
                 VBox vbox = (VBox) stackPane.getChildren().getFirst();
                 MediaView mediaView = (MediaView) vbox.getChildren().getFirst();
                 if(mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY || mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.PLAYING){
+                    if(this instanceof ResourceFileController controller){
+                        controller.setupMediaPlayer(mediaView);
+                    }
                     stopTimer();
                 }else{
                     resourceManager.setResource(resources.get(counter));
                     Node node = resourceManager.createMediaNode(stackPane.getPrefWidth(), stackPane.getPrefHeight(), false);
                     vbox.getChildren().set(counter, node);
-                    mediaView = (MediaView)node;
-                    if(mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY){
-                        if(this instanceof ResourceFileController controller){
-                            controller.resourceNode = mediaView;
-                            controller.mediaPlayer = mediaView.getMediaPlayer();
-                            controller.handlePlayPause();
-                            stopTimer();
-                        }
-                    }
                 }
             }
         }));

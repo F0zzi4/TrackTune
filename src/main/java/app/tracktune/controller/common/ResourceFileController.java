@@ -60,8 +60,7 @@ public class ResourceFileController extends Controller implements Initializable 
     @FXML private Button segmentButton;
 
     private final ResourceManager resourceManager = new ResourceManager();
-    public MediaPlayer mediaPlayer;
-    public Node resourceNode;
+    private MediaPlayer mediaPlayer;
     private Track track;
 
     // CONSTANTS
@@ -81,7 +80,7 @@ public class ResourceFileController extends Controller implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         try {
             Platform.runLater(() -> Main.root.setOnCloseRequest(_ -> disposeMediaPlayer()));
-            resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight(), false);
+            Node resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight(), false);
             boolean isMultimedia = resourceNode instanceof MediaView;
 
             if (!isMultimedia) {
@@ -100,7 +99,7 @@ public class ResourceFileController extends Controller implements Initializable 
             }
             else{
                 segmentButton.setVisible(true);
-                setupMediaPlayer();
+                setupMediaPlayer(resourceNode);
                 metadataBox.getChildren().add(setDetailsInfo());
             }
             startTimer(fileContainer, List.of(resourceManager.getResource()), resourceManager);
@@ -116,7 +115,7 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
-    public void setupMediaPlayer() {
+    public void setupMediaPlayer(Node resourceNode) {
         mediaPlayer = ((MediaView) resourceNode).getMediaPlayer();
 
         initSlider();
@@ -324,7 +323,7 @@ public class ResourceFileController extends Controller implements Initializable 
      * If an error occurs during playback, an alert is shown and the media player is disposed.
      */
     @FXML
-    public void handlePlayPause() {
+    private void handlePlayPause() {
         try {
             if (mediaPlayer != null) {
                 Node node = videoToolBox.getChildren().getFirst();
@@ -719,7 +718,7 @@ public class ResourceFileController extends Controller implements Initializable 
             String comment = data[2];
 
 //            if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf)){
-//                // do nothing
+//                // FOR FUTURE IMPLEMENTATIONS - COMMENT INTO PDF FILES
 //            }
 //            else {
                 try {
