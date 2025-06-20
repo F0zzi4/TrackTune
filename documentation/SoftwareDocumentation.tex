@@ -652,23 +652,15 @@ Questa sezione presenta l’architettura logica del sistema, ovvero come sono or
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.1 \textwidth]{./figures/uml_table_model}
-    \caption{Tabella UML delle classi relative al \textit{Model}}
+    \caption{Class Diagrams UML relative al \textit{Model}}
     \label{fig:uml_table_model}
 \end{figure}
-
-\subsection{Gestione dell’accesso ai dati (DAO)}
-Il sistema adotta il pattern \textit{Data Access Object} (DAO) per gestire l’accesso ai dati in modo modulare e disaccoppiato dalla logica applicativa.
-
-Per ciascuna entità principale del \textit{Model}, è presente una corrispondente classe DAO che si occupa delle operazioni di persistenza (inserimento, aggiornamento, eliminazione e lettura) più eventuali operazioni specifiche. Ogni DAO implementa un’interfaccia dedicata, garantendo così l’astrazione e la possibilità di eventuali sostituzioni o test unitari.
-
-L’accesso ai DAO all’interno dell’applicazione non avviene in modo diretto, ma è centralizzato attraverso una classe denominata \texttt{DAOProvider}. Questo componente funge da punto di accesso unico (simile a un \textit{factory singleton}) per l’ottenimento delle istanze DAO, garantendo una gestione coerente e facilitando eventuali modifiche future nel meccanismo di creazione o nella logica di accesso ai dati.
-
 
 \subsection{Diagramma UML delle classi - Control}
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.1 \textwidth]{./figures/uml_table_controller}
-    \caption{Tabella UML delle classi relative al \textit{Controller}}
+    \caption{Class Diagrams UML relative al \textit{Controller}}
     \label{fig:uml_table_controller}
 \end{figure}
 
@@ -707,7 +699,7 @@ Tutte le classi controller estendono la classe base \texttt{Controller} e implem
 \begin{figure}[H]
     \centering
     \includegraphics[width=1.1 \textwidth]{./figures/uml_table_altri_package}
-    \caption{Tabella UML delle classi relative a \textit{Utility ed Exception}}
+    \caption{Class Diagrams UML relative a \textit{Utility ed Exception}}
     \label{fig:uml_table_altri_package}
 \end{figure}
 
@@ -717,7 +709,39 @@ Tutte le classi controller estendono la classe base \texttt{Controller} e implem
 % =======================
 \section{Developing}
 % =======================
+\subsection{Gestione dell’accesso ai dati (DAO e DAOProvider)}
+Il sistema adotta il pattern \textit{Data Access Object} (DAO) per gestire l’accesso ai dati in modo modulare e disaccoppiato dalla logica applicativa.
+
+Per ciascuna entità principale del \textit{Model}, è presente una corrispondente classe DAO che si occupa delle operazioni di persistenza (inserimento, aggiornamento, eliminazione e lettura) più eventuali operazioni specifiche. Ogni DAO implementa un’interfaccia dedicata, garantendo così l’astrazione e la possibilità di eventuali sostituzioni o test unitari.
+
+L’accesso ai DAO all’interno dell’applicazione non avviene in modo diretto, ma è centralizzato attraverso una classe denominata \texttt{DAOProvider}. Questo componente funge da punto di accesso unico (simile a un \textit{factory singleton}) per l’ottenimento delle istanze DAO, garantendo una gestione coerente e facilitando eventuali modifiche future nel meccanismo di creazione o nella logica di accesso ai dati.
+
+
 \subsection{Design pattern utilizzati}
+
+Il sistema è stato progettato seguendo il pattern architetturale \textit{Model-View-Controller} (MVC), una struttura ampiamente adottata nello sviluppo di interfacce grafiche per separare le responsabilità delle diverse componenti software.
+
+Il pattern MVC suddivide l'applicazione in tre componenti principali:
+
+\begin{itemize}
+    \item \textbf{Model}: rappresenta la logica e lo stato dell’applicazione. Contiene i dati, le classi di dominio e la logica di accesso ai dati (DAO), indipendente dalla logica di presentazione.
+
+    \item \textbf{View}: è la parte visiva dell’applicazione, ovvero ciò che l’utente vede e con cui interagisce. In JavaFX, questa è rappresentata dai file \texttt{.fxml}, dai fogli di stile CSS e dai componenti grafici associati.
+
+    \item \textbf{Controller}: gestisce l’interazione tra Model e View. Riceve gli input dell’utente dalla View, elabora le richieste e aggiorna il Model o la View di conseguenza. I controller in JavaFX implementano l’interfaccia \texttt{Initializable} per gestire l’inizializzazione della scena.
+\end{itemize}
+
+\skip
+
+L'utilizzo del pattern MVC risulta particolarmente adatto in combinazione con JavaFX, poiché questa libreria supporta nativamente la separazione tra interfaccia grafica (FXML), logica di controllo (Controller) e dati (Model). In questo modo, il codice risulta più modulare, testabile e manutenibile.
+
+\subsection{Diagramma UML delle classi - Utility ed Exception}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7 \textwidth]{./figures/mvc_template}
+    \caption{Pattern MVC}
+    \label{fig:mvc_template}
+\end{figure}
 
 \subsection{Struttura del progetto}
 [Albero dei file principali]
