@@ -3,7 +3,7 @@ package app.tracktune.controller.admin;
 import app.tracktune.controller.Controller;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
-import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.model.genre.Genre;
 import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;

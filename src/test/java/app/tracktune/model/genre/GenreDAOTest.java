@@ -1,6 +1,6 @@
 package app.tracktune.model.genre;
 
-import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.utils.DBInit;
 import org.junit.jupiter.api.*;
 

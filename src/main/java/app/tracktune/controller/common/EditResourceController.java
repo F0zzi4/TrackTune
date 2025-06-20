@@ -5,7 +5,7 @@ import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
 import app.tracktune.exceptions.AuthorAlreadyExistsException;
 import app.tracktune.exceptions.TrackTuneException;
-import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorStatusEnum;
 import app.tracktune.model.genre.Genre;
