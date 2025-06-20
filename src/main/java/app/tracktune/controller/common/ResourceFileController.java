@@ -102,7 +102,8 @@ public class ResourceFileController extends Controller implements Initializable 
                 setupMediaPlayer(resourceNode);
                 metadataBox.getChildren().add(setDetailsInfo());
             }
-            startTimer(fileContainer, List.of(resourceManager.getResource()), resourceManager);
+            if(resourceManager.resource.getType() == ResourceTypeEnum.mp4)
+                startTimer(fileContainer, List.of(resourceManager.getResource()), resourceManager);
             setComments();
         } catch (TrackTuneException ex) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, ex.getMessage(), Alert.AlertType.ERROR);
@@ -323,7 +324,7 @@ public class ResourceFileController extends Controller implements Initializable 
      * If an error occurs during playback, an alert is shown and the media player is disposed.
      */
     @FXML
-    private void handlePlayPause() {
+    public void handlePlayPause() {
         try {
             if (mediaPlayer != null) {
                 Node node = videoToolBox.getChildren().getFirst();
