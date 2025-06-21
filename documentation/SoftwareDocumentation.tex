@@ -51,7 +51,6 @@ Si vuole progettare un sistema software per gestire la collezione e la condivisi
 di spartiti, testi, accordi, MIDI, MP3, video, link e molto altro, relativamente a brani 
 musicali di diversa tipologia/genere.
 
-\skip
 
 Gli utenti, previa autorizzazione dell'amministratore, devono poter caricare, 
 scaricare, commentare e interagire con i vari contenuti. Per ogni risorsa il sistema deve
@@ -669,33 +668,34 @@ Questa sezione presenta l’architettura logica del sistema, ovvero come sono or
 \end{figure}
 
 Il diagramma mostra la classe base \texttt{Controller} e tutte le sue sottoclassi organizzate nei seguenti pacchetti:
-\begin{lstlisting}[basicstyle=\ttfamily\small,label={lst:lstlisting}]
+\begin{lstlisting}[style=filetree]
 Controller
-├── common
-│   ├── AddResourceController
-│   ├── DiscoverController
-│   ├── EditResourceController
-│   ├── ResourceFileController
-│   ├── ResourcesController
-│   ├── TrackResourcesController
-│   └── TracksController
-├── admin
-│   ├── AdminDashboardController
-│   ├── AuthorsController
-│   ├── GenresController
-│   ├── InstrumentsController
-│   ├── RequestsController
-│   └── UsersController
-├── authenticatedUser
-│   ├── AuthenticatedUserDashboardController
-│   └── MeController
-├── authentication
-│   ├── AccountRequestController
-│   ├── LoginController
-│   └── SessionManager
-└── pendingUser
-    └── PendingUserDashboardController
+  common
+    AddResourceController
+    DiscoverController
+    EditResourceController
+    ResourceFileController
+    ResourcesController
+    TrackResourcesController
+    TracksController
+  admin
+    AdminDashboardController
+    AuthorsController
+    GenresController
+    InstrumentsController
+    RequestsController
+    UsersController
+  authenticatedUser
+    AuthenticatedUserDashboardController
+    MeController
+  authentication
+    AccountRequestController
+    LoginController
+    SessionManager
+  pendingUser
+    PendingUserDashboardController
 \end{lstlisting}
+
 
 Tutte le classi controller estendono la classe base \texttt{Controller} e implementano l'interfaccia \texttt{Initializable} di JavaFX.
 
@@ -720,7 +720,7 @@ Il pattern MVC suddivide l'applicazione in tre componenti principali:
     \item \textbf{Controller}: gestisce l’interazione tra Model e View. Riceve gli input dell’utente dalla View, elabora le richieste e aggiorna il Model o la View di conseguenza. I controller in JavaFX implementano l’interfaccia \texttt{Initializable} per gestire l’inizializzazione della scena.
 \end{itemize}
 
-\skip
+\bigskip
 
 L'utilizzo del pattern MVC risulta particolarmente adatto in combinazione con JavaFX, poiché questa libreria supporta nativamente la separazione tra interfaccia grafica (FXML), logica di controllo (Controller) e dati (Model). In questo modo, il codice risulta più modulare, testabile e manutenibile.
 
@@ -732,7 +732,34 @@ L'utilizzo del pattern MVC risulta particolarmente adatto in combinazione con Ja
 \end{figure}
 
 \subsection{Struttura del progetto}
-[Albero dei file principali]
+\subsection{Struttura del progetto}
+
+Di seguito è riportato l’albero dei file principali del progetto, illustrante la suddivisione in moduli, package e risorse:
+
+\begin{lstlisting}[style=filetree]
+TrackTune/
+  src/
+    main/
+      java/                   % codice sorgente principale
+        app/tracktune/
+          config/
+          controller/
+          exception/
+          interfaces/
+          model/
+          utils/
+            DatabaseManager.java
+            DBInit.java
+          view/
+          Main.java
+      resources/               % FXML, CSS, immagini
+    test/                     % test automatici (JUnit)
+pom.xml                      % file di build Maven
+\end{lstlisting}
+
+
+
+
 
 % =======================
 \section{Developing}
