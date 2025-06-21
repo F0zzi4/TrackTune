@@ -1,6 +1,6 @@
 package app.tracktune.model.track;
 
-import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.author.AuthorDAO;
 import app.tracktune.model.author.AuthorStatusEnum;

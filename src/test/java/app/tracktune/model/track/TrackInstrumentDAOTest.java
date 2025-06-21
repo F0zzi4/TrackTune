@@ -1,6 +1,6 @@
 package app.tracktune.model.track;
 
-import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.model.musicalInstrument.MusicalInstrument;
 import app.tracktune.model.musicalInstrument.MusicalInstrumentDAO;
 import app.tracktune.model.user.Administrator;

@@ -3,7 +3,7 @@ package app.tracktune.model.resource;
 import app.tracktune.Main;
 import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.interfaces.DAO;
-import app.tracktune.model.DatabaseManager;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.utils.Strings;
 
 import java.sql.*;

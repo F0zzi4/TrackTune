@@ -1,8 +1,7 @@
-package app.tracktune.model;
+package app.tracktune.utils;
 
 import app.tracktune.config.AppConfig;
-import app.tracktune.utils.DBInit;
-import app.tracktune.utils.Strings;
+import app.tracktune.model.DAOProvider;
 
 import java.io.File;
 import java.sql.*;
