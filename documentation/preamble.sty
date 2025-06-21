@@ -96,6 +96,65 @@
     mathescape=true,
 }
 
+% Definizione linguaggio Java
+\lstdefinelanguage{Java}{
+    morekeywords={
+        abstract, assert, boolean, break, byte, case, catch, char, class, const, continue,
+        default, do, double, else, enum, extends, final, finally, float, for, goto, if,
+        implements, import, instanceof, int, interface, long, native, new, package,
+        private, protected, public, return, short, static, strictfp, super, switch,
+        synchronized, this, throw, throws, transient, try, void, volatile, while
+    },
+    sensitive=true,
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    literate={
+            {{\@}TestInstance}{{{\color{magenta}\textbf{@TestInstance}}}}1
+            {@BeforeAll}{{{\color{magenta}\textbf{@BeforeAll}}}}1
+            {@BeforeEach}{{{\color{magenta}\textbf{@BeforeEach}}}}1
+            {@AfterEach}{{{\color{magenta}\textbf{@AfterEach}}}}1
+            {@DisplayName}{{{\color{magenta}\textbf{@DisplayName}}}}1
+            {@Disabled}{{{\color{magenta}\textbf{@Disabled}}}}1
+            {@Test }{{{\color{magenta}\textbf{@Test }}}}1
+    }
+}
+
+% Nuovo stile per bash
+\lstdefinestyle{bash-style}{
+    language=bash,
+    basicstyle=\ttfamily\small\color{black},
+    keywordstyle=\color{teal}\bfseries,
+    commentstyle=\color{gray}\itshape,
+    stringstyle=\color{purple},
+    numbers=none,
+    backgroundcolor=\color{yellow!10},
+    frame=single,
+    breaklines=true,
+    captionpos=b
+}
+
+% Stile personalizzato per il codice Java
+\lstdefinestyle{java-style}{
+    language=Java,
+    backgroundcolor=\color{blue!5},
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{gray!60}\itshape,
+    stringstyle=\color{green!60!black},
+    numberstyle=\tiny\color{gray},
+    numbers=left,
+    stepnumber=1,
+    frame=single,
+    rulecolor=\color{blue!40},
+    tabsize=2,
+    breaklines=true,
+    breakatwhitespace=true,
+    captionpos=b,
+    frameround=tttt,
+    showstringspaces=false
+}
+
 % ----- Grafici e figure -----
 \usepackage{tikz}
 \usetikzlibrary{shapes.misc}
