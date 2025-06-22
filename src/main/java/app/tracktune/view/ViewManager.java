@@ -3,7 +3,7 @@ package app.tracktune.view;
 import app.tracktune.Main;
 import app.tracktune.config.AppConfig;
 import app.tracktune.controller.Controller;
-import app.tracktune.controller.authentication.SessionManager;
+import app.tracktune.utils.SessionManager;
 import app.tracktune.model.user.User;
 import app.tracktune.utils.Frames;
 import app.tracktune.utils.Strings;

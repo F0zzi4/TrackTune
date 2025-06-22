@@ -11,6 +11,7 @@ import app.tracktune.model.track.TrackGenreDAO;
 import app.tracktune.model.track.TrackInstrumentDAO;
 import app.tracktune.model.user.PendingUserDAO;
 import app.tracktune.model.user.UserDAO;
+import app.tracktune.utils.DatabaseManager;
 
 public class DAOProvider {
     private final AuthorDAO authorDAO;

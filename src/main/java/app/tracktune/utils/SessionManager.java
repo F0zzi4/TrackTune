@@ -1,4 +1,4 @@
-package app.tracktune.controller.authentication;
+package app.tracktune.utils;
 
 import app.tracktune.model.user.User;
 

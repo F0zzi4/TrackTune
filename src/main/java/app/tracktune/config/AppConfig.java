@@ -7,8 +7,8 @@ public class AppConfig {
     public static final String APP_TITLE = "TrackTune";
     
     // Data storage settings
-    public static final String DATA_DIR = "classes/database";               // For deployment
-    // public static final String DATA_DIR = "src/resources/database";      // For debugging
+    //public static final String DATA_DIR = "classes/database";               // For deployment
+    public static final String DATA_DIR = "src/resources/database";      // For debugging
     public static final String DATABASE_PATH = DATA_DIR + "/database.db";
     
     // Create data directory if it doesn't exist
