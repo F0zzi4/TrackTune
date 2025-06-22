@@ -2,7 +2,9 @@ package app.tracktune.controller.authenticatedUser;
 
 import app.tracktune.controller.Controller;
 import app.tracktune.model.user.AuthenticatedUser;
+import app.tracktune.utils.BrowserManager;
 import app.tracktune.utils.Frames;
+import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -22,6 +24,8 @@ public class AuthenticatedUserDashboardController extends Controller implements 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ResourceManager.initialize();
+        BrowserManager.initialize();
         dashboardContent = mainContent.getChildren().getFirst();
         if (ViewManager.getSessionUser() instanceof AuthenticatedUser authenticatedUser) {
             LblWelcome.setText(LblWelcome.getText() + " " + authenticatedUser.getName()+" "+authenticatedUser.getSurname());

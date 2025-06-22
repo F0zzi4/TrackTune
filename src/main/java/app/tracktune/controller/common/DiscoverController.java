@@ -33,10 +33,15 @@ public class DiscoverController extends Controller implements Initializable {
     @FXML private Tab tabMostPopular;
     @FXML private Tab tabMostCommented;
     @FXML private Tab tabLastCommented;
-    private final ResourceManager resourceManager = new ResourceManager();
+
+    // SINGLETONS
+    private ResourceManager resourceManager;
+    private BrowserManager browserManager;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        browserManager = BrowserManager.getInstance();
+        resourceManager = ResourceManager.getInstance();
         populateTab(tabMostRecent, SQLiteScripts.getMostRecentResources(Main.dbManager));
         populateTab(tabMostPopular, SQLiteScripts.getMostPopularResources(Main.dbManager));
         populateTab(tabMostCommented, SQLiteScripts.getMostCommentedResources(Main.dbManager));
@@ -144,7 +149,7 @@ public class DiscoverController extends Controller implements Initializable {
         try{
             if(resource.getType().equals(ResourceTypeEnum.link)){
                 String url = new String(resource.getData(), StandardCharsets.UTF_8);
-                BrowserManager.browse(url);
+                browserManager.browse(url);
             }else {
                 FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
                 loader.setControllerFactory(_ -> new ResourceFileController(resource));

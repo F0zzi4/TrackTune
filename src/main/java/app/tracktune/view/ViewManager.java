@@ -29,6 +29,7 @@ import javafx.geometry.Insets;
 import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import static app.tracktune.Main.root;
@@ -37,6 +38,7 @@ import static app.tracktune.Main.root;
  * Dedicated class to manage view section in MVC pattern
  */
 public class ViewManager {
+    // SINGLETON
     private static SessionManager sessionManager;
 
     /**
@@ -51,9 +53,9 @@ public class ViewManager {
         root.setTitle(AppConfig.APP_TITLE);
         root.setResizable(false);
         root.getIcons().addAll(
-                new Image(Main.class.getResource(Frames.MAIN_ICON_192_PATH ).toExternalForm()),
-                new Image(Main.class.getResource(Frames.MAIN_ICON_256_PATH ).toExternalForm()),
-                new Image(Main.class.getResource(Frames.MAIN_ICON_PATH).toExternalForm())
+                new Image(Objects.requireNonNull(Main.class.getResource(Frames.MAIN_ICON_192_PATH)).toExternalForm()),
+                new Image(Objects.requireNonNull(Main.class.getResource(Frames.MAIN_ICON_256_PATH)).toExternalForm()),
+                new Image(Objects.requireNonNull(Main.class.getResource(Frames.MAIN_ICON_PATH)).toExternalForm())
         );
         root.setScene(scene);
         root.show();
@@ -129,7 +131,7 @@ public class ViewManager {
         alert.initOwner(root);
 
         DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(Main.class.getResource("/style/alert-style.css").toExternalForm());
+        dialogPane.getStylesheets().add(Objects.requireNonNull(Main.class.getResource("/style/alert-style.css")).toExternalForm());
         dialogPane.getStyleClass().add("custom-alert");
 
         alert.showAndWait();
@@ -148,7 +150,7 @@ public class ViewManager {
         confirmAlert.getButtonTypes().setAll(noButton, yesButton);
 
         DialogPane dialogPane = confirmAlert.getDialogPane();
-        dialogPane.getStylesheets().add(Main.class.getResource("/style/alert-style.css").toExternalForm());
+        dialogPane.getStylesheets().add(Objects.requireNonNull(Main.class.getResource("/style/alert-style.css")).toExternalForm());
         dialogPane.getStyleClass().add("custom-alert");
 
         return confirmAlert.showAndWait().filter(response -> response == yesButton).isPresent();
@@ -163,7 +165,7 @@ public class ViewManager {
 
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getStylesheets().add(
-                Main.class.getResource("/style/alert-style.css").toExternalForm()
+                Objects.requireNonNull(Main.class.getResource("/style/alert-style.css")).toExternalForm()
         );
         dialogPane.getStyleClass().add("custom-alert");
 
@@ -199,7 +201,7 @@ public class ViewManager {
         dialog.getDialogPane().setContent(content);
 
         DialogPane dialogPane = dialog.getDialogPane();
-        dialogPane.getStylesheets().add(Main.class.getResource("/style/alert-style.css").toExternalForm());
+        dialogPane.getStylesheets().add(Objects.requireNonNull(Main.class.getResource("/style/alert-style.css")).toExternalForm());
         dialogPane.getStyleClass().add("custom-alert");
 
         dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);

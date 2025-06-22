@@ -1,9 +1,7 @@
 package app.tracktune;
 
 import app.tracktune.exceptions.TrackTuneException;
-import app.tracktune.utils.DatabaseManager;
-import app.tracktune.utils.Frames;
-import app.tracktune.utils.Strings;
+import app.tracktune.utils.*;
 import app.tracktune.view.ViewManager;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -35,7 +33,7 @@ public class Main extends Application {
     /**
      * Initialize connection with database
      */
-    public void initDatabase(){
+    private void initDatabase(){
         dbManager = DatabaseManager.getInstance();
         if(!dbManager.isConnected()){
             Alert alert = new Alert(Alert.AlertType.ERROR);

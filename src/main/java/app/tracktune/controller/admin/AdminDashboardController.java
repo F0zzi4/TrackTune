@@ -2,7 +2,9 @@ package app.tracktune.controller.admin;
 
 import app.tracktune.controller.Controller;
 import app.tracktune.model.user.Administrator;
+import app.tracktune.utils.BrowserManager;
 import app.tracktune.utils.Frames;
+import app.tracktune.utils.ResourceManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -31,6 +33,8 @@ public class AdminDashboardController extends Controller implements Initializabl
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ResourceManager.initialize();
+        BrowserManager.initialize();
         dashboardContent = mainContent.getChildren().getFirst();
         if (ViewManager.getSessionUser() instanceof Administrator admin) {
             LblWelcome.setText(LblWelcome.getText() + " " + admin.getName()+" "+admin.getSurname());

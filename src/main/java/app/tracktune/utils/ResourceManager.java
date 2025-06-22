@@ -25,9 +25,31 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 public final class ResourceManager {
-    public Resource resource;
+    private static ResourceManager instance;
+    private Resource resource;
 
-    public ResourceManager(){}
+    /**
+     * Create the instance of the resource manager following singleton pattern
+     */
+    private ResourceManager() {}
+
+    /**
+     * Retrieves the singleton instance of ResourceManager.
+     *
+     * @return the ResourceManager instance
+     */
+    public static ResourceManager getInstance() {
+        return instance;
+    }
+
+    /**
+     * Initializes the resource manager safely
+     */
+    public static void initialize() {
+        if (instance == null) {
+            instance = new ResourceManager();
+        }
+    }
 
     public Node createMediaNode(double width, double height, boolean isPreview) throws TrackTuneException {
         ResourceTypeEnum type = resource.getType();

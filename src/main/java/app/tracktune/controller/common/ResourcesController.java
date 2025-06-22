@@ -40,14 +40,19 @@ public class ResourcesController extends Controller implements Initializable {
     @FXML private Button btnPrev;
     @FXML private Button btnNext;
 
-    private final ResourceManager resourceManager = new ResourceManager();
     private List<Resource> resources = new ArrayList<>();
-    private int currentPage = 0;
-    private final int itemsPerPage = 6;
+    private BrowserManager browserManager;
+    private ResourceManager resourceManager;
     protected Resource resource;
+
+    // PAGINATION
+    private final int itemsPerPage = 6;
+    private int currentPage = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle res) {
+        browserManager = BrowserManager.getInstance();
+        resourceManager = ResourceManager.getInstance();
         Platform.runLater(() -> Main.root.setOnCloseRequest(_ -> dispose(resourcesContainer)));
         resources = DatabaseManager.getDAOProvider().getResourceDAO().getAllByUserID(SessionManager.getInstance().getUser().getId());
 
@@ -89,7 +94,7 @@ public class ResourcesController extends Controller implements Initializable {
         try{
             if(resource.getType().equals(ResourceTypeEnum.link)){
                 String url = new String(resource.getData(), StandardCharsets.UTF_8);
-                BrowserManager.browse(url);
+                browserManager.browse(url);
             }else{
                 FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
                 loader.setControllerFactory(_ -> new ResourceFileController(resource));

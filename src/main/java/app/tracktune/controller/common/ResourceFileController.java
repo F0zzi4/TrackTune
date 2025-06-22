@@ -59,7 +59,7 @@ public class ResourceFileController extends Controller implements Initializable 
     @FXML private VBox commentVBox;
     @FXML private Button segmentButton;
 
-    private final ResourceManager resourceManager = new ResourceManager();
+    private final ResourceManager resourceManager;
     private MediaPlayer mediaPlayer;
     private Track track;
 
@@ -71,8 +71,8 @@ public class ResourceFileController extends Controller implements Initializable 
     private Label lblDuration;
     private Stage fullStage = null;
 
-
     public ResourceFileController(Resource resource) {
+        resourceManager = ResourceManager.getInstance();
         resourceManager.setResource(resource);
     }
 
@@ -94,7 +94,7 @@ public class ResourceFileController extends Controller implements Initializable 
                 metadataBox.getChildren().add(setDetailsInfo());
                 metadataBox.setAlignment(Pos.CENTER);
 
-                if(resourceManager.resource.getType().equals(ResourceTypeEnum.pdf))
+                if(resourceManager.getResource().getType().equals(ResourceTypeEnum.pdf))
                     segmentButton.setVisible(true);
             }
             else{
@@ -102,7 +102,7 @@ public class ResourceFileController extends Controller implements Initializable 
                 setupMediaPlayer(resourceNode);
                 metadataBox.getChildren().add(setDetailsInfo());
             }
-            if(resourceManager.resource.getType() == ResourceTypeEnum.mp4)
+            if(resourceManager.getResource().getType() == ResourceTypeEnum.mp4)
                 startTimer(fileContainer, List.of(resourceManager.getResource()), resourceManager);
             setComments();
         } catch (TrackTuneException ex) {
@@ -129,7 +129,7 @@ public class ResourceFileController extends Controller implements Initializable 
         applyStyles();
 
         VBox videoLayout = new VBox();
-        if (resourceManager.resource.getType().equals(ResourceTypeEnum.mp3)) {
+        if (resourceManager.getResource().getType().equals(ResourceTypeEnum.mp3)) {
             Label label = new Label(Strings.AUDIO_FILE);
             label.setWrapText(true);
             label.getStyleClass().add("audio-label");
@@ -171,7 +171,7 @@ public class ResourceFileController extends Controller implements Initializable 
         box.setAlignment(Pos.CENTER_LEFT);
         box.setSpacing(5);
 
-        track = DatabaseManager.getDAOProvider().getTrackDAO().getTrackByResourceId(resourceManager.resource.getId());
+        track = DatabaseManager.getDAOProvider().getTrackDAO().getTrackByResourceId(resourceManager.getResource().getId());
         String title = track.getTitle();
         box.getChildren().add(createMetadataRow(Strings.TRACKS, title));
 
@@ -190,17 +190,17 @@ public class ResourceFileController extends Controller implements Initializable 
                 .collect(Collectors.joining(", "));
         box.getChildren().add(createMetadataRow(Strings.INSTRUMENTS, instruments));
 
-        box.getChildren().add(createMetadataRow(Strings.FILE_FORMAT, resourceManager.resource.getType().toString()));
-        box.getChildren().add(createMetadataRow(Strings.RESOURCE_SIZE, humanReadableByteCount(resourceManager.resource.getData().length)));
+        box.getChildren().add(createMetadataRow(Strings.FILE_FORMAT, resourceManager.getResource().getType().toString()));
+        box.getChildren().add(createMetadataRow(Strings.RESOURCE_SIZE, humanReadableByteCount(resourceManager.getResource().getData().length)));
 
-        if(resourceManager.resource instanceof MultimediaResource multimediaResource) {
+        if(resourceManager.getResource() instanceof MultimediaResource multimediaResource) {
             mediaPlayer.setOnReady(() -> {
                 metadataBox.getChildren().add(createMetadataRow(Strings.DURATION, formatDuration(mediaPlayer.getTotalDuration())));
                 metadataBox.getChildren().add(createMetadataRow(Strings.REGISTERED_DATA, multimediaResource.getResourceDate().toString()));
             });
         }
 
-        User user = DatabaseManager.getDAOProvider().getUserDAO().getById(resourceManager.resource.getUserID());
+        User user = DatabaseManager.getDAOProvider().getUserDAO().getById(resourceManager.getResource().getUserID());
         box.getChildren().add(createMetadataRow(Strings.UPLOADED, user.getName() + " " + user.getSurname()));
 
         return box;
@@ -537,7 +537,7 @@ public class ResourceFileController extends Controller implements Initializable 
         deleteButton.setGraphic(deleteIcon);
         deleteButton.getStyleClass().add("delete-comment");
 
-        HBox buttonsBox = (ViewManager.getSessionUser() instanceof Administrator || resourceManager.resource.getUserID() == ViewManager.getSessionUser().getId() || Objects.equals(comment.getUserID(), ViewManager.getSessionUser().getId()))
+        HBox buttonsBox = (ViewManager.getSessionUser() instanceof Administrator || resourceManager.getResource().getUserID() == ViewManager.getSessionUser().getId() || Objects.equals(comment.getUserID(), ViewManager.getSessionUser().getId()))
                 ? new HBox(5, replyButton, deleteButton)
                 : new HBox(5, replyButton);
         buttonsBox.setAlignment(Pos.CENTER_RIGHT);
@@ -595,7 +595,7 @@ public class ResourceFileController extends Controller implements Initializable 
             roleLB.getStyleClass().add("comment-author-admin");
 
         }
-        else if(resourceManager.resource.isAuthor()){
+        else if(resourceManager.getResource().isAuthor()){
             commentBox.getStyleClass().add("comment-box-author-interpreter");
             roleLB = new Label(Strings.AUTHOR_INTERPRETER);
             roleLB.getStyleClass().add("comment-author-interpreter");

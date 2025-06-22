@@ -34,5 +34,7 @@ module app.tracktune {
     exports app.tracktune.model.track;
     exports app.tracktune.model.musicalInstrument;
     exports app.tracktune.model.comments;
+    exports app.tracktune.exceptions;
+    exports app.tracktune.view;
     opens app.tracktune.utils to javafx.fxml;
 }

@@ -4,18 +4,13 @@ import app.tracktune.Main;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
-import app.tracktune.utils.SessionManager;
-import app.tracktune.utils.DatabaseManager;
+import app.tracktune.utils.*;
 import app.tracktune.model.author.Author;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.model.resource.ResourceTypeEnum;
 import app.tracktune.model.track.Track;
 import app.tracktune.model.track.TrackAuthor;
 import app.tracktune.model.user.Administrator;
-import app.tracktune.utils.BrowserManager;
-import app.tracktune.utils.Frames;
-import app.tracktune.utils.ResourceManager;
-import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -43,11 +38,16 @@ public class TrackResourcesController extends Controller implements Initializabl
     @FXML private Button btnPrev;
     @FXML private Button btnNext;
 
-    private final ResourceManager resourceManager = new ResourceManager();
     private List<Resource> resources = new ArrayList<>();
+    private final Track track;
+
+    // SINGLETONS
+    private ResourceManager resourceManager;
+    private BrowserManager browserManager;
+
+    // PAGINATION
     private int currentPage = 0;
     private final int itemsPerPage = 6;
-    private final Track track;
 
     public TrackResourcesController(Track track) {
         this.track = track;
@@ -55,6 +55,8 @@ public class TrackResourcesController extends Controller implements Initializabl
 
     @Override
     public void initialize(URL location, ResourceBundle res) {
+        browserManager = BrowserManager.getInstance();
+        resourceManager = ResourceManager.getInstance();
         Platform.runLater(() -> Main.root.setOnCloseRequest(_ -> dispose(resourcesContainer)));
         resources = DatabaseManager.getDAOProvider().getResourceDAO().getAllByTrackID(track.getId());
 
@@ -93,7 +95,7 @@ public class TrackResourcesController extends Controller implements Initializabl
         try{
             if(resource.getType().equals(ResourceTypeEnum.link)){
                 String url = new String(resource.getData(), StandardCharsets.UTF_8);
-                BrowserManager.browse(url);
+                browserManager.browse(url);
             }else{
                 FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCE_FILE_VIEW_PATH));
                 loader.setControllerFactory(_ -> new ResourceFileController(resource));
