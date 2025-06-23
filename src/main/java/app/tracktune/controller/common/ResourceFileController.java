@@ -71,11 +71,34 @@ public class ResourceFileController extends Controller implements Initializable 
     private Label lblDuration;
     private Stage fullStage = null;
 
+    /**
+     * Constructs a {@code ResourceFileController} and initializes the {@link ResourceManager}
+     * with the provided resource.
+     *
+     * @param resource the resource to be managed and displayed by this controller
+     */
     public ResourceFileController(Resource resource) {
         resourceManager = ResourceManager.getInstance();
         resourceManager.setResource(resource);
     }
 
+    /**
+     * Initializes the controller and sets up the media or resource display based on the provided resource type.
+     * <p>
+     * This method configures the UI layout and event handling for the resource view. If the resource is a multimedia file
+     * (such as video or audio), the media player is set up and a timer is started to track media readiness.
+     * Non-multimedia resources (e.g., images or PDFs) are displayed without media controls.
+     * <p>
+     * Additionally:
+     * <ul>
+     *     <li>Sets the window close event to properly dispose of the media player.</li>
+     *     <li>Displays resource metadata and enables specific UI components based on resource type (e.g., segment button for PDFs and videos).</li>
+     *     <li>Handles exceptions by showing an error alert and safely returning to the previous view.</li>
+     * </ul>
+     *
+     * @param location  the location used to resolve relative paths for the root object (unused in this method)
+     * @param resources the resources used to localize the root object (unused in this method)
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -116,6 +139,20 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    /**
+     * Configures and initializes the media player UI components for the provided media node.
+     * <p>
+     * This method performs the following actions:
+     * <ul>
+     *     <li>Extracts the {@link MediaPlayer} from the given {@link MediaView} node.</li>
+     *     <li>Initializes the progress slider, time labels, and their event listeners.</li>
+     *     <li>Creates and styles the video or audio control layout based on the resource type.</li>
+     *     <li>Updates the UI to display the media player and enables media controls.</li>
+     *     <li>Attaches a listener to update time labels as the media plays.</li>
+     * </ul>
+     *
+     * @param resourceNode the {@link Node} containing the media player to be configured
+     */
     public void setupMediaPlayer(Node resourceNode) {
         mediaPlayer = ((MediaView) resourceNode).getMediaPlayer();
 
@@ -156,6 +193,13 @@ public class ResourceFileController extends Controller implements Initializable 
         handlePlayPause();
     }
 
+    /**
+     * Loads and displays all comments associated with the current resource.
+     * <p>
+     * For each comment retrieved from the database, the corresponding user is also fetched.
+     * If the user exists, the comment is added to the user interface.
+     * </p>
+     */
     private void setComments() {
         if (resourceManager.getResource() != null) {
             for (Comment comment : DatabaseManager.getDAOProvider().getCommentDAO().getAllCommentByResource(resourceManager.getResource().getId())) {
@@ -166,6 +210,23 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    /**
+     * Creates and returns a {@link VBox} containing detailed metadata information about the current resource.
+     * <p>
+     * The displayed details include:
+     * <ul>
+     *     <li>Track title</li>
+     *     <li>Authors associated with the track</li>
+     *     <li>Genres linked to the track</li>
+     *     <li>Musical instruments involved</li>
+     *     <li>File format and size</li>
+     *     <li>For multimedia resources, duration and registration date (added once media is ready)</li>
+     *     <li>Name of the user who uploaded the resource</li>
+     * </ul>
+     * </p>
+     *
+     * @return a {@code VBox} node containing the metadata rows to be displayed in the UI
+     */
     private VBox setDetailsInfo() {
         VBox box = new VBox();
         box.setAlignment(Pos.CENTER_LEFT);
@@ -206,6 +267,21 @@ public class ResourceFileController extends Controller implements Initializable 
         return box;
     }
 
+    /**
+     * Creates an {@link HBox} representing a single row of metadata with a title and its corresponding value.
+     * <p>
+     * The row contains two labels:
+     * <ul>
+     *     <li>A title label styled with "metadata-label"</li>
+     *     <li>A value label styled with "metadata-value". If the value is null, displays "N/A"</li>
+     * </ul>
+     * The row is aligned to the left with a spacing of 5 pixels between the labels.
+     * </p>
+     *
+     * @param title the title or name of the metadata field
+     * @param value the value associated with the metadata field; may be null
+     * @return an {@code HBox} containing the formatted metadata title and value labels
+     */
     private HBox createMetadataRow(String title, String value) {
         Label lblTitle = new Label(title);
         lblTitle.getStyleClass().add("metadata-label");
@@ -217,6 +293,16 @@ public class ResourceFileController extends Controller implements Initializable 
         return row;
     }
 
+    /**
+     * Converts a byte count into a human-readable string using binary prefixes (KB, MB, GB, etc.).
+     * <p>
+     * For example, 1536 bytes will be converted to "1.5 KB".
+     * If the byte count is less than 1024, it returns the value in bytes with "B" suffix.
+     * </p>
+     *
+     * @param bytes the number of bytes to convert
+     * @return a human-readable string representation of the byte count with appropriate unit
+     */
     private String humanReadableByteCount(long bytes) {
         int unit = 1024;
         if (bytes < unit) return bytes + " B";
@@ -225,6 +311,14 @@ public class ResourceFileController extends Controller implements Initializable 
         return String.format("%.1f %sB", bytes / Math.pow(unit, exp), pre);
     }
 
+    /**
+     * Initializes the progress slider used to display and control media playback progress.
+     * <p>
+     * The slider is created with a range from 0 to 100 and initial value 0.
+     * Its preferred width is set to match the width of the file container.
+     * The slider is initially disabled and set to always grow horizontally within its container.
+     * </p>
+     */
     private void initSlider() {
         sliderProgress = new Slider(0, 100, 0);
         sliderProgress.setPrefWidth(fileContainer.getPrefWidth());
@@ -232,6 +326,13 @@ public class ResourceFileController extends Controller implements Initializable 
         HBox.setHgrow(sliderProgress, Priority.ALWAYS);
     }
 
+    /**
+     * Initializes the timer labels used to display the current playback time and total duration.
+     * <p>
+     * Both labels are initialized with "00:00" and their minimum widths are set to their preferred sizes
+     * to ensure proper layout.
+     * </p>
+     */
     private void initLabels() {
         lblTimer = new Label("00:00");
         lblDuration = new Label("00:00");
@@ -239,12 +340,26 @@ public class ResourceFileController extends Controller implements Initializable 
         lblDuration.setMinWidth(Label.USE_PREF_SIZE);
     }
 
+    /**
+     * Applies CSS style classes to the media controls.
+     * <p>
+     * Adds "media-slider" style class to the slider,
+     * and "media-time-label" style class to the timer and duration labels.
+     * </p>
+     */
     private void applyStyles() {
         sliderProgress.getStyleClass().add("media-slider");
         lblTimer.getStyleClass().add("media-time-label");
         lblDuration.getStyleClass().add("media-time-label");
     }
 
+    /**
+     * Sets up listeners for the slider to handle user interaction.
+     * <p>
+     * - When the slider's value is no longer changing (dragging finished), it triggers seeking to the new position.
+     * - When the slider's value changes, it updates the slider's visual style accordingly.
+     * </p>
+     */
     private void setupSliderListeners() {
         sliderProgress.valueChangingProperty().addListener((_, _, isChanging) -> {
             if (!isChanging) {
@@ -255,6 +370,15 @@ public class ResourceFileController extends Controller implements Initializable 
         sliderProgress.valueProperty().addListener((_, _, newVal) -> updateSliderStyle(newVal.doubleValue()));
     }
 
+    /**
+     * Updates the playback time labels and slider progress based on the current media time.
+     * <p>
+     * Sets the elapsed time label and remaining time label (with a preceding "-").
+     * Updates the slider's value to reflect the playback progress unless the slider is currently being dragged.
+     * </p>
+     *
+     * @param newTime the current playback time of the media
+     */
     private void updateTimeLabels(javafx.util.Duration newTime) {
         lblTimer.setText(formatDuration(newTime));
         javafx.util.Duration total = mediaPlayer.getTotalDuration();
@@ -266,6 +390,12 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    /**
+     * Seeks the media player to the position corresponding to the current slider value.
+     * <p>
+     * Calculates the seek time as a percentage of the total media duration.
+     * </p>
+     */
     private void seekToSliderPosition() {
         double total = mediaPlayer.getTotalDuration().toSeconds();
         if (total > 0) {
@@ -274,6 +404,14 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    /**
+     * Seeks the media player to a specific time and updates the slider position accordingly.
+     * <p>
+     * If the media player and time are valid, the player is seeked and slider value is updated to reflect the new position.
+     * </p>
+     *
+     * @param time the target playback time to seek to
+     */
     private void seekTo(Duration time) {
         if (mediaPlayer != null && time != null) {
             mediaPlayer.seek(time);
@@ -285,6 +423,14 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    /**
+     * Updates the visual style of the slider track to indicate playback progress.
+     * <p>
+     * Uses a linear gradient background to fill the slider track proportionally to the given progress percentage.
+     * </p>
+     *
+     * @param progress the playback progress percentage (0.0 - 100.0)
+     */
     private void updateSliderStyle(double progress) {
         String css = String.format(Locale.US,
                 "-fx-background-color: linear-gradient(to right, " +
@@ -298,7 +444,12 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
-
+    /**
+     * Formats a JavaFX Duration into a "mm:ss" string.
+     *
+     * @param duration the duration to format
+     * @return a string formatted as "minutes:seconds" with zero padding
+     */
     private String formatDuration(javafx.util.Duration duration) {
         int minutes = (int) duration.toMinutes();
         int seconds = (int) (duration.toSeconds() % 60);
@@ -466,6 +617,18 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    /**
+     * Handles the action to display the media player in a full-screen view.
+     * <p>
+     * Creates a new {@link Stage} with a {@link MediaView} that uses the current {@link MediaPlayer}.
+     * The media view is resized to fit the primary screen while preserving its aspect ratio.
+     * The full-screen stage closes when the ESC key is pressed.
+     * </p>
+     * <p>
+     * If the media player is not initialized, the method returns without action.
+     * In case of exceptions, an error alert is shown and the error message is logged.
+     * </p>
+     */
     @FXML
     void handleFullView() {
         if (mediaPlayer == null) return;
@@ -502,12 +665,22 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    /**
+     * Handles the action of sending a new comment.
+     * <p>
+     * Retrieves the text from the comment input field and, if it is not empty,
+     * creates a new {@link Comment} object with the current timestamp, current user ID,
+     * and the current resource ID. The comment is then inserted into the database.
+     * After insertion, a new {@link Comment} with the generated ID is created and added to the view.
+     * Finally, the comment input field is cleared.
+     * </p>
+     */
     @FXML
     private void handleSendComment() {
         String commentText = commentField.getText();
         Comment c;
         if (commentText != null && !commentText.trim().isEmpty()) {
-            c = new Comment(commentText,new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), resourceManager.getResource().getId());
+            c = new Comment(commentText, new Timestamp(System.currentTimeMillis()), ViewManager.getSessionUser().getId(), resourceManager.getResource().getId());
             int id = DatabaseManager.getDAOProvider().getCommentDAO().insert(c);
             c = new Comment(id, c.getDescription(), c.getStartTrackInterval(), c.getEndTrackInterval(), c.getCreationDate(), c.getUserID(), resourceManager.getResource().getId());
             addCommentOnView(c, ViewManager.getSessionUser());
@@ -515,11 +688,39 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    /**
+     * Adds a comment node representing the given comment and user to the comments container in the UI.
+     *
+     * @param comment the {@link Comment} to be displayed
+     * @param user the {@link User} who posted the comment
+     */
     private void addCommentOnView(Comment comment, User user) {
         VBox commentNode = createCommentNode(comment, user, 0);
         commentVBox.getChildren().add(commentNode);
     }
 
+    /**
+     * Creates a graphical node (VBox) representing a comment with all its visual and functional components,
+     * including the author, comment text, creation date, user role, time intervals, reply and delete buttons,
+     * and nested display of any replies.
+     * The created node includes:
+     * <ul>
+     *   <li>The full name of the comment's author.</li>
+     *   <li>A text area with the comment's content.</li>
+     *   <li>Labels showing the creation date and the user role (Administrator, Author/Interpreter, Regular User).</li>
+     *   <li>Buttons to reply to the comment and, if authorized, to delete it.</li>
+     *   <li>Clickable time interval labels for media navigation, if applicable.</li>
+     *   <li>A nested section to show replies to the comment, with expand/collapse functionality.</li>
+     * </ul>
+     *
+     * The method also handles the logic for adding new replies, recursively loading existing replies from the database,
+     * and event handling for user interactions with the buttons.
+     *
+     * @param comment the comment object to be represented in the node
+     * @param user the user who authored the comment, used to display name and role
+     * @param indentLevel the indentation level for the node, used to format nested replies visually
+     * @return a VBox containing the complete structure of the comment including any nested replies
+     */
     private VBox createCommentNode(Comment comment, User user, int indentLevel) {
         Label nameLabel = new Label(user.getName() + " " + user.getSurname());
         nameLabel.setWrapText(true);
@@ -707,10 +908,24 @@ public class ResourceFileController extends Controller implements Initializable 
         return container;
     }
 
+    /**
+     * Retrieves a User object from the database based on the given user ID.
+     *
+     * @param userId the unique identifier of the user to fetch
+     * @return the User object corresponding to the given ID, or null if not found
+     */
     private User getUser(int userId) {
         return DatabaseManager.getDAOProvider().getUserDAO().getById(userId);
     }
 
+    /**
+     * Opens a dialog to add a time-segment-specific comment on the media track.
+     * The user inputs a start time, an optional end time, and a comment description.
+     * This method validates the input times against the media duration, creates a Comment,
+     * saves it to the database, and updates the view with the new comment.
+     * If the time format is invalid or the times are logically inconsistent (e.g., start time after end time,
+     * times outside media duration), an error alert is shown.
+     */
     @FXML
     private void addSegmentComment() {
         ViewManager.showSegmentCommentDialog().ifPresent(data -> {
@@ -767,6 +982,13 @@ public class ResourceFileController extends Controller implements Initializable 
         });
     }
 
+    /**
+     * Parses a time string formatted as "HH:mm:ss", "mm:ss", or "ss" into total seconds.
+     *
+     * @param timeString the time string to parse
+     * @return the total number of seconds represented by the time string
+     * @throws DateTimeParseException if the time string format is invalid or contains non-numeric values
+     */
     private int parseToSeconds(String timeString) throws DateTimeParseException {
         String[] parts = timeString.split(":");
 
@@ -795,6 +1017,14 @@ public class ResourceFileController extends Controller implements Initializable 
         }
     }
 
+    /**
+     * Handles the download action of the currently selected resource.
+     * Opens a file save dialog allowing the user to choose the destination and filename.
+     * The default filename is set to the track title with the resource file extension.
+     * If a file is selected, writes the resource data to the file.
+     * Displays a success alert if the download completes successfully,
+     * or an error alert if an IOException occurs during file saving.
+     */
     @FXML
     private void handleDownload() {
         Resource r = resourceManager.getResource();

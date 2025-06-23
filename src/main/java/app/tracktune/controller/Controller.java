@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-public class Controller {
+public abstract class Controller {
     public Controller parentController;
     private Timeline timer;
     private int counter = 0;
@@ -27,7 +27,12 @@ public class Controller {
     protected static final int previewWidth = 140;
     protected static final int previewHeight = 120;
 
-    public void setParentController(Controller parentController){
+    /**
+     * Sets the parent controller for this controller.
+     *
+     * @param parentController the parent controller to associate with this controller
+     */
+    public void setParentController(Controller parentController) {
         this.parentController = parentController;
     }
 
@@ -65,6 +70,22 @@ public class Controller {
         return titleCase.toString().trim();
     }
 
+    /**
+     * Starts a timer that periodically checks the readiness of media resources within the provided container.
+     * <p>
+     * This method supports two types of containers:
+     * <ul>
+     *     <li><b>VBox</b>: Iterates through each child (expected to be HBoxes containing MediaViews) and replaces
+     *     non-ready media nodes using the provided {@link ResourceManager}.</li>
+     *     <li><b>StackPane</b>: Checks the first MediaView inside the VBox. If the media is ready or playing,
+     *     and the controller is an instance of {@link ResourceFileController}, it initializes and starts playback.</li>
+     * </ul>
+     * The timer stops automatically when all media resources are ready.
+     *
+     * @param container       the JavaFX Node container that holds the media nodes (VBox or StackPane)
+     * @param resources       the list of media resources to manage
+     * @param resourceManager the manager responsible for creating and updating media nodes
+     */
     protected void startTimer(Node container, List<Resource> resources, ResourceManager resourceManager) {
         timer = new Timeline(new KeyFrame(Duration.seconds(1), _ -> {
             if(container instanceof VBox resourcesContainer){
@@ -108,12 +129,26 @@ public class Controller {
         timer.play();
     }
 
+    /**
+     * Stops the currently running timer, if it exists.
+     * <p>
+     * This method safely checks whether the timer has been initialized before attempting to stop it.
+     */
     protected void stopTimer() {
         if (timer != null) {
             timer.stop();
         }
     }
 
+    /**
+     * Disposes all media players contained within the given VBox and stops the timer.
+     * <p>
+     * This method iterates over each child of the provided VBox, expecting HBoxes that contain
+     * {@link MediaView} nodes. For each media player found, it stops playback and releases associated resources.
+     * The timer is also stopped to prevent further updates.
+     *
+     * @param resourcesContainer the VBox containing the media nodes to be disposed
+     */
     protected void dispose(VBox resourcesContainer) {
         stopTimer();
 

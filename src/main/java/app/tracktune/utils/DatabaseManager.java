@@ -53,7 +53,7 @@ public class DatabaseManager {
      * Initialize database with DDL statements if tables don't exist, also creating an admin user to manage system
      */
     private void initializeDatabase() {
-        if (dbConnection != null) return; // Evita inizializzazione se già settata
+        if (dbConnection != null) return;
         try {
             dbConnection = DriverManager.getConnection(dbUrl);
             // to be able to do property ON DELETE CASCADE

@@ -79,10 +79,8 @@ public class TracksController extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         allTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAll();
         filteredTracks = new ArrayList<>(allTracks);
-
         setupFilterComboBox();
         setupPaginationButtons();
-
         updateTracks();
     }
 

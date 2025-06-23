@@ -49,6 +49,22 @@ public class ResourcesController extends Controller implements Initializable {
     private final int itemsPerPage = 6;
     private int currentPage = 0;
 
+    /**
+     * Initializes the controller by loading user-specific resources, setting up navigation buttons,
+     * starting the media readiness timer, and configuring the window close event.
+     * <p>
+     * Specifically:
+     * <ul>
+     *     <li>Retrieves all resources associated with the current user from the database.</li>
+     *     <li>Initializes the {@link BrowserManager} and {@link ResourceManager} singletons.</li>
+     *     <li>Configures the window to dispose of media players when closed.</li>
+     *     <li>Sets up pagination controls to navigate between resource pages.</li>
+     *     <li>Starts a timer to track the readiness of media resources and updates the displayed content.</li>
+     * </ul>
+     *
+     * @param location the location used to resolve relative paths for the root object (unused in this method)
+     * @param res      the resources used to localize the root object (unused in this method)
+     */
     @Override
     public void initialize(URL location, ResourceBundle res) {
         browserManager = BrowserManager.getInstance();
