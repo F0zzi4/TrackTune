@@ -707,30 +707,6 @@ Tutte le classi controller estendono la classe base \texttt{Controller} e implem
     \label{fig:uml_table_altri_package}
 \end{figure}
 
-\subsection{Pattern architetturale}
-Il sistema è stato progettato seguendo il pattern architetturale \textit{Model-View-Controller} (MVC), una struttura ampiamente adottata nello sviluppo di interfacce grafiche per separare le responsabilità delle diverse componenti software.
-
-Il pattern MVC suddivide l'applicazione in tre componenti principali:
-
-\begin{itemize}
-    \item \textbf{Model}: rappresenta la logica e lo stato dell’applicazione. Contiene i dati, le classi di dominio e la logica di accesso ai dati (DAO), indipendente dalla logica di presentazione.
-
-    \item \textbf{View}: è la parte visiva dell’applicazione, ovvero ciò che l’utente vede e con cui interagisce. In JavaFX, questa è rappresentata dai file \texttt{.fxml}, dai fogli di stile CSS e dai componenti grafici associati.
-
-    \item \textbf{Controller}: gestisce l’interazione tra Model e View. Riceve gli input dell’utente dalla View, elabora le richieste e aggiorna il Model o la View di conseguenza. I controller in JavaFX implementano l’interfaccia \texttt{Initializable} per gestire l’inizializzazione della scena.
-\end{itemize}
-
-\bigskip
-
-L'utilizzo del pattern MVC risulta particolarmente adatto in combinazione con JavaFX, poiché questa libreria supporta nativamente la separazione tra interfaccia grafica (FXML), logica di controllo (Controller) e dati (Model). In questo modo, il codice risulta più modulare, testabile e manutenibile.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7 \textwidth]{./figures/mvc_template}
-    \caption{Pattern MVC}
-    \label{fig:mvc_template}
-\end{figure}
-
 \subsection{Struttura del progetto}
 
 Di seguito è riportato l’albero dei file principali del progetto, illustrante la suddivisione in moduli, package e risorse:
@@ -790,8 +766,73 @@ I diagrammi di sequenza sono rappresentati esclusivamente per le classi più ril
 
 
 % =======================
-\section{Developing}
+\section{Progettazione e sviluppo}
 % =======================
+
+\subsection{Pattern utilizzati}
+\subsubsection{Pattern architetturale}
+Il sistema è stato progettato seguendo il pattern architetturale \textit{Model-View-Controller} (MVC), una struttura ampiamente adottata nello sviluppo di interfacce grafiche per separare le responsabilità delle diverse componenti software.
+
+Il pattern MVC suddivide l'applicazione in tre componenti principali:
+
+\begin{itemize}
+    \item \textbf{Model}: rappresenta la logica e lo stato dell’applicazione. Contiene i dati, le classi di dominio e la logica di accesso ai dati (DAO), indipendente dalla logica di presentazione.
+
+    \item \textbf{View}: è la parte visiva dell’applicazione, ovvero ciò che l’utente vede e con cui interagisce. In JavaFX, questa è rappresentata dai file \texttt{.fxml}, dai fogli di stile CSS e dai componenti grafici associati.
+
+    \item \textbf{Controller}: gestisce l’interazione tra Model e View. Riceve gli input dell’utente dalla View, elabora le richieste e aggiorna il Model o la View di conseguenza. I controller in JavaFX implementano l’interfaccia \texttt{Initializable} per gestire l’inizializzazione della scena.
+\end{itemize}
+
+\bigskip
+
+L'utilizzo del pattern MVC risulta particolarmente adatto in combinazione con JavaFX, poiché questa libreria supporta nativamente la separazione tra interfaccia grafica (FXML), logica di controllo (Controller) e dati (Model). In questo modo, il codice risulta più modulare, testabile e manutenibile.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[textwidth]{./figures/mvc_template}
+    \caption{Pattern MVC}
+    \label{fig:mvc_template}
+\end{figure}
+
+\subsubsection{Design pattern utilizzati}
+Durante lo sviluppo del progetto, abbiamo deciso di adottare alcuni design pattern per migliorare la struttura e la gestione del codice. Tra questi:
+
+\begin{itemize}
+    \item \textbf{Singleton Pattern:} è un pattern creazionale che serve a garantire che una certa classe abbia una sola istanza. È utile, ad esempio, per tutte quelle classi che gestiscono risorse comuni nel progetto, come \texttt{ResourceManager}, \texttt{BrowserManager}, ecc.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[\textwidth]{./figures/singletonPattern}
+        \caption{Esempio Singleton Pattern riguardante la classe \texttt{DatabaseManager.java}}
+        \label{fig:singleton_pattern}
+    \end{figure}
+
+    \item \textbf{Observer Pattern:} è un pattern comportamentale che si basa sul rapporto tra un oggetto osservatore e un oggetto osservato. L’osservatore si registra per essere notificato ogni volta che l’osservato cambia stato. In Java, questo pattern viene applicato implicitamente quando si lavora con strutture come \texttt{ObservableList}, molto usate per aggiornare automaticamente l’interfaccia in caso di modifiche (es. filtri o ricerche nella lista).
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8 \textwidth]{./figures/observerPattern.drawio}
+        \caption{Esempio Observer Pattern}
+        \label{fig:observer_pattern}
+    \end{figure}
+
+    \item \textbf{Factory Pattern:} è un pattern creazionale che permette di delegare la creazione di un oggetto a una funzione o metodo, senza specificare esattamente quale classe verrà istanziata. L’abbiamo usato, ad esempio, per passare parametri tra controller di due viste collegate. Un esempio di codice usato:
+    \begin{lstlisting}[style=java-style, caption={Esempio factory pattern}]
+FXMLLoader loader = new FXMLLoader(...);
+loader.setControllerFactory(_ -> new ResourceFileController(resource));
+    \end{lstlisting}
+    In questo caso, \texttt{FXMLLoader} gestisce internamente il factory pattern attraverso il metodo \texttt{setControllerFactory}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.8 \textwidth]{./figures/factoryPattern}
+        \caption{Esempio Observer Pattern}
+        \label{fig:factory_pattern}
+    \end{figure}
+
+    \item \textbf{DAO (Data Access Object) Pattern:} è un pattern strutturale che separa la logica di accesso ai dati dalla logica di business. Nel nostro caso, abbiamo definito un’interfaccia generica \texttt{DAO<T>} nel package \texttt{model}, che viene implementata da tutte le classi DAO. Ogni entità del modello è rappresentata come una semplice classe Java (POJO), che viene poi gestita dalla relativa implementazione DAO (creazione, modifica, eliminazione, ecc).
+\end{itemize}
+
 \subsection{Gestione dell’accesso ai dati (DAO e DAOProvider)}
 Il sistema adotta il pattern \textit{Data Access Object} (DAO) per gestire l’accesso ai dati in modo modulare e disaccoppiato dalla logica applicativa.
 
@@ -799,9 +840,31 @@ Per ciascuna entità principale del \textit{Model}, è presente una corrisponden
 
 L’accesso ai DAO all’interno dell’applicazione non avviene in modo diretto, ma è centralizzato attraverso una classe denominata \texttt{DAOProvider}. Questo componente funge da punto di accesso unico (simile a un \textit{factory singleton}) per l’ottenimento delle istanze DAO, garantendo una gestione coerente e facilitando eventuali modifiche future nel meccanismo di creazione o nella logica di accesso ai dati.
 
+\subsection{Classi di supporto e utility}
+Oltre alle classi principali legate al dominio e all’interfaccia utente, il sistema include alcune classi di supporto che forniscono funzionalità generiche e trasversali, riutilizzate in più parti del progetto. In questa sezione vengono descritte le principali classi di tipo \textit{utility} utilizzate.
 
-\subsection{Design pattern utilizzati}
+\subsubsection{SessionManager}
+La classe \texttt{SessionManager} si occupa della gestione della sessione utente all’interno dell’applicazione. Permette di salvare e recuperare rapidamente informazioni legate all’utente attualmente autenticato (es. ruolo, username, ID), rendendo disponibili questi dati ad altri componenti senza doverli passare esplicitamente.
+La classe è implementata come \textbf{Singleton}, per garantire un’unica istanza condivisa.
 
+\subsubsection{DBInit}
+La classe \texttt{DBInit} è una classe utility responsabile della generazione dell'intera struttura del database SQLite.
+Utilizza un approccio basato su stringhe statiche, compatibile con l'inizializzazione tramite la libreria SQLite, rendendo il processo più veloce e flessibile.
+Include inoltre istruzioni per il controllo e l'inserimento dell'utente amministratore predefinito.
+Il metodo \texttt{getDBInitStatement()} restituisce concatenati tutti i comandi SQL di creazione tabelle, utili per inizializzare il database in modo completo.
+
+\subsubsection{SQLiteScripts}
+
+La classe \texttt{SQLiteScripts}, anch'essa nel package \texttt{app.tracktune.utils}, fornisce metodi statici per gestire operazioni complesse o ricorrenti sul database.
+Tra le principali funzionalità offerte troviamo:
+
+\begin{itemize}
+    \item \texttt{checkForSQLInjection(...)}: controlla se stringhe di input contengono pattern pericolosi riconducibili a SQL injection.
+    \item \texttt{deleteTrack(...)}: esegue l'eliminazione completa e sicura di un brano, rimuovendo anche tutte le dipendenze correlate (commenti, risorse, interazioni, ecc.).
+    \item \texttt{getMostRecentResources(...)}: restituisce le 5 risorse più recenti.
+    \item \texttt{getMostPopularResources(...)}: ottiene le risorse più popolari, in base alla frequenza di appartenenza ai brani.
+    \item \texttt{getMostCommentedResources(...)}: seleziona le risorse con il maggior numero di commenti.
+\end{itemize}
 
 % =======================
 \section{Fase di Test}
