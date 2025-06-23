@@ -143,7 +143,7 @@ public final class ResourceManager {
         return mediaView;
     }
 
-    public void setResource(Resource resource) {
+    public void     setResource(Resource resource) {
         this.resource = resource;
     }
 

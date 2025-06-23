@@ -732,7 +732,6 @@ L'utilizzo del pattern MVC risulta particolarmente adatto in combinazione con Ja
 \end{figure}
 
 \subsection{Struttura del progetto}
-\subsection{Struttura del progetto}
 
 Di seguito è riportato l’albero dei file principali del progetto, illustrante la suddivisione in moduli, package e risorse:
 
@@ -757,7 +756,36 @@ TrackTune/
 pom.xml                      % file di build Maven
 \end{lstlisting}
 
+\subsection{Sequence Diagrams}
+I diagrammi di sequenza sono rappresentati esclusivamente per le classi più rilevanti e significative del sistema.
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{./figures/viewManager_sd}
+    \caption{Sequence diagram relavito alla classe \texttt{ViewManager.java} in particolare al cambio di scena e inizializzazione root iniziale}
+    \label{fig:viewmanager_sd}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8 \textwidth]{./figures/discoverController_sd}
+    \caption{Sequence diagram relavito alla classe \texttt{DiscoverController.java}}
+    \label{fig:discovercontroller_sd}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8 \textwidth]{./figures/trackResourceController_sd}
+    \caption{Sequence diagram relavito alla classe \texttt{TrackResourceController.java}}
+    \label{fig:trackResourceController_sd}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8 \textwidth]{./figures/fileViewController_sd}
+    \caption{Sequence diagram relavito alla classe \texttt{ResourceFileController.java}}
+    \label{fig:resourcefilecontroller_sd}
+\end{figure}
 
 
 
