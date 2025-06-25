@@ -70,7 +70,6 @@ public final class ResourceManager {
      *   <li>For supported audio/video types, returns a MediaView player or a label preview for MP3.</li>
      *   <li>Throws an exception if the media type is unsupported.</li>
      * </ul>
-     * </p>
      *
      * @param width     the desired width of the media node
      * @param height    the desired height of the media node
