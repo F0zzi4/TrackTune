@@ -7,10 +7,14 @@ import app.tracktune.model.user.User;
  * Implements the Singleton design pattern to ensure a single active session.
  */
 public class SessionManager {
-    // Singleton instance of the SessionManager
+    /**
+     * Singleton instance of the SessionManager.
+     */
     private static SessionManager instance;
 
-    // The user associated with the current session
+    /**
+     * The user associated with the current session.
+     */
     private final User sessionUser;
 
     /**

@@ -46,14 +46,46 @@ import java.util.stream.Collectors;
  * {@link GenreDAO}, and {@link MusicalInstrumentDAO} to fetch related data.
  */
 public class TracksController extends Controller implements Initializable {
+    /**
+     * The container that holds the visual elements for displaying individual track items.
+     */
     @FXML private VBox tracksContainer;
-    @FXML private Button btnPrev, btnNext;
+
+    /**
+     * Button to navigate to the previous page of tracks.
+     */
+    @FXML private Button btnPrev;
+
+    /**
+     * Button to navigate to the next page of tracks.
+     */
+    @FXML private Button btnNext;
+
+    /**
+     * ComboBox used to select the filtering type (e.g., by name, category, etc.) for the track list.
+     */
     @FXML private ComboBox<String> filterTypeComboBox;
+
+    /**
+     * Container holding the UI controls related to filtering (e.g., text fields, ComboBoxes).
+     */
     @FXML private HBox filterControlsContainer;
 
+    /**
+     * A list containing all available {@link Track} instances, usually loaded from the database.
+     */
     private List<Track> allTracks = new ArrayList<>();
+
+    /**
+     * A list of {@link Track} instances that match the current filter criteria.
+     */
     private List<Track> filteredTracks = new ArrayList<>();
+
+    /**
+     * Index of the current page based on the pagination logic
+     */
     private int currentPage = 0;
+    // CONSTANTS
     private static final int ITEMS_PER_PAGE = 6;
 
 
@@ -291,7 +323,7 @@ public class TracksController extends Controller implements Initializable {
 
         Button viewBtn = new Button(Strings.LINKED_RESOURCES);
         viewBtn.getStyleClass().add("view-button");
-        viewBtn.setOnAction(_ -> viewTrack(track));
+        viewBtn.setOnAction(_ -> viewTrackResources(track));
         HBox buttonBox;
         if(ViewManager.getSessionUser() instanceof Administrator || track.getUserID() == ViewManager.getSessionUser().getId()) {
             Button deleteBtn = new Button(Strings.DELETE);
@@ -317,9 +349,20 @@ public class TracksController extends Controller implements Initializable {
     }
 
     /**
-     * Placeholder method for viewing track details.
+     * Loads and displays the resource view associated with the given {@link Track}.
+     * <p>
+     * This method dynamically loads the resource view FXML file and sets up a new
+     * {@link TrackResourcesController} using the provided track. It checks whether the
+     * parent controller is an instance of {@link AdminDashboardController} or
+     * {@link AuthenticatedUserDashboardController} to insert the view into the appropriate
+     * main content container.
+     * <p>
+     * If an error occurs during loading, an error alert is shown and the exception message
+     * is printed to the console.
+     *
+     * @param track the {@link Track} whose associated resources should be displayed
      */
-    private void viewTrack(Track track) {
+    private void viewTrackResources(Track track) {
         try{
             if(parentController instanceof AdminDashboardController adminController){
                 FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCES_COMMON_VIEW_PATH));
@@ -347,7 +390,15 @@ public class TracksController extends Controller implements Initializable {
     }
 
     /**
-     * Placeholder method for deleting a track.
+     * Deletes the specified {@link Track} from the database and the UI lists, after user confirmation.
+     * <p>
+     * This method first prompts the user with a confirmation alert. If the user confirms,
+     * it attempts to delete the track from the database using its ID. If the deletion is successful,
+     * the track is also removed from the `allTracks` and `filteredTracks` lists, and the
+     * track list is updated in the UI. If an error occurs during the deletion process,
+     * an error alert is shown and the exception is logged to the console.
+     *
+     * @param track the {@link Track} object to be deleted
      */
     private void deleteTrack(Track track) {
         boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);

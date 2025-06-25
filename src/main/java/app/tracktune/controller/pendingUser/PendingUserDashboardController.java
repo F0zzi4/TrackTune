@@ -12,10 +12,24 @@ import javafx.scene.control.Label;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * Controller for the dashboard of a pending user.
+ * <p>
+ * Manages the UI display of the pending user's status and provides logout functionality.
+ */
 public class PendingUserDashboardController extends Controller implements Initializable {
     @FXML
     public Label LblStatusValue;
 
+    /**
+     * Initializes the controller.
+     * <p>
+     * Retrieves the current session user and if it is a PendingUser, displays the user's status with
+     * an appropriate text color. If the session user is not a PendingUser, displays an error message.
+     *
+     * @param location  The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (ViewManager.getSessionUser() instanceof PendingUser pendingUser) {
@@ -33,14 +47,16 @@ public class PendingUserDashboardController extends Controller implements Initia
     }
 
     /**
-     * Logs out the current user by calling the {@link ViewManager#logout()} method.
-     * Displays an error alert if the logout process fails.
+     * Handles the logout action.
+     * <p>
+     * Attempts to log out the current user by calling {@link ViewManager#logout()}.
+     * If the logout process fails, displays an error alert to the user.
      */
     @FXML
     public void handleLogout() {
-        try{
+        try {
             ViewManager.logout();
-        }catch(Exception e){
+        } catch (Exception e) {
             ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERROR, Strings.ERR_GENERAL, Alert.AlertType.ERROR);
         }
     }

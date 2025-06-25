@@ -20,17 +20,60 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MeController extends Controller implements Initializable {
-
+    /**
+     * Label displaying the user's role (e.g., Administrator, Regular User).
+     */
     @FXML private Label lblRole;
+
+    /**
+     * TextField displaying the username of the current user.
+     * Usually read-only unless in edit mode.
+     */
     @FXML private TextField txtUsername;
+
+    /**
+     * TextField displaying the first name of the user.
+     * Can be edited depending on the context.
+     */
     @FXML private TextField txtName;
+
+    /**
+     * TextField displaying the surname (last name) of the user.
+     * Editable if the user is allowed to modify personal data.
+     */
     @FXML private TextField txtSurname;
+
+    /**
+     * Button that allows editing the user's role.
+     * Typically available only to administrators.
+     */
     @FXML private Button editRole;
+
+    /**
+     * Label displaying the current status of the user (e.g., ACTIVE, SUSPENDED).
+     */
     @FXML private Label lblStatus;
 
+    /**
+     * The currently displayed or selected authenticated user whose details are being viewed or edited.
+     */
     private AuthenticatedUser user;
+
+    /**
+     * Flag indicating whether the user details are currently editable in the UI.
+     */
     private boolean editable = false;
 
+    /**
+     * Initializes the controller after its root element has been completely processed.
+     * <p>
+     * This method sets the UI fields based on the currently logged-in session user.
+     * If the user is an {@link AuthenticatedUser}, it initializes the form with their details.
+     * Otherwise, it assumes the user is an administrator and sets the role label accordingly.
+     *
+     * @param url the location used to resolve relative paths for the root object, or {@code null} if not known
+     * @param resourceBundle the resources used to localize the root object, or {@code null} if not localized
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         if (ViewManager.getSessionUser() instanceof AuthenticatedUser) {
@@ -46,6 +89,18 @@ public class MeController extends Controller implements Initializable {
         lblStatus.setText(user.getStatus().toString());
     }
 
+    /**
+     * Handles the edit/save button logic for the user profile.
+     * <p>
+     * When in editable mode, the method validates and saves the updated user information.
+     * It checks for empty fields, possible SQL injection, and username conflicts.
+     * If the data is valid and has changed, it updates the user in the database
+     * and refreshes the session.
+     * <p>
+     * When not in editable mode, it enables the input fields for editing.
+     * Exceptions during validation or database operations are caught and
+     * an error alert is shown.
+     */
     @FXML
     public void handleEditButton() {
         if (editable) {

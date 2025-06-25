@@ -20,31 +20,77 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class RequestsController extends Controller implements Initializable {
+    /**
+     * Container for displaying the list of authorization requests in the UI.
+     */
+    @FXML
+    private VBox requestsContainer;
 
-    @FXML private VBox requestsContainer;
-    @FXML private Button prevButton;
-    @FXML private Button nextButton;
-    @FXML private TabPane filterTabPane;
+    /**
+     * Button to navigate to the previous page of requests.
+     */
+    @FXML
+    private Button prevButton;
 
+    /**
+     * Button to navigate to the next page of requests.
+     */
+    @FXML
+    private Button nextButton;
+
+    /**
+     * Tab pane for filtering requests based on their authorization status.
+     */
+    @FXML
+    private TabPane filterTabPane;
+
+    /**
+     * Currently selected filter status for displaying authorization requests.
+     */
     private AuthRequestStatusEnum currentFilter = AuthRequestStatusEnum.CREATED;
+
+    /**
+     * List of all pending authorization requests retrieved from the database.
+     */
     private List<PendingUser> allRequests = new ArrayList<>();
+
+    /**
+     * List of authorization requests filtered by the current filter status.
+     */
     private List<PendingUser> filteredRequests = new ArrayList<>();
+
+    /**
+     * Index of the current page being displayed (zero-based).
+     */
     private int currentPage = 0;
+
+    /**
+     * Number of items (requests) displayed per page.
+     */
     private final int itemsPerPage = 5;
 
-
+    /**
+     * Initializes the controller after the root element has been completely processed.
+     * <p>
+     * Sets up tabs for filtering requests based on their status.
+     * Configures pagination buttons (previous and next) with event handlers.
+     * Loads the initial page of filtered requests.
+     *
+     * @param location  The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         createTabsFromEnum();
 
-        prevButton.setOnAction(e -> {
+        prevButton.setOnAction(_ -> {
             if (currentPage > 0) {
                 currentPage--;
                 updateRequests();
             }
         });
 
-        nextButton.setOnAction(e -> {
+        nextButton.setOnAction(_ -> {
             if ((currentPage + 1) * itemsPerPage < filteredRequests.size()) {
                 currentPage++;
                 updateRequests();
@@ -54,6 +100,13 @@ public class RequestsController extends Controller implements Initializable {
         updateRequests();
     }
 
+    /**
+     * Creates filter tabs dynamically based on all possible values of AuthRequestStatusEnum.
+     * <p>
+     * Each tab corresponds to a status filter. When a tab is selected,
+     * the filter is updated and the requests list is refreshed.
+     * Automatically selects the first tab on creation.
+     */
     private void createTabsFromEnum() {
         for (AuthRequestStatusEnum status : AuthRequestStatusEnum.values()) {
             Tab tab = new Tab(status.toString());
@@ -61,7 +114,7 @@ public class RequestsController extends Controller implements Initializable {
             filterTabPane.getTabs().add(tab);
         }
 
-        filterTabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+        filterTabPane.getSelectionModel().selectedItemProperty().addListener((_, _, newTab) -> {
             if (newTab != null) {
                 currentFilter = (AuthRequestStatusEnum) newTab.getUserData();
                 currentPage = 0;
@@ -72,6 +125,12 @@ public class RequestsController extends Controller implements Initializable {
         filterTabPane.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Filters the list of all requests according to the current filter status.
+     * <p>
+     * The filtered list is sorted by the request date in ascending order.
+     * The filtered results are stored in filteredRequests for further processing.
+     */
     private void filterRequests() {
         filteredRequests = allRequests.stream()
                 .filter(r -> r.getStatus() == currentFilter)
@@ -79,6 +138,15 @@ public class RequestsController extends Controller implements Initializable {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Updates the displayed list of authorization requests according to the current filter and pagination.
+     * <p>
+     * Fetches all pending user requests from the database, applies the current status filter,
+     * and clears the UI container before repopulating it with the current page of filtered requests.
+     * Handles enabling/disabling pagination buttons based on the current page and total requests.
+     * <p>
+     * If no requests are available after filtering, displays a placeholder label indicating an empty list.
+     */
     private void updateRequests() {
         allRequests = new ArrayList<>(DatabaseManager.getDAOProvider().getPendingUserDAO().getAll());
         filterRequests();
@@ -106,6 +174,23 @@ public class RequestsController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Creates a UI component representing a single authorization request item.
+     * <p>
+     * Displays the username and full name of the requester, along with the formatted request date.
+     * Provides action buttons to accept or reject the request, which vary depending on the current request status:
+     * <ul>
+     *     <li>If status is CREATED, shows both reject and accept buttons.</li>
+     *     <li>If status is REJECTED, shows only the accept button.</li>
+     *     <li>If status is ACCEPTED, shows no action buttons.</li>
+     * </ul>
+     * <p>
+     * The layout consists of a horizontal box with requester info on the left, a spacer in the middle,
+     * and action buttons aligned on the right.
+     *
+     * @param request the PendingUser object representing the authorization request to display
+     * @return an HBox containing the formatted request item UI
+     */
     private HBox createRequestItem(PendingUser request) {
         Label infoLabel = new Label(request.getUsername() + " - " + request.getName() + " " + request.getSurname());
         infoLabel.getStyleClass().add("request-item-title");
@@ -118,11 +203,11 @@ public class RequestsController extends Controller implements Initializable {
 
         Button acceptBtn = new Button(Strings.ACCEPT);
         acceptBtn.getStyleClass().add("accept-button");
-        acceptBtn.setOnAction(e -> acceptRequest(request));
+        acceptBtn.setOnAction(_ -> acceptRequest(request));
 
         Button rejectBtn = new Button(Strings.REJECT);
         rejectBtn.getStyleClass().add("reject-button");
-        rejectBtn.setOnAction(e -> rejectRequest(request));
+        rejectBtn.setOnAction(_ -> rejectRequest(request));
 
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
@@ -143,6 +228,18 @@ public class RequestsController extends Controller implements Initializable {
         return box;
     }
 
+    /**
+     * Accepts an authorization request by updating its status to ACCEPTED and
+     * creating a new active authenticated user based on the request details.
+     * <p>
+     * Updates the request in the database and the local list, then inserts a new user
+     * record with an active status and the current timestamp.
+     * Finally, refreshes the UI to reflect changes.
+     * <p>
+     * If any exception occurs during this process, an error alert is shown and the error is logged.
+     *
+     * @param request the PendingUser authorization request to accept
+     */
     private void acceptRequest(PendingUser request) {
         try {
             PendingUser updatedRequest = new PendingUser(
@@ -175,6 +272,16 @@ public class RequestsController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Rejects an authorization request by updating its status to REJECTED.
+     * <p>
+     * Updates the request in the database and the local list, then refreshes the UI
+     * to reflect changes.
+     * <p>
+     * If any exception occurs during this process, an error alert is shown and the error is logged.
+     *
+     * @param request the PendingUser authorization request to reject
+     */
     private void rejectRequest(PendingUser request) {
         try {
             PendingUser updatedRequest = new PendingUser(
@@ -198,6 +305,12 @@ public class RequestsController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Adjusts the current page if needed and refreshes the request list display.
+     * <p>
+     * Ensures the current page is within valid bounds after modifications to the request list,
+     * then calls {@link #updateRequests()} to refresh the UI.
+     */
     private void removeRequestAndUpdate() {
         int maxPage = (int) Math.ceil((double) filteredRequests.size() / itemsPerPage) - 1;
         if (currentPage > maxPage) {

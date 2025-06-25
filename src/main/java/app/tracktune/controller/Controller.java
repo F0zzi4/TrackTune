@@ -18,13 +18,44 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+/**
+ * Abstract base controller class providing common functionality for all controllers.
+ * <p>
+ * Maintains a reference to a parent controller, manages a timeline timer for periodic actions,
+ * and defines constants for resource preview dimensions.
+ * <p>
+ * Subclasses should extend this class to inherit shared behavior and properties.
+ */
 public abstract class Controller {
+    /**
+     * Reference to the parent controller.
+     * Allows child controllers to communicate or delegate actions to their parent.
+     */
     public Controller parentController;
+
+    /**
+     * Timeline used for scheduling repeated or delayed actions.
+     */
     private Timeline timer;
+
+    /**
+     * Counter variable, usage defined by subclasses or timer events.
+     */
     private int counter = 0;
+
+    /**
+     * Tracks how many times a ready event has occurred.
+     */
     private int readies = 0;
-    // CONSTANTS
+
+    /**
+     * Width for preview images or media nodes.
+     */
     protected static final int previewWidth = 140;
+
+    /**
+     * Height for preview images or media nodes.
+     */
     protected static final int previewHeight = 120;
 
     /**

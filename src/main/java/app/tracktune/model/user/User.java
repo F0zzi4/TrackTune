@@ -1,5 +1,8 @@
 package app.tracktune.model.user;
 
+/**
+ * Abstract base class representing a user in the system.
+ */
 public abstract class User {
     private final Integer id;
     private final String username;
@@ -8,12 +11,13 @@ public abstract class User {
     private final String surname;
 
     /**
-     * Constructor for creating a user object
-     * @param id The user's unique ID
-     * @param username The user's username
-     * @param password The user's password
-     * @param name The user's name
-     * @param surname The user's surname
+     * Constructs a User object with a specified unique ID.
+     *
+     * @param id       the unique identifier of the user
+     * @param username the user's username
+     * @param password the user's password
+     * @param name     the user's first name
+     * @param surname  the user's last name
      */
     public User(Integer id, String username, String password, String name, String surname) {
         this.id = id;
@@ -23,6 +27,15 @@ public abstract class User {
         this.surname = surname;
     }
 
+    /**
+     * Constructs a User object without specifying an ID.
+     * Typically used when the ID is auto-generated or unknown at construction time.
+     *
+     * @param username the user's username
+     * @param password the user's password
+     * @param name     the user's first name
+     * @param surname  the user's last name
+     */
     public User(String username, String password, String name, String surname) {
         this.id = null;
         this.username = username;
@@ -32,49 +45,55 @@ public abstract class User {
     }
 
     /**
-     * Get the user's unique ID
-     * @return The user's ID
+     * Returns the unique identifier of the user.
+     *
+     * @return the user ID, or null if not set
      */
     public Integer getId() {
         return id;
     }
 
     /**
-     * Get the user's username
-     * @return The user's username
+     * Returns the username of the user.
+     *
+     * @return the username string
      */
     public String getUsername() {
         return username;
     }
 
     /**
-     * Get the user's password
-     * @return The user's password
+     * Returns the password of the user.
+     *
+     * @return the password string
      */
     public String getPassword() {
         return password;
     }
 
     /**
-     * Get the user's name
-     * @return The user's name
+     * Returns the first name of the user.
+     *
+     * @return the user's first name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Get the user's surname
-     * @return The user's surname
+     * Returns the last name (surname) of the user.
+     *
+     * @return the user's surname
      */
     public String getSurname() {
         return surname;
     }
 
     /**
-     * Two users are equal if their username are equal
-     * @param other the other user object
-     * @return true if their username are equal, false otherwise or if 'other' is not an instance of User
+     * Determines whether two User objects are equal based on their username.
+     *
+     * @param other the other object to compare to
+     * @return true if both are User instances with the same username; false otherwise
      */
     @Override
     public boolean equals(Object other) {

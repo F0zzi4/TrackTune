@@ -8,8 +8,19 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
+/**
+ * Main class for launching the TrackTune JavaFX application.
+ */
 public class Main extends Application {
+
+    /**
+     * Singleton instance of the {@link DatabaseManager} used to manage DB operations.
+     */
     public static DatabaseManager dbManager;
+
+    /**
+     * Primary application stage, used as the root window for the application.
+     */
     public static Stage root;
 
     /**

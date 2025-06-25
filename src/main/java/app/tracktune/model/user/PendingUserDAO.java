@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Data Access Object for the PendingUser entity.
+ * Provides CRUD operations and specific queries to interact with the PendingUsers table.
+ */
 public class PendingUserDAO implements DAO<PendingUser> {
     private static final String ID = "ID";
     private static final String USERNAME = "username";
@@ -59,14 +63,29 @@ public class PendingUserDAO implements DAO<PendingUser> {
         WHERE username = ?
     """;
 
+    /**
+     * Default constructor using the main application's DatabaseManager instance.
+     */
     public PendingUserDAO() {
         this.dbManager = Main.dbManager;
     }
 
+    /**
+     * Constructor allowing to specify a custom DatabaseManager instance.
+     *
+     * @param dbManager DatabaseManager instance to be used
+     */
     public PendingUserDAO(DatabaseManager dbManager) {
         this.dbManager = dbManager;
     }
 
+    /**
+     * Inserts a new PendingUser into the database.
+     *
+     * @param pendingUser the PendingUser object to insert
+     * @return the generated ID of the new record
+     * @throws SQLiteException if the insertion fails
+     */
     @Override
     public Integer insert(PendingUser pendingUser) {
         boolean success = dbManager.executeUpdate(
@@ -85,6 +104,13 @@ public class PendingUserDAO implements DAO<PendingUser> {
         return dbManager.getLastInsertId();
     }
 
+    /**
+     * Updates an existing PendingUser in the database by its ID.
+     *
+     * @param user the PendingUser object with updated data
+     * @param id   the ID of the PendingUser to update
+     * @throws SQLiteException if the update fails
+     */
     @Override
     public void updateById(PendingUser user, int id) {
         boolean success = dbManager.executeUpdate(
@@ -101,6 +127,12 @@ public class PendingUserDAO implements DAO<PendingUser> {
         }
     }
 
+    /**
+     * Deletes a PendingUser by its ID.
+     *
+     * @param id the ID of the PendingUser to delete
+     * @throws SQLiteException if the deletion fails
+     */
     @Override
     public void deleteById(int id) {
         boolean success = dbManager.executeUpdate(
@@ -113,6 +145,13 @@ public class PendingUserDAO implements DAO<PendingUser> {
         }
     }
 
+    /**
+     * Retrieves a PendingUser by its ID.
+     *
+     * @param id the ID of the PendingUser to retrieve
+     * @return the PendingUser object, or null if not found
+     * @throws SQLiteException if the query fails
+     */
     @Override
     public PendingUser getById(int id) {
         AtomicReference<PendingUser> result = new AtomicReference<>();
@@ -133,6 +172,11 @@ public class PendingUserDAO implements DAO<PendingUser> {
         return result.get();
     }
 
+    /**
+     * Retrieves all PendingUser records.
+     *
+     * @return list of all PendingUsers
+     */
     @Override
     public List<PendingUser> getAll() {
         List<PendingUser> users = new ArrayList<>();
@@ -148,18 +192,12 @@ public class PendingUserDAO implements DAO<PendingUser> {
         return users;
     }
 
-    private PendingUser mapResultSetToEntity(ResultSet rs) throws SQLException {
-        return new PendingUser(
-                rs.getInt(ID),
-                rs.getString(USERNAME),
-                rs.getString(PASSWORD),
-                rs.getString(NAME),
-                rs.getString(SURNAME),
-                rs.getTimestamp(REQUEST_DATE),
-                AuthRequestStatusEnum.fromInt(rs.getInt(STATUS))
-        );
-    }
-
+    /**
+     * Retrieves a PendingUser by username.
+     *
+     * @param username the username to search for
+     * @return the PendingUser object, or null if not found
+     */
     public PendingUser getByUsername(String username) {
         AtomicReference<PendingUser> pendUser = new AtomicReference<>();
 
@@ -172,5 +210,24 @@ public class PendingUserDAO implements DAO<PendingUser> {
                 }, username);
 
         return pendUser.get();
+    }
+
+    /**
+     * Helper method to convert a ResultSet row into a PendingUser object.
+     *
+     * @param rs the ResultSet positioned at a valid row
+     * @return a PendingUser object with the data from the current row
+     * @throws SQLException if a database access error occurs
+     */
+    private PendingUser mapResultSetToEntity(ResultSet rs) throws SQLException {
+        return new PendingUser(
+                rs.getInt(ID),
+                rs.getString(USERNAME),
+                rs.getString(PASSWORD),
+                rs.getString(NAME),
+                rs.getString(SURNAME),
+                rs.getTimestamp(REQUEST_DATE),
+                AuthRequestStatusEnum.fromInt(rs.getInt(STATUS))
+        );
     }
 }

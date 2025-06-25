@@ -1,7 +1,13 @@
 package app.tracktune.utils;
 
 /**
- * Dedicated class for localizing strings
+ * Centralized container for constant string literals used throughout the application.
+ *
+ * <p>This class provides a single place to manage UI messages, error messages,
+ * labels, and other fixed texts, facilitating easier localization and maintenance.</p>
+ *
+ * <p>All fields are public static final constants representing messages or labels
+ * displayed in the UI or used internally for validation, error reporting, and status updates.</p>
  */
 public class Strings {
     public static final String ERROR = "Error";
@@ -27,7 +33,6 @@ public class Strings {
     public static final String ERR_SQL_INJECTION = "SQL injection detected";
     public static final String ERR_GENRE_ALREADY_EXISTS = "Genre already exists";
     public static final String ERR_MUSICAL_INSTRUMENT_ALREADY_EXISTS = "Musical instrument already exists";
-    public static final String ERR_GENRE_NOT_FOUND = "Genre not found";
     public static final String ERR_AUTHOR_ALREADY_EXISTS = "Author already exists";
     public static final String ACCEPT = "Accept";
     public static final String RESTORE = "Restore";
@@ -58,9 +63,7 @@ public class Strings {
     public static final String RESOURCE_NOT_UPLOADED = "Resource not uploaded";
     public static final String MAKE_ADMIN = "Make Admin";
     public static final String SUSPEND = "Suspend";
-    public static final String ERR_ME = "Me error";
     public static final String ADMIN = "ADMIN";
-    public static final String ERR_ENTITY_NOT_FOUND = "Entity not found";
     public static final String ERR_USER_ALREADY_EXISTS = "User already exists";
     public static final String CONFIRM_DELETION = "Confirm deletion";
     public static final String ARE_YOU_SURE = "Are you sure to complete this operation?";

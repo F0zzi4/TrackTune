@@ -42,39 +42,125 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 public class AddResourceController extends Controller implements Initializable {
-    @FXML private TextField txtFilePath;
-    @FXML private Button btnBrowseFile;
-    @FXML private FlowPane selectedTrackPane;
-    @FXML private ComboBox<Author> authorComboBox;
-    @FXML private FlowPane selectedAuthorsPane;
-    @FXML private ComboBox<Genre> genreComboBox;
-    @FXML private FlowPane selectedGenresPane;
-    @FXML private ComboBox<MusicalInstrument> instrumentComboBox;
-    @FXML private FlowPane selectedInstrumentsPane;
-    @FXML private MFXToggleButton btnIsMultimedia;
-    @FXML private HBox locationBox;
-    @FXML private TextField txtLocation;
-    @FXML private DatePicker resourceDate;
-    @FXML private HBox resourceDateBox;
-    @FXML private ComboBox<Track> trackComboBox;
-    @FXML private MFXToggleButton btnIsLink;
-    @FXML private HBox resourceLinkBox;
-    @FXML private TextField txtResourceLink;
-    @FXML private HBox filePathBox;
-    @FXML private MFXToggleButton btnIsAuthor;
+    /** Text field for displaying or entering the file path of the resource. */
+    @FXML
+    private TextField txtFilePath;
 
-    // Data set
+    /** Button to browse and select a file from the filesystem. */
+    @FXML
+    private Button btnBrowseFile;
+
+    /** FlowPane containing the selected tracks. */
+    @FXML
+    private FlowPane selectedTrackPane;
+
+    /** ComboBox for selecting an author from the list. */
+    @FXML
+    private ComboBox<Author> authorComboBox;
+
+    /** FlowPane containing the selected authors. */
+    @FXML
+    private FlowPane selectedAuthorsPane;
+
+    /** ComboBox for selecting a genre from the list. */
+    @FXML
+    private ComboBox<Genre> genreComboBox;
+
+    /** FlowPane containing the selected genres. */
+    @FXML
+    private FlowPane selectedGenresPane;
+
+    /** ComboBox for selecting a musical instrument from the list. */
+    @FXML
+    private ComboBox<MusicalInstrument> instrumentComboBox;
+
+    /** FlowPane containing the selected musical instruments. */
+    @FXML
+    private FlowPane selectedInstrumentsPane;
+
+    /** Toggle button indicating whether the resource is multimedia. */
+    @FXML
+    private MFXToggleButton btnIsMultimedia;
+
+    /** Container HBox for location input elements. */
+    @FXML
+    private HBox locationBox;
+
+    /** Text field for entering the location of the resource. */
+    @FXML
+    private TextField txtLocation;
+
+    /** Date picker for selecting the date associated with the resource. */
+    @FXML
+    private DatePicker resourceDate;
+
+    /** Container HBox for the resource date elements. */
+    @FXML
+    private HBox resourceDateBox;
+
+    /** ComboBox for selecting a track related to the resource. */
+    @FXML
+    private ComboBox<Track> trackComboBox;
+
+    /** Toggle button indicating whether the resource is a link. */
+    @FXML
+    private MFXToggleButton btnIsLink;
+
+    /** Container HBox for resource link input elements. */
+    @FXML
+    private HBox resourceLinkBox;
+
+    /** Text field for entering the resource link URL. */
+    @FXML
+    private TextField txtResourceLink;
+
+    /** Container HBox for file path input elements. */
+    @FXML
+    private HBox filePathBox;
+
+    /** Toggle button indicating whether the resource has an author. */
+    @FXML
+    private MFXToggleButton btnIsAuthor;
+
+    /** Observable list containing all available tracks. */
     private final ObservableList<Track> allTracks = FXCollections.observableArrayList();
+
+    /** Observable list containing all available authors. */
     private final ObservableList<Author> allAuthors = FXCollections.observableArrayList();
+
+    /** Observable list containing all available genres. */
     private final ObservableList<Genre> allGenres = FXCollections.observableArrayList();
+
+    /** Observable list containing all available musical instruments. */
     private final ObservableList<MusicalInstrument> allMusicalInstruments = FXCollections.observableArrayList();
 
-    // Selected elements lists
-    private final ObservableList<Author> selectedAuthors = FXCollections.observableArrayList();
-    private final ObservableList<Genre> selectedGenres = FXCollections.observableArrayList();
-    private final ObservableList<MusicalInstrument> selectedInstruments = FXCollections.observableArrayList();
+    /** Observable list containing tracks currently selected by the user. */
     private final ObservableList<Track> selectedTracks = FXCollections.observableArrayList();
 
+    /** Observable list containing authors currently selected by the user. */
+    private final ObservableList<Author> selectedAuthors = FXCollections.observableArrayList();
+
+    /** Observable list containing genres currently selected by the user. */
+    private final ObservableList<Genre> selectedGenres = FXCollections.observableArrayList();
+
+    /** Observable list containing musical instruments currently selected by the user. */
+    private final ObservableList<MusicalInstrument> selectedInstruments = FXCollections.observableArrayList();
+
+    /**
+     * Initializes the controller by loading data and setting up UI components.
+     * <p>
+     * - Loads all tracks, authors, genres, and musical instruments from the database.
+     * - Sets converters and enables editing on ComboBoxes for tracks, authors, genres, and instruments.
+     * - Sets the items of each ComboBox with the respective data lists.
+     * - Adds dynamic search listeners to allow filtering the ComboBoxes based on user input.
+     * - Adds listeners to handle adding selected items to their corresponding panes and lists.
+     * - Sets up listeners for file selection, multimedia toggle, and link toggle.
+     * <p>
+     * If an exception occurs during initialization, an error alert is shown and the error message is printed.
+     *
+     * @param url not used
+     * @param resourceBundle not used
+     */
     @FXML
     public void initialize(URL url, ResourceBundle resourceBundle) {
         try {
@@ -118,6 +204,17 @@ public class AddResourceController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Adds a dynamic search listener to the ComboBox editor that filters the ComboBox items
+     * based on the user's input after each key release.
+     * <p>
+     * The filtering matches any element whose toString() contains the typed substring (case-insensitive).
+     * The ComboBox items are updated to the filtered list and the drop-down is shown.
+     *
+     * @param <T> the type of elements in the ComboBox and the list
+     * @param comboBox the ComboBox to attach the listener to
+     * @param allElements the complete list of all possible elements to filter from
+     */
     private <T> void setDynamicResearchListener(ComboBox<T> comboBox, ObservableList<T> allElements) {
         comboBox.getEditor().addEventFilter(KeyEvent.KEY_RELEASED, _ -> {
             String input = comboBox.getEditor().getText().toLowerCase();
@@ -129,6 +226,19 @@ public class AddResourceController extends Controller implements Initializable {
         });
     }
 
+    /**
+     * Sets a listener for item selection on the ComboBox that updates the selected elements list and pane.
+     * <p>
+     * When a new element is selected, it clears the current selection and adds the new one,
+     * updates the UI pane with the selected elements, and if the element is a Track,
+     * loads additional track information.
+     * After processing, it clears the ComboBox editor and resets the items list.
+     *
+     * @param <T> the type of elements in the ComboBox and the selected list
+     * @param comboBox the ComboBox to monitor for selection changes
+     * @param selectedElementsPane the UI container where selected elements are displayed
+     * @param selectedElements the ObservableList storing currently selected elements
+     */
     private <T> void setTrackAddingElementListener(ComboBox<T> comboBox, FlowPane selectedElementsPane, ObservableList<T> selectedElements) {
         comboBox.setOnAction(_ -> {
             T selected = comboBox.getValue();
@@ -144,6 +254,15 @@ public class AddResourceController extends Controller implements Initializable {
         });
     }
 
+    /**
+     * Loads detailed information about the given track, updating the UI components accordingly.
+     * <p>
+     * Sets the track title in the trackComboBox editor, then fetches associated authors, genres,
+     * and musical instruments from the database. Clears and updates the selected authors, genres,
+     * and instruments lists and their corresponding UI panes.
+     *
+     * @param track the Track object whose information is to be loaded
+     */
     private void loadTrackInfo(Track track){
         trackComboBox.getEditor().setText(track.getTitle());
 
@@ -170,6 +289,18 @@ public class AddResourceController extends Controller implements Initializable {
         updateSelectedElements(selectedInstrumentsPane, selectedInstruments);
     }
 
+    /**
+     * Sets a listener on the ComboBox to add selected elements to the provided selected elements list.
+     * <p>
+     * When a new element is selected, and it is not already in the selected list, it is added.
+     * The UI pane for selected elements is updated accordingly.
+     * The ComboBox editor is cleared and its items list is reset after the selection.
+     *
+     * @param <T> the type of elements in the ComboBox and the selected list
+     * @param comboBox the ComboBox to listen for selections
+     * @param selectedElementsPane the UI container displaying the selected elements
+     * @param selectedElements the list maintaining currently selected elements
+     */
     private <T> void setAddingElementListener(ComboBox<T> comboBox, FlowPane selectedElementsPane, ObservableList<T> selectedElements) {
         comboBox.setOnAction(_ -> {
             T selected = comboBox.getValue();
@@ -182,6 +313,17 @@ public class AddResourceController extends Controller implements Initializable {
         });
     }
 
+    /**
+     * Updates the given FlowPane to display buttons representing the currently selected elements.
+     * <p>
+     * Each element is represented as a Button with the element's string representation as text
+     * and a close icon graphic. Clicking the button removes the element from the selected list
+     * and updates the FlowPane accordingly.
+     *
+     * @param <T> the type of the elements in the selected list
+     * @param selectedElementsPane the FlowPane container to update with buttons
+     * @param selectedList the ObservableList containing currently selected elements
+     */
     private <T> void updateSelectedElements(FlowPane selectedElementsPane, ObservableList<T> selectedList) {
         selectedElementsPane.getChildren().clear();
         for (T element : selectedList) {
@@ -197,6 +339,12 @@ public class AddResourceController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Sets up the action listener for the browse file button to open a file chooser dialog.
+     * <p>
+     * The file chooser filters for audio files and all files. When a file is selected,
+     * its absolute path is set to the txtFilePath TextField.
+     */
     private void setSearchFileListener() {
         btnBrowseFile.setOnAction(_ -> {
             FileChooser fileChooser = new FileChooser();
@@ -212,6 +360,14 @@ public class AddResourceController extends Controller implements Initializable {
         });
     }
 
+    /**
+     * Initializes the listener for the multimedia toggle button.
+     * <p>
+     * When the toggle button's selected state changes, this method updates the visibility
+     * or enablement of multimedia-related controls accordingly by calling
+     * {@link #setMultimediaAssociatedControls(boolean)}.
+     * It also sets the initial state of these controls based on the current toggle state.
+     */
     private void setIsMultimediaListener() {
         btnIsMultimedia.selectedProperty().addListener((_, _, isSelected) -> setMultimediaAssociatedControls(isSelected));
 
@@ -219,6 +375,13 @@ public class AddResourceController extends Controller implements Initializable {
         setMultimediaAssociatedControls(isSelected);
     }
 
+    /**
+     * Updates the visibility and managed properties of controls associated with multimedia resources.
+     *
+     * @param isSelected true if the multimedia toggle button is selected, false otherwise.
+     *                   When true, shows multimedia-related controls and hides link-related controls.
+     *                   When false, does the opposite.
+     */
     private void setMultimediaAssociatedControls(boolean isSelected) {
         resourceLinkBox.setVisible(btnIsLink.isSelected() && !isSelected);
         resourceLinkBox.setManaged(btnIsLink.isSelected() && !isSelected);
@@ -230,6 +393,13 @@ public class AddResourceController extends Controller implements Initializable {
         btnIsLink.setManaged(!isSelected);
     }
 
+    /**
+     * Initializes the listener for the link toggle button.
+     * <p>
+     * When the toggle button's selected state changes, updates the visibility and managed properties
+     * of link-related controls by calling {@link #setLinkAssociatedControls(boolean)}.
+     * Also sets the initial state of those controls based on the current toggle state.
+     */
     private void setIsLinkListener() {
         btnIsLink.selectedProperty().addListener((_, _, isSelected) -> setLinkAssociatedControls(isSelected));
 
@@ -237,6 +407,13 @@ public class AddResourceController extends Controller implements Initializable {
         setLinkAssociatedControls(isSelected);
     }
 
+    /**
+     * Updates the visibility and managed properties of controls associated with resource links.
+     *
+     * @param isSelected true if the link toggle button is selected, false otherwise.
+     *                   When true, shows link-related controls and hides multimedia-related controls.
+     *                   When false, shows multimedia-related controls and hides link-related controls.
+     */
     private void setLinkAssociatedControls(boolean isSelected){
         locationBox.setVisible(btnIsMultimedia.isSelected() && !isSelected);
         locationBox.setManaged(btnIsMultimedia.isSelected() && !isSelected);
@@ -250,8 +427,19 @@ public class AddResourceController extends Controller implements Initializable {
         btnIsMultimedia.setManaged(!isSelected);
     }
 
+    /**
+     * Handles the addition of a new resource.
+     * <p>
+     * Validates input fields, creates or retrieves the associated track,
+     * gathers selected authors, genres, and instruments, and uploads the resource data.
+     * Supports both file uploads and resource links.
+     * Displays success or error alerts based on the operation outcome.
+     * </p>
+     *
+     * @throws TrackTuneException if input validation fails or resource upload is unsuccessful.
+     */
     @FXML
-    private void handleAddResource() {
+    private void handleAddResource() throws TrackTuneException{
         try {
             if (!checkInput()) {
                 throw new TrackTuneException(Strings.FIELD_EMPTY);
@@ -302,6 +490,18 @@ public class AddResourceController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Checks that all required fields for adding the resource are properly filled.
+     * <p>
+     * It verifies that:
+     * - a track is either selected or entered,
+     * - at least one author and one genre are selected,
+     * - if the "link" toggle is selected, the link field is not empty,
+     * - otherwise, the file path field is not empty.
+     * </p>
+     *
+     * @return true if all fields are valid, false otherwise.
+     */
     private boolean checkInput() {
         try {
             if (selectedTracks.isEmpty() && trackComboBox.getEditor().getText().isEmpty()) {
@@ -325,6 +525,14 @@ public class AddResourceController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Creates a byte array by reading the content of the file at the given path.
+     *
+     * @param filePath the full path of the file to read.
+     * @return a byte array containing the file data.
+     * @throws IOException if the file does not exist or is not a valid file.
+     * @throws TrackTuneException if an error occurs while reading the file.
+     */
     public byte[] createBytesFromPath(String filePath) throws IOException {
         File file = new File(filePath);
         if (!file.exists() || !file.isFile()) {
@@ -338,7 +546,11 @@ public class AddResourceController extends Controller implements Initializable {
         }
     }
 
-    // Converter for ComboBox from object T to String
+    /**
+     * A simple StringConverter implementation that converts an entity to its string representation.
+     * Used for ComboBox editors to display the object's toString() value.
+     * The fromString method returns null because editing by typing a new string is not supported here.
+     */
     private static class EntityToStringConverter<T> extends StringConverter<T> {
         @Override
         public String toString(T object) {
@@ -351,6 +563,14 @@ public class AddResourceController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Determines the ResourceTypeEnum based on the current input.
+     * If the "link" toggle is selected, returns ResourceTypeEnum.link.
+     * Otherwise, extracts the file extension from the file path text field
+     * and returns the corresponding ResourceTypeEnum value.
+     *
+     * @return the ResourceTypeEnum matching the current resource.
+     */
     private ResourceTypeEnum getFileExtensionToEnum() {
         if(btnIsLink.isSelected()){
             return ResourceTypeEnum.link;
@@ -361,6 +581,16 @@ public class AddResourceController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Creates and inserts a Resource entity (either MultimediaResource or basic Resource) into the database.
+     * Uses the provided type, data, associated trackId, and flags indicating if it's multimedia and if the current user is the author.
+     *
+     * @param type The type of resource (audio, video, link, etc.).
+     * @param data The resource data in bytes.
+     * @param trackId The ID of the associated track.
+     * @param isMultimedia Whether the resource is multimedia (has location and date info).
+     * @return The generated ID of the inserted resource, or null if insertion failed.
+     */
     private Integer manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
         Resource resource;
         if (isMultimedia) {
@@ -373,35 +603,70 @@ public class AddResourceController extends Controller implements Initializable {
         return DatabaseManager.getDAOProvider().getResourceDAO().insert(resource);
     }
 
+    /**
+     * Manages the associations between a track and its related authors, genres, and instruments.
+     * Calls helper methods to insert missing relations in the database.
+     *
+     * @param trackId The ID of the track.
+     * @param authorIds Array of author IDs related to the track.
+     * @param genreIds Array of genre IDs related to the track.
+     * @param instrumentIds Array of instrument IDs related to the track.
+     */
     private void manageTrackEntity(int trackId, Integer[] authorIds, Integer[] genreIds, Integer[] instrumentIds) {
         manageTrackAuthorRelation(authorIds, trackId);
         manageTrackGenreRelation(genreIds, trackId);
         manageTrackInstrumentRelation(instrumentIds, trackId);
     }
 
+    /**
+     * Inserts relations between the track and authors if they do not already exist.
+     *
+     * @param authorIds Array of author IDs.
+     * @param trackId The track ID.
+     */
     private void manageTrackAuthorRelation(Integer[] authorIds, int trackId){
         for(int authorId : authorIds)
             if(DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackIdAndAuthorId(trackId, authorId) == null)
                 DatabaseManager.getDAOProvider().getTrackAuthorDAO().insert(new TrackAuthor(trackId, authorId));
     }
 
+    /**
+     * Inserts relations between the track and genres if they do not already exist.
+     *
+     * @param genreIds Array of genre IDs.
+     * @param trackId The track ID.
+     */
     private void manageTrackGenreRelation(Integer[] genreIds, int trackId){
         for(int genreId: genreIds)
             if(DatabaseManager.getDAOProvider().getTrackGenreDAO().getByTrackIdAndGenreId(trackId, genreId) == null)
                 DatabaseManager.getDAOProvider().getTrackGenreDAO().insert(new TrackGenre(trackId, genreId));
     }
 
+    /**
+     * Inserts relations between the track and instruments if they do not already exist.
+     *
+     * @param instrumentIds Array of instrument IDs.
+     * @param trackId The track ID.
+     */
     private void manageTrackInstrumentRelation(Integer[] instrumentIds, int trackId){
         for(int instrumentId : instrumentIds)
             if(DatabaseManager.getDAOProvider().getTrackInstrumentDAO().getByTrackIdAndInstrumentId(trackId, instrumentId) == null)
                 DatabaseManager.getDAOProvider().getTrackInstrumentDAO().insert(new TrackInstrument(trackId, instrumentId));
     }
 
+    /**
+     * Call the method resetFields()
+     */
     @FXML
     private void handleReset(){
         resetFields();
     }
 
+    /**
+     * Clears all input fields, resets selections and toggles to their default state.
+     * This includes clearing text fields, combo boxes, toggle buttons,
+     * and clearing all selected elements and their visual representations.
+     */
     private void resetFields() {
         txtResourceLink.clear();
         trackComboBox.setValue(null);
@@ -425,7 +690,13 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     /**
-     * Handles the return button click, going back to the previous view.
+     * Handles the return action to navigate back to the "My Resources" view.
+     * <p>
+     * Checks the type of the parent controller and sets the main content
+     * accordingly to the "My Resources" view for authenticated users or admins.
+     * <p>
+     * If any exception occurs during navigation, an error alert is displayed
+     * and the exception message is logged to the console.
      */
     @FXML
     private void handleReturn() {
@@ -443,7 +714,14 @@ public class AddResourceController extends Controller implements Initializable {
     }
 
     /**
-     * Handles the add author button click.
+     * Handles the addition of a new author from the authorComboBox editor input.
+     * <p>
+     * Validates the input to ensure it is not empty and free from SQL injection risks.
+     * Checks if the author already exists in the database. If not, creates a new active author,
+     * inserts it into the database, updates the selected and available authors lists,
+     * and refreshes the UI accordingly.
+     * <p>
+     * Displays an error alert if validation fails, the author already exists, or database insertion fails.
      */
     @FXML
     private void handleAddAuthor(){

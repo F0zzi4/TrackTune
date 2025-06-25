@@ -18,10 +18,36 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class AuthenticatedUserDashboardController extends Controller implements Initializable {
-    @FXML public StackPane mainContent;
-    @FXML private Label LblWelcome;
+    /**
+     * The main container StackPane where the dashboard content is displayed.
+     */
+    @FXML
+    public StackPane mainContent;
+
+    /**
+     * Label to display a welcome message, including the authenticated user's name.
+     */
+    @FXML
+    private Label LblWelcome;
+
+    /**
+     * Reference to the initial dashboard content Node cached for later use.
+     */
     private Node dashboardContent;
 
+    /**
+     * Initializes the controller after the root element has been
+     * completely processed.
+     * <p>
+     * Initializes resource and browser managers, caches the initial
+     * dashboard content node, and updates the welcome label with the
+     * current authenticated user's full name if present in the session.
+     * </p>
+     * @param location  The location used to resolve relative paths for
+     *                  the root object, or null if unknown.
+     * @param resources The resources used to localize the root object,
+     *                  or null if not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         ResourceManager.initialize();
@@ -84,6 +110,11 @@ public class AuthenticatedUserDashboardController extends Controller implements 
         }
     }
 
+    /**
+     * Handles the action to display the "Me" view in the main content area.
+     * It updates the mainContent pane by loading the view specified by ME_VIEW_PATH.
+     * If an error occurs during loading, an error alert is shown and the exception message is logged.
+     */
     @FXML
     public void handleMe(){
         try{

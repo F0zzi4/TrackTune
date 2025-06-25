@@ -24,8 +24,16 @@ import org.apache.pdfbox.rendering.PDFRenderer;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
+/**
+ * Singleton class responsible for managing the current {@link Resource} instance
+ * and providing media-related operations for it.
+ */
 public final class ResourceManager {
+
+    /** Singleton instance of ResourceManager */
     private static ResourceManager instance;
+
+    /** The current resource being managed */
     private Resource resource;
 
     /**
@@ -51,6 +59,25 @@ public final class ResourceManager {
         }
     }
 
+    /**
+     * Creates a JavaFX Node representing the media content of the current resource.
+     * <p>
+     * The Node returned depends on the resource type:
+     * <ul>
+     *   <li>For {@link ResourceTypeEnum#link}, returns a styled Label with the link type.</li>
+     *   <li>For supported image types (including PDF), returns an ImageView or a ScrollPane
+     *       containing PDF pages as images. PDF previews show only the first page.</li>
+     *   <li>For supported audio/video types, returns a MediaView player or a label preview for MP3.</li>
+     *   <li>Throws an exception if the media type is unsupported.</li>
+     * </ul>
+     * </p>
+     *
+     * @param width     the desired width of the media node
+     * @param height    the desired height of the media node
+     * @param isPreview true if a preview version should be created (e.g., only first PDF page)
+     * @return a JavaFX Node that visually represents the resource media content
+     * @throws TrackTuneException if an I/O error occurs or media type is not supported
+     */
     public Node createMediaNode(double width, double height, boolean isPreview) throws TrackTuneException {
         ResourceTypeEnum type = resource.getType();
         String extension = type.toString();
@@ -136,8 +163,6 @@ public final class ResourceManager {
         }
     }
 
-
-
     /**
      * Initializes the media player with a video file located at a specific path.
      * The video will be displayed inside the fileContainer.
@@ -165,10 +190,20 @@ public final class ResourceManager {
         return mediaView;
     }
 
+    /**
+     * Sets the current Resource.
+     *
+     * @param resource the Resource to set
+     */
     public void setResource(Resource resource) {
         this.resource = resource;
     }
 
+    /**
+     * Gets the current Resource.
+     *
+     * @return the current Resource
+     */
     public Resource getResource() {
         return resource;
     }

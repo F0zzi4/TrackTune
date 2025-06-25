@@ -16,17 +16,42 @@ import javafx.scene.control.TextField;
 import java.sql.Timestamp;
 
 public class AccountRequestController extends Controller {
+    /**
+     * Text field for entering the username of the user.
+     */
     @FXML
     private TextField TxtUsername;
+
+    /**
+     * Password field for entering the user's password.
+     */
     @FXML
     private PasswordField TxtPassword;
+
+    /**
+     * Text field for entering the user's first name.
+     */
     @FXML
     private TextField TxtName;
+
+    /**
+     * Text field for entering the user's surname.
+     */
     @FXML
     private TextField TxtSurname;
 
     /**
-     * Access button handler for account request
+     * Handles the submission of a new account request.
+     * <p>
+     * This method collects user input from text fields (username, password, name, and surname),
+     * validates it, checks for SQL injection attempts, and verifies that the username does not already
+     * exist either as a pending request or as an active user. If all checks pass, a new {@link PendingUser}
+     * is created and inserted into the database with status {@code CREATED}, and the session is initialized
+     * with the pending user before navigating to the pending user dashboard.
+     * </p>
+     *
+     * @throws TrackTuneException if any input is invalid or a user with the same username already exists.
+     * @throws SQLInjectionException if potential SQL injection patterns are detected in the input.
      */
     @FXML
     private void handleRequest(){
@@ -66,6 +91,13 @@ public class AccountRequestController extends Controller {
         }
     }
 
+    /**
+     * Handles the action of returning to the login screen.
+     * <p>
+     * This method is typically triggered when the user clicks a "Back" or "Return" button
+     * on the registration or request screen. It navigates the application view back to the login screen.
+     * </p>
+     */
     @FXML
     private void handleReturn() {
         ViewManager.navigateToLogin();

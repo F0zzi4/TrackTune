@@ -1,8 +1,12 @@
 package app.tracktune.utils;
 
 /**
- * Class containing all the frame size
- * Dedicated class to localize constants related to frames
+ * Utility class containing constants for frame dimensions and
+ * FXML view paths used throughout the application.
+ * <p>
+ * This class centralizes all frame-related constants such as widths,
+ * heights, and resource paths for easy maintenance and localization.
+ * </p>
  */
 public class Frames {
     // LOGIN

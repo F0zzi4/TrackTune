@@ -18,37 +18,73 @@ import java.net.URL;
 import java.util.*;
 
 public class GenresController extends Controller implements Initializable {
-    @FXML private VBox genresContainer;
-    @FXML private Button btnPrev;
-    @FXML private Button btnNext;
-    @FXML private Button btnAddGenre;
-    @FXML private TextField txtName;
-    @FXML private TextArea txtDescription;
-    @FXML private Label lblCharCount;
+    /** Container for displaying the list of genres in the UI. */
+    @FXML
+    private VBox genresContainer;
 
+    /** Button to navigate to the previous page of genres. */
+    @FXML
+    private Button btnPrev;
+
+    /** Button to navigate to the next page of genres. */
+    @FXML
+    private Button btnNext;
+
+    /** Button to add a new genre. */
+    @FXML
+    private Button btnAddGenre;
+
+    /** TextField for entering the name of a new or edited genre. */
+    @FXML
+    private TextField txtName;
+
+    /** TextArea for entering the description of a new or edited genre. */
+    @FXML
+    private TextArea txtDescription;
+
+    /** Label to display the character count for the genre description. */
+    @FXML
+    private Label lblCharCount;
+
+    /** Complete list of genres loaded from the database or data source. */
     private List<Genre> genres = new ArrayList<>();
+
+    /** Current page index in the paginated genres list (0-based). */
     private int currentPage = 0;
+
+    /** Number of genre items to display per page. */
     private final int itemsPerPage = 4;
 
+    /**
+     * Initializes the genres management UI.
+     * <p>
+     * Loads all genres from the database, sets up pagination buttons,
+     * configures the add-genre button with validation and insertion logic,
+     * and adds a listener to update the character count label for the description input.
+     * Also initializes the display of genres for the first page.
+     *</p>
+     * @param location  The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         genres = DatabaseManager.getDAOProvider().getGenreDAO().getAll();
 
-        btnPrev.setOnAction(e -> {
+        btnPrev.setOnAction(_ -> {
             if (currentPage > 0) {
                 currentPage--;
-                updateRequests();
+                updateGenres();
             }
         });
 
-        btnNext.setOnAction(e -> {
+        btnNext.setOnAction(_ -> {
             if ((currentPage + 1) * itemsPerPage < genres.size()) {
                 currentPage++;
-                updateRequests();
+                updateGenres();
             }
         });
 
-        btnAddGenre.setOnAction(e -> {
+        btnAddGenre.setOnAction(_ -> {
             try {
                 String name = txtName.getText().trim();
                 String description = txtDescription.getText().trim();
@@ -68,7 +104,7 @@ public class GenresController extends Controller implements Initializable {
                         txtDescription.clear();
                         lblCharCount.setText("0/300");
                         currentPage = 0;
-                        updateRequests();
+                        updateGenres();
                     } else {
                         throw new TrackTuneException(Strings.ERR_GENRE_ALREADY_EXISTS);
                     }
@@ -83,7 +119,7 @@ public class GenresController extends Controller implements Initializable {
             }
         });
 
-        txtDescription.textProperty().addListener((obs, oldVal, newVal) -> {
+        txtDescription.textProperty().addListener((_, oldVal, newVal) -> {
             if (newVal.length() > 300) {
                 txtDescription.setText(oldVal);
             } else {
@@ -91,10 +127,19 @@ public class GenresController extends Controller implements Initializable {
             }
         });
 
-        updateRequests();
+        updateGenres();
     }
 
-    private void updateRequests() {
+    /**
+     * Updates the genres view by clearing the container and displaying
+     * the genres corresponding to the current page with pagination controls.
+     * <p>
+     * It disables the previous and next buttons appropriately based on the current page
+     * and the total number of genres. If there are no genres, it shows a placeholder label.
+     * <p>
+     * The genres are displayed using the {@code createRequestItem(Genre)} method for each item.
+     */
+    private void updateGenres() {
         genresContainer.getChildren().clear();
 
         int total = genres.size();
@@ -119,6 +164,17 @@ public class GenresController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Creates a visual HBox component representing a single genre item.
+     * <p>
+     * The component includes the genre's name and description, styled labels,
+     * and a delete button to remove the genre.
+     * The description label wraps text and its maximum width is dynamically bound
+     * to the available space minus the delete button width.
+     * </p>
+     * @param genre The Genre object to be represented in the UI.
+     * @return An HBox node containing the styled genre information and action button.
+     */
     private HBox createRequestItem(Genre genre) {
         Label nameLabel = new Label(genre.getName());
         nameLabel.getStyleClass().add("request-item-title");
@@ -132,7 +188,7 @@ public class GenresController extends Controller implements Initializable {
 
         Button deleteBtn = new Button(Strings.DELETE);
         deleteBtn.getStyleClass().add("delete-button");
-        deleteBtn.setOnAction(e -> deleteGenre(genre));
+        deleteBtn.setOnAction(_ -> deleteGenre(genre));
         deleteBtn.setMinWidth(80);
 
         HBox buttonBox = new HBox(deleteBtn);
@@ -151,6 +207,15 @@ public class GenresController extends Controller implements Initializable {
         return box;
     }
 
+    /**
+     * Deletes the specified genre after confirming with the user.
+     *
+     * <p>If the user confirms, the genre is removed from the database and the local list.
+     * The current page is adjusted if necessary to ensure it remains within valid bounds,
+     * and the UI is updated accordingly.</p>
+     *
+     * @param genre The Genre object to be deleted.
+     */
     private void deleteGenre(Genre genre) {
         boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
         if (response)
@@ -161,7 +226,7 @@ public class GenresController extends Controller implements Initializable {
                 if (currentPage >= maxPage && currentPage > 0) {
                     currentPage--;
                 }
-                updateRequests();
+                updateGenres();
             } catch (Exception ex) {
                 ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
             }

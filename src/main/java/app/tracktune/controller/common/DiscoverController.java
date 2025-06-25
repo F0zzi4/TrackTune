@@ -29,15 +29,47 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class DiscoverController extends Controller implements Initializable {
-    @FXML private Tab tabMostRecent;
-    @FXML private Tab tabMostPopular;
-    @FXML private Tab tabMostCommented;
-    @FXML private Tab tabLastCommented;
+    /**
+     * Tab displaying the most recent resources.
+     */
+    @FXML
+    private Tab tabMostRecent;
 
-    // SINGLETONS
+    /**
+     * Tab displaying the most popular resources.
+     */
+    @FXML
+    private Tab tabMostPopular;
+
+    /**
+     * Tab displaying the resources with the most comments.
+     */
+    @FXML
+    private Tab tabMostCommented;
+
+    /**
+     * Tab displaying the resources that were last commented on.
+     */
+    @FXML
+    private Tab tabLastCommented;
+
+    /**
+     * Singleton instance managing resource-related operations.
+     */
     private ResourceManager resourceManager;
+
+    /**
+     * Singleton instance managing browser-related operations.
+     */
     private BrowserManager browserManager;
 
+    /**
+     * Initializes the controller by setting up singleton instances and populating
+     * the resource tabs with data retrieved from the database.
+     *
+     * @param location  The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         browserManager = BrowserManager.getInstance();
@@ -48,6 +80,15 @@ public class DiscoverController extends Controller implements Initializable {
         populateTab(tabLastCommented, DatabaseManager.getDAOProvider().getResourceDAO().getAllCommentedResourcesByUserID(SessionManager.getInstance().getUser().getId()));
     }
 
+    /**
+     * Populates the given tab with a scrollable list of resource items.
+     * Each resource is displayed inside a VBox with padding and spacing,
+     * wrapped in a ScrollPane, and anchored to fill the tab content area.
+     * A timer is started to update the content dynamically.
+     *
+     * @param tab       The Tab to populate with resource items.
+     * @param resources The list of Resource objects to display in the tab.
+     */
     private void populateTab(Tab tab, List<Resource> resources) {
         VBox contentBox = new VBox(10);
         VBox.setVgrow(contentBox, javafx.scene.layout.Priority.ALWAYS);
@@ -74,6 +115,15 @@ public class DiscoverController extends Controller implements Initializable {
         tab.setContent(anchor);
     }
 
+    /**
+     * Creates a horizontal box (HBox) containing a media preview and
+     * resource details for a single Resource.
+     * The preview is created with fixed width and height and the resource
+     * details box fills the remaining space.
+     *
+     * @param resource The Resource object for which the UI component is created.
+     * @return An HBox containing the media preview and resource details.
+     */
     private HBox createResourceItemBox(Resource resource) {
         resourceManager.setResource(resource);
         Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
@@ -90,6 +140,17 @@ public class DiscoverController extends Controller implements Initializable {
         return container;
     }
 
+    /**
+     * Creates an HBox containing detailed information about a Resource.
+     * <p>
+     * This includes the track title, concatenated author names, the formatted creation date,
+     * and a "View" button to interact with the resource.
+     * The layout organizes the text details on the left, a spacer in the middle to push
+     * the button to the right, ensuring a clean and responsive UI.
+     * </p>
+     * @param resource The Resource object for which the UI item is created.
+     * @return An HBox representing the resource's display item with title, authors, date, and a view button.
+     */
     private HBox createRequestItem(Resource resource) {
         Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
         List<TrackAuthor> trackAuthors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(resource.getTrackID());
@@ -144,6 +205,16 @@ public class DiscoverController extends Controller implements Initializable {
         return box;
     }
 
+    /**
+     * Opens and displays the specified Resource.
+     * <p>
+     * If the resource type is a link, it opens the URL in the embedded browser.
+     * Otherwise, it loads a new view to display the resource file content using
+     * the ResourceFileController.
+     * The method also manages the view switching depending on the type of parent controller.
+     * </p>
+     * @param resource The Resource object to be viewed.
+     */
     @FXML
     private void viewResource(Resource resource) {
         try{

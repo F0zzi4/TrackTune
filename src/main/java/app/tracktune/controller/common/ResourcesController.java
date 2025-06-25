@@ -36,17 +36,31 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class ResourcesController extends Controller implements Initializable {
+    /** Container VBox where resource UI items are displayed. */
     @FXML private VBox resourcesContainer;
+
+    /** Button to navigate to the previous page of resources. */
     @FXML private Button btnPrev;
+
+    /** Button to navigate to the next page of resources. */
     @FXML private Button btnNext;
 
+    /** List holding all resources to be paginated and displayed. */
     private List<Resource> resources = new ArrayList<>();
+
+    /** Manager responsible for browser navigation actions (e.g., opening URLs). */
     private BrowserManager browserManager;
+
+    /** Manager responsible for resource-related operations (CRUD, etc.). */
     private ResourceManager resourceManager;
+
+    /** The currently selected or active resource in context. */
     protected Resource resource;
 
-    // PAGINATION
-    private final int itemsPerPage = 6;
+    /** Number of resource items shown per page in the UI. */
+    private final int itemsPerPage = 5;
+
+    /** Current page index in the pagination (zero-based). */
     private int currentPage = 0;
 
     /**
@@ -90,6 +104,13 @@ public class ResourcesController extends Controller implements Initializable {
         updateResources();
     }
 
+    /**
+     * Handles the action of adding a new resource.
+     * <p>
+     * Depending on the type of the parent controller, this method loads
+     * the "Add Resource" view into the main content area of the corresponding dashboard.
+     * If an error occurs during loading, an error alert is shown.
+     */
     @FXML
     private void handleAddResource() {
         try{
@@ -105,6 +126,15 @@ public class ResourcesController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Displays the given resource.
+     * <p>
+     * If the resource is a link, it opens the URL in the default browser.
+     * Otherwise, it loads the resource file view and sets it in the main content area
+     * of the parent dashboard controller.
+     *
+     * @param resource the resource to view
+     */
     @FXML
     private void viewResource(Resource resource) {
         try{
@@ -131,6 +161,15 @@ public class ResourcesController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Opens the edit view for the specified resource.
+     * <p>
+     * Loads the edit resource UI, initializes its controller with the given resource,
+     * and replaces the main content of the parent dashboard controller with this view.
+     * If an error occurs during loading, an error alert is displayed.
+     *
+     * @param resource the resource to be edited
+     */
     @FXML
     private void editResource(Resource resource) {
         try{
@@ -151,6 +190,14 @@ public class ResourcesController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Updates the resources view by displaying the current page of resource items.
+     * <p>
+     * Clears the current displayed resources, calculates the subset of resources
+     * for the current page, updates pagination button states, and populates the container
+     * with resource items. If the resource list is empty, displays a message indicating
+     * the list is empty.
+     */
     private void updateResources() {
         resourcesContainer.getChildren().clear();
 
@@ -177,6 +224,16 @@ public class ResourcesController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Creates an HBox container representing a single resource item with a media preview and details.
+     * <p>
+     * This method sets the resource in the resource manager, generates a media preview node,
+     * and combines it with the resource's detail view (created by {@code createRequestItem})
+     * into an HBox with spacing and alignment configured.
+     *
+     * @param resource the resource to create the item box for
+     * @return an HBox containing the media preview and resource details, styled and aligned properly
+     */
     private HBox createResourceItemBox(Resource resource) {
         resourceManager.setResource(resource);
         Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
@@ -193,6 +250,17 @@ public class ResourcesController extends Controller implements Initializable {
         return container;
     }
 
+    /**
+     * Creates an HBox representing the detailed view of a resource item, including its track title,
+     * authors, creation date, and action buttons for viewing, editing, and deleting.
+     * <p>
+     * The method queries the database for the track and authors associated with the resource,
+     * formats the information into labels, and arranges them with buttons in a styled HBox.
+     * The buttons trigger the respective actions on the resource.
+     *
+     * @param resource the resource to create the request item view for
+     * @return an HBox containing the resource's metadata and action buttons, styled and aligned
+     */
     private HBox createRequestItem(Resource resource) {
         Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
         List<TrackAuthor> trackAuthors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(resource.getTrackID());
@@ -258,6 +326,15 @@ public class ResourcesController extends Controller implements Initializable {
         return box;
     }
 
+    /**
+     * Deletes the specified resource after user confirmation.
+     * <p>
+     * Prompts the user with a confirmation dialog. If the user confirms,
+     * deletes the resource from the database and removes it from the local resource list.
+     * Adjusts the current page if necessary and refreshes the displayed resources.
+     *
+     * @param resource the resource to be deleted
+     */
     private void deleteResource(Resource resource) {
         boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
         if (response)

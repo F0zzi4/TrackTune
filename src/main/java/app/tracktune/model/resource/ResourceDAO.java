@@ -11,11 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Data Access Object (DAO) implementation for the {@link Resource} entity.
+ * Provides methods to perform CRUD operations on the Resources table in the database.
+ */
 public class ResourceDAO implements DAO<Resource> {
 
     private final DatabaseManager dbManager;
 
-    // FIELDS
+    // Database table field names
     private static final String ID = "ID";
     private static final String TYPE = "type";
     private static final String DATA = "data";
@@ -27,7 +31,7 @@ public class ResourceDAO implements DAO<Resource> {
     private static final String TRACK_ID = "trackID";
     private static final String USER_ID = "userID";
 
-    // SQL STATEMENTS
+    // SQL statements for CRUD operations
     private static final String INSERT_RESOURCE_STMT = """
         INSERT INTO Resources (type, data, creationDate, isMultimedia, location, resourceDate, isAuthor, trackID, userID)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -80,14 +84,31 @@ public class ResourceDAO implements DAO<Resource> {
         LIMIT 5
     """;
 
+    /**
+     * Constructs a new ResourceDAO using the default {@link DatabaseManager} instance
+     * from the main application.
+     */
     public ResourceDAO() {
         dbManager = Main.dbManager;
     }
 
+    /**
+     * Constructs a new ResourceDAO with a specified {@link DatabaseManager}.
+     *
+     * @param dbManager the DatabaseManager to use for database operations
+     */
     public ResourceDAO(DatabaseManager dbManager) {
         this.dbManager = dbManager;
     }
 
+    /**
+     * Inserts a new resource into the database.
+     * Supports both general resources and multimedia resources.
+     *
+     * @param resource the resource to insert
+     * @return the ID of the newly inserted resource
+     * @throws SQLiteException if the insertion fails
+     */
     @Override
     public Integer insert(Resource resource) {
         boolean success;
@@ -127,6 +148,13 @@ public class ResourceDAO implements DAO<Resource> {
         return dbManager.getLastInsertId();
     }
 
+    /**
+     * Updates an existing resource identified by its ID (trackID here seems like a misnomer, should be resource ID).
+     *
+     * @param resource the resource with updated data
+     * @param trackID  the ID of the resource to update (note: parameter name is misleading, expected resource ID)
+     * @throws SQLiteException if the update fails
+     */
     @Override
     public void updateById(Resource resource, int trackID) {
         boolean success;
@@ -166,6 +194,12 @@ public class ResourceDAO implements DAO<Resource> {
         }
     }
 
+    /**
+     * Deletes a resource by its ID.
+     *
+     * @param id the ID of the resource to delete
+     * @throws SQLiteException if the deletion fails
+     */
     @Override
     public void deleteById(int id) {
         boolean success = dbManager.executeUpdate(DELETE_RESOURCE_STMT, id);
@@ -174,6 +208,12 @@ public class ResourceDAO implements DAO<Resource> {
         }
     }
 
+    /**
+     * Retrieves a resource by its ID.
+     *
+     * @param id the ID of the resource
+     * @return the Resource object, or null if not found
+     */
     @Override
     public Resource getById(int id) {
         AtomicReference<Resource> result = new AtomicReference<>();
@@ -190,6 +230,11 @@ public class ResourceDAO implements DAO<Resource> {
         return result.get();
     }
 
+    /**
+     * Retrieves all resources.
+     *
+     * @return a list of all Resource objects in the database
+     */
     @Override
     public List<Resource> getAll() {
         List<Resource> resources = new ArrayList<>();
@@ -207,6 +252,12 @@ public class ResourceDAO implements DAO<Resource> {
         return resources;
     }
 
+    /**
+     * Retrieves all resources belonging to a specific user.
+     *
+     * @param userId the user ID
+     * @return a list of Resource objects owned by the user
+     */
     public List<Resource> getAllByUserID(int userId) {
         List<Resource> resources = new ArrayList<>();
 
@@ -223,7 +274,13 @@ public class ResourceDAO implements DAO<Resource> {
         return resources;
     }
 
-    public List<Resource> getAllByTrackID(int userId) {
+    /**
+     * Retrieves all resources linked to a specific track.
+     *
+     * @param trackId the track ID
+     * @return a list of Resource objects linked to the track
+     */
+    public List<Resource> getAllByTrackID(int trackId) {
         List<Resource> resources = new ArrayList<>();
 
         dbManager.executeQuery(
@@ -233,12 +290,19 @@ public class ResourceDAO implements DAO<Resource> {
                         resources.add(mapResultSetToEntity(rs));
                     }
                     return null;
-                }, userId
+                }, trackId
         );
 
         return resources;
     }
 
+    /**
+     * Retrieves the last 5 distinct resources commented on by a specific user,
+     * ordered by comment creation date descending.
+     *
+     * @param userId the user ID who made the comments
+     * @return a list of commented Resource objects
+     */
     public List<Resource> getAllCommentedResourcesByUserID(int userId) {
         List<Resource> resources = new ArrayList<>();
 
@@ -255,6 +319,13 @@ public class ResourceDAO implements DAO<Resource> {
         return resources;
     }
 
+    /**
+     * Maps a {@link ResultSet} row to a {@link Resource} or {@link MultimediaResource} entity.
+     *
+     * @param rs the ResultSet positioned at the current row
+     * @return the mapped Resource object
+     * @throws SQLException if a database access error occurs
+     */
     public static Resource mapResultSetToEntity(ResultSet rs) throws SQLException {
         int id = rs.getInt(ID);
         ResourceTypeEnum type = ResourceTypeEnum.fromInt(rs.getInt(TYPE));

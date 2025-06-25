@@ -23,8 +23,19 @@ import java.util.ResourceBundle;
  * and supports switching between different views in the main content
  */
 public class AdminDashboardController extends Controller implements Initializable {
+    /**
+     * The main container where different views (e.g., dashboard, resources, etc.) are dynamically loaded and displayed.
+     */
     @FXML public StackPane mainContent;
+
+    /**
+     * Label displaying a welcome message to the user on the dashboard.
+     */
     @FXML private Label LblWelcome;
+
+    /**
+     * Cached reference to the main dashboard content, used to restore the default view when needed.
+     */
     private Node dashboardContent;
 
     /**

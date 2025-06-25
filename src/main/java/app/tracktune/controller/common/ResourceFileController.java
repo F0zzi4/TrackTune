@@ -51,24 +51,52 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ResourceFileController extends Controller implements Initializable {
+    /** Container pane for displaying the media file (audio/video). */
     @FXML private StackPane fileContainer;
+
+    /** Toolbox containing video controls (play, pause, etc.). */
     @FXML private HBox videoToolBox;
+
+    /** Label showing the title of the current media/resource. */
     @FXML private Label lblTitle;
+
+    /** Box containing metadata information related to the media/resource. */
     @FXML private VBox metadataBox;
+
+    /** Text field for entering user comments on the resource. */
     @FXML private TextField commentField;
+
+    /** VBox holding all comments or related UI elements. */
     @FXML private VBox commentVBox;
+
+    /** Button to start or manage video/audio segment actions. */
     @FXML private Button segmentButton;
 
+    /** Manages resource-related operations and media creation. */
     private final ResourceManager resourceManager;
+
+    /** JavaFX media player for controlling audio/video playback. */
     private MediaPlayer mediaPlayer;
+
+    /** The current track associated with the media being played. */
     private Track track;
 
-    // CONSTANTS
+    /** Default time in seconds to skip forward/backward during playback. */
     private final int defaultSkipTime = 10;
+
+    /** Flag indicating whether the media is currently playing. */
     private boolean isPlaying = false;
+
+    /** Slider UI control for showing and adjusting media playback progress. */
     private Slider sliderProgress;
+
+    /** Label displaying the current playback time (elapsed). */
     private Label lblTimer;
+
+    /** Label displaying the total duration of the media. */
     private Label lblDuration;
+
+    /** Stage used for full-screen playback mode (optional). */
     private Stage fullStage = null;
 
     /**

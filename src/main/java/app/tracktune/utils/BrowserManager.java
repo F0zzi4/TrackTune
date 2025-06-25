@@ -9,9 +9,16 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Singleton class for managing browser operations.
+ * Singleton class responsible for managing browser-related operations within the application.
+ *
+ * <p>This class ensures that there is only one instance controlling browser interactions,
+ * providing a centralized way to open URLs or perform other browser-related tasks.</p>
  */
 public class BrowserManager {
+    /**
+     * Singleton instance of {@code BrowserManager}.
+     * Ensures a single point of access to the browser routing
+     */
     private static BrowserManager instance;
     /**
      * Create the instance of the browser manager following singleton pattern

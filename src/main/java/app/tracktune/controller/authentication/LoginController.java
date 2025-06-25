@@ -15,14 +15,24 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 
 public class LoginController extends Controller {
+    /**
+     * TextField for entering the username in the registration form.
+     */
     @FXML
     private TextField TxtUsername;
-    @FXML
-    private PasswordField TxtPassword;
-    
 
     /**
-     * Access button handler for login
+     * PasswordField for entering the password in the registration form.
+     */
+    @FXML
+    private PasswordField TxtPassword;
+
+    /**
+     * Handles the login process for all types of users: Administrator, AuthenticatedUser, and PendingUser.
+     * <p>
+     * Validates the input, checks for SQL injection attempts, and authenticates the user by verifying credentials.
+     * If authentication is successful, initializes the session and navigates to the corresponding dashboard based on user type.
+     * If no matching user is found or credentials are invalid, an appropriate error message is shown.
      */
     @FXML
     private void handleLogin() {
@@ -69,7 +79,8 @@ public class LoginController extends Controller {
     }
 
     /**
-     * Access button handler for the account request
+     * Handles the action triggered when the user requests to create a new account.
+     * Navigates the user to the account request view.
      */
     @FXML
     private void handleAccountRequest(){

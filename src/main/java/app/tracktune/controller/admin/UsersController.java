@@ -19,23 +19,69 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class UsersController extends Controller implements Initializable {
-
+    /**
+     * Container for displaying the list of authenticated users in the UI.
+     */
     @FXML
     private VBox usersContainer;
+
+    /**
+     * Button to navigate to the previous page of users.
+     */
     @FXML
     private Button prevButton;
+
+    /**
+     * Button to navigate to the next page of users.
+     */
     @FXML
     private Button nextButton;
+
+    /**
+     * Tab pane for filtering users based on their status.
+     */
     @FXML
     private TabPane filterTabPane;
 
+    /**
+     * Currently selected filter status for displaying users.
+     */
     private Object currentFilter = UserStatusEnum.ACTIVE;
+
+    /**
+     * List of all authenticated users retrieved from the database.
+     */
     private final List<AuthenticatedUser> users = new ArrayList<>();
+
+    /**
+     * List of users filtered by the current filter status.
+     */
     private List<AuthenticatedUser> filteredUsers = new ArrayList<>();
+
+    /**
+     * Index of the current page being displayed (zero-based).
+     */
     private int currentPage = 0;
-    private final int itemsPerPage = 4;
 
+    /**
+     * Number of items (users) displayed per page.
+     */
+    private final int itemsPerPage = 5;
 
+    // CONSTANTS
+    private static final String ADMIN = "ADMIN";
+
+    /**
+     * Initializes the controller after its root element has been completely processed.
+     * <p>
+     * Loads all authenticated users from the database, sets up filter tabs based on user status,
+     * and configures pagination controls (previous and next buttons) with their respective actions.
+     * Finally, updates the user list display according to the current filter and page.
+     * </p>
+     *
+     * @param location  The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -48,14 +94,14 @@ public class UsersController extends Controller implements Initializable {
         );
         createTabsFromEnum();
 
-        prevButton.setOnAction(e -> {
+        prevButton.setOnAction(_ -> {
             if (currentPage > 0) {
                 currentPage--;
                 updateUsers();
             }
         });
 
-        nextButton.setOnAction(e -> {
+        nextButton.setOnAction(_ -> {
             if ((currentPage + 1) * itemsPerPage < filteredUsers.size()) {
                 currentPage++;
                 updateUsers();
@@ -65,6 +111,15 @@ public class UsersController extends Controller implements Initializable {
         updateUsers();
     }
 
+    /**
+     * Creates filter tabs dynamically based on the {@link UserStatusEnum} values
+     * and adds a tab for administrators.
+     * <p>
+     * Each tab stores its corresponding filter data in its userData property.
+     * When the selected tab changes, the current filter is updated, the page is reset,
+     * and the user list is refreshed accordingly.
+     * </p>
+     */
     private void createTabsFromEnum() {
         filterTabPane.getTabs().clear();
 
@@ -74,7 +129,7 @@ public class UsersController extends Controller implements Initializable {
             filterTabPane.getTabs().add(tab);
         }
 
-        filterTabPane.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+        filterTabPane.getSelectionModel().selectedItemProperty().addListener((_, _, newTab) -> {
             if (newTab != null) {
                 currentFilter = newTab.getUserData();
                 currentPage = 0;
@@ -89,8 +144,16 @@ public class UsersController extends Controller implements Initializable {
         filterTabPane.getSelectionModel().selectFirst();
     }
 
+    /**
+     * Filters the list of users based on the currently selected filter.
+     * <p>
+     * If the current filter is the special "ADMIN" tab, only active administrators are included.
+     * Otherwise, users are filtered by the selected status excluding administrators.
+     * The resulting list is sorted alphabetically by username.
+     * </p>
+     */
     private void filterUsers() {
-        if ("ADMIN".equals(currentFilter)) {
+        if (ADMIN.equals(currentFilter)) {
             filteredUsers = users.stream()
                     .filter(u -> u instanceof Administrator && u.getStatus() == UserStatusEnum.ACTIVE)
                     .sorted(Comparator.comparing(User::getUsername))
@@ -103,6 +166,14 @@ public class UsersController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Updates the displayed list of users according to the current filter and pagination.
+     * <p>
+     * Clears the user container and populates it with users on the current page.
+     * Also handles the enabling/disabling of pagination buttons and shows a placeholder
+     * message if no users are found for the current filter.
+     * </p>
+     */
     private void updateUsers() {
         filterUsers();
         usersContainer.getChildren().clear();
@@ -130,6 +201,16 @@ public class UsersController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Creates a UI item (HBox) representing a user with info labels and action buttons.
+     * <p>
+     * Depending on the user's status and role, different buttons are shown for actions such as
+     * suspend, restore, remove, or promote to administrator.
+     * </p>
+     *
+     * @param user The AuthenticatedUser instance to display.
+     * @return An HBox node containing user info and action buttons.
+     */
     private HBox createUserItem(AuthenticatedUser user) {
         Label infoLabel = new Label(user.getUsername() + " - " + user.getName() + " " + user.getSurname());
         infoLabel.getStyleClass().add("user-item-title");
@@ -142,27 +223,24 @@ public class UsersController extends Controller implements Initializable {
 
         Button restoreBtn = new Button(Strings.RESTORE);
         restoreBtn.getStyleClass().add("accept-button");
-        restoreBtn.setOnAction(e -> restoreUser(user));
+        restoreBtn.setOnAction(_ -> restoreUser(user));
 
         Button makeAdminButton = new Button(Strings.MAKE_ADMIN);
         makeAdminButton.getStyleClass().add("make-admin-button");
-        makeAdminButton.setOnAction(e -> makeAdmin(user));
+        makeAdminButton.setOnAction(_ -> makeAdmin(user));
 
         Button suspendButton = new Button(Strings.SUSPEND);
         suspendButton.getStyleClass().add("suspend-button");
-        suspendButton.setOnAction(e -> suspendUser(user));
+        suspendButton.setOnAction(_ -> suspendUser(user));
 
         Button removeBtn = new Button(Strings.DELETE);
         removeBtn.getStyleClass().add("delete-button");
-        removeBtn.setOnAction(e -> removeUser(user));
+        removeBtn.setOnAction(_ -> removeUser(user));
 
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER_RIGHT);
 
-        if(user instanceof Administrator) {
-            //
-        }
-        else{
+        if(!(user instanceof Administrator)) {
             if(user.getStatus() == UserStatusEnum.ACTIVE){
                 buttonBox.getChildren().add(suspendButton);
                 buttonBox.getChildren().add(removeBtn);
@@ -188,6 +266,13 @@ public class UsersController extends Controller implements Initializable {
         return box;
     }
 
+    /**
+     * Restores a user by setting their status to ACTIVE,
+     * updates the database, refreshes the local list,
+     * and updates the UI accordingly.
+     *
+     * @param user the AuthenticatedUser to restore
+     */
     private void restoreUser (AuthenticatedUser user) {
         try {
             user.setStatus(UserStatusEnum.ACTIVE);
@@ -201,6 +286,13 @@ public class UsersController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Removes a user by setting their status to REMOVED,
+     * updates the database, refreshes the local list,
+     * and updates the UI accordingly.
+     *
+     * @param user the AuthenticatedUser to remove
+     */
     private void removeUser(AuthenticatedUser user) {
         try {
             user.setStatus(UserStatusEnum.REMOVED);

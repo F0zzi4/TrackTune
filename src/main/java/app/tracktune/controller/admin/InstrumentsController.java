@@ -21,38 +21,77 @@ import java.net.URL;
 import java.util.*;
 
 public class InstrumentsController extends Controller implements Initializable {
+    /** Container for displaying the list of instruments in the UI. */
+    @FXML
+    private VBox instrumentsContainer;
 
-    @FXML private VBox instrumentsContainer;
-    @FXML private Button btnPrev;
-    @FXML private Button btnNext;
-    @FXML private Button btnAddInstrument;
-    @FXML private TextField txtName;
-    @FXML private TextArea txtDescription;
-    @FXML private Label lblCharCount;
+    /** Button to navigate to the previous page of instruments. */
+    @FXML
+    private Button btnPrev;
 
+    /** Button to navigate to the next page of instruments. */
+    @FXML
+    private Button btnNext;
+
+    /** Button to add a new instrument. */
+    @FXML
+    private Button btnAddInstrument;
+
+    /** TextField for entering the instrument's name. */
+    @FXML
+    private TextField txtName;
+
+    /** TextArea for entering the instrument's description. */
+    @FXML
+    private TextArea txtDescription;
+
+    /** Label showing the character count of the description. */
+    @FXML
+    private Label lblCharCount;
+
+    /** List holding all musical instruments currently loaded. */
     private List<MusicalInstrument> instruments = new ArrayList<>();
-    private int currentPage = 0;
-    private final int itemsPerPage = 4;
 
+    /** Current page index in the paginated instruments list. */
+    private int currentPage = 0;
+
+    /** Number of instruments displayed per page. */
+    private final int itemsPerPage = 5;
+
+    /**
+     * Initializes the controller after its root element has been completely processed.
+     * <p>
+     * Loads the list of musical instruments from the database and sets up event handlers for UI controls:
+     * - Previous and Next buttons for pagination.
+     * - Add button to insert a new musical instrument after validation.
+     * - Description text area listener to limit character count to 300.
+     * </p>
+     * <p>
+     * Resets the form and refreshes the displayed list of instruments.
+     * </p>
+     *
+     * @param location  The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resources The resources used to localize the root object, or null if not localized.
+     */
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
         instruments = DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getAll();
 
-        btnPrev.setOnAction(e -> {
+        btnPrev.setOnAction(_ -> {
             if (currentPage > 0) {
                 currentPage--;
                 refreshInstrument();
             }
         });
 
-        btnNext.setOnAction(e -> {
+        btnNext.setOnAction(_ -> {
             if ((currentPage + 1) * itemsPerPage < instruments.size()) {
                 currentPage++;
                 refreshInstrument();
             }
         });
 
-        btnAddInstrument.setOnAction(e -> {
+        btnAddInstrument.setOnAction(_ -> {
             try {
                 String name = txtName.getText().trim();
                 String description = txtDescription.getText().trim();
@@ -88,7 +127,7 @@ public class InstrumentsController extends Controller implements Initializable {
             }
         });
 
-        txtDescription.textProperty().addListener((observable, oldValue, newValue) -> {
+        txtDescription.textProperty().addListener((_, oldValue, newValue) -> {
             if (newValue.length() > 300) {
                 txtDescription.setText(oldValue);
             } else {
@@ -99,6 +138,14 @@ public class InstrumentsController extends Controller implements Initializable {
         refreshInstrument();
     }
 
+    /**
+     * Refreshes the list of musical instruments displayed in the UI.
+     * <p>
+     * Clears the current instrument container and repopulates it with the instruments on the current page,
+     * respecting the pagination settings. Disables/enables the Previous and Next buttons accordingly.
+     * <p>
+     * If no instruments exist, shows a placeholder label indicating the list is empty.
+     */
     private void refreshInstrument() {
         instrumentsContainer.getChildren().clear();
 
@@ -125,6 +172,17 @@ public class InstrumentsController extends Controller implements Initializable {
         }
     }
 
+    /**
+     * Creates a UI component representing a single musical instrument entry.
+     * <p>
+     * The component consists of the instrument's name and description with a delete button.
+     * The description is wrapped and sized dynamically according to available space.
+     * <p>
+     * The delete button triggers the deletion of the instrument from the database and UI.
+     *
+     * @param instrument the MusicalInstrument object to represent
+     * @return an HBox containing the formatted instrument details and delete button
+     */
     private HBox createInstrumentItemBox(MusicalInstrument instrument) {
         Label nameLabel = new Label(instrument.getName());
         nameLabel.getStyleClass().add("request-item-title");
@@ -138,7 +196,7 @@ public class InstrumentsController extends Controller implements Initializable {
 
         Button deleteBtn = new Button(Strings.DELETE);
         deleteBtn.getStyleClass().add("delete-button");
-        deleteBtn.setOnAction(e -> deleteMusicalInstrument(instrument));
+        deleteBtn.setOnAction(_ -> deleteMusicalInstrument(instrument));
         deleteBtn.setMinWidth(80);
 
         HBox buttonBox = new HBox(deleteBtn);
@@ -157,6 +215,16 @@ public class InstrumentsController extends Controller implements Initializable {
         return box;
     }
 
+    /**
+     * Deletes a given musical instrument after user confirmation.
+     * <p>
+     * Prompts the user for confirmation before deleting the instrument from the database and removing it from the local list.
+     * Adjusts the current page if necessary and refreshes the UI list of instruments.
+     * <p>
+     * Shows an error alert if the deletion fails.
+     *
+     * @param instrument the MusicalInstrument to delete
+     */
     private void deleteMusicalInstrument(MusicalInstrument instrument) {
         boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
         if (response)
@@ -171,5 +239,5 @@ public class InstrumentsController extends Controller implements Initializable {
             } catch (Exception ex) {
                 ViewManager.setAndShowAlert(Strings.ERROR, Strings.ERR_GENERAL, ex.getMessage(), Alert.AlertType.ERROR);
             }
-        }
+    }
 }

@@ -159,6 +159,14 @@ public class DBInit {
             1                             // isAdmin
     };
 
+    /**
+     * Returns a single SQL string that contains all the necessary
+     * CREATE TABLE statements to initialize the database schema.
+     * Each statement is separated by a semicolon, allowing
+     * execution as a batch to create all tables required by the application.
+     *
+     * @return a concatenated SQL string with all CREATE TABLE statements.
+     */
     public static String getDBInitStatement() {
         return CREATE_USERS_TABLE_STMT + ";" +
                 CREATE_PENDING_USERS_TABLE_STMT + ";" +

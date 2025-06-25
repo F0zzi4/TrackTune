@@ -12,9 +12,12 @@ import java.util.List;
 
 public class SQLiteScripts {
     /**
-     * Method to avoid SQL Injection
-     * @param texts texts input from the user
-     * @return true if some text contains SQL keyword, false otherwise
+     * Checks if any of the provided input strings contain suspicious SQL keywords or characters
+     * commonly used in SQL injection attacks.
+     *
+     * @param texts Variable number of input strings to check.
+     * @return {@code true} if any text is null, blank, or contains SQL keywords potentially
+     * indicating injection attempts; {@code false} otherwise.
      */
     public static boolean checkForSQLInjection(String... texts) {
         String pattern = "(--|;|\\bDROP\\b|\\bSELECT\\b|\\bINSERT\\b|\\bUPDATE\\b|\\bDELETE\\b|\\bTRUNCATE\\b|\\bALTER\\b|\\bCREATE\\b|\\bEXEC\\b|\\bUNION\\b|\\bFROM\\b|\\bWHERE\\b|\\bJOIN\\b)";
@@ -34,6 +37,15 @@ public class SQLiteScripts {
         return result;
     }
 
+    /**
+     * Deletes a track and all related entries from the database, including comments,
+     * interactions, resources, and associated links.
+     *
+     * @param dbManager DatabaseManager instance to execute SQL statements.
+     * @param trackID   The ID of the track to delete.
+     * @throws SQLException If an SQL error occurs during deletion.
+     *                       Shows an error alert if the deletion fails.
+     */
     public static void deleteTrack(DatabaseManager dbManager, int trackID) throws SQLException {
         String[] queries = {
                 "DELETE FROM Interactions WHERE commentID IN (SELECT ID FROM Comments WHERE trackID = ?) OR replyID IN (SELECT ID FROM Comments WHERE trackID = ?)",
@@ -60,6 +72,12 @@ public class SQLiteScripts {
         }
     }
 
+    /**
+     * Retrieves the 5 most recent resources based on their creation date.
+     *
+     * @param dbManager DatabaseManager instance to execute SQL queries.
+     * @return A list of the 5 most recently created {@link Resource} objects.
+     */
     public static List<Resource> getMostRecentResources(DatabaseManager dbManager) {
         String query = """
             SELECT *
@@ -83,6 +101,13 @@ public class SQLiteScripts {
         return resources;
     }
 
+    /**
+     * Retrieves resources associated with the top 5 tracks having the most resources.
+     * Useful to find the most "popular" resources by track count.
+     *
+     * @param dbManager DatabaseManager instance to execute SQL queries.
+     * @return A list of {@link Resource} objects belonging to the top 5 tracks with the most resources.
+     */
     public static List<Resource> getMostPopularResources(DatabaseManager dbManager) {
         String query = """
             SELECT R.*
@@ -113,6 +138,12 @@ public class SQLiteScripts {
         return resources;
     }
 
+    /**
+     * Retrieves the top 5 resources with the highest number of comments.
+     *
+     * @param dbManager DatabaseManager instance to execute SQL queries.
+     * @return A list of the 5 most commented {@link Resource} objects.
+     */
     public static List<Resource> getMostCommentedResources(DatabaseManager dbManager) {
         String query = """
             SELECT R.*

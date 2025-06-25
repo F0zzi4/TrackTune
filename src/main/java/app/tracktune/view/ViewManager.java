@@ -35,16 +35,23 @@ import java.util.Optional;
 import static app.tracktune.Main.root;
 
 /**
- * Dedicated class to manage view section in MVC pattern
+ * Dedicated class to manage view part of the MVC pattern
  */
 public class ViewManager {
-    // SINGLETON
+    /**
+     * Singleton instance that maintains the current user session
+     * and provides session-related information to the view layer.
+     */
     private static SessionManager sessionManager;
 
     /**
-     * Load basic configuration for the given root
-     * @param viewPath : path to the desired view
-     * @throws IOException : Input / Output Exception
+     * Initializes and displays a JavaFX view specified by the given FXML path.
+     * <p>
+     * Sets the stage with fixed dimensions, title, and icons.
+     * Typically used for the login or initial views.
+     *
+     * @param viewPath the path to the FXML view file to be loaded.
+     * @throws IOException if the FXML file cannot be loaded.
      */
     public static void initView(String viewPath) throws IOException{
         FXMLLoader viewLoader = new FXMLLoader(Main.class.getResource(viewPath));
@@ -62,8 +69,14 @@ public class ViewManager {
     }
 
     /**
-     * Redirect the current view to a new one with a fade transition
-     * @param viewPath : view path to be redirected
+     * Redirects the application to a new JavaFX view with a smooth fade transition.
+     * <p>
+     * This method first fades out the current scene, loads the new scene from the provided FXML path,
+     * and then fades in the new scene. It also adjusts the stage size and position based on the given dimensions.
+     *
+     * @param viewPath    the path to the FXML file of the new view
+     * @param frameWidth  the desired width of the new stage frame
+     * @param frameHeight the desired height of the new stage frame
      */
     public static void redirectView(String viewPath, double frameWidth, double frameHeight) {
         // Fade out current scene
@@ -137,6 +150,17 @@ public class ViewManager {
         alert.showAndWait();
     }
 
+    /**
+     * Displays a confirmation dialog with custom title, header, and content text.
+     * <p>
+     * The dialog includes two buttons: one for cancellation and one for confirmation (typically "Delete").
+     * Custom styles are applied from an external CSS stylesheet.
+     *
+     * @param title   the title of the alert dialog
+     * @param header  the header text (can be null)
+     * @param content the content text to display in the dialog
+     * @return {@code true} if the user confirms (presses the confirm/delete button), {@code false} otherwise
+     */
     public static boolean setAndGetConfirmAlert(String title, String header, String content) {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle(title);
@@ -156,6 +180,13 @@ public class ViewManager {
         return confirmAlert.showAndWait().filter(response -> response == yesButton).isPresent();
     }
 
+    /**
+     * Displays a text input dialog prompting the user to reply to a comment.
+     * <p>
+     * A simple input box appears with a placeholder and custom style.
+     *
+     * @return an {@link Optional} containing the user's input if confirmed, or empty if cancelled
+     */
     public static Optional<String> showReplyDialog() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle(Strings.REPLY_TO_COMMENT);
@@ -172,6 +203,25 @@ public class ViewManager {
         return dialog.showAndWait();
     }
 
+    /**
+     * Displays a custom dialog that allows the user to add a segment-based comment.
+     * <p>
+     * The dialog includes input fields for:
+     * <ul>
+     *   <li>Start time of the segment (required)</li>
+     *   <li>End time of the segment (optional, defaults to "0" if empty)</li>
+     *   <li>The comment text</li>
+     * </ul>
+     * Styled using a custom CSS theme, the dialog returns the user input upon confirmation.
+     *
+     * @return an {@link Optional} containing a {@code String[]} of three elements:
+     *         <ol>
+     *           <li>start time</li>
+     *           <li>end time ("0" if not provided)</li>
+     *           <li>comment text</li>
+     *         </ol>
+     *         or an empty {@code Optional} if the user cancels the dialog
+     */
     public static Optional<String[]> showSegmentCommentDialog() {
         Dialog<String[]> dialog = new Dialog<>();
         dialog.setTitle(Strings.COMMENT_ADD);
@@ -220,28 +270,53 @@ public class ViewManager {
         return dialog.showAndWait();
     }
 
+    /**
+     * Navigates to the login view.
+     * <p>
+     * The stage is made non-resizable and not fullscreen before redirecting.
+     */
     public static void navigateToLogin(){
         root.setResizable(false);
         root.setFullScreen(false);
         redirectView(Frames.LOGIN_VIEW_PATH, Frames.LOGIN_FRAME_WIDTH, Frames.LOGIN_FRAME_HEIGHT);
     }
 
+    /**
+     * Navigates to the account request view.
+     * <p>
+     * The stage is made non-resizable and not fullscreen before redirecting.
+     */
     public static void navigateToAccountRequest(){
         root.setResizable(false);
         root.setFullScreen(false);
         redirectView(Frames.ACCOUNT_REQUEST_VIEW_PATH, Frames.ACCOUNT_REQUEST_FRAME_WIDTH, Frames.ACCOUNT_REQUEST_FRAME_HEIGHT);
     }
 
+    /**
+     * Navigates to the admin dashboard view.
+     * <p>
+     * The stage is made resizable before redirecting.
+     */
     public static void navigateToAdminDashboard(){
         root.setResizable(true);
         redirectView(Frames.ADMIN_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
     }
 
+    /**
+     * Navigates to the standard user dashboard view.
+     * <p>
+     * The stage is made resizable before redirecting.
+     */
     public static void navigateToUserDashboard(){
         root.setResizable(true);
         redirectView(Frames.USER_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
     }
 
+    /**
+     * Navigates to the pending user dashboard view.
+     * <p>
+     * The stage is made resizable before redirecting.
+     */
     public static void navigateToPendingUserDashboard(){
         root.setResizable(true);
         redirectView(Frames.PENDING_DASHBOARD_VIEW_PATH, Frames.DASHBOARD_FRAME_WIDTH, Frames.DASHBOARD_FRAME_HEIGHT);
@@ -270,11 +345,21 @@ public class ViewManager {
         }
     }
 
+    /**
+     * Initializes the {@link SessionManager} with the provided user.
+     *
+     * @param sessionUser the user to associate with the session
+     */
     public static void initSessionManager(User sessionUser){
         SessionManager.initialize(sessionUser);
         sessionManager = SessionManager.getInstance();
     }
 
+    /**
+     * Retrieves the current session user.
+     *
+     * @return the {@link User} associated with the current session, or {@code null} if not initialized
+     */
     public static User getSessionUser(){
         User sessionUser = null;
         if(sessionManager != null)
@@ -282,6 +367,11 @@ public class ViewManager {
         return sessionUser;
     }
 
+    /**
+     * Logs out the current session.
+     * <p>
+     * Resets the {@link SessionManager} and navigates back to the login view.
+     */
     public static void logout(){
         SessionManager.reset();
         navigateToLogin();

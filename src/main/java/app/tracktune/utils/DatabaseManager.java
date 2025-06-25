@@ -11,10 +11,30 @@ import java.sql.*;
  * Using singleton pattern
  */
 public class DatabaseManager {
+    /**
+     * Singleton instance of {@code DatabaseManager}.
+     * Ensures a single point of access to the database throughout the application.
+     */
     private static DatabaseManager instance;
+
+    /**
+     * Active connection to the SQLite database.
+     * Used to execute queries and manage transactions.
+     */
     private Connection dbConnection;
+
+    /**
+     * URL of the SQLite database file.
+     * Defines the path used to establish the database connection.
+     */
     private String dbUrl;
+
+    /**
+     * Static reference to the {@code DAOProvider} instance.
+     * Provides access to Data Access Objects (DAOs) for interacting with various data models.
+     */
     private static DAOProvider DAOprovider;
+
 
     /**
      * Create the instance of the database manager following singleton pattern
@@ -82,6 +102,13 @@ public class DatabaseManager {
         }
     }
 
+    /**
+     * Sets a test database connection for the singleton instance.
+     * If the singleton instance does not exist yet, it will be created.
+     * This method is synchronized to be thread-safe.
+     *
+     * @param testConnection the test Connection to be used by DatabaseManager
+     */
     public static synchronized void setTestConnection(Connection testConnection) {
         if (instance == null) {
             instance = new DatabaseManager();
@@ -156,6 +183,12 @@ public class DatabaseManager {
         T process(ResultSet rs) throws SQLException;
     }
 
+    /**
+     * Retrieves the last inserted row ID from the current database connection.
+     * Works with SQLite's last_insert_rowid() function.
+     *
+     * @return the last inserted ID as Integer, or null if an error occurs
+     */
     public Integer getLastInsertId() {
         String sql = "SELECT last_insert_rowid()";
 

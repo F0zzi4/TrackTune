@@ -2,38 +2,48 @@ package app.tracktune.interfaces;
 
 import java.util.List;
 
+/**
+ * Generic Data Access Object (DAO) interface defining standard CRUD operations.
+ *
+ * @param <T> the type of the entity managed by this DAO
+ */
 public interface DAO<T> {
+
     /**
-     * Inserts a new record into the database
+     * Inserts a new entity record into the data source.
      *
-     * @param data the object to be inserted into the data source
+     * @param data the entity to be inserted
+     * @return the generated ID of the inserted entity, or null if insertion failed
      */
     Integer insert(T data);
 
     /**
-     * Updates a record on database
+     * Updates an existing entity record identified by the given ID.
      *
-     * @param id ID of the entity to update
+     * @param data the updated entity data
+     * @param id the ID of the entity to update
      */
     void updateById(T data, int id);
 
     /**
-     * Deletes a record on database
+     * Deletes an entity record identified by the given ID.
      *
-     * @param id ID of the entity to delete
+     * @param id the ID of the entity to delete
      */
     void deleteById(int id);
 
     /**
-     * Get the related object from database with corresponding given key
-     * @param id usually is the primary key or logic key in the database
-     * @return the related object if key exists, null otherwise
+     * Retrieves an entity record by its unique identifier.
+     *
+     * @param id the ID of the entity to retrieve
+     * @return the entity if found, or null if no matching record exists
      */
     T getById(int id);
 
     /**
-     * Get all the elements stored in the cache
-     * @return sorted list of stored elements
+     * Retrieves all entity records stored in the data source.
+     *
+     * @return a sorted list of all entities
      */
     List<T> getAll();
 }

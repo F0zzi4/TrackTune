@@ -34,25 +34,79 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class TrackResourcesController extends Controller implements Initializable {
-    @FXML private VBox resourcesContainer;
-    @FXML private Button btnPrev;
-    @FXML private Button btnNext;
+    /**
+     * Container VBox to hold the list of resource items displayed in the UI.
+     */
+    @FXML
+    private VBox resourcesContainer;
 
+    /**
+     * Button to navigate to the previous page of resources.
+     */
+    @FXML
+    private Button btnPrev;
+
+    /**
+     * Button to navigate to the next page of resources.
+     */
+    @FXML
+    private Button btnNext;
+
+    /**
+     * List of all resources currently managed/displayed.
+     */
     private List<Resource> resources = new ArrayList<>();
+
+    /**
+     * The Track associated with the resources.
+     */
     private final Track track;
 
-    // SINGLETONS
+    /**
+     * Singleton instance managing resource-related operations and UI components.
+     */
     private ResourceManager resourceManager;
+
+    /**
+     * Singleton instance to manage web browsing for link-type resources.
+     */
     private BrowserManager browserManager;
 
-    // PAGINATION
+    /**
+     * Current page index for resource pagination (0-based).
+     */
     private int currentPage = 0;
-    private final int itemsPerPage = 6;
 
+    /**
+     * Number of resource items displayed per page.
+     */
+    private final int itemsPerPage = 5;
+
+    /**
+     * Constructs a TrackResourcesController for managing resources related to a specific track.
+     *
+     * @param track the Track whose resources will be managed and displayed
+     */
     public TrackResourcesController(Track track) {
         this.track = track;
     }
 
+    /**
+     * Initializes the controller after its root element has been completely processed.
+     * <p>
+     * This method:
+     * <ul>
+     *   <li>Initializes singleton managers (BrowserManager and ResourceManager).</li>
+     *   <li>Sets a close request handler to dispose of resources properly when the application closes.</li>
+     *   <li>Loads all resources associated with the current track from the database.</li>
+     *   <li>Sets up pagination controls (Previous and Next buttons) to navigate resource pages.</li>
+     *   <li>Starts any required timers related to resource display updates.</li>
+     *   <li>Populates the initial page of resources in the UI.</li>
+     * </ul>
+     *
+     * @param location  The location used to resolve relative paths for the root object, or null if unknown.
+     * @param res The resources used to localize the root object, or null if not localized.
+     */
     @Override
     public void initialize(URL location, ResourceBundle res) {
         browserManager = BrowserManager.getInstance();
@@ -77,6 +131,13 @@ public class TrackResourcesController extends Controller implements Initializabl
         updateResources();
     }
 
+    /**
+     * Handles the action of adding a new resource.
+     * <p>
+     * Depending on the type of the parent controller (AuthenticatedUserDashboardController or AdminDashboardController),
+     * this method loads the "Add Resource" view into the main content area of the respective dashboard.
+     * If an exception occurs, it shows a generic error alert.
+     */
     @FXML
     private void handleAddResource() {
         try{
@@ -91,6 +152,17 @@ public class TrackResourcesController extends Controller implements Initializabl
         }
     }
 
+    /**
+     * Displays the specified resource.
+     * <p>
+     * If the resource type is a link, opens the URL in the browser.
+     * Otherwise, loads the resource file view and sets it in the main content area
+     * of the parent dashboard controller.
+     * <p>
+     * Errors are caught and reported with a generic error alert.
+     *
+     * @param resource the resource to be viewed
+     */
     private void viewResource(Resource resource) {
         try{
             if(resource.getType().equals(ResourceTypeEnum.link)){
@@ -116,6 +188,17 @@ public class TrackResourcesController extends Controller implements Initializabl
         }
     }
 
+    /**
+     * Opens the resource edit view for the specified resource.
+     * <p>
+     * Loads the edit resource FXML and sets a new EditResourceController initialized with the given resource.
+     * The loaded view is then displayed in the main content area of the parent dashboard controller
+     * (either AuthenticatedUserDashboardController or AdminDashboardController).
+     * <p>
+     * If an exception occurs during loading or displaying the view, a generic error alert is shown.
+     *
+     * @param resource the resource to be edited
+     */
     private void editResource(Resource resource) {
         try{
             FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.EDIT_RESOURCE_VIEW_PATH));
@@ -135,6 +218,14 @@ public class TrackResourcesController extends Controller implements Initializabl
         }
     }
 
+    /**
+     * Updates the displayed list of resources in the UI according to the current page.
+     * <p>
+     * Clears the resources container and populates it with resource items for the current page,
+     * applying pagination controls to enable/disable navigation buttons accordingly.
+     * <p>
+     * If there are no resources, displays a message indicating the list is empty.
+     */
     private void updateResources() {
         resourcesContainer.getChildren().clear();
 
@@ -161,6 +252,18 @@ public class TrackResourcesController extends Controller implements Initializabl
         }
     }
 
+    /**
+     * Creates an HBox representing a single resource item with a media preview and details.
+     * <p>
+     * The preview is generated using the ResourceManager and sized to fixed dimensions.
+     * The resource details and controls are created by the {@code createRequestItem} method.
+     * <p>
+     * The returned HBox arranges the preview and the details side by side with spacing,
+     * and applies styling and layout constraints for proper resizing.
+     *
+     * @param resource the Resource object to represent visually
+     * @return an HBox containing the media preview and resource details
+     */
     private HBox createResourceItemBox(Resource resource) {
         int previewWidth = 140;
         int previewHeight = 120;
@@ -180,6 +283,22 @@ public class TrackResourcesController extends Controller implements Initializabl
         return container;
     }
 
+    /**
+     * Creates an HBox containing detailed information and action buttons for a given resource.
+     * <p>
+     * The method fetches the associated Track and its Authors from the database to display their
+     * titles and names. It constructs labels for the track title and authors, along with a formatted
+     * creation date description.
+     * <p>
+     * It also creates buttons to view, edit, and delete the resource. The edit and delete buttons
+     * are shown only if the current user is an Administrator or the owner of the resource.
+     * <p>
+     * The layout organizes the text information on the left and the buttons on the right, with a spacer
+     * in between for proper alignment and resizing.
+     *
+     * @param resource the Resource object for which to create the UI item
+     * @return an HBox containing the resource's information and control buttons
+     */
     private HBox createRequestItem(Resource resource) {
         Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
         List<TrackAuthor> trackAuthors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(resource.getTrackID());
@@ -251,6 +370,17 @@ public class TrackResourcesController extends Controller implements Initializabl
         return box;
     }
 
+    /**
+     * Deletes the specified resource after user confirmation.
+     * <p>
+     * Displays a confirmation dialog to the user. If confirmed, attempts to delete the resource
+     * from the database and remove it from the local list. Adjusts the current page if necessary
+     * to ensure the pagination remains valid, then updates the resource display.
+     * <p>
+     * If any exception occurs during deletion, an error alert is shown to the user.
+     *
+     * @param resource the Resource to be deleted
+     */
     private void deleteResource(Resource resource) {
         boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
         if (response)
