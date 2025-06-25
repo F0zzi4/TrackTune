@@ -255,7 +255,7 @@ L'utente non autenticato può effettuare esclusivamente due operazioni:
         \\ \hline
         \textbf{Sequenza degli eventi} &
         \begin{enumerate}
-            \item L'utente seleziona una risorsa dal risultato delle ricerca
+            \item L'utente seleziona una risorsa dal risultato della ricerca
             \item Il sistema riconosce il tipo di risorsa
             \item Se multimediale, lo riproduce
             \item Se testuale, lo visualizza
@@ -287,7 +287,7 @@ L'utente non autenticato può effettuare esclusivamente due operazioni:
         & L'utente ha effettuato una ricerca o ne può selezionare una \\ \hline
         \textbf{Sequenza degli eventi} &
         \begin{enumerate}
-            \item L'utente seleziona una risorsa dal risultato delle ricerca
+            \item L'utente seleziona una risorsa dal risultato della ricerca
             \item L'utente richiede il download della risorsa
         \end{enumerate}\\ \hline
         \textbf{Sequenza alternativa 1} & Errore nel download: messaggio di errore \\ \hline
@@ -506,7 +506,7 @@ L'utente non autenticato può effettuare esclusivamente due operazioni:
         \hline
         \textbf{Id} & UC12 \\ \hline
         \textbf{Attori} & Administrator \\ \hline
-        \textbf{Precondizioni} & Caso d'uso \textit{Eliminazine Utente} (\autoref{tab:delete_user-usecase}) \\ \hline
+        \textbf{Precondizioni} & Caso d'uso \textit{Eliminazione Utente} (\autoref{tab:delete_user-usecase}) \\ \hline
         \textbf{Sequenza degli eventi} &
         \begin{enumerate}
             \item L'amministratore comunica al server un utente
@@ -912,7 +912,7 @@ I test seguono un pattern comune:
     \item \textbf{Test di relazioni}: Test per le relazioni tra entità (es. tracce-generi, tracce-autori)
 \end{itemize}
 
-Per i test viene utilizzato un database SQLite in memoria, in questo modo abbiamo un migliore isolamento tra software e test, impendeno qualunque effetto collaterale tra dati reali e di testing. Il database viene inizializzato tramite la classe \texttt{BBInit}
+Per i test viene utilizzato un database SQLite in memoria, in questo modo abbiamo un migliore isolamento tra software e test, impedendo qualunque effetto collaterale tra dati reali e di testing. Il database viene inizializzato tramite la classe \texttt{DBInit}
 
 \begin{lstlisting}[style=java-style, caption={Esempio creazione database in memoria}]
 // Esempio di inizializzazione del database per i test
