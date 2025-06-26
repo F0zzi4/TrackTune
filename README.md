@@ -16,7 +16,8 @@
 - **MaterialFX** – Modern and responsive UI components
 - **Ikonli** – Icon packs with FontAwesome & Material Design
 - **FormsFX** – Form creation and binding library
-- **ControlsFX / BootstrapFX** – Enhanced controls and styling
+- **ControlsFX / BootstrapFX** – Enhanced controls and stylin
+- **Apache PDFBox** - For reading PDF documents
 - **SQLite** – Embedded relational database
 - **JUnit 5** – Unit testing framework
 
