@@ -48,9 +48,8 @@ public class SQLiteScripts {
      */
     public static void deleteTrack(DatabaseManager dbManager, int trackID) throws SQLException {
         String[] queries = {
-                "DELETE FROM Interactions WHERE commentID IN (SELECT ID FROM Comments WHERE trackID = ?) OR replyID IN (SELECT ID FROM Comments WHERE trackID = ?)",
-                "DELETE FROM Comments WHERE trackID = ?",
-                "DELETE FROM ResourcesAuthors WHERE resourceID IN (SELECT ID FROM Resources WHERE trackID = ?)",
+                //"DELETE FROM Interactions WHERE commentID IN (SELECT ID FROM Comments WHERE trackID = ?) OR replyID IN (SELECT ID FROM Comments WHERE trackID = ?)",
+                //"DELETE FROM Comments WHERE trackID = ?",
                 "DELETE FROM Resources WHERE trackID = ?",
                 "DELETE FROM TracksInstruments WHERE trackID = ?",
                 "DELETE FROM TracksAuthors WHERE trackID = ?",
