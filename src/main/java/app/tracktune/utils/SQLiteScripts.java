@@ -100,7 +100,7 @@ public class SQLiteScripts {
                 null
         );
 
-        return resources;
+        return resources.size() > 5 ? resources.subList(0, 5) : resources;
     }
 
     /**

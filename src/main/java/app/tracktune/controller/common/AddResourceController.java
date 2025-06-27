@@ -594,7 +594,7 @@ public class AddResourceController extends Controller implements Initializable {
     private Integer manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
         Resource resource;
         if (isMultimedia) {
-            String location = txtLocation.getText();
+            String location = !txtLocation.getText().isEmpty() ? txtLocation.getText() : null;
             Date date = resourceDate.getValue() != null ? Date.valueOf(resourceDate.getValue()) : null;
 
             resource = new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
@@ -731,16 +731,19 @@ public class AddResourceController extends Controller implements Initializable {
             if(authorComboBox.getEditor().getText().isEmpty())
                 throw new TrackTuneException(Strings.INSERT_VALID_AUTHOR);
 
-            String authorString = authorComboBox.getEditor().getText();
+            String authorString = Controller.toTitleCase(authorComboBox.getEditor().getText());
 
             if(SQLiteScripts.checkForSQLInjection(authorString))
                 throw new TrackTuneException(Strings.ERR_SQL_INJECTION);
 
             if(!DatabaseManager.getDAOProvider().getAuthorDAO().existByAuthorshipName(Controller.toTitleCase(authorString))){
-                Author newAuthor = new Author(Controller.toTitleCase(authorString), AuthorStatusEnum.ACTIVE);
-                if(DatabaseManager.getDAOProvider().getAuthorDAO().insert(newAuthor) != null){
+                Author newAuthor = new Author(authorString, AuthorStatusEnum.ACTIVE);
+                int id = DatabaseManager.getDAOProvider().getAuthorDAO().insert(newAuthor);
+                if(id != 0){
+                    newAuthor = new Author(id, authorString, AuthorStatusEnum.ACTIVE);
                     selectedAuthors.add(newAuthor);
                     allAuthors.add(newAuthor);
+                    System.out.println();
                     updateSelectedElements(selectedAuthorsPane, selectedAuthors);
                     authorComboBox.getEditor().clear();
                     authorComboBox.setItems(allAuthors);

@@ -1,6 +1,7 @@
 package app.tracktune.controller.authenticatedUser;
 
 import app.tracktune.controller.Controller;
+import app.tracktune.model.user.PendingUser;
 import app.tracktune.utils.SessionManager;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;
@@ -134,7 +135,7 @@ public class MeController extends Controller implements Initializable {
                     );
 
                     DatabaseManager.getDAOProvider().getUserDAO().updateById(authenticatedUser, user.getId());
-
+                    DatabaseManager.getDAOProvider().getPendingUserDAO().updateUsername(authenticatedUser.getUsername(), SessionManager.getInstance().getUser().getUsername());
                     SessionManager.reset();
                     ViewManager.initSessionManager(authenticatedUser);
                 }

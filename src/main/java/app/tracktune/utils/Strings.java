@@ -79,6 +79,7 @@ public class Strings {
     public static final String START_SEGMENT = "Start time";
     public static final String END_SEGMENT = "End time (optional)";
     public static final String COMMENT = "Comment";
+    public static final String LOCATION = "Location: ";
     public static final String START_SEGMENT_PLACEHOLDER = "Start time - hh:mm:ss";
     public static final String END_SEGMENT_PLACEHOLDER = "End time - hh:mm:ss";
     public static final String PLACEHOLDER_COMMENT_TEXTAREA = "Write your comment";
@@ -88,4 +89,5 @@ public class Strings {
     public static final String ERROR_DURING_OPEN_BROWSER = "Error during opening browser";
     public static final String INVALID_TIME_FORMAT = "Invalid time format: ";
     public static final String AUDIO_FILE = "MP3 File";
+    public static final String NO_REGISTERED = "No registered data found";
 }

@@ -285,7 +285,18 @@ public class ResourceFileController extends Controller implements Initializable 
         if(resourceManager.getResource() instanceof MultimediaResource multimediaResource) {
             mediaPlayer.setOnReady(() -> {
                 metadataBox.getChildren().add(createMetadataRow(Strings.DURATION, formatDuration(mediaPlayer.getTotalDuration())));
-                metadataBox.getChildren().add(createMetadataRow(Strings.REGISTERED_DATA, multimediaResource.getResourceDate().toString()));
+                metadataBox.getChildren().add(
+                        createMetadataRow(Strings.REGISTERED_DATA,
+                                multimediaResource.getResourceDate() != null
+                                        ? multimediaResource.getResourceDate().toString()
+                                        : Strings.NO_REGISTERED)
+                );
+                metadataBox.getChildren().add(
+                        createMetadataRow(Strings.LOCATION,
+                                multimediaResource.getLocation() != null
+                                        ? multimediaResource.getLocation()
+                                        : Strings.NO_REGISTERED)
+                );
             });
         }
 

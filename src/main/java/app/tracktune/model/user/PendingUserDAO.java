@@ -41,6 +41,12 @@ public class PendingUserDAO implements DAO<PendingUser> {
         WHERE ID = ?
     """;
 
+    private static final String UPDATE_USERNAME_BY_USERNAME_STMT = """
+        UPDATE PendingUsers
+        SET username = ?
+        WHERE username = ?
+    """;
+
     private static final String DELETE_PENDING_USER_STMT = """
         DELETE FROM PendingUsers
         WHERE ID = ?
@@ -120,6 +126,25 @@ public class PendingUserDAO implements DAO<PendingUser> {
                 user.getSurname(),
                 user.getStatus().ordinal(),
                 id
+        );
+
+        if (!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
+    }
+
+    /**
+     * Updates an existing PendingUser in the database by its username.
+     *
+     * @param newUsername the newUsername
+     * @param lastUsername the lastUsername
+     * @throws SQLiteException if the update fails
+     */
+    public void updateUsername(String newUsername, String lastUsername) {
+        boolean success = dbManager.executeUpdate(
+                UPDATE_USERNAME_BY_USERNAME_STMT,
+                newUsername,
+                lastUsername
         );
 
         if (!success) {

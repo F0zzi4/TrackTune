@@ -396,7 +396,7 @@ public class EditResourceController extends Controller implements Initializable 
      */
     private void manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
         if (isMultimedia) {
-            String location = txtLocation.getText();
+            String location = !txtLocation.getText().isEmpty() ? txtLocation.getText() : null;
             Date date = resourceDate.getValue() != null ? Date.valueOf(resourceDate.getValue()) : null;
 
             DatabaseManager.getDAOProvider().getResourceDAO().updateById(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,  location, date, resource.isAuthor(), trackId, resource.getUserID()), resource.getId());
