@@ -169,16 +169,9 @@ public class AuthorDAO implements DAO<Author> {
      * @return true if an Author with the given name exists, false otherwise
      */
     public boolean existByAuthorshipName(String authorshipName) {
-        AtomicReference<Author> result = new AtomicReference<>();
 
         return dbManager.executeQuery(GET_AUTHOR_BY_AUTHORSHIP_NAME_STMT,
-                rs -> {
-                    if (rs.next()) {
-                        result.set(mapResultSetToEntity(rs));
-                        return true;
-                    }
-                    return false;
-                }, authorshipName);
+                ResultSet::next, authorshipName);
     }
 
     /**
