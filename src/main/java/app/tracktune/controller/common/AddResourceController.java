@@ -743,7 +743,6 @@ public class AddResourceController extends Controller implements Initializable {
                     newAuthor = new Author(id, authorString, AuthorStatusEnum.ACTIVE);
                     selectedAuthors.add(newAuthor);
                     allAuthors.add(newAuthor);
-                    System.out.println();
                     updateSelectedElements(selectedAuthorsPane, selectedAuthors);
                     authorComboBox.getEditor().clear();
                     authorComboBox.setItems(allAuthors);

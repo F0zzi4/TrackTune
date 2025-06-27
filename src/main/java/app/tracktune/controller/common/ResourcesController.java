@@ -288,10 +288,10 @@ public class ResourcesController extends Controller implements Initializable {
         Label instrumentsLabel = null;
         if(!instruments.isEmpty()){
             String instrumentsNames = instruments.stream()
-                    .map(ti -> DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getById(ti.getId()).getName())
+                    .map(ti -> DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getById(ti.getInstrumentId()).getName())
                     .collect(Collectors.joining(", "));
             instrumentsLabel = new Label("Instruments: " + instrumentsNames);
-            genresLabel.getStyleClass().add("request-item-authors");
+            instrumentsLabel.getStyleClass().add("request-item-authors");
         }
 
         if (!authorNames.isEmpty()) {

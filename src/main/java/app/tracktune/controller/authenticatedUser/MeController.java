@@ -1,7 +1,6 @@
 package app.tracktune.controller.authenticatedUser;
 
 import app.tracktune.controller.Controller;
-import app.tracktune.model.user.PendingUser;
 import app.tracktune.utils.SessionManager;
 import app.tracktune.exceptions.SQLInjectionException;
 import app.tracktune.exceptions.TrackTuneException;

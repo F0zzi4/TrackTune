@@ -91,6 +91,8 @@ public class AuthorsController extends Controller implements Initializable {
     @FXML
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        authors.clear();
+        authors.addAll(DatabaseManager.getDAOProvider().getAuthorDAO().getAll());
         createTabsFromEnum();
 
         prevButton.setOnAction(_ -> {
@@ -119,7 +121,6 @@ public class AuthorsController extends Controller implements Initializable {
      * The first tab is selected by default.
      */
     private void createTabsFromEnum() {
-
         filterTabPane.getTabs().clear();
 
         for (AuthorStatusEnum status : AuthorStatusEnum.values()) {
@@ -161,8 +162,6 @@ public class AuthorsController extends Controller implements Initializable {
      * If no authors match the filter, an appropriate "empty list" message is shown.
      */
     private void updateAuthors() {
-        authors.clear();
-        authors.addAll(DatabaseManager.getDAOProvider().getAuthorDAO().getAll());
         filterAuthors();
         authorsContainer.getChildren().clear();
 
