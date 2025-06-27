@@ -38,40 +38,6 @@ public class SQLiteScripts {
     }
 
     /**
-     * Deletes a track and all related entries from the database, including comments,
-     * interactions, resources, and associated links.
-     *
-     * @param dbManager DatabaseManager instance to execute SQL statements.
-     * @param trackID   The ID of the track to delete.
-     * @throws SQLException If an SQL error occurs during deletion.
-     *                       Shows an error alert if the deletion fails.
-     */
-    public static void deleteTrack(DatabaseManager dbManager, int trackID) throws SQLException {
-        String[] queries = {
-                //"DELETE FROM Interactions WHERE commentID IN (SELECT ID FROM Comments WHERE trackID = ?) OR replyID IN (SELECT ID FROM Comments WHERE trackID = ?)",
-                //"DELETE FROM Comments WHERE trackID = ?",
-                "DELETE FROM Resources WHERE trackID = ?",
-                "DELETE FROM TracksInstruments WHERE trackID = ?",
-                "DELETE FROM TracksAuthors WHERE trackID = ?",
-                "DELETE FROM TracksGenres WHERE trackID = ?",
-                "DELETE FROM Tracks WHERE ID = ?"
-        };
-
-        try {
-            for (String query : queries) {
-                if (query.contains("commentID IN")) {
-                    dbManager.executeUpdate(query, trackID, trackID);
-                } else {
-                    dbManager.executeUpdate(query, trackID);
-                }
-            }
-        } catch (SQLiteException ex) {
-            ViewManager.setAndShowAlert(Strings.ERROR, Strings.DELETE, Strings.ERR_DELETE_TRACK, Alert.AlertType.ERROR);
-            System.err.println(ex.getMessage());
-        }
-    }
-
-    /**
      * Retrieves the 5 most recent resources based on their creation date.
      *
      * @param dbManager DatabaseManager instance to execute SQL queries.

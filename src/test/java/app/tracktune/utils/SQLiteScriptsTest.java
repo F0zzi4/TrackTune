@@ -142,7 +142,7 @@ public class SQLiteScriptsTest {
         resourceDAO.insert(resource);
 
         // Delete the track
-        SQLiteScripts.deleteTrack(dbManager, deleteTrackId);
+        DatabaseManager.getDAOProvider().getTrackDAO().deleteById(deleteTrackId);
 
         // Verify the track is deleted
         assertThrows(SQLiteException.class, () -> trackDAO.getById(deleteTrackId));

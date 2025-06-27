@@ -5,6 +5,8 @@ import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.interfaces.DAO;
 import app.tracktune.utils.DatabaseManager;
 import app.tracktune.utils.Strings;
+import app.tracktune.view.ViewManager;
+import javafx.scene.control.Alert;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -43,8 +45,7 @@ public class TrackDAO implements DAO<Track> {
     """;
 
     private static final String DELETE_TRACK_STMT = """
-        DELETE FROM Tracks
-        WHERE ID = ?
+        DELETE FROM Tracks WHERE ID = ?
     """;
 
     private static final String GET_ALL_TRACKS_STMT = """
@@ -148,10 +149,11 @@ public class TrackDAO implements DAO<Track> {
      */
     @Override
     public void deleteById(int id) {
-        boolean success = dbManager.executeUpdate(DELETE_TRACK_STMT, id);
-
-        if (!success) {
-            throw new SQLiteException(Strings.ERR_DATABASE);
+        try {
+            dbManager.executeUpdate(DELETE_TRACK_STMT, id);
+        } catch (SQLiteException ex) {
+            ViewManager.setAndShowAlert(Strings.ERROR, Strings.DELETE, Strings.ERR_DELETE_TRACK, Alert.AlertType.ERROR);
+            System.err.println(ex.getMessage());
         }
     }
 

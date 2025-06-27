@@ -404,8 +404,8 @@ public class TracksController extends Controller implements Initializable {
         boolean response = ViewManager.setAndGetConfirmAlert(Strings.CONFIRM_DELETION, Strings.CONFIRM_DELETION, Strings.ARE_YOU_SURE);
         if(response){
             try{
-                SQLiteScripts.deleteTrack(DatabaseManager.getInstance(), track.getId());
-            }catch (SQLiteException | SQLException ex) {
+                DatabaseManager.getDAOProvider().getTrackDAO().deleteById(track.getId());
+            }catch (SQLiteException ex) {
                 ViewManager.setAndShowAlert(Strings.ERROR, Strings.DELETE, Strings.ERR_DELETE_TRACK, Alert.AlertType.ERROR);
                 System.err.println(ex.getMessage());
             }
