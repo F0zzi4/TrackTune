@@ -1,12 +1,8 @@
 package app.tracktune.utils;
 
-import app.tracktune.exceptions.SQLiteException;
 import app.tracktune.model.resource.Resource;
 import app.tracktune.model.resource.ResourceDAO;
-import app.tracktune.view.ViewManager;
-import javafx.scene.control.Alert;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
