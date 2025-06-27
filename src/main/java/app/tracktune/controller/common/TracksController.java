@@ -15,7 +15,6 @@ import app.tracktune.model.resource.Resource;
 import app.tracktune.model.track.*;
 import app.tracktune.model.user.Administrator;
 import app.tracktune.utils.Frames;
-import app.tracktune.utils.SQLiteScripts;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.collections.FXCollections;
@@ -32,7 +31,6 @@ import javafx.util.StringConverter;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -169,7 +167,7 @@ public class TracksController extends Controller implements Initializable {
 
         switch (filter) {
             case "Author" -> setupEntityFilter(DatabaseManager.getDAOProvider().getAuthorDAO().getAll());
-            case "Genre" -> setupEntityFilter(DatabaseManager.getDAOProvider().getGenreDAO().getAllUsed());
+            case "Genre" -> setupEntityFilter(DatabaseManager.getDAOProvider().getGenreDAO().getAll());
             case "Instrument" -> setupEntityFilter(DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getAll());
             case "Title" -> setupTitleFilter();
             default -> filteredTracks = new ArrayList<>(allTracks);
@@ -242,7 +240,7 @@ public class TracksController extends Controller implements Initializable {
             if (selected instanceof Author author) {
                 filteredTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAllByAuthorId(author.getId());
             } else if (selected instanceof Genre genre) {
-                filteredTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAllByTrackId(genre.getId());
+                filteredTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAllByGenreId(genre.getId());
             } else if (selected instanceof MusicalInstrument instrument) {
                 filteredTracks = DatabaseManager.getDAOProvider().getTrackDAO().getAllByInstrumentId(instrument.getId());
             }
@@ -302,6 +300,8 @@ public class TracksController extends Controller implements Initializable {
      */
     private HBox createTrackItemBox(Track track) {
         List<TrackAuthor> authors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(track.getId());
+        List<TrackGenre> genres = DatabaseManager.getDAOProvider().getTrackGenreDAO().getByTrackId(track.getId());
+        List<TrackInstrument> instruments = DatabaseManager.getDAOProvider().getTrackInstrumentDAO().getByTrackId(track.getId());
 
         Label titleLabel = new Label(track.getTitle());
         titleLabel.getStyleClass().add("request-item-title");
@@ -310,14 +310,29 @@ public class TracksController extends Controller implements Initializable {
                 .map(ta -> DatabaseManager.getDAOProvider().getAuthorDAO().getById(ta.getAuthorId()).getAuthorshipName())
                 .collect(Collectors.joining(", "));
 
-        Label authorLabel = new Label("Authors: " + authorNames);
-        authorLabel.getStyleClass().add("request-item-authors");
+        Label authorsLabel = new Label("Authors: " + authorNames);
+        authorsLabel.getStyleClass().add("request-item-authors");
+
+        String genreNames = genres.stream()
+                .map(tg -> DatabaseManager.getDAOProvider().getGenreDAO().getById(tg.getGenreId()).getName())
+                .collect(Collectors.joining(", "));
+        Label genresLabel = new Label("Genres: " + genreNames);
+        genresLabel.getStyleClass().add("request-item-authors");
+
+        Label instrumentsLabel = null;
+        if(!instruments.isEmpty()){
+            String instrumentsNames = instruments.stream()
+                    .map(ti -> DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getById(ti.getId()).getName())
+                    .collect(Collectors.joining(", "));
+            instrumentsLabel = new Label("Instruments: " + instrumentsNames);
+            genresLabel.getStyleClass().add("request-item-authors");
+        }
 
         Label dateLabel = new Label(getFormattedRequestDate(track.getCreationDate()));
         dateLabel.getStyleClass().add("request-item-description");
         dateLabel.setWrapText(true);
 
-        VBox textBox = new VBox(5, new HBox(10, titleLabel, authorLabel), dateLabel);
+        VBox textBox = new VBox(5, new HBox(10, titleLabel, authorsLabel, genresLabel, instrumentsLabel), dateLabel);
         textBox.setAlignment(Pos.CENTER_LEFT);
         textBox.setStyle("-fx-padding: 0 0 0 10;");
 

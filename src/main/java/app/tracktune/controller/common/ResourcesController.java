@@ -4,6 +4,8 @@ import app.tracktune.Main;
 import app.tracktune.controller.Controller;
 import app.tracktune.controller.admin.AdminDashboardController;
 import app.tracktune.controller.authenticatedUser.AuthenticatedUserDashboardController;
+import app.tracktune.model.track.TrackGenre;
+import app.tracktune.model.track.TrackInstrument;
 import app.tracktune.utils.SessionManager;
 import app.tracktune.utils.DatabaseManager;
 import app.tracktune.model.author.Author;
@@ -34,6 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ResourcesController extends Controller implements Initializable {
     /** Container VBox where resource UI items are displayed. */
@@ -263,15 +266,32 @@ public class ResourcesController extends Controller implements Initializable {
      */
     private HBox createRequestItem(Resource resource) {
         Track track = DatabaseManager.getDAOProvider().getTrackDAO().getById(resource.getTrackID());
-        List<TrackAuthor> trackAuthors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(resource.getTrackID());
+        List<TrackAuthor> authors = DatabaseManager.getDAOProvider().getTrackAuthorDAO().getByTrackId(resource.getTrackID());
+        List<TrackGenre> genres = DatabaseManager.getDAOProvider().getTrackGenreDAO().getByTrackId(track.getId());
+        List<TrackInstrument> instruments = DatabaseManager.getDAOProvider().getTrackInstrumentDAO().getByTrackId(track.getId());
 
         Label trackLabel = new Label(track.getTitle());
         trackLabel.getStyleClass().add("request-item-title");
 
         StringBuilder authorNames = new StringBuilder();
-        for (TrackAuthor trackAuthor : trackAuthors) {
+        for (TrackAuthor trackAuthor : authors) {
             Author author = DatabaseManager.getDAOProvider().getAuthorDAO().getById(trackAuthor.getAuthorId());
             authorNames.append(author.getAuthorshipName()).append(", ");
+        }
+
+        String genreNames = genres.stream()
+                .map(tg -> DatabaseManager.getDAOProvider().getGenreDAO().getById(tg.getGenreId()).getName())
+                .collect(Collectors.joining(", "));
+        Label genresLabel = new Label("Genres: " + genreNames);
+        genresLabel.getStyleClass().add("request-item-authors");
+
+        Label instrumentsLabel = null;
+        if(!instruments.isEmpty()){
+            String instrumentsNames = instruments.stream()
+                    .map(ti -> DatabaseManager.getDAOProvider().getMusicalInstrumentDAO().getById(ti.getId()).getName())
+                    .collect(Collectors.joining(", "));
+            instrumentsLabel = new Label("Instruments: " + instrumentsNames);
+            genresLabel.getStyleClass().add("request-item-authors");
         }
 
         if (!authorNames.isEmpty()) {
@@ -281,7 +301,7 @@ public class ResourcesController extends Controller implements Initializable {
         Label authorsLabel = new Label("Authors: " + authorNames);
         authorsLabel.getStyleClass().add("request-item-authors");
 
-        HBox titleBox = new HBox(10, trackLabel, authorsLabel);
+        HBox titleBox = new HBox(10, trackLabel, authorsLabel, genresLabel, instrumentsLabel);
         titleBox.setAlignment(Pos.CENTER_LEFT);
         titleBox.setStyle("-fx-padding: 0 0 0 15;");
         titleBox.setSpacing(15);

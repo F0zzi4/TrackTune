@@ -197,7 +197,8 @@ public class EditResourceController extends Controller implements Initializable 
         if(resource instanceof MultimediaResource multimediaResource){
             btnIsMultimedia.setSelected(true);
             txtLocation.setText(multimediaResource.getLocation());
-            resourceDate.setValue(multimediaResource.getResourceDate().toLocalDate());
+            if(multimediaResource.getResourceDate() != null)
+                resourceDate.setValue(multimediaResource.getResourceDate().toLocalDate());
         }
     }
 
@@ -396,7 +397,9 @@ public class EditResourceController extends Controller implements Initializable 
     private void manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
         if (isMultimedia) {
             String location = txtLocation.getText();
-            DatabaseManager.getDAOProvider().getResourceDAO().updateById(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,  location, Date.valueOf(resourceDate.getValue()), resource.isAuthor(), trackId, resource.getUserID()), resource.getId());
+            Date date = resourceDate.getValue() != null ? Date.valueOf(resourceDate.getValue()) : null;
+
+            DatabaseManager.getDAOProvider().getResourceDAO().updateById(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,  location, date, resource.isAuthor(), trackId, resource.getUserID()), resource.getId());
         } else {
             DatabaseManager.getDAOProvider().getResourceDAO().updateById(new Resource(type, data, new Timestamp(System.currentTimeMillis()), false, resource.isAuthor(), trackId, resource.getUserID()), resource.getId());
         }
