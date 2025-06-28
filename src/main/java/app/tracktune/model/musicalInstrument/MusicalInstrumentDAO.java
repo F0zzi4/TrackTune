@@ -146,7 +146,7 @@ public class MusicalInstrumentDAO implements DAO<MusicalInstrument> {
     public MusicalInstrument getById(int id) {
         AtomicReference<MusicalInstrument> result = new AtomicReference<>();
 
-        dbManager.executeQuery(GET_MUSICAL_INSTRUMENT_BY_ID_STMT,
+        boolean success = dbManager.executeQuery(GET_MUSICAL_INSTRUMENT_BY_ID_STMT,
                 rs -> {
                     if (rs.next()) {
                         result.set(mapResultSetToEntity(rs));
@@ -154,6 +154,10 @@ public class MusicalInstrumentDAO implements DAO<MusicalInstrument> {
                     }
                     return false;
                 }, id);
+
+        if(!success) {
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
 
         return result.get();
     }

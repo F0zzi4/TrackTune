@@ -141,7 +141,7 @@ public class GenreDAO implements DAO<Genre> {
     public Genre getById(int id) {
         AtomicReference<Genre> result = new AtomicReference<>();
 
-        dbManager.executeQuery(GET_GENRE_BY_ID_STMT,
+        boolean success = dbManager.executeQuery(GET_GENRE_BY_ID_STMT,
                 rs -> {
                     if (rs.next()) {
                         result.set(mapResultSetToEntity(rs));
@@ -149,6 +149,10 @@ public class GenreDAO implements DAO<Genre> {
                     }
                     return false;
                 }, id);
+
+        if(!success){
+            throw new SQLiteException(Strings.ERR_DATABASE);
+        }
 
         return result.get();
     }

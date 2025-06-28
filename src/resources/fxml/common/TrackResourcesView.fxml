@@ -8,7 +8,7 @@
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <?import javafx.scene.control.ScrollPane?>
-<StackPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.TrackResourcesController">
+<StackPane prefHeight="600.0" prefWidth="800.0" stylesheets="@../../style/resources-style.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.tracktune.controller.common.TrackResourcesController">
     <children>
         <VBox alignment="TOP_CENTER" spacing="15.0" styleClass="split-pane-divider">
             <Label prefHeight="43.0" prefWidth="240.0" style="-fx-font-size: 35; -fx-alignment: center;" styleClass="section-title-label" text="Resources">
