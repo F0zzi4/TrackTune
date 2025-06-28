@@ -5,6 +5,7 @@ import app.tracktune.model.resource.Resource;
 import app.tracktune.utils.ResourceManager;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -17,6 +18,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Abstract base controller class providing common functionality for all controllers.
@@ -57,6 +59,8 @@ public abstract class Controller {
      * Height for preview images or media nodes.
      */
     protected static final int previewHeight = 120;
+
+    private final AtomicBoolean isRunning = new AtomicBoolean(false);
 
     /**
      * Sets the parent controller for this controller.
@@ -119,42 +123,57 @@ public abstract class Controller {
      */
     protected void startTimer(Node container, List<Resource> resources, ResourceManager resourceManager) {
         timer = new Timeline(new KeyFrame(Duration.seconds(1), _ -> {
-            if(container instanceof VBox resourcesContainer){
-                for(Node resourceBox : resourcesContainer.getChildren()){
-                    if(resourceBox instanceof HBox hbox){
-                        if(hbox.getChildren().getFirst() instanceof MediaView mediaView){
-                            if(mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY){
-                                readies++;
+            if (isRunning.get()) {
+                return; // Skip if already running
+            }
+
+            isRunning.set(true);
+
+            Platform.runLater(() -> {
+                try {
+                    if (container instanceof VBox resourcesContainer) {
+                        for (Node resourceBox : resourcesContainer.getChildren()) {
+                            if (resourceBox instanceof HBox hbox) {
+                                if (hbox.getChildren().getFirst() instanceof MediaView mediaView) {
+                                    if (mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY) {
+                                        readies++;
+                                    } else {
+                                        resourceManager.setResource(resources.get(counter));
+                                        Node node = resourceManager.createMediaNode(previewWidth, previewHeight, true);
+                                        hbox.getChildren().set(0, node);
+                                    }
+                                }
                             }
-                            else{
-                                resourceManager.setResource(resources.get(counter));
-                                Node node = resourceManager.createMediaNode(previewWidth, previewHeight, true);
-                                hbox.getChildren().set(0, node);
+                            counter++;
+                        }
+                        if (readies == resources.size()) {
+                            stopTimer();
+                        }
+                        readies = 0;
+                        counter = 0;
+                    } else if (container instanceof StackPane stackPane) {
+                        VBox vbox = (VBox) stackPane.getChildren().getFirst();
+                        MediaView mediaView = (MediaView) vbox.getChildren().getFirst();
+                        if (mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY
+                                || mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.PLAYING) {
+                            if (this instanceof ResourceFileController controller
+                                    && mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY) {
+                                controller.setupMediaPlayer(mediaView);
+                                controller.handlePlayPause();
                             }
+                            stopTimer();
+                        } else {
+                            resourceManager.setResource(resources.get(counter));
+                            Node node = resourceManager.createMediaNode(stackPane.getPrefWidth(), stackPane.getPrefHeight(), false);
+                            vbox.getChildren().set(counter, node);
                         }
                     }
-                    counter++;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    isRunning.set(false);
                 }
-                if(readies == resources.size()){
-                    stopTimer();
-                }
-                readies = 0;
-                counter = 0;
-            }else if(container instanceof StackPane stackPane){
-                VBox vbox = (VBox) stackPane.getChildren().getFirst();
-                MediaView mediaView = (MediaView) vbox.getChildren().getFirst();
-                if(mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY || mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.PLAYING){
-                    if(this instanceof ResourceFileController controller  && mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY){
-                        controller.setupMediaPlayer(mediaView);
-                        controller.handlePlayPause();
-                    }
-                    stopTimer();
-                }else{
-                    resourceManager.setResource(resources.get(counter));
-                    Node node = resourceManager.createMediaNode(stackPane.getPrefWidth(), stackPane.getPrefHeight(), false);
-                    vbox.getChildren().set(counter, node);
-                }
-            }
+            });
         }));
         timer.setCycleCount(Timeline.INDEFINITE);
         timer.play();

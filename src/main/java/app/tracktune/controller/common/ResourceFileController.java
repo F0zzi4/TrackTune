@@ -76,7 +76,7 @@ public class ResourceFileController extends Controller implements Initializable 
     private final ResourceManager resourceManager;
 
     /** JavaFX media player for controlling audio/video playback. */
-    private MediaPlayer mediaPlayer;
+    public static MediaPlayer mediaPlayer;
 
     /** The current track associated with the media being played. */
     private Track track;
@@ -639,7 +639,7 @@ public class ResourceFileController extends Controller implements Initializable 
                 ViewManager.setMainContent(Frames.MY_RESOURCES_VIEW_PATH, authController.mainContent, parentController);
             }
             else if(parentController instanceof AdminDashboardController adminController){
-                ViewManager.setMainContent(Frames.TRACKS_VIEW_PATH_VIEW_PATH, adminController.mainContent, parentController);
+                ViewManager.setMainContent(Frames.MY_RESOURCES_VIEW_PATH, adminController.mainContent, parentController);
             }
             else if(parentController instanceof DiscoverController discoverController){
                 if(discoverController.parentController instanceof AuthenticatedUserDashboardController authController)

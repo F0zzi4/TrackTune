@@ -380,7 +380,7 @@ public class TracksController extends Controller implements Initializable {
     private void viewTrackResources(Track track) {
         try{
             if(parentController instanceof AdminDashboardController adminController){
-                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCES_COMMON_VIEW_PATH));
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.TRACKS_RESOURCES_VIEW_PATH));
                 loader.setControllerFactory(_ -> new TrackResourcesController(track));
                 Parent view = loader.load();
 
@@ -389,7 +389,7 @@ public class TracksController extends Controller implements Initializable {
 
                 adminController.mainContent.getChildren().setAll(view);
             }else if(parentController instanceof AuthenticatedUserDashboardController authController){
-                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.RESOURCES_COMMON_VIEW_PATH));
+                FXMLLoader loader = new FXMLLoader(this.getClass().getResource(Frames.TRACKS_RESOURCES_VIEW_PATH));
                 loader.setControllerFactory(_ -> new TrackResourcesController(track));
                 Parent view = loader.load();
 

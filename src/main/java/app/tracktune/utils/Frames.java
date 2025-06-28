@@ -32,7 +32,7 @@ public class Frames {
     public static final String ADD_RESOURCE_VIEW_PATH = "/fxml/common/AddResourceView.fxml";
     public static final String EDIT_RESOURCE_VIEW_PATH = "/fxml/common/EditResourceView.fxml";
     public static final String RESOURCE_FILE_VIEW_PATH = "/fxml/common/ResourceFileView.fxml";
-    public static final String RESOURCES_COMMON_VIEW_PATH = "/fxml/common/TrackResourcesView.fxml";
+    public static final String TRACKS_RESOURCES_VIEW_PATH = "/fxml/common/TrackResourcesView.fxml";
     public static final String ME_VIEW_PATH = "/fxml/authenticatedUser/MeView.fxml";
     public static final String USER_MANAGEMENT_VIEW_PATH = "/fxml/admin/UsersView.fxml";
     public static final String TRACKS_VIEW_PATH_VIEW_PATH = "/fxml/common/TracksView.fxml";

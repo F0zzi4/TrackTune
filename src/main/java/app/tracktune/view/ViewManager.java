@@ -3,6 +3,7 @@ package app.tracktune.view;
 import app.tracktune.Main;
 import app.tracktune.config.AppConfig;
 import app.tracktune.controller.Controller;
+import app.tracktune.controller.common.ResourceFileController;
 import app.tracktune.utils.SessionManager;
 import app.tracktune.model.user.User;
 import app.tracktune.utils.Frames;
@@ -83,6 +84,10 @@ public class ViewManager {
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), root.getScene().getRoot());
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
+
+        if(ResourceFileController.mediaPlayer != null){
+            ResourceFileController.mediaPlayer.dispose();
+        }
 
         fadeOut.setOnFinished(_ -> {
             try {
@@ -337,6 +342,10 @@ public class ViewManager {
 
             Controller controller = loader.getController();
             controller.setParentController(parentController);
+
+            if(ResourceFileController.mediaPlayer != null){
+                ResourceFileController.mediaPlayer.dispose();
+            }
 
             mainContent.getChildren().setAll(view);
         } catch (IOException e) {
