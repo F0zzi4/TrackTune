@@ -34,23 +34,10 @@ cd TrackTune
 
 ---
 
-## 🔧 Deployment
+## 🔧 Deployment (use your path directories)
 ```
-mvn clean package // from the root directory ..\TrackTune\
-java --module-path "C:\JavaFX\javafx-sdk-21.0.7\lib" --add-modules javafx.controls,javafx.fxml -jar TrackTune-1.0.0.0.jar
-jpackage ^
---input "C:/Users/ACER/IdeaProjects/TrackTune/target" ^
---name "TrackTune" ^
---main-jar "tracktune-1.0.0.0-jar-with-dependencies.jar" ^
---main-class "app.tracktune.Main" ^
---type exe ^
---icon "C:/Users/ACER/IdeaProjects/TrackTune/src/resources/assets/icon/appIcon.ico" ^
---runtime-image "custom-javafx-runtime" ^
---win-menu ^
---win-shortcut ^
---win-dir-chooser ^
---app-version "1.0.0" ^
---vendor "TrackTune Team"
+mvn clean package
+jpackage --input "C:/Users/ACER/IdeaProjects/TrackTune/target" --name "TrackTune" --main-jar "tracktune-1.0.0.0.jar" --main-class "app.tracktune.Main" --type exe --icon "C:/Users/ACER/IdeaProjects/TrackTune/src/resources/assets/icon/appIcon.ico" --win-menu --win-shortcut --win-dir-chooser --app-version "1.0.0" --vendor "TrackTune Team"   --java-options "--enable-native-access=ALL-UNNAMED" --java-options "--add-exports=javafx.base/com.sun.javafx=ALL-UNNAMED" --java-options "--add-exports=javafx.graphics/com.sun.glass.utils=ALL-UNNAMED" --java-options "--add-exports=javafx.graphics/com.sun.javafx.tk=ALL-UNNAMED" --java-options "--add-exports=javafx.media/com.sun.media.jfxmediaimpl=ALL-UNNAMED"
 
 ```
 
