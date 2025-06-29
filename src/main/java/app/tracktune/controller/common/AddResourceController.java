@@ -594,9 +594,10 @@ public class AddResourceController extends Controller implements Initializable {
     private Integer manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
         Resource resource;
         if (isMultimedia) {
-            String location = !txtLocation.getText().isEmpty() ? txtLocation.getText() : null;
+            String location = null;
+            if(txtLocation.getText() != null && !txtLocation.getText().isEmpty())
+                location = txtLocation.getText();
             Date date = resourceDate.getValue() != null ? Date.valueOf(resourceDate.getValue()) : null;
-
             resource = new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,
                     location, date, btnIsAuthor.isSelected(), trackId, SessionManager.getInstance().getUser().getId());
         } else {

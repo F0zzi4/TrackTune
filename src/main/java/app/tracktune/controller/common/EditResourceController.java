@@ -353,7 +353,7 @@ public class EditResourceController extends Controller implements Initializable 
      */
     private boolean checkInput() {
         try {
-            if (trackComboBox.getText().isEmpty()) {
+            if (trackComboBox.getText() != null && trackComboBox.getText().isEmpty()) {
                 return false;
             }
 
@@ -396,7 +396,9 @@ public class EditResourceController extends Controller implements Initializable 
      */
     private void manageResourceEntity(ResourceTypeEnum type, byte[] data, int trackId, boolean isMultimedia) {
         if (isMultimedia) {
-            String location = !txtLocation.getText().isEmpty() ? txtLocation.getText() : null;
+            String location = null;
+            if(txtLocation.getText() != null && !txtLocation.getText().isEmpty())
+                location = txtLocation.getText();
             Date date = resourceDate.getValue() != null ? Date.valueOf(resourceDate.getValue()) : null;
 
             DatabaseManager.getDAOProvider().getResourceDAO().updateById(new MultimediaResource(type, data, new Timestamp(System.currentTimeMillis()), true,  location, date, resource.isAuthor(), trackId, resource.getUserID()), resource.getId());
