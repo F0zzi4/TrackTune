@@ -77,7 +77,7 @@ public final class ResourceManager {
      * @return a JavaFX Node that visually represents the resource media content
      * @throws TrackTuneException if an I/O error occurs or media type is not supported
      */
-    public Node createMediaNode(double width, double height, boolean isPreview) throws TrackTuneException {
+    public Node createMediaNode(Resource resource, double width, double height, boolean isPreview) throws TrackTuneException {
         ResourceTypeEnum type = resource.getType();
         String extension = type.toString();
 

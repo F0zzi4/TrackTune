@@ -138,8 +138,7 @@ public abstract class Controller {
                                     if (mediaView.getMediaPlayer().getStatus() == MediaPlayer.Status.READY) {
                                         readies++;
                                     } else {
-                                        resourceManager.setResource(resources.get(counter));
-                                        Node node = resourceManager.createMediaNode(previewWidth, previewHeight, true);
+                                        Node node = resourceManager.createMediaNode(resources.get(counter), previewWidth, previewHeight, true);
                                         hbox.getChildren().set(0, node);
                                     }
                                 }
@@ -163,8 +162,7 @@ public abstract class Controller {
                             }
                             stopTimer();
                         } else {
-                            resourceManager.setResource(resources.get(counter));
-                            Node node = resourceManager.createMediaNode(stackPane.getPrefWidth(), stackPane.getPrefHeight(), false);
+                            Node node = resourceManager.createMediaNode(resources.get(counter), stackPane.getPrefWidth(), stackPane.getPrefHeight(), false);
                             vbox.getChildren().set(counter, node);
                         }
                     }

@@ -238,8 +238,7 @@ public class ResourcesController extends Controller implements Initializable {
      * @return an HBox containing the media preview and resource details, styled and aligned properly
      */
     private HBox createResourceItemBox(Resource resource) {
-        resourceManager.setResource(resource);
-        Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
+        Node preview = resourceManager.createMediaNode(resource, previewWidth, previewHeight, true);
 
         HBox requestItemBox = createRequestItem(resource);
 

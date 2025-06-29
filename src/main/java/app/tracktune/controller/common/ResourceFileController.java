@@ -131,7 +131,7 @@ public class ResourceFileController extends Controller implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         try {
             Platform.runLater(() -> Main.root.setOnCloseRequest(_ -> disposeMediaPlayer()));
-            Node resourceNode = resourceManager.createMediaNode(fileContainer.getPrefWidth(), fileContainer.getPrefHeight(), false);
+            Node resourceNode = resourceManager.createMediaNode(resourceManager.getResource(), fileContainer.getPrefWidth(), fileContainer.getPrefHeight(), false);
             boolean isMultimedia = resourceNode instanceof MediaView;
 
             if (!isMultimedia) {

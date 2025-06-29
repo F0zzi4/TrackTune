@@ -271,8 +271,7 @@ public class TrackResourcesController extends Controller implements Initializabl
         int previewWidth = 140;
         int previewHeight = 120;
 
-        resourceManager.setResource(resource);
-        Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
+        Node preview = resourceManager.createMediaNode(resource, previewWidth, previewHeight, true);
 
         HBox requestItemBox = createRequestItem(resource);
 

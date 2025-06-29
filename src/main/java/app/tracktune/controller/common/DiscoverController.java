@@ -125,8 +125,7 @@ public class DiscoverController extends Controller implements Initializable {
      * @return An HBox containing the media preview and resource details.
      */
     private HBox createResourceItemBox(Resource resource) {
-        resourceManager.setResource(resource);
-        Node preview = resourceManager.createMediaNode(previewWidth, previewHeight, true);
+        Node preview = resourceManager.createMediaNode(resource, previewWidth, previewHeight, true);
 
         HBox requestItemBox = createRequestItem(resource);
 
