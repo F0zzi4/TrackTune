@@ -1,7 +1,10 @@
 package app.tracktune.controller.pendingUser;
 
 import app.tracktune.controller.Controller;
+import app.tracktune.model.user.AuthRequestStatusEnum;
+import app.tracktune.model.user.AuthenticatedUser;
 import app.tracktune.model.user.PendingUser;
+import app.tracktune.utils.DatabaseManager;
 import app.tracktune.utils.Strings;
 import app.tracktune.view.ViewManager;
 import javafx.fxml.FXML;
@@ -40,6 +43,10 @@ public class PendingUserDashboardController extends Controller implements Initia
             }
 
             LblStatusValue.setText(pendingUser.getStatus().toString());
+            if(pendingUser.getStatus().equals(AuthRequestStatusEnum.ACCEPTED)){
+                AuthenticatedUser u = (AuthenticatedUser) DatabaseManager.getDAOProvider().getUserDAO().getSingleActiveUserByUsername((pendingUser.getUsername()));
+                LblStatusValue.setText(u.getStatus().toString());
+            }
         } else {
             LblStatusValue.setText(Strings.ERROR);
             LblStatusValue.setStyle("-fx-text-fill: #870505;");

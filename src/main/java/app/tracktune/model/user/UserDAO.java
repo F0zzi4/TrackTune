@@ -67,6 +67,12 @@ public class UserDAO implements DAO<User> {
         WHERE username = ? AND status = 0
     """;
 
+    private static final String GET_SINGLE_USER_BY_USERNAME_STMT= """
+        SELECT *
+        FROM Users
+        WHERE username = ?
+    """;
+
     /**
      * Default constructor using the global database manager.
      */
@@ -201,9 +207,8 @@ public class UserDAO implements DAO<User> {
                     return false;
                 }, id);
 
-        if (!success) {
-            throw new SQLiteException(Strings.ERR_USER_NOT_FOUND);
-        }
+        if(!success)
+            throw new SQLiteException(Strings.ERR_DATABASE);
 
         return userRef.get();
     }
@@ -218,6 +223,25 @@ public class UserDAO implements DAO<User> {
         AtomicReference<User> userRef = new AtomicReference<>();
 
         dbManager.executeQuery(GET_USER_BY_USERNAME_STMT,
+                rs -> {
+                    if (rs.next()) {
+                        userRef.set(mapResultSetToEntity(rs));
+                    }
+                    return null;
+                }, username);
+
+        return userRef.get();
+    }
+
+    /**User by username.
+     *
+     * @param username the username of the user to retrieve
+     * @return the User object if found; null otherwise
+     */
+    public User getSingleActiveUserByUsername(String username) {
+        AtomicReference<User> userRef = new AtomicReference<>();
+
+        dbManager.executeQuery(GET_SINGLE_USER_BY_USERNAME_STMT,
                 rs -> {
                     if (rs.next()) {
                         userRef.set(mapResultSetToEntity(rs));

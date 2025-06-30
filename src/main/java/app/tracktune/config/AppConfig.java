@@ -21,8 +21,8 @@ public class AppConfig {
      * This version is intended for debugging and points to the source resources folder.
      * Uncomment the deployment version for production builds.
      */
-    // public static final String DATA_DIR = "classes/database"; // For deployment
-    public static final String DATA_DIR = "src/resources/database"; // For debugging
+    public static final String DATA_DIR = "classes/database"; // For deployment
+    //public static final String DATA_DIR = "src/resources/database"; // For debugging
 
     /**
      * Full path to the SQLite database file used by the application.
